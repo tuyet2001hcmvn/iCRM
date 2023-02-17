@@ -1,0 +1,292 @@
+﻿@model StoreViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_Store.ToLower();
+    string CurrentController = ConstController.Store;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true)
+@Html.HiddenFor(p => p.StoreId)
+@Html.HiddenFor(p => p.SaleOrgCode)
+@Html.HiddenFor(p => p.CompanyId)
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+        @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+    </div>
+</div>
+
+<div class="content">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">@ViewBag.Title</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="form-group col-md-6">
+                    @Html.TooltipLabelFor(p => p.CompanyId)
+                    @Html.RequiredTextboxFor(p => p.CompanyName, new { disabled = "disabled" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    @Html.TooltipLabelFor(p => p.SaleOrgCode)
+                    @Html.RequiredTextboxFor(p => p.SaleOrgCode, new { disabled = "disabled" })
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.StoreName)
+                @Html.RequiredTextboxFor(p => p.StoreName)
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.InvoiceStoreName)
+                @Html.RequiredTextboxFor(p => p.InvoiceStoreName)
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.ProvinceId)
+                @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.DistrictId)
+                <select id="DistrictId" name="DistrictId" class="form-control with-search">
+                    <option value="">@LanguageResource.Dropdownlist_Choose</option>
+                </select>
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.StoreAddress)
+                @Html.RequiredTextboxFor(p => p.StoreAddress)
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.Email)
+                @Html.RequiredTextboxFor(p => p.Email, new {@placeholder = "Ví dụ: abc@xyz.com;def@abcd.com"})
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.TelProduct)
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    @Html.RequiredTextboxFor(p => p.TelProduct)
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.TelService)
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    @Html.RequiredTextboxFor(p => p.TelService)
+                </div>
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.Fax)
+                @Html.RequiredTextboxFor(p => p.Fax)
+            </div>
+
+            @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.LogoUrl)
+            </div>
+            <div class="col-md-9">
+                @Html.RequiredTextboxFor(p => p.LogoUrl, new { type = "file" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ImageUrl)
+            </div>
+            <div class="col-md-9">
+                @Html.RequiredTextboxFor(p => p.ImageUrl, new { type = "file" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.mLat)
+            </div>
+            <div class="col-md-9">
+                @Html.RequiredTextboxFor(p => p.mLat)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.mLong)
+            </div>
+            <div class="col-md-9">
+                @Html.RequiredTextboxFor(p => p.mLong)
+            </div>
+        </div>*@
+
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.OrderIndex)
+                @Html.RequiredTextboxFor(p => p.OrderIndex)
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.StockId)
+                @Html.DropDownListFor(p => p.StockId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.DefaultCustomerSource)
+                @Html.DropDownListFor(p => p.DefaultCustomerSource, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.SMSTemplateCode)
+                @Html.DropDownListFor(p => p.SMSTemplateCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.Actived)
+                @Html.ActivedRadioButton(p => p.Actived)
+            </div>
+        </div>
+    </div>
+</div>
+}
+
+@section components {
+    <!--Modal-->
+    @*<div id="divPaymentMethod" class="modal fade" role="dialog">
+            @Html.Action("_PaymentMethodModal")
+        </div>*@
+}
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+
+        //Hiển thị popup thêm Chuyển khoản
+        @*$(document).on("click", ".btn-add-transfer", function () {
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/_PaymentMethodModal",
+                data: {
+                    PaymentMethodType: @ConstPaymentMethodByStore.ChuyenKhoan
+                },
+                success: function (data) {
+                    $("#divPaymentMethod").html("");
+                    $("#divPaymentMethod").html(data);
+                    $("form#frmPaymentMethod #SaleOrg").val($("#SaleOrgCode").val())
+                    $("#divPaymentMethod").modal("show");
+                }
+            });
+        });*@
+
+        //Hiển thị popup thêm Trả góp
+        @*$(document).on("click", ".btn-add-installment", function () {
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/_PaymentMethodModal",
+                data: {
+                    PaymentMethodType: @ConstPaymentMethodByStore.TraGop
+                },
+                success: function (data) {
+                    $("#divPaymentMethod").html("");
+                    $("#divPaymentMethod").html(data);
+                    $("form#frmPaymentMethod #SaleOrg").val($("#SaleOrgCode").val())
+                    $("#divPaymentMethod").modal("show");
+                }
+            });
+        });*@
+
+        //Lưu dữ liệu
+        @*$(document).on("click", "#btn-save-modal", function () {
+            $btn = $(this);
+
+            var PaymentMethodCode = $("form#frmPaymentMethod #PaymentMethodCode").val();
+            var PaymentMethodAccount = $("form#frmPaymentMethod #PaymentMethodAccount").val();
+            var PaymentMethodType = $("form#frmPaymentMethod #PaymentMethodType").val();
+
+            if (PaymentMethodCode == "" || PaymentMethodAccount == "") {
+                alertModalPopup(false, "Vui lòng nhập đầy đủ thông tin đánh dấu (*) trước khi lưu!")
+            }
+            else {
+                var data = $("#frmPaymentMethod").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/MasterData/Store/UpdatePaymentMethod",
+                    data: data,
+                    success: function (jsonData) {
+                        $("#divPaymentMethod").modal("hide");
+
+                        $btn.button('reset');
+                        $('#divPaymentMethod form#frmPaymentMethod input').val('');
+                        if (PaymentMethodType == @ConstPaymentMethodByStore.ChuyenKhoan) {
+                            $("#transferList").html(jsonData);
+                        }
+                        if (PaymentMethodType == @ConstPaymentMethodByStore.TraGop) {
+                            $("#installmentList").html(jsonData);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $btn.button('reset');
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            }
+        });*@
+
+        //Hiển thị popup sửa
+        $(document).on("click", ".btn-edit-modal", function () {
+            var PaymentMethodId = $(this).data("id");
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/_PaymentMethodModal",
+                data: {
+                    PaymentMethodId: PaymentMethodId
+                },
+                success: function (data) {
+                    $("#divPaymentMethod").html("");
+                    $("#divPaymentMethod").html(data);
+                    $("form#frmPaymentMethod #SaleOrg").val($("#SaleOrgCode").val())
+                    $("#divPaymentMethod").modal("show");
+                }
+            });
+        });
+
+        $(document).on("change", "#ProvinceId", function () {
+            var ProvinceId = $("#ProvinceId").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Ward/GetDistrictBy",
+                data: {
+                    ProvinceId: ProvinceId
+                },
+                success: function (jsonData) {
+                    $("#DistrictId").html("");
+                    if (jsonData.length > 0) {
+                        $.each(jsonData, function (index, value) {
+                            $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                    else {
+                        $("#DistrictId").append("<option value=''>-- Vui lòng chọn --</option>");
+                    }
+                }
+            });
+        });
+    </script>
+}
+
+
+

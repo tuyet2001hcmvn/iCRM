@@ -1,0 +1,634 @@
+﻿@model IEnumerable<TaskViewModel>
+@{
+    ViewBag.Title = LanguageResource.HomePage;
+    var ModuleList = (List<ModuleViewModel>)ViewBag.ModuleList;
+
+}
+@if (ViewBag.isShowChoseModule == true)
+{
+    <section class="content-header module-mobile-top">
+        <h1 style=" margin: 0px 0px 0px 15px;">
+            @LanguageResource.Functions
+        </h1>
+    </section>
+    <section class="container-fluid module-mobile-top">
+        <div class="greating-modules-block text-center">
+            @if (ModuleList != null && ModuleList.Count > 0)
+            {
+                <div class="default-list-products">
+                    @for (int i = 0; i < ModuleList.Count; i++)
+                    {
+                        var Module = ModuleList[i];
+                        var CssClass = string.Empty;
+
+                        <div class="col-xs-6 col-sm-2 @CssClass">
+                            <a class="link header product" href="/Module/@Module.ModuleId">
+                                <img alt="@Module.ModuleName" src="/Upload/Module/@Module.ImageUrl">
+                            </a>
+                            <h3 class="title">
+                                @Module.ModuleName
+                            </h3>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </section>
+}
+@if (ViewBag.isShowDashBoard == true)
+{
+    <section class="content-header">
+        <h1 style=" margin: 0px 0px 0px 15px;">
+            @LanguageResource.HomePageTitle
+        </h1>
+    </section>
+
+    <section class="isd-content container-fluid">
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="info-box bg-aqua">
+                <span class="info-box-icon"><i class="fa fa-users"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">@LanguageResource.Customer</span>
+                    <span class="info-box-number">@ViewBag.Customer </span>
+
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                        @LanguageResource.TotalCustomer
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="info-box bg-green">
+                <span class="info-box-icon"><i class="fa fa-address-book"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">@LanguageResource.Profile_Contact</span>
+                    <span class="info-box-number">@ViewBag.Contact </span>
+
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                        @LanguageResource.TotalContact
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="info-box bg-orange">
+                <span class="info-box-icon"><i class="fa fa-tasks"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">@LanguageResource.Work_Task</span>
+                    <span class="info-box-number">@ViewBag.Task </span>
+
+                    <div class="progress">
+                        <div class="progress-bar" style="width: 100%"></div>
+                    </div>
+                    <span class="progress-description">
+                        @LanguageResource.TotalWorkTask
+                    </span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+        </div>
+    </section>
+
+    @*<div class="isd-content container-fluid">
+        <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">SỐ LƯỢNG NHÓM KHÁCH HÀNG THEO NHÓM</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">*@
+    @*Biểu đồ phân loại khách hàng*@
+    @*Biểu đồ Nhóm KH*@
+    <div class="isd-content container-fluid">
+        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerPercentageByType</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row text-center">
+                        <canvas id="chartCustomerClassification" style="max-height:354px; max-width: 860px;"></canvas>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class=" col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerPercentageByGroup</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="pieChartCustomerGroup" style="max-height:354px; max-width: 860px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    @*//SỐ LƯỢNG NHÓM KHÁCH HÀNG*@
+    <div class="isd-content container-fluid">
+        <div class=" col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerGroupQuantityByGroup </h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="barChartCustomerGroup" class="" style="max-height: 400px; max-width: 1700px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*// BIểu đồ khách hàng theo khu vực*@
+    <div class="isd-content container-fluid">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerPercentageByRegion</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="pieChartPercentCustomerByArea" style="max-height:354px; max-width: 860px;"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerQuantityByRegion</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="barChartCustomerByArea" style="max-height:354px;min-height:354px ;  max-width: 100%;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*// Biểu đồ số lượng khách hàng theo TOP 10 tỉnh thành*@
+    <div class="isd-content container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Top10Provinces</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartCustomerByTop10Province" style="max-height:354px;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*// Biểu đồ KHÁCH HÀNG ghe thăm Showroom kì này và kì trước NPP*@
+    <div class="isd-content container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerQuantityVisitNPP</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartNumberCustomerVisitSRNPP" style="max-height:550px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*// Biểu đồ KHÁCH HÀNG ghe thăm Showroom kì này và kì trước*@
+    <div class="isd-content container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerQuantityVisitSHOWROOM</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartNumberCustomerVisitSR" style="max-height:550px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* // Báo cáo thị hiệu kkhách hàng đến showroom*@
+    <div class="isd-content container-fluid">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerTastesComeShowroom</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartCustomerTastes" style="max-height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*// Báo cáo tổng hợp thị hiếu sản phẩm*@
+    @*// Báo cáo tổng hợp điểm trưng bày*@
+    <div class="isd-content container-fluid">
+        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.ProductTastesSynthesis</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartStatisticLikeViewProduct" style="max-height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.ShowroomSynthesis</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartShowroom" style="max-height:400px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*// Biểu đồ tổng hợp khiếu nại lỗi sản phẩm*@
+    @*//TỔNG HỢP XLKN LỖI THƯỜNG GẶP*@
+    <div class="isd-content container-fluid">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.HandleComplaintsSynthesis</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartProductIssue" style="max-height:354px"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.HandleComplaintsSynthesisError</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartProductIssue2" style="max-height:354px"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*// Báo cáo tổng hợp xuất nhập tồn Catalog*@
+    <div class="isd-content container-fluid">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.ImportExportCatalogSynthesis</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <canvas id="chartCatalog" style=""></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*</div>
+                </div>
+            </div>
+        </div>*@
+    <section class="content-header row">
+        <h1 class="col-md-8" style=" margin: 0px 0px 0px 15px;">
+            @LanguageResource.ActivityUpdate
+        </h1>
+        <div class="col-md-3 pull-right" style=" margin-right: 15px!important;">
+            @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date" })
+        </div>
+    </section>
+    <section class="isd-content container-fluid" id="activity-updates">
+    </section>
+    <section class="isd-content container-fluid">
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.InformationUpdate (@ViewBag.TotalTask)</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="height: 300px;">
+                    <ul class="products-list product-list-in-box">
+                        @foreach (var item in Model)
+                        {
+                            <li class="item">
+                                <div class="product-img">
+                                    @if (item.WorkFlowImageUrl != null)
+                                    {
+                                        <img src="/Upload/WorkFlow/@item.WorkFlowImageUrl" alt="@item.WorkFlowName">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Images/default-50x50.gif" alt="No Image">
+                                    }
+                                </div>
+                                <div class="product-info">
+                                    <a href="/Work/Task/Edit/@item.TaskId" class="product-title">
+                                        (@item.WorkFlowCode) @item.Summary
+                                    </a>
+                                    <span class="product-description">
+                                        @Html.DisplayFor(model => item.CreateTime)
+                                    </span>
+                                </div>
+                            </li>
+                        }
+
+                        <!-- /.item -->
+                    </ul>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer text-center">
+                    <a href="javascript:void(0)" class="uppercase">@LanguageResource.LookMore</a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+        </div>
+        <!-- Bảng tin -->
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="box box-success dashboard-news">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.News</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="height: 300px;">
+                    @if (((List<NewsViewModel>)ViewBag.News).Count > 0)
+                    {
+                        <ul class="products-list product-list-in-box">
+                            @foreach (var item in (List<NewsViewModel>)ViewBag.News)
+                            {
+                                <li class="item">
+                                    <div class="product-img">
+                                        @if (item.ImageUrl != null && item.ImageUrl != "noimage.jpg")
+                                        {
+                                            <img src="@item.ImageUrl">
+                                        }
+                                        else
+                                        {
+                                            <img src="/Upload/NewsCategory/Thum/noimage.jpg" alt="No Image">
+                                        }
+                                    </div>
+                                    <div class="product-info">
+                                        <a href="/MasterData/News/Detail/@item.NewsId" class="product-title">
+                                            @item.Title
+                                        </a>
+                                        <span class="product-description">
+                                            @Html.DisplayFor(model => item.CreateTime)
+                                        </span>
+                                    </div>
+                                </li>
+                            }
+
+                            <!-- /.item -->
+                        </ul>
+                    }
+                    else
+                    {
+                        <div class="icon">
+                            <i class="ion ion-social-twitch-outline"></i>
+                        </div>
+                        <center>
+                            @LanguageResource.NoNews
+                        </center>
+                    }
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer text-center">
+                    <a href="javascript:void(0)" class="uppercase">@LanguageResource.LookMore</a>
+                </div>
+                <!-- /.box-footer -->
+            </div>
+        </div>
+
+        <div class="col-md-4 col-sm-8 col-xs-12">
+            <div class="box box-warning dashboard-work">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.AssignedWork</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="small-box">
+                                <a class="color-black" href="/Work/Task?Type=MyWork&tab=tab-kanban">
+                                    <div class="inner color-black">
+                                        <p style="font-size:xx-large">@ViewBag.Todo</p>
+                                        <h4>@LanguageResource.Assigned</h4>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small-box bg-light-blue">
+                                <a class="bg-light-blue" href="/Work/Task?Type=MyWork&tab=tab-kanban&TaskProcessCode_Input=Processing">
+                                    <div class="inner">
+                                        <p style="font-size:xx-large">@ViewBag.Incomplete</p>
+                                        <h4>@LanguageResource.Pending</h4>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="small-box bg-red">
+                                <a class="bg-red" href="/Work/Task?Type=MyWork&tab=tab-kanban&TaskProcessCode_Input=Expired">
+                                    <div class="inner">
+                                        <p style="font-size:xx-large">@ViewBag.Expired</p>
+                                        <h4>@LanguageResource.Expired</h4>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small-box bg-green">
+                                <a class="bg-green" href="/Work/Task?Type=MyWork&tab=tab-kanban&TaskProcessCode_Input=CompletedOnTime">
+                                    <div class="inner">
+                                        <p style="font-size:xx-large">@ViewBag.Completed</p>
+                                        <h4>@LanguageResource.Accomplished</h4>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+                @*<div class="box-footer text-center">
+                        <a href="javascript:void(0)" class="uppercase">Xem thêm</a>
+                    </div>*@
+                <!-- /.box-footer -->
+            </div>
+        </div>
+
+    </section>
+
+}
+<div class="loading-modal"></div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#CommonDate").change(function () {
+                $data = $(this);
+                //loading2();
+                $.ajax({
+                    type: "GET",
+                    url: "/Home/_Reload?SelectedCommonDate=" + $data.val(),
+                    success: function (html) {
+                        $("#activity-updates").html();
+                        $("#activity-updates").html(html);
+                    }
+                })
+            }).trigger("change");
+
+            //// Biểu đồ phân loại khách hàng
+            createChartCustomerClassification();
+
+            //// Tỉ lệ khách hàng theo nhóm KH
+            createPieChartCustomerGroup();
+
+            //// Số lượng khách hàng theo nhóm
+            createBarChartCustomerGroup();
+
+            //// Tỉ lệ khách hàng theo khu vực
+            createPieChartPercentCustomerByArea();
+
+            //// Số lượng khách hàng theo khu vực
+            createBarChartCustomerByArea();
+
+            //// Số lượng khách hàng theo TOP 10 tỉnh thành
+            createChartCustomerByTop10Province();
+
+            //// Số lượng KH ghé thăm Showroom tháng này và tháng trước NPP
+            createChartNumberCustomerVisitSRNPP();
+
+            //// Số lượng KH ghé thăm Showroom tháng này và tháng trước
+            createChartNumberCustomerVisitSR();
+
+            //// Thị hiệu kkhách hàng đến showroom
+            createChartCustomerTastes();
+
+            //// Tổng hợp thị hiếu sản phẩm
+            createChartStatisticLikeViewProduct();
+
+            //// Khiếu nại lỗi sản phẩm - theo nhóm hàng
+            createChartProductIssue();
+
+            //// Khiếu nại lỗi sản phẩm - theo lỗi thường gặp
+            createchartProductIssue2();
+
+            //// Báo cáo tổng hợp điểm trưng bày
+            createchartShowroom();
+
+            //// Báo cáo tổng hợp tồn Catalog
+            createchartCatalog();
+
+        })
+
+        $("body").addClass("white");
+    </script>
+
+    <script src="~/Scripts/DashboardChartConfig.js"></script>
+    <script src="~/Scripts/AdminLTE-2.4.3/plugins/ChartJs/chart.min.js"></script>
+    <script src="~/Scripts/AdminLTE-2.4.3/plugins/ChartJs/chartjs-plugin-datalabels.min.js"></script>
+}

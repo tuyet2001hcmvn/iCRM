@@ -1,0 +1,170 @@
+﻿
+@using ISD.ViewModels.MasterData
+@model FavoriteReportSearchViewModel
+@{
+    ViewBag.FavoriteReport = LanguageResource.FavoriteReport;
+    ViewBag.Title= LanguageResource.FavoriteReport;
+    ViewBag.AllReport = LanguageResource.AllReport;
+    string CurrentController = ConstController.FavoriteReport;
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    string baseAddress = Net5ApiDomain;
+    string searchApi = Net5ApiDomain + "api/" + CurrentUrl + "s/";
+    string AccountId = CurrentUser.AccountId.ToString();
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.FavoriteReport
+    </h1>
+    @*<div class="pull-right">
+            <div class="pull-right">
+                <div class="pull-right">
+                    @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+                </div>
+            </div>
+        </div>*@
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">         
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    
+
+                    <div style="overflow-x: scroll !important; margin-top: 10px;" id="divFavoriteReport">
+                        <table class="table table-bordered table-striped table-hover no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th style=" max-width: 10px;" class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th style=" min-width: 90px;"> @Html.DisplayNameFor(p => p.ReportName)</th>
+                                    <th style=" max-width: 10px;" class="text-center">Yêu thích</th>
+
+                                    @* <th style=" min-width: 90px;" class="text-center">@LanguageResource.Actions</th>*@
+                                </tr>
+                            </thead>
+                            <tbody id="tblFavoriteReport">
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>    
+                        <p style="text-align:center;" id="tblFavoriteReportCount"></p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divFavoriteReportResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.AllReport
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    @Html.HiddenFor(s => AccountId)
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ReportName)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.ReportName, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton(new { data_searchType = CurrentController, data_controller = CurrentUrl })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div style="display: flex;" class="col-md-1">
+                            <label style=" padding-right: 5px; padding-top: 5px;">Xem </label>
+                            <select id="changeViewRow" style="display: block; width: 100%; min-height: 30px;margin-bottom:5px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style=" padding-left: 5px; padding-top: 5px;">mục </label>
+                        </div>
+                        <div class="pull-right">
+
+                            <div id="pagination" class="pagination">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="overflow-x: scroll !important; margin-top: 10px;" id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th style=" max-width: 10px;" class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th style=" min-width: 90px;"> @Html.DisplayNameFor(p => p.ReportName)</th>
+                                    <th style=" width: 90px;" class="text-center">Yêu thích</th>
+                                    @* <th style=" min-width: 90px;" class="text-center">@LanguageResource.Actions</th>*@
+                                </tr>
+                            </thead>
+                            <tbody id="tblData">
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                        <p id="tblCount"></p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="data-template" type="x-tmpl-mustache">
+      <tr>
+         <td class="text-center">{{i}}</td>
+         <td><a target="blank" href="{{PageUrl}}">{{ReportName}}</a></td>
+         <td style=" width: 90px" class="text-center">{{{IsFavorite}}}</td>
+      </tr>
+</script>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/jquery.twbsPagination.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/mustache.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            ISDNET5.LoadFavoriteReport("@AccountId");
+            ISDNET5.init();
+            ISDNET5.initSearch("@CurrentUrl", "@CurrentController", false);
+            $(document).on('click', '.star', function () {
+                 ISDNET5.MarkFavoriteReportHandle("@AccountId", $(this));
+            })
+        });
+    </script>
+}
+

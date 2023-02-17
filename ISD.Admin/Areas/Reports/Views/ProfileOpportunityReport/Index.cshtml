@@ -1,0 +1,833 @@
+﻿@model ProfileViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.ProfileOpportunityReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    //Ẩn nếu là Account: Ẩn cột khách hàng
+    var cssClass = string.Empty;
+    if (ViewBag.Type == ConstProfileType.Account)
+    {
+        cssClass = "display-none";
+    }
+
+    var cssNotAccountClass = string.Empty;
+    if (ViewBag.Type != ConstProfileType.Account)
+    {
+        cssNotAccountClass = "display-none";
+    }
+
+    var cssContactClass = string.Empty;
+    if (ViewBag.Type == ConstProfileType.Contact)
+    {
+        cssContactClass = "display-none";
+    }
+
+    var SalesEmployeeList1 = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList1;
+    var SalesEmployeeList2 = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList2;
+    var SalesEmployeeList3 = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList3;
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <a class="btn btn-success" id="btn-export"><i class="fa fa-download"></i> Export</a>
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    <div class="panel-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-12 select-filter multi input-group">
+                                    <span class="input-group-addon"><i class="fa fa-play" aria-hidden="true"></i></span>
+                                    <select class="Filters" name="Filters" multiple="multiple">
+                                        @foreach (var item in (List<DropdownlistFilter>)ViewBag.Filters)
+                                        {
+                                            <option value="@item.FilterCode">@item.FilterName</option>
+                                        }
+                                    </select>
+                                    <label class="input-group-addon filter-hidden">
+                                        <input type="checkbox" name="CheckAll" id="CheckAll" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @*<div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProfileCode)
+                                    </div>
+                                    <div class="col-md-8 pl-0">
+                                        @Html.TextBoxFor(p => p.ProfileCode, new { @id = "SearchProfileCode", @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>*@
+                        @if (ViewBag.Type == ConstProfileType.Account)
+                        {
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchProfileForeignCode)
+                                    </div>
+                                    <div class="col-md-8 input-group">
+                                        @Html.TextBoxFor(p => p.SearchProfileForeignCode, new { @class = "form-control text-box single-line" })
+                                        @Html.HiddenFor(p => p.SearchProfileForeignCodeIsNull)
+                                        <span class="input-group-btn">
+                                            <a class="btn btn-more-option" title="@LanguageResource.MoreOption" onclick="OptionSearchNull('SearchProfileForeignCodeIsNull','@LanguageResource.Profile_ProfileForeignCode')"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.ProfileName)
+                                </div>
+                                <div class="col-md-8 pl-0">
+                                    @Html.TextBoxFor(p => p.ProfileName, new { @id = "ProfileSearchName", @class = "form-control text-box single-line" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.ProjectLocation)
+                                </div>
+                                <div class="col-md-8 input-group">
+                                    @Html.TextBoxFor(p => p.Address, new { @class = "form-control" })
+                                    @Html.HiddenFor(p => p.AddressIsNull)
+                                    <span class="input-group-btn">
+                                        <a class="btn btn-more-option" title="@LanguageResource.MoreOption" onclick="OptionSearchNull('AddressIsNull','@LanguageResource.Profile_Address')"><i class="fa fa-external-link" aria-hidden="true"></i></a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.SaleOfficeCode)
+                                </div>
+                                <div class="col-md-8 pl-0">
+                                    @Html.DropDownList("SaleOfficeCode", null, LanguageResource.Dropdownlist_All, new { @class = " form-control" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-5 hidden hidden_SalesEmployeeCode">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">NV kinh doanh</label></div>
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @Html.DropDownList("PersonInChargeSales", new SelectList(SalesEmployeeList1, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-5 hidden hidden_SalesEmployeeCode">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">NV Sales Admin</label></div>
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @Html.DropDownList("PersonInChargeSalesAdmin", new SelectList(SalesEmployeeList2, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 hidden hidden_SalesEmployeeCode">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">NV Spec</label></div>
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @Html.DropDownList("PersonInChargeSpec", new SelectList(SalesEmployeeList3, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 hidden hidden_RolesCode">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.RolesCode)
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @Html.DropDownListFor(p => p.RolesCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row hidden hidden_Create Create">
+                            @*<div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CreateByCode)
+                                        </div>
+                                        <div class="col-md-8 multi pl-0">
+                                            @Html.DropDownList("CreateByCode", (IEnumerable<SelectListItem>)ViewBag.SalesEmployeeCode, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>*@
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.CommonEditDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 pl-0">
+                                            @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Create", @id = "receive-date", Name = "CreateCommonDate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.FromDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 pl-0">
+                                            @Html.RequiredTextboxFor(p => p.CreateFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.ToDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8 pl-0">
+                                            @Html.RequiredTextboxFor(p => p.CreateToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="form-group col-md-12 ">
+                                <div class="col-md-3 col-md-offset-4 input-group">
+                                    <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                        <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                    </select>
+                                    <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                        <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                        <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                    </span>
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover no-footer dataTableServerSide">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.CRM_ID</th>
+                                    <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                                    <th>@Html.DisplayNameFor(p => p.Address)</th>
+                                    <th>@Html.DisplayNameFor(p => p.StoreId)</th>
+                                    <th>@Html.DisplayNameFor(p => p.SaleOfficeCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.Note)</th>
+                                    <th>@LanguageResource.PersonInCharge</th>
+                                    <th>NV Sales Admin</th>
+                                    <th>NV Spec</th>
+                                    <th>@LanguageResource.RoleInCharge</th>
+                                    <th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>
+                                    <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        var cssClass = "@cssClass";
+        $(document).ready(function () {
+            //Set lại thông tin search gần đây khi là back lại
+            var modeTemplateSearch = ISD.GetQueryString("ModeSearch", window.location.href);
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            } else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            PaggingServerSide_Profile("@CurrentUrl");
+            ISD.ShowMessage(window.location.href);
+
+            //hide tooltip
+            $(".ico-help").hide();
+            $(".Filters").select2({
+                multiple: true,
+                placeholder: "Thêm các trường tìm kiếm..."
+            });
+            $(".select-filter .select2 .select2-search__field").css("width", "200px");
+            $("#isCreateRequest").trigger("change");
+        });
+
+        $(document).on("change", ".Filters", function () {
+            var arr = $(this).val();
+            $("div[class*='hidden_']").addClass("hidden");
+            $.each(arr, function (index, value) {
+                //console.log(value);
+                $(".hidden_" + value).removeClass("hidden");
+            });
+        });
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").is(':checked')) {
+                $(".Filters > option").prop("selected", "selected");
+                $(".Filters").trigger("change");
+            } else {
+                $(".Filters > option").removeAttr("selected");
+                $(".Filters").trigger("change");
+            }
+        });
+
+        $(document).on("change", "#isCreateRequest", function () {
+            var isCreateRequestText = $("#isCreateRequest option:selected").text();
+            $("#CreateRequestAll").val(isCreateRequestText);
+
+            //nếu chọn đang yêu cầu/đã tạo => thì mới mở ra cho nhập 2 ô này, nếu không tạo => Disabled 2 field này đi
+            var isCreateRequest = $("#isCreateRequest option:selected").val();
+            if (isCreateRequest.toLowerCase() === "true" || isCreateRequest.toLowerCase() === "false") {
+                $("#CreateRequestTimeFrom").prop("disabled", false);
+                $("#CreateRequestTimeTo").prop("disabled", false);
+                $(".createRequestTime").show();
+            }
+            else {
+                $("#CreateRequestTimeFrom").prop("disabled", true);
+                $("#CreateRequestTimeTo").prop("disabled", true);
+                $(".createRequestTime").hide();
+            }
+        });
+
+        $(document).on("click", ".btn-get-profile", function () {
+            $.ajax({
+                type: "POST",
+                url: '/Work/Task/_ProfileSearch',
+                data: {
+                    hasNoContact: true,
+                    ProfileType: 'Account'
+                },
+                success: function (html) {
+                    $(".divProfilePopup").html("");
+
+                    $(".divProfilePopup").html(html);
+                    $(".divProfilePopup input[id='SearchProfileId']").val("");
+                    $(".with-search").select2();
+                    $(".divProfilePopup #divProfileSearch").modal("show");
+                }
+            });
+        });
+
+        $(document).on("click", "#divProfileSearch .btn-profile-choose", function () {
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+            $("input[name='ProfileId']").val(id).trigger('change');
+            $("input[name='SearchProfileName']").val(name);
+        });
+
+        $(document).on("click", ".btn-del-profile", function () {
+            $("input[name='ProfileId']").val("");
+            $("input[name='SearchProfileName']").val("");
+        });
+
+        //Search
+        $("#btn-search").click(function () {
+            var searchData = GetDataFormSearch();
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, searchData);
+            //let searchDeleted = $("#isDeleted").val();
+            PaggingServerSide_Profile("@CurrentUrl");
+        });
+        //set default form submit => click btn-search button
+        $("#frmSearch").submit(function (e) {
+            e.preventDefault();
+            $("#btn-search").trigger("click");
+        });
+
+        //trigger enter click when fill in search form
+        $(document).on("keyup", "#frmSearch", function (evt) {
+            if (evt.keyCode == 13) {
+                $("#btn-search").trigger("click");
+            }
+        });
+
+        //common date
+        $(document).on("change", ".ddl-common-date", function () {
+            var cssClass = $(this).data('id');
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("." + cssClass + " input[name='" + cssClass + "FromDate']").val(jsonData.FromDate);
+                    $("." + cssClass + " input[name='" + cssClass + "ToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("disabled", true);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("disabled", true);
+                    } else {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("disabled", false);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("disabled", false);
+                    }
+
+                }
+            });
+        });
+
+        function PaggingServerSide_Profile(controller) {
+            $("#divSearchResult").show();
+            $(".dataTableServerSide").DataTable().clear().destroy();
+            $(".dataTableServerSide")
+                .on('processing.dt', function (e, settings, processing) {
+                    ISD.LoadingDataTable(processing, '.dataTableServerSide');
+                })
+                .DataTable({
+                    proccessing: true,
+                    serverSide: true,
+                    paging: true,
+                    scrollX: true,
+                    //scrollCollapse: true,
+                    //fixedColumns: {
+                    //    leftColumns: 3
+                    //},
+                    ajax: {
+                        type: 'POST',
+                        url: "/" + controller + "/_PaggingServerSide",
+                        contentType: 'application/json',
+                        data: function (d) {
+                            var arr = {};
+                            //data search
+                            var data = $("#frmSearch").serializeArray();
+                            $.each(data, function (index, val) {
+                                var obj = {};
+                                obj[val.name] = val.value;
+                                $.extend(true, arr, obj);
+                            });
+                            //data datatable (draw, start, length,...)
+                            $.extend(true, arr, d);
+                            var storeList = $('#StoreId').val();
+                            if (storeList != null && storeList.length > 0) {
+                                var store = {};
+                                store['StoreId'] = storeList;
+                                $.extend(true, arr, store);
+                            }
+                            //phân nhóm khách hàng
+                            var customerAccountGroupList = $('#CustomerAccountGroupCode').val();
+                            if (customerAccountGroupList != null && customerAccountGroupList.length > 0) {
+                                var customerAccountGroup = {};
+                                customerAccountGroup['CustomerAccountGroupCode'] = customerAccountGroupList;
+                                $.extend(true, arr, customerAccountGroup);
+                            }
+                            return JSON.stringify(arr);
+                        }
+                    },
+                    columns: [
+                    //1.
+                    {
+                        "data": "STT",
+                        "className": "text-center"
+                    },
+                    //2.
+                    {
+                        "data": "ProfileCode",
+                        "className": "text-center",
+                        "orderable": true,
+                    },
+                    //3.
+                    @*{
+                        "data": "ProfileForeignCode",
+                        "className": "text-center @cssNotAccountClass",
+                        "orderable": true,
+                    },*@
+                    //4.
+                    {
+                        "data": "ProfileName",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                        if (row["ProfileShortName"]) {
+                            data = row["ProfileShortName"];
+                        }
+                        return data;
+                    }
+                    },
+                    //5.
+                    @*{
+                        "data": "isForeignCustomer",
+                        "className": "@cssNotAccountClass",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            if (data === false) {
+                                return "@Html.Raw(LanguageResource.Domestic)";
+                            }
+                            else if (data === true) {
+                                return "@Html.Raw(LanguageResource.Foreign)";
+                            }
+                            return "";
+                        }
+                    },*@
+                    //6.
+                    //{
+                    //    "data": "CompanyName",
+                    //    "className": cssClass,
+                    //    "orderable": true,
+                    //},
+                    //7.
+                    @*{
+                        "data": "CustomerTypeName",
+                        "orderable": true,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //8.
+                    //{
+                    //    "data": "Phone",
+                    //    "className": "text-right",
+                    //    "orderable": false
+                    //},
+                    //11.
+                    //{
+                    //    "data": "Email",
+                    //    "orderable": true,
+                    //},
+                    //12.
+                    {
+                        "data": "Address",
+                        "className": "@cssContactClass",
+                        "orderable": false,
+                    },
+                    //13.
+                    @*{
+                        "data": "CustomerSourceName",
+                        "orderable": false,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //14.
+                    {
+                        "data": "SaleOrgName",
+                        "orderable": false,
+                    },
+                    //15.
+                    @*{
+                        "data": "Age",
+                        "orderable": false,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //16.
+                    @*{
+                        "data": "TaxNo",
+                        "orderable": false,
+                        "className": "text-right",
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //17.
+                    @*{
+                        "data": "CustomerGroupName",
+                        "orderable": false,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //18.
+                    @*{
+                        "data": "CustomerCareerName",
+                        "orderable": false,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //19.
+                    {
+                        "data": "SaleOfficeName",
+                        "orderable": false,
+                        @*"className": "@cssNotAccountClass"*@
+                    },
+                    //20.
+                    {
+                        "data": "Note",
+                        "orderable": false,
+                    },
+                    //21.
+                    {
+                        "data": "PersonInChargeSales",
+                        @*"className": "@cssContactClass",*@
+                        "orderable": false,
+                    },
+                    {
+                        "data": "PersonInChargeSalesAdmin",
+                        "orderable": false,
+                    },
+                    {
+                        "data": "PersonInChargeSpec",
+                        "orderable": false,
+                    },
+                    //22.
+                    {
+                        "data": "RoleInCharge",
+                        @*"className": "@cssContactClass",*@
+                        "orderable": false,
+                    },
+                    //9.
+                    @*{
+                        "data": "ContactName",
+                        "orderable": false,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //10.
+                    @*{
+                        "data": "ContactPhone",
+                        "className": "text-right",
+                        "orderable": false,
+                        "className": "@cssNotAccountClass"
+                    },*@
+                    //24.
+                    {
+                        "data": "CreateTime",
+                        "orderable": true,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                            }
+                            return data;
+                        }
+                    },
+                    //25.
+                    {
+                        "data": "Actived",
+                        "orderable": false,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data == true) {
+                                    return "<i class='fa fa-check true-icon'></i>";
+                                }
+                                else {
+                                    return "<i class='fa fa-close false-icon'></i>";
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                ],
+                destroy: true,
+                language: {
+                    sProcessing: "Đang xử lý...",
+                    sLengthMenu: "Xem _MENU_ mục",
+                    sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                    sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                    sInfoPostFix: "",
+                    sSearch: "Tìm nội dung:",
+                    sUrl: "",
+                    oPaginate: {
+                        sFirst: "Đầu",
+                        sPrevious: "&laquo;",
+                        sNext: "&raquo;",
+                        sLast: "Cuối"
+                    }
+                },
+                columnDefs: [
+                    { targets: [0, 1], visible: true },
+                    { targets: 'no-sort', visible: false }
+                ],
+                "sDom": '<"top"flp>rt<"bottom"ip><"clear">'
+            });
+        }
+
+        $(document).on("change", "#ProvinceId", function () {
+            var ProvinceId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/District/GetDistrictByProvince",
+                data: {
+                    ProvinceId: ProvinceId
+                },
+                success: function (jsonData) {
+                    $("#DistrictId").html("");
+                    $("#DistrictId").append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    $("#DistrictId").trigger("change");
+                }
+            });
+        });
+         //change ward
+        $(document).on("change", "select[name='DistrictId']", function () {
+            var DistrictId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Ward/GetWardByDistrict",
+                data: {
+                    DistrictId: DistrictId
+                },
+                success: function (jsonData) {
+                    var $ward = $("#WardId")
+                    $ward.html("");
+                    $ward.append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $ward.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+            });
+        });
+        //Change nguồn khách hàng
+        $(document).on("change", "select[name='CustomerSourceCode']", function () {
+            let customerSourceCode = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetStoreByCustomerSource",
+                data: {
+                    CustomerSourceCode: customerSourceCode
+                },
+                success: function (jsonData) {
+                    var $store = $("#StoreId");
+                    $store.html("");
+                    @* $store.append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");*@
+                    $.each(jsonData, function (index, value) {
+                        $store.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+            });
+        })
+        $(document).on("click", "#btn-export", function () {
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+                var obj = {};
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            //Cửa hàng
+            var storeList = $('#StoreId').val();
+            if (storeList != null && storeList.length > 0) {
+                var store = {};
+                store['StoreId'] = storeList;
+                $.extend(true, arr, store);
+            }
+
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            var $btn = $(this);
+            $btn.button('loading');
+            setTimeout(function () {
+                $btn.button('reset');
+            }, 7000);
+        });
+
+        //option tìm kiếm field không có data
+        function OptionSearchNull(fieldName, fieldTitle) {
+            $(".divFindFieldIsNull .modal-title").html(fieldTitle);
+            $(".divFindFieldIsNull #NameFieldSearchNull").val(fieldName);
+            let option = $("#frmSearch #" + fieldName).val();
+            $(".divFindFieldIsNull #OptionFieldIsNull").val(option).change();
+            $(".divFindFieldIsNull #divFindFieldIsNull").modal("show");
+        }
+        $(document).on("click", "#btn-confirm-field-option", function () {
+            let fieldOption = $(".divFindFieldIsNull #OptionFieldIsNull").val();
+            let fieldName = $(".divFindFieldIsNull #NameFieldSearchNull").val();
+            let indexIsNull = fieldName.indexOf("IsNull");
+            let oldField = fieldName.substring(0, indexIsNull);
+            if (fieldOption == "true") {
+                $("#frmSearch #" + fieldName).val(true);
+                $("#frmSearch #" + oldField).val("Không có dữ liệu");
+                $("#frmSearch #" + oldField).prop("disabled", true);
+            } else {
+                if (fieldOption == "false") {
+                    $("#frmSearch #" + fieldName).val(false);
+                    $("#frmSearch #" + oldField).val("Có dữ liệu");
+                    $("#frmSearch #" + oldField).prop("disabled", true);
+                } else {
+                    $("#frmSearch #" + fieldName).val("");
+                    $("#frmSearch #" + oldField).val("");
+                    $("#frmSearch #" + oldField).prop("disabled", false);
+                }
+            }
+            $(".divFindFieldIsNull #divFindFieldIsNull").modal("hide");
+        })
+    </script>
+
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+
+            //Chi nhánh
+            var StoreIdList = $('#StoreId').val();
+            if (StoreIdList != null && StoreIdList.length > 0) {
+                var storeId = {};
+
+                storeId['StoreId'] = StoreIdList;
+                $.extend(true, data, storeId);
+            }
+            //Phân nhóm KH
+            var CustomerAccountGroupCodeList = $('#CustomerAccountGroupCode').val();
+            if (CustomerAccountGroupCodeList != null && CustomerAccountGroupCodeList.length > 0) {
+                var customerAccountGroupCode = {};
+
+                customerAccountGroupCode['CustomerAccountGroupCode'] = CustomerAccountGroupCodeList;
+                $.extend(true, data, customerAccountGroupCode);
+            }
+            //Filter
+            var FiltersList = $('.Filters').val();
+            if (FiltersList != null && FiltersList.length > 0) {
+                var filters = {};
+
+                filters['Filters'] = FiltersList;
+                $.extend(true, data, filters);
+            }
+            var searchData = JSON.stringify(data);
+
+            return JSON.stringify(data);
+        }
+
+    </script>
+}

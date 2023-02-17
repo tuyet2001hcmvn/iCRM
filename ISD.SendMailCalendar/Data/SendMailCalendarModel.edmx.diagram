@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="c3d4cd795c9043eca4210e81ea51b61a" Name="Diagram1">
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.ProfileModel" Width="1.5" PointX="0.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.CampaignModel" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.ContentModel" Width="1.5" PointX="2.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.EmailAccountModel" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.MailServerProviderModel" Width="1.5" PointX="7.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.MemberOfTargetGroupModel" Width="1.5" PointX="8" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.SendMailCalendarModel" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.TargetGroupModel" Width="1.5" PointX="5.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.CatalogModel" Width="1.5" PointX="0.75" PointY="1.75" IsExpanded="true" />
+        <AssociationConnector Association="ISD_iCRM_GoLive_TestModel.FK_CampaignModel_CatalogModel" ManuallyRouted="false" />
+        <AssociationConnector Association="ISD_iCRM_GoLive_TestModel.FK_MemberOfTagetGroupModel_TargetGroupModel" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="ISD_iCRM_GoLive_TestModel.Unfollow" Width="1.5" PointX="7.375" PointY="8.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

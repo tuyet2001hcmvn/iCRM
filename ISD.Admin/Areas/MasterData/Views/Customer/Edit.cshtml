@@ -1,0 +1,186 @@
+﻿@model CustomerViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_Customer.ToLower();
+    string CurrentController = ConstController.Customer;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.CustomerId)
+    @Html.HiddenFor(p => p.CustomerCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerCode)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.CustomerCode, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.FullName)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.LastName, new { @placeholder = LanguageResource.Customer_LastName })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.MiddleName, new { @placeholder = LanguageResource.Customer_MiddleName })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.FirstName, new { @placeholder = LanguageResource.Customer_FirstName })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerLevelId)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownList("CustomerLevelId", null, new { @class = " form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerLoyaltyCard)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.CustomerLoyaltyCard)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DateOfBirth)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.DateOfBirth, new { @type = "date" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Gender)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButtonGender(p => p.Gender)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.IdentityNumber)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.IdentityNumber)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerAddress)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownList("DistrictId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.CustomerAddress)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Phone)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Phone)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EmailAddress)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EmailAddress)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Fax)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Fax)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+
+        $(document).on("change", "#ProvinceId", function () {
+            var ProvinceId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Customer/GetDistrictByProvince",
+                data: {
+                    ProvinceId: ProvinceId
+                },
+                success: function (jsonData) {
+                    $("#DistrictId").html("");
+                    $("#DistrictId").append("<option value=''>-- Vui lòng chọn --</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+
+

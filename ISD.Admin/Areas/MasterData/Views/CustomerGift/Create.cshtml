@@ -1,0 +1,208 @@
+﻿@model CustomerGiftViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.MasterData_CustomerGift.ToLower();
+    string CurrentController = ConstController.CustomerGift;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.GiftCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.GiftCode)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.GiftName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.GiftName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EffectFromDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EffectFromDate, new { type = "date" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EffectToDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EffectToDate, new { type = "date" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ImageUrl)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ImageUrl, new { type = "file" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @class = "ckeditor", @id = "Description" })
+                                <script type="text/javascript">
+                                    CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        width: 800
+                                    });
+                                    CKEDITOR.instances['Description'].on('change',
+                                        function () { CKEDITOR.instances['Description'].updateElement() });
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Notes)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Notes)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ApplyFor)
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="pull-right">
+                                <a class="btn bg-blue btn-inside">
+                                    <i class="fa fa-plus-square"></i> @LanguageResource.Add_Customer
+                                </a>
+                            </div>
+                            @Html.Partial("_CustomerGift")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section components {
+    @Html.Action("_CustomerSearch")
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+
+        //check all
+        $(document).on("change", "#choose-all", function () {
+            if ($(this).prop("checked")) {
+                $('#customerSearchTable tr td input.choose-customer').each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $('#customerSearchTable input.choose-customer').each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+
+        //get product chosen
+        $(document).on("click", "#btn-choose", function () {
+            var customerList = [];
+            $('#customerSearchTable input.choose-customer:checked').each(function () {
+                customerList.push($(this).attr('value'));
+            });
+
+            var existList = [];
+            $('#customerTable input.customerId').each(function () {
+                existList.push($(this).attr("value"));
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/CustomerGift/InsertCustomer",
+                data: {
+                    customerList: customerList,
+                    existList: existList
+                },
+                success: function (jsonData) {
+                    $("#divCustomerSearch").modal("hide");
+                    $("#chosenList").html(jsonData);
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        //delete customer
+        $(document).on("click", ".btn-del-customer", function () {
+            var DeleteCustomerId = $(this).data("customer");
+
+            var customerList = [];
+            $('#customerTable input.customerId').each(function () {
+                customerList.push($(this).attr('value'));
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/CustomerGift/DeleteCustomer",
+                data: {
+                    customerList: customerList,
+                    DeleteCustomerId: DeleteCustomerId
+                },
+                success: function (jsonData) {
+                    $("#chosenList").html(jsonData);
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+    </script>
+}
+
+

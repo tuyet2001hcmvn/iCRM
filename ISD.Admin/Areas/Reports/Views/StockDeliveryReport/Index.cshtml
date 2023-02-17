@@ -1,0 +1,541 @@
+﻿@model DeliverySearchViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_StockDeliveryReport;
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.StockDeliveryReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    bool isHasPermissionCreateSystemReportTemplate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CreatePivotReportSystem);
+    bool isHasPermissionCreateReportTemplate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CreatePivotReport);
+    DateTime now = DateTime.Now;
+    var fromDateDefault = new DateTime(now.Year, now.Month, 1).ToString("yyyy-MM-dd");
+    var toDateDefault = new DateTime(now.Year, now.Month, now.Day).ToString("yyyy-MM-dd");
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+
+    var SearchProductList = (List<ProductViewModel>)ViewBag.SearchProductId;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <div class="btn-group">
+            <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+            <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>
+                <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null,new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+
+                                        @using (Html.BeginForm("Index", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                                        {
+
+                                            <div id="frm-product" class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchCompanyId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchCompanyId, null, null, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchStoreId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchStoreId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchStockId)
+                                                            </div>
+                                                            <div class="col-md-8 multi">
+                                                                @Html.DropDownListFor(p => p.SearchStockId, null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.DepartmentId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.DepartmentId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchCategoryId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchCategoryId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchSalesEmployeeCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchSalesEmployeeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchDeliveryCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(p => p.SearchDeliveryCode, new { @class = "form-control text-box single-line" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.SearchProfileGroupCode)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(p => p.SearchProfileGroupCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchProfileCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.RequiredTextboxFor(p => p.SearchProfileCode)
+                                                                @Html.HiddenFor(p => p.SearchProfileId)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchProfileName)
+                                                            </div>
+                                                            <div class="col-md-8" style="display: inline-table">
+                                                                @Html.RequiredTextboxFor(p => p.SearchProfileName, new { disabled = "disabled" })
+                                                                <div class="input-group-btn">
+                                                                    <a class="btn btn-danger" id="btn-clearProfile">
+                                                                        <i class="fa fa-remove"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <input id="SearchProfileCodeRecent" name="SearchProfileCodeRecent" type="hidden">
+                                                                <input id="SearchProfileNameRecent" name="SearchProfileNameRecent" type="hidden">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchFromDate)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.RequiredTextboxFor(p => p.SearchFromDate, new { type = "date", Value = fromDateDefault })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchToDate)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.RequiredTextboxFor(p => p.SearchToDate, new { type = "date", Value = toDateDefault })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchProductId)
+                                                            </div>
+                                                            <div class="col-md-8 multi product">
+                                                                <select name="SearchProductId" id="SearchProductId" class="form-control search-product-id" multiple>
+                                                                    @*<option value="">@LanguageResource.Dropdownlist_Choose</option>*@
+                                                                    @if (SearchProductList != null && SearchProductList.Count > 0)
+                                                                    {
+                                                                        foreach (var item in SearchProductList)
+                                                                        {
+                                                                            <option value="@item.ProductId">@item.ProductName</option>
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                    <div id="frm-button" class="col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="col-md-6 col-md-offset-3 input-group">
+
+                                                                <select id="SearchTemplateId" name="SearchTemplateId">
+                                                                    <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                                </select>
+                                                                <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                                    <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                                    <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                                </span>
+                                                                <a id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>                                        
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                
+                <div class="panel-body" style="overflow-x:scroll;">
+
+                    @Html.Action("StockDeliveryPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section components {
+
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+}
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                    FillToInputSpecial(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl", "@CurrentController");
+
+            Select2_CustomFor_CRM("/Warehouse/StockReceiving/SearchProduct", ".search-product-id");
+
+            //var categoryId = $('#SearchCategoryId').val();
+            //if (categoryId != null && categoryId != "") {
+            //    Select2_CustomFor_CRM("/Warehouse/StockReceiving/SearchProduct", "#ProductId", $('#SearchCategoryId').val());
+            //} else {
+            //    Select2_CustomFor_CRM("/Warehouse/StockReceiving/SearchProduct", "#ProductId");
+            //}
+        })
+        function ExportPivotGrid(searchData) {
+            var form = $('#frmSearch');
+            var templateId = $('#TemplateId').val();
+            var formData = document.createElement("form");
+            $.each(searchData, function (index, val) {
+                var s = document.createElement("input");
+                s.name = val.name;
+                s.value = val.value;
+                formData.appendChild(s);
+            });
+
+            //form.append("searchViewModel", searchData);
+            //form.append("templateId", templateId);
+            defaultAction = form.attr('action'),
+            newAction = defaultAction + "/ExportPivot";
+            formData.attr('action', newAction);
+            formData.submit();
+            formData.attr('action', defaultAction);
+
+            // var form = $('#PivotGridExportForm');
+            // form.submit();
+        }
+        var currentIndex = 0;
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //List Product Id
+            var SearchProductIdList = $('#SearchProductId').val();
+            if (SearchProductIdList != null && SearchProductIdList.length > 0) {
+                var searchProductId = {};
+                searchProductId['SearchProductId'] = SearchProductIdList;
+                $.extend(true, arr, searchProductId);
+            }
+
+            //List Stock Id
+            var SearchStockIdList = $('#SearchStockId').val();
+            if (SearchStockIdList != null && SearchStockIdList.length > 0) {
+                var searchStockId = {};
+                searchStockId['SearchStockId'] = SearchStockIdList;
+                $.extend(true, arr, searchStockId);
+            }
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //List Product Id
+            var SearchProductIdList = $('#SearchProductId').val();
+            if (SearchProductIdList != null && SearchProductIdList.length > 0) {
+                var searchProductId = {};
+                searchProductId['SearchProductId'] = SearchProductIdList;
+                $.extend(true, arr, searchProductId);
+            }
+            //List Stock Id
+            var SearchStockIdList = $('#SearchStockId').val();
+            if (SearchStockIdList != null && SearchStockIdList.length > 0) {
+                var searchStockId = {};
+                searchStockId['SearchStockId'] = SearchStockIdList;
+                $.extend(true, arr, searchStockId);
+            }
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-view", function () {
+            var $btn = $(this);
+            $btn.button("loading")
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["IsView"] = true;
+            $.extend(true, arr, obj);
+            obj["pivotTemplate"] = $('#TemplateId').val();
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+             //List Product Id
+             var SearchProductIdList = $('#SearchProductId').val();
+             if (SearchProductIdList != null && SearchProductIdList.length > 0) {
+                 var searchProductId = {};
+                 searchProductId['SearchProductId'] = SearchProductIdList;
+                 $.extend(true, arr, searchProductId);
+             }
+
+             //List Stock Id
+             var SearchStockIdList = $('#SearchStockId').val();
+             if (SearchStockIdList != null && SearchStockIdList.length > 0) {
+                 var searchStockId = {};
+                 searchStockId['SearchStockId'] = SearchStockIdList;
+                 $.extend(true, arr, searchStockId);
+             }
+             //Save localStorage
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);
+             $btn.button("reset")
+        });
+        $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+            var $btn = $(this);
+            $btn.button("loading")
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["pivotTemplate"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //List Product Id
+            var SearchProductIdList = $('#SearchProductId').val();
+            if (SearchProductIdList != null && SearchProductIdList.length > 0) {
+                var searchProductId = {};
+                searchProductId['SearchProductId'] = SearchProductIdList;
+                $.extend(true, arr, searchProductId);
+            }
+
+            //List Stock Id
+            var SearchStockIdList = $('#SearchStockId').val();
+            if (SearchStockIdList != null && SearchStockIdList.length > 0) {
+                var searchStockId = {};
+                searchStockId['SearchStockId'] = SearchStockIdList;
+                $.extend(true, arr, searchStockId);
+            }
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+            $btn.button("reset")
+        });
+
+        $("#SearchProfileCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/Customer/Profile/GetProfileByCode",
+                    data: JSON.stringify({ "ProfileCode": $("#SearchProfileCode").val() }),
+                    dataType: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.ProfieLableName, id: item.ProfileId, value: item.ProfileCode, name: item.ProfileName };
+                        }));
+                        //response(data);
+                    },
+                    error: function (xhr, status, error) {
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            },
+            //prevent another value except dropdown value
+            change: function (event, ui) {
+                if (ui.item === null) {
+                    $("#SearchProfileCode").val("");
+                    $("#SearchProfileCodeRecent").val("");
+                    $("#SearchProfileName").val("");
+                    $("#SearchProfileNameRecent").val("");
+                    $("#SearchProfileId").val("");
+                    $("#SearchProfileCode").focus();
+                }
+            },
+            select: function (event, ui) {
+                $("#SearchProfileCode").val(ui.item.value);
+                $("#SearchProfileCode").prop("readonly", true);
+                $("#SearchProfileCodeRecent").val(ui.item.value);
+                $("#SearchProfileName").val(ui.item.name);
+                $("#SearchProfileNameRecent").val(ui.item.name);
+                $("#SearchProfileId").val(ui.item.id);
+            }
+        });
+
+        $(document).on("click", "#btn-clearProfile", function () {
+            $("#SearchProfileCode").val("");
+            $("#SearchProfileName").val("");
+            $("#SearchProfileId").val("");
+            $("#SearchProfileCode").prop("readonly", false);
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInputSpecial(recentSearch) {
+            if (recentSearch.SearchProfileId != "") {
+                $("#SearchProfileCode").val(recentSearch.SearchProfileCodeRecent);
+                $("#SearchProfileName").val(recentSearch.SearchProfileNameRecent);
+                $("#SearchProfileCode").prop("readonly", true);
+            }
+            if (recentSearch.SearchProductId != "") {
+                $("#ProductCode").val(recentSearch.SearchProductCodeRecent);
+                $("#ProductName").val(recentSearch.SearchProductNameRecent);
+                $("#ProductCode").prop("readonly", true);
+            }
+        }
+
+        $(".search-product-id").each(function () {
+            var row = $(this).data("row");
+            $('select[name="SearchProductId"] option').each(function () {
+                $(this).prop('selected', true);
+            });
+            $('select[name="SearchProductId').trigger("change");
+        });
+    </script>
+}

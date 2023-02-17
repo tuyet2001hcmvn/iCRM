@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ConfigurationModel>
+@{
+    string CurrentController = ConstController.Configuration;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ConfigurationCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ConfigurationName)</th>
+            <th>@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.ConfigurationCode)</td>
+            <td>@Html.DisplayFor(p => item.ConfigurationName)</td>
+            <td>@Html.DisplayFor(p => item.OrderIndex)</td>
+            <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            <td class="text-center">
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.ConfigurationId)
+                @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.ConfigurationName, item.ConfigurationId)
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

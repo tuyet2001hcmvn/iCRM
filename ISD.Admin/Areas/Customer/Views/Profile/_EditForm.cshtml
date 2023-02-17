@@ -1,0 +1,17 @@
+﻿@model ProfileViewModel
+
+@Html.HiddenFor(p => p.ProfileId)
+@Html.HiddenFor(p => p.ProfileTypeCode)
+@*@Html.HiddenFor(p => p.ProfileForeignCode)*@
+@Html.Hidden("TaxNoValid", Model.TaxNo)
+@Html.Hidden("PhoneValid", Model.Phone)
+@Html.Hidden("EmailValid", Model.Email)
+@Html.Hidden("AddressValid", Model.Address)
+
+@Html.Partial("_CreateFormByConfig")
+<div class="text-center" style="padding-bottom: 20px;">
+    <a class="btn bg-blue" id="btn-save-fake" onclick="$(this).button('loading')"><i class="fa fa-floppy-o"></i> @LanguageResource.Btn_Save</a>
+    <a class="btn bg-blue" id="btn-save-edit-fake" onclick="$(this).button('loading')">
+        <i class="fa fa-floppy-o"></i> @LanguageResource.Btn_SaveAndContinueEdit
+    </a>
+</div>

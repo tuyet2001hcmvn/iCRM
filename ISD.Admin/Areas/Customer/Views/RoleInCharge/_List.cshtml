@@ -1,0 +1,27 @@
+﻿@model IEnumerable<RoleInChargeViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.RoleInCharge
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-roleInCharge"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentRoleInCharge">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.RoleCode)</th>
+                <th>@Html.DisplayNameFor(p => p.RoleName)</th>
+                <th>@Html.DisplayNameFor(p => p.CreateUser)</th>
+                <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

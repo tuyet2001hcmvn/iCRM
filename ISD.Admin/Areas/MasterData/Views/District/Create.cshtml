@@ -1,0 +1,137 @@
+﻿@model DistrictViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.MasterData_District.ToLower();
+    string CurrentController = ConstController.District;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProvinceId)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("ProvinceId", null, new { @class = "form-control with-search" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DistrictCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.DistrictCode)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Appellation)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("Appellation", new List<SelectListItem>(){
+                                        new SelectListItem(){ Text = LanguageResource.District_ThanhPho,
+                                                              Value = LanguageResource.District_ThanhPho },
+                                        new SelectListItem(){ Text = LanguageResource.District_Quan,
+                                                              Value = LanguageResource.District_Quan },
+                                        new SelectListItem(){ Text = LanguageResource.District_Huyen,
+                                                              Value = LanguageResource.District_Huyen },
+                                        new SelectListItem(){ Text = LanguageResource.District_ThiXa,
+                                                              Value = LanguageResource.District_ThiXa },
+                                    }, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DistrictName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.DistrictName)
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.RegisterVAT)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.RegisterVAT)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.VehicleRegistrationSignature)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.VehicleRegistrationSignature)
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+
+            //Reset dropdownlist after reset form
+            $('#frmCreate').on('reset', function (e) {
+                setTimeout(function () {
+                    $("#select2-ProvinceId-container").text($("#ProvinceId").find(':selected').text());
+                })
+            });
+        });
+    </script>
+}
+
+

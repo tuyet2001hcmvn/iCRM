@@ -1,0 +1,202 @@
+﻿
+@{
+    ViewBag.Title = "Tra cứu - yêu cầu bảo hành";
+    var warranty = (List<Warranty.Models.WarrantyResultViewModel>)ViewBag.WarrantyDetail;
+    var NoWarranty = (bool?)ViewBag.NoWarranty;
+    string tabs = ViewBag.Tabs;
+    bool isSerial = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["isSerial"]);
+}
+
+@model Warranty.Models.CheckWarrantySearchModel
+@using BotDetect.Web.Mvc;
+@using ISD.Constant;
+@{
+
+    MvcCaptcha checkWarCaptcha = new MvcCaptcha("checkWarCaptcha");
+    checkWarCaptcha.UserInputID = "CaptchaCode";
+}
+
+<div class="card card-primary card-outline card-outline-tabs">
+
+    <div class="card-body">
+        <div class="tab-content" id="custom-tabs-four-tabContent">
+
+            <div class="form-horizontal">
+                @using (Html.BeginForm("Index", null, FormMethod.Post, new { id = "frmCheckWarranty" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <div class="form-group row">
+                        <div class="offset-4 col-sm-8">
+                            @{
+                                var typeSearch = new List<SelectListItem>();
+                                if (isSerial)
+                                {
+                                    typeSearch.Add(new SelectListItem { Text = "Serial", Value = "Serial", Selected = true });
+                                    typeSearch.Add(new SelectListItem { Text = "Số điện thoại", Value = "Phone" });
+                                }
+                                else
+                                {
+                                    typeSearch.Add(new SelectListItem { Text = "Số OD", Value = "OrderDelivery", Selected = true });
+                                    typeSearch.Add(new SelectListItem { Text = "Số điện thoại", Value = "Phone" });
+
+                                };
+                            }
+                            @foreach (var item in typeSearch)
+                            {
+                                <label class="label-radio">
+                                    @Html.RadioButton("SearchType", item.Value, item.Selected)
+                                    @item.Text
+                                </label>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group row searchBySerial">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.SearchSeriNo)
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="text" name="SearchSeriNo" class="form-control" placeholder="Serial">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#scanQRCodeModal" onclick="startWebcam();">Quét mã QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row searchByOD" style="display: none">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.SearchOrderDelivery)
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="input-group mb-3">
+                                <input type="text" id="SearchOrderDelivery" name="SearchOrderDelivery" class="form-control" placeholder="Nhập số OD">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#scanOD_QRCodeModal" onclick="startWebcam1()">Quét mã QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row searchByPhone">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.SearchPhone)
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(p => p.SearchPhone, new { @class = "form-control", placeholder = "Số điện thoại" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 text-right">
+                            <label for="checkWarCapcha" class="col-form-label">Mã xác nhận</label>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.Captcha(checkWarCaptcha)
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.CaptchaCode)
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(p => p.CaptchaCode, new { @class = "form-control", placeholder = "Mã xác nhận" })
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info btn-checkWarranty" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Tra cứu">
+                            Tra cứu
+                        </button>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="divCheckWarrantyResult">
+    @if (warranty != null && warranty.Count > 0)
+    {
+        @Html.Partial("_WarrantyResult", warranty);
+    }
+    else
+    {
+        if (NoWarranty == true)
+        {
+            if (!string.IsNullOrEmpty(ViewBag.Serrial))
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    Sản phẩm với số serial @ViewBag.Serrial chưa được kích hoạt bảo hành!
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(ViewBag.OrderDelivery))
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    Số OD @ViewBag.OrderDelivery chưa kích hoạt sản phẩm nào!
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning text-center" role="alert">
+                    Số điện thoại @ViewBag.PhoneSearch chưa kích hoạt sản phẩm nào!
+                </div>
+            }
+
+        }
+    }
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var tabs ="@tabs";
+            if (tabs == "Phone") {
+                debugger
+                $("#tabs-phonenumber-tab").trigger("click");
+            }
+            $(".btn-checkWarranty").click(function () {
+                var $btn = $(this);
+                $btn.html('<div class="spinner-border text-light" role="status"></div>');
+            });
+            $("input[name='SearchType']").trigger("change");
+        })
+        $(document).on("change", "input[name='SearchType']", function () {
+            var Stype = $("input[name='SearchType']:checked").val();
+
+            if (Stype == "Serial") {
+                $(".searchBySerial").show();
+                $(".searchByPhone").hide();
+                $(".searchByOD").hide();
+            } else if (Stype == "Phone") {
+                $(".searchBySerial").hide();
+                $(".searchByPhone").show();
+                $(".searchByOD").hide();
+            } else {
+                $(".searchBySerial").hide();
+                $(".searchByPhone").hide();
+                $(".searchByOD").show();
+            }
+        })
+        //function WarrantyRequest() {
+        //    var itemId = $("#frmItemRequest").serializeArray();
+        //    if (itemId.length == 0) {
+        //        Swal.fire({
+        //            icon: "error",
+        //            text: "Không có sản phẩm nào được chọn vui lòng kiểm tra lại"
+        //        });
+        //    } else {
+        //        //window.location.href = "/WarrantyRequest/Create?" + JSON.stringify(itemId);
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/WarrantyRequest/Create",
+        //            data: itemId,
+        //            dataType: "JSON",
+        //            success: function () {
+        //                window.location.href = "/WarrantyRequest/Create";
+        //            }
+        //        });
+        //    }
+        //}
+    </script>
+}

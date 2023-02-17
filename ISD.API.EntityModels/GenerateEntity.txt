@@ -1,0 +1,6 @@
+﻿Xóa tất cả model (*.cs) trong thư mục entities
+
+Mở Package Manager Console
+
+Chạy dòng lệnh dưới đây để tạo các model theo database:
+Scaffold-DbContext "Server=172.18.13.2;Database=ISD_iCRM;User Id=icrm_user; Password=123@abcd;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entities -Context "ICRMDbContext" -DataAnnotations

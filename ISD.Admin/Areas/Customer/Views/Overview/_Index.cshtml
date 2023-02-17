@@ -1,0 +1,1728 @@
+﻿@model ProfileOverviewModel
+@{
+    string cssfaTicket = string.Empty
+        , cssfaGtb = string.Empty
+        , cssfaCustomerTastes = string.Empty
+        , cssfaPersonInCharge = string.Empty
+        , cssfaProfileContact = string.Empty
+        , cssfaAppointment = string.Empty
+        , cssfaCatalogue = string.Empty
+        , cssfaCompany = string.Empty
+        , cssfaProductWarranty = string.Empty
+        , cssfaInvestor = string.Empty
+        , cssfaDesign = string.Empty
+        , cssfaContractor = string.Empty
+        , cssfaConstruction = string.Empty
+        , cssfaOppCompetitor = string.Empty
+        , cssfaConsulting = string.Empty;
+    string cssCollapsedTicket = string.Empty
+        , cssCollapsedGtb = string.Empty
+        , cssCollapsedCustomerTastes = string.Empty
+        , cssCollapsedPersonInCharge = string.Empty
+        , cssCollapsedProfileContact = string.Empty
+        , cssCollapsedAppointment = string.Empty
+        , cssCollapsedCatalogue = string.Empty
+        , cssCollapsedCompany = string.Empty
+        , cssCollapsedProductWarranty = string.Empty
+        , cssCollapsedInvestor = string.Empty
+        , cssCollapsedDesign = string.Empty
+        , cssCollapsedContractor = string.Empty
+        , cssCollapsedConstruction = string.Empty
+        , cssCollapsedOppCompetitor = string.Empty
+        , cssCollapsedConsulting = string.Empty;
+    string cssDisplayNoneTicket = string.Empty
+        , cssDisplayNoneGtb = string.Empty
+        , cssDisplayNoneCustomerTastes = string.Empty
+        , cssDisplayNonePersonInCharge = string.Empty
+        , cssDisplayNoneProfileContact = string.Empty
+        , cssDisplayNoneAppointment = string.Empty
+        , cssDisplayNoneCatalogue = string.Empty
+        , cssDisplayNoneCompany = string.Empty
+        , cssDisplayNoneProductWarranty = string.Empty
+        , cssDisplayNoneInvestor = string.Empty
+        , cssDisplayNoneDesign = string.Empty
+        , cssDisplayNoneContractor = string.Empty
+        , cssDisplayNoneConstruction = string.Empty
+        , cssDisplayNoneOppCompetitor = string.Empty
+        , cssDisplayNoneConsulting = string.Empty;
+
+    var profileGroupList = Model.profileGroupList;
+
+    var opportunityActivitiesList = (List<ProjectActivitiesViewModel>)ViewBag.OpportunityActivities;
+
+    var productWarrantyList = (List<ProductWarrantyViewModel>)ViewBag.ProductWarranty;
+    if (productWarrantyList == null || productWarrantyList.Count == 0)
+    {
+        cssfaProductWarranty = "fa fa-plus";
+        cssCollapsedProductWarranty = "collapsed-box";
+        cssDisplayNoneProductWarranty = "display: none;";
+    }
+    else
+    {
+        cssfaProductWarranty = "fa fa-minus";
+    }
+
+    var ticketList = (List<TaskViewModel>)ViewBag.Ticket;
+    if (ticketList == null || ticketList.Count == 0)
+    {
+        cssfaTicket = "fa fa-plus";
+        cssCollapsedTicket = "collapsed-box";
+        cssDisplayNoneTicket = "display: none;";
+    }
+    else
+    {
+        cssfaTicket = "fa fa-minus";
+    }
+    var gtbList = (List<TaskViewModel>)ViewBag.GTB;
+    if (gtbList == null || gtbList.Count == 0)
+    {
+        cssfaGtb = "fa fa-plus";
+        cssCollapsedGtb = "collapsed-box";
+        cssDisplayNoneGtb = "display: none;";
+    }
+    else
+    {
+        cssfaGtb = "fa fa-minus";
+    }
+    var catalogueList = (List<CatalogueViewModel>)ViewBag.Catalogue;
+    if (catalogueList == null || catalogueList.Count == 0)
+    {
+        cssfaCatalogue = "fa fa-plus";
+        cssCollapsedCatalogue = "collapsed-box";
+        cssDisplayNoneCatalogue = "display: none;";
+    }
+    else
+    {
+        cssfaCatalogue = "fa fa-minus";
+    }
+    var companyList = (List<OverviewCompanyViewModel>)ViewBag.OverviewCompany;
+    if (companyList == null || companyList.Count == 0)
+    {
+        cssfaCompany = "fa fa-plus";
+        cssCollapsedCompany = "collapsed-box";
+        cssDisplayNoneCompany = "display: none;";
+    }
+    else
+    {
+        cssfaCompany = "fa fa-minus";
+    }
+    var customerTastesList = (List<CustomerTastesReportViewModel>)ViewBag.CustomerTaste;
+    if (customerTastesList == null || customerTastesList.Count == 0)
+    {
+        cssfaCustomerTastes = "fa fa-plus";
+        cssCollapsedCustomerTastes = "collapsed-box";
+        cssDisplayNoneCustomerTastes = "display: none;";
+    }
+    else
+    {
+        cssfaCustomerTastes = "fa fa-minus";
+    }
+    var personInChargeList = (List<PersonInChargeViewModel>)ViewBag.PersonInCharge;
+    if (personInChargeList == null || personInChargeList.Count == 0)
+    {
+        cssfaPersonInCharge = "fa fa-plus";
+        cssCollapsedPersonInCharge = "collapsed-box";
+        cssDisplayNonePersonInCharge = "display: none;";
+    }
+    else
+    {
+        cssfaPersonInCharge = "fa fa-minus";
+    }
+    var personInCharge2List = (List<PersonInChargeViewModel>)ViewBag.PersonInCharge2;
+    var personInCharge3List = (List<PersonInChargeViewModel>)ViewBag.PersonInCharge3;
+    var roleInChargeList = (List<RoleInChargeViewModel>)ViewBag.RoleInCharge;
+    var profileContactList = (List<ProfileViewModel>)ViewBag.ProfileContact;
+    if (profileContactList == null || profileContactList.Count == 0)
+    {
+        cssfaProfileContact = "fa fa-plus";
+        cssCollapsedProfileContact = "collapsed-box";
+        cssDisplayNoneProfileContact = "display: none;";
+    }
+    else
+    {
+        cssfaProfileContact = "fa fa-minus";
+    }
+    var appointmentList = (List<AppointmentViewModel>)ViewBag.Appointment;
+    var activitiesList = (List<TaskViewModel>)ViewBag.Activities;
+    var missionList = (List<TaskViewModel>)ViewBag.Mission;
+
+    if ((appointmentList == null || appointmentList.Count == 0) && (activitiesList == null || activitiesList.Count == 0) && (missionList == null || missionList.Count == 0))
+    {
+        cssfaAppointment = "fa fa-plus";
+        cssCollapsedAppointment = "collapsed-box";
+        cssDisplayNoneAppointment = "display: none;";
+    }
+    else
+    {
+        cssfaAppointment = "fa fa-minus";
+    }
+    //Chủ đầu tư
+    var investorList = (List<OpportunityPartnerViewModel>)ViewBag.Investor;
+    if (investorList == null || investorList.Count == 0)
+    {
+        cssfaInvestor = "fa fa-plus";
+        cssCollapsedInvestor = "collapsed-box";
+        cssDisplayNoneInvestor = "display: none;";
+    }
+    else
+    {
+        cssfaInvestor = "fa fa-minus";
+    }
+    //Tư vấn-Thiết kế
+    var designList = (List<OpportunityPartnerViewModel>)ViewBag.Design;
+    if (designList == null || designList.Count == 0)
+    {
+        cssfaDesign = "fa fa-plus";
+        cssCollapsedDesign = "collapsed-box";
+        cssDisplayNoneDesign = "display: none;";
+    }
+    else
+    {
+        cssfaDesign = "fa fa-minus";
+    }
+    //Tổng thầu
+    var contractorList = (List<OpportunityPartnerViewModel>)ViewBag.Contractor;
+    if (contractorList == null || contractorList.Count == 0)
+    {
+        cssfaContractor = "fa fa-plus";
+        cssCollapsedContractor = "collapsed-box";
+        cssDisplayNoneContractor = "display: none;";
+    }
+    else
+    {
+        cssfaContractor = "fa fa-minus";
+    }
+    //Đơn vị tư vấn giám sát
+    var consultingList = (List<OpportunityPartnerViewModel>)ViewBag.Consulting;
+    if (consultingList == null || consultingList.Count == 0)
+    {
+        cssfaConsulting = "fa fa-plus";
+        cssCollapsedConsulting = "collapsed-box";
+        cssDisplayNoneConsulting = "display: none;";
+    }
+    else
+    {
+        cssfaConsulting = "fa fa-minus";
+    }
+    //Thi công
+    var internalList = (List<OpportunityPartnerViewModel>)ViewBag.Internal;
+    var competitorList = (List<OpportunityPartnerViewModel>)ViewBag.Competitor;
+    if ((internalList == null || internalList.Count == 0) || (competitorList == null || competitorList.Count == 0))
+    {
+        cssfaConstruction = "fa fa-plus";
+        cssCollapsedConstruction = "collapsed-box";
+        cssDisplayNoneConstruction = "display: none;";
+    }
+    else
+    {
+        cssfaConstruction = "fa fa-minus";
+    }
+    //Đối thủ
+    var oppCompetitorList = (List<OpportunityPartnerViewModel>)ViewBag.OppCompetitor;
+    if (oppCompetitorList == null || oppCompetitorList.Count == 0)
+    {
+        cssfaOppCompetitor = "fa fa-plus";
+        cssCollapsedOppCompetitor = "collapsed-box";
+        cssDisplayNoneOppCompetitor = "display: none;";
+    }
+    else
+    {
+        cssfaOppCompetitor = "fa fa-minus";
+    }
+
+}
+@if (Model.CustomerTypeCode == ConstProfileType.Opportunity)
+{
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-success box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.GeneralInformation</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="no-padding overflow-x-overview form-horizontal">
+
+                            <div class="form-group">
+                                <div class="col-md-5">
+                                    <div class="col-md-4 col-xs-12">
+                                        @Html.TooltipLabelFor(p => p.ProfileCode)
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.ProfileCode)</span>
+                                    </div>
+                                </div>
+
+                                @*<div class="col-md-5">
+                <div class="col-md-4 col-xs-12">
+                    @Html.TooltipLabelFor(p => p.CreateAtSaleOrg)
+                </div>
+                <div class="col-md-8 col-xs-12 display-for">
+                    <span>@Html.DisplayFor(p => p.CreateAtSaleOrgName)</span>
+                </div>
+            </div>*@
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Tên dự án</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.ProfileName)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Thời gian bắt đầu</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.ProjectStart)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        @Html.TooltipLabelFor(p => p.Investor)
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.Investor)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Thời gian kết thúc</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.ProjectEnd)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        @Html.TooltipLabelFor(p => p.Designer)
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.Designer)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Tiêu chuẩn bàn giao</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.HandoverFurnitureList)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        @Html.TooltipLabelFor(p => p.Contractor)
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.Contractor)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Tình trạng dự án</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.ProjectStatus)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Tư vấn giám sát</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.ConsultingUnit)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Xác suất</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.OpportunityPercentage)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Loại hình</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.OpportunityType)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 ">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Giá trị HĐ dự kiến</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        @if (Model.ContractValue.HasValue)
+                                        {
+                                            <span>@Model.ContractValue.Value.ToString("n2") Tỷ</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Quy mô</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.OpportunityLevel)</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5 ">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Giá trị trúng thầu</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        @if (Model.ContractWonValue.HasValue)
+                                        {
+                                            <span>@Model.ContractWonValue.Value.ToString("n2") Tỷ</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        @Html.TooltipLabelFor(p => p.SaleOfficeCode)
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.SaleOfficeName)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        @Html.TooltipLabelFor(p => p.Note)
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>@Html.DisplayFor(p => p.Note)</span>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4 col-xs-12">
+                                        <div class="label-wrapper"><label class="control-label">Địa điểm dự án</label></div>
+                                    </div>
+                                    <div class="col-md-8 col-xs-12 display-for">
+                                        <span>
+                                            @Html.DisplayFor(p => p.Address)
+                                            @*@Html.DisplayFor(p => p.WardName)@Html.DisplayFor(p => p.DistrictName)@Html.DisplayFor(p => p.ProvinceName)*@
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            @*<div class="col-md-5">
+            <div class="form-group">
+                <div class="col-md-4 col-xs-12">
+                    <div class="label-wrapper"><label class="control-label">Hoàn thiện</label></div>
+                </div>
+                <div class="col-md-8 col-xs-12 display-for">
+                    <span>@Html.DisplayFor(p => p.ProjectComplete)</span>
+                </div>
+            </div>
+        </div>*@
+
+
+
+
+                            @*<table class="table table-hover tableOverview">
+            <tbody>
+                <tr>
+                    <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                    <td>@Html.DisplayFor(p => p.ProfileCode)</td>
+
+                    <th>Tên dự án</th>
+                    <td>@Html.DisplayFor(p => p.ProfileName)</td>
+                </tr>
+
+                <tr>
+                    <th>@Html.DisplayNameFor(p => p.SaleOfficeCode)</th>
+                    <td>@Html.DisplayFor(p => p.SaleOfficeName)</td>
+
+                    <th>Địa điểm dự án</th>
+                    <td>@Html.DisplayFor(p => p.Address)</td>
+                </tr>
+
+                <tr>
+                    <th>@Html.DisplayNameFor(p => p.CreateAtSaleOrg)</th>
+                    <td>@Html.DisplayFor(p => p.CreateAtSaleOrgName)</td>
+
+                    <th>@Html.DisplayNameFor(p => p.Note)</th>
+                    <td>@Html.DisplayFor(p => p.Note)</td>
+                </tr>
+            </tbody>
+        </table>*@
+                        </div>
+                        </div>
+
+                    @if (opportunityActivitiesList != null && opportunityActivitiesList.Count > 0)
+                    {
+                        <div class="box box-primary box-solid collapsed-box">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"> @LanguageResource.Opportunities_Activities</h3>
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body" style="display: none">
+                                @Html.Partial("~/Areas/Customer/Views/Activities/_List.cshtml", opportunityActivitiesList)
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-primary box-solid @cssCollapsedPersonInCharge">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.TabInCharge</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaPersonInCharge"></i></button>
+                    </div>
+                </div>
+
+                <div class="box-body" style="@cssDisplayNonePersonInCharge">
+                    <h4>Nhân viên phụ trách @*kinh doanh*@</h4>
+                    <div class="box-phutrach">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.Profile_General_EmployeeCode</th>
+                                    <th>@LanguageResource.SalesEmployee_Name</th>
+                                    <th>@LanguageResource.Profile_Department</th>
+                                    <th>Loại nhân viên</th>
+                                    <th>@LanguageResource.CompanyId</th>
+                                    @*<th>@LanguageResource.CreateBy</th>
+                                    <th>@LanguageResource.CreatedTime</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (personInChargeList != null && personInChargeList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in personInChargeList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeShortName)</td>
+                                            <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                            <td>Nhân viên kinh doanh</td>
+                                            <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                            @*<td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateTime)</td>*@
+                                        </tr>
+                                    }
+                                }
+
+                                @if (personInCharge2List != null && personInCharge2List.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in personInCharge2List)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeShortName)</td>
+                                            <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                            <td>Nhân viên Sales Admin</td>
+                                            <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                            @*<td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateTime)</td>*@
+                                        </tr>
+                                    }
+                                }
+
+                                @if (personInCharge3List != null && personInCharge3List.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in personInCharge3List)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeShortName)</td>
+                                            <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                            <td>Nhân viên Spec</td>
+                                            <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                            @*<td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateTime)</td>*@
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                @*<div class="box-body" style="@cssDisplayNonePersonInCharge">
+                        <h4>Nhân viên Sales Admin</h4>
+                        <div class="box-phutrach">
+                            <table class="table table-bordered table-striped table-hover overViewDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.Profile_General_EmployeeCode</th>
+                                        <th>@LanguageResource.SalesEmployee_Name</th>
+                                        <th>@LanguageResource.Profile_Department</th>
+                                        <th>@LanguageResource.CompanyId</th>
+                                        <th>@LanguageResource.CreateBy</th>
+                                        <th>@LanguageResource.CreatedTime</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (personInCharge2List != null && personInCharge2List.Count() > 0)
+                                    {
+                                        int i = 0;
+                                        foreach (var item in personInCharge2List)
+                                        {
+                                            i++;
+                                            <tr>
+                                                <td class="text-center">@i</td>
+                                                <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                                <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                                                <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                                <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6">@LanguageResource.Grid_NoRecord</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="box-body" style="@cssDisplayNonePersonInCharge">
+                        <h4>Nhân viên Spec</h4>
+                        <div class="box-phutrach">
+                            <table class="table table-bordered table-striped table-hover overViewDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.Profile_General_EmployeeCode</th>
+                                        <th>@LanguageResource.SalesEmployee_Name</th>
+                                        <th>@LanguageResource.Profile_Department</th>
+                                        <th>@LanguageResource.CompanyId</th>
+                                        <th>@LanguageResource.CreateBy</th>
+                                        <th>@LanguageResource.CreatedTime</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (personInCharge3List != null && personInCharge3List.Count() > 0)
+                                    {
+                                        int i = 0;
+                                        foreach (var item in personInCharge3List)
+                                        {
+                                            i++;
+                                            <tr>
+                                                <td class="text-center">@i</td>
+                                                <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                                <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                                                <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                                <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6">@LanguageResource.Grid_NoRecord</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="box box-primary box-solid @cssCollapsedConstruction">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.TabConstruction</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaConstruction"></i></button>
+                    </div>
+                </div>
+
+                <div class="box-body" style="@cssDisplayNoneConstruction">
+                    @*<h4>Căn mẫu</h4>*@
+                    <div class="box-thi-cong">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    @*<th>@LanguageResource.Profile_ProfileCode</th>*@
+                                    <th>Đơn vị thi công</th>
+                                    <th>Hạng mục</th>
+                                    @*<th>Địa chỉ</th>*@
+                                    @*<th>@LanguageResource.CreateBy</th>*@
+                                    @*<th>@LanguageResource.CreatedTime</th>*@
+                                    @*<th>ĐVTC chính</th>*@
+                                    <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (internalList != null && internalList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in internalList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            @*<td>@Html.DisplayFor(p => item.ProfileCode)</td>*@
+                                            <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                                            <td>Căn Mẫu</td>
+                                            @*<td>@Html.DisplayFor(p => item.Address)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                                <td class="text-center">
+                                                    @if (item.IsMain == true)
+                                                    {
+                                                        <i class="fa fa-check true-icon"></i>
+                                                    }
+                                                </td>*@
+                                            <td class="text-center">
+                                                <a class="btn btn-info btn-view-contact" data-id="@item.ProfileId"><i class="fa fa-eye"></i> Xem liên hệ</a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                @if (competitorList != null && competitorList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in competitorList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            @*<td>@Html.DisplayFor(p => item.ProfileCode)</td>*@
+                                            <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                                            <td>Đại trà</td>
+                                            @*<td>@Html.DisplayFor(p => item.Address)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                                <td class="text-center">
+                                                    @if (item.IsMain == true)
+                                                    {
+                                                        <i class="fa fa-check true-icon"></i>
+                                                    }
+                                                </td>*@
+                                            <td class="text-center">
+                                                <a class="btn btn-info btn-view-contact" data-id="@item.ProfileId"><i class="fa fa-eye"></i> Xem liên hệ</a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                @*else
+                                    {
+                                        <tr>
+                                            <td colspan="8">@LanguageResource.Grid_NoRecord</td>
+                                        </tr>
+                                    }*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                @*<div class="box-body" style="@cssDisplayNoneConstruction">
+                        <h4>Đại trà</h4>
+                        <div class="box-thi-cong">
+                            <table class="table table-bordered table-striped table-hover overViewDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.Profile_ProfileCode</th>
+                                        <th>Đơn vị thi công</th>
+                                        <th>Địa chỉ</th>
+                                        <th>@LanguageResource.CreateBy</th>
+                                        <th>@LanguageResource.CreatedTime</th>
+                                        <th>ĐVTC chính</th>
+                                        <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (competitorList != null && competitorList.Count() > 0)
+                                    {
+                                        int i = 0;
+                                        foreach (var item in competitorList)
+                                        {
+                                            i++;
+                                            <tr>
+                                                <td class="text-center">@i</td>
+                                                <td>@Html.DisplayFor(p => item.ProfileCode)</td>
+                                                <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                                                <td>@Html.DisplayFor(p => item.Address)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                                <td class="text-center">
+                                                    @if (item.IsMain == true)
+                                                    {
+                                                        <i class="fa fa-check true-icon"></i>
+                                                    }
+                                                </td>
+                                                <td class="text-center">
+                                                    <a class="btn btn-info btn-view-contact" data-id="@item.ProfileId"><i class="fa fa-eye"></i> Xem liên hệ</a>
+
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="8">@LanguageResource.Grid_NoRecord</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <div class="box box-primary box-solid @cssCollapsedOppCompetitor">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.TabCompetitor</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaOppCompetitor"></i></button>
+                    </div>
+                </div>
+
+                <div class="box-body" style="@cssDisplayNoneOppCompetitor">
+                    @*<h4>Đối thủ</h4>*@
+                    <div class="box-thi-cong">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    @*<th>@LanguageResource.Profile_ProfileCode</th>*@
+                                    <th>Đối thủ</th>
+                                    @*<th>Địa chỉ</th>*@
+                                    @*<th>@LanguageResource.CreateBy</th>*@
+                                    @*<th>@LanguageResource.CreatedTime</th>*@
+                                    @*<th>ĐVTC chính</th>*@
+                                    @*<th class="text-center isd-table-th-action">@LanguageResource.Actions</th>*@
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (oppCompetitorList != null && oppCompetitorList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in oppCompetitorList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            @*   <td>@Html.DisplayFor(p => item.ProfileCode)</td>*@
+                                            <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                                            @*<td>@Html.DisplayFor(p => item.Address)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                                <td>@Html.DisplayFor(p => item.CreateTime)</td>*@
+                                            @*<td class="text-center">
+                                                    @if (item.IsMain == true)
+                                                    {
+                                                        <i class="fa fa-check true-icon"></i>
+                                                    }
+                                                </td>*@
+                                            @*<td class="text-center">
+                                                    <a class="btn btn-info btn-view-contact" data-id="@item.ProfileId"><i class="fa fa-eye"></i> Xem liên hệ</a>
+
+                                                </td>*@
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6">@LanguageResource.Grid_NoRecord</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+else
+{
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="box box-success box-solid">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.GeneralInformation</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="no-padding overflow-x-overview">
+                            <table class="table table-hover tableOverview">
+                                <tbody>
+                                    <tr>
+                                        <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                                        <td>@Html.DisplayFor(p => p.ProfileCode)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.ProfileForeignCode)</th>
+                                            <td>@Html.DisplayFor(p => p.ProfileForeignCode)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.SaleOfficeCode)</th>
+                                        <td>@Html.DisplayFor(p => p.SaleOfficeName)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                                            <td>@Html.DisplayFor(p => p.ProfileName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.isForeignCustomer)</th>
+                                        <td>@Html.DisplayFor(p => p.isForeignName)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.ProfileShortName)</th>
+                                            <td>@Html.DisplayFor(p => p.ProfileShortName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.CustomerSourceCode)</th>
+                                        <td>@Html.DisplayFor(p => p.CustomerSourceName)</td>
+                                    </tr>
+                                    <tr>
+                                        @*<th>@Html.DisplayNameFor(p => p.isForeignCustomer)</th>
+                                            <td>@Html.DisplayFor(p => p.isForeignName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.ProfileForeignCode)</th>
+                                        <td>@Html.DisplayFor(p => p.ProfileForeignCode)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.CustomerTypeCode)</th>
+                                            <td>@Html.DisplayFor(p => p.CustomerTypeName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.Address)</th>
+                                        <td>@Html.DisplayFor(p => p.Address)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.CreateAtSaleOrg)</th>
+                                            <td>@Html.DisplayFor(p => p.CreateAtSaleOrgName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.CustomerTypeCode)</th>
+                                        <td>@Html.DisplayFor(p => p.CustomerTypeName)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.CustomerSourceCode)</th>
+                                            <td>@Html.DisplayFor(p => p.CustomerSourceName)</td>*@
+                                        @* ICRM-681: KH yêu cầu ẩn Chi nhánh *@
+                                        @*<th>@Html.DisplayNameFor(p => p.CreateAtSaleOrg)</th>
+                                            <td>@Html.DisplayFor(p => p.CreateAtSaleOrgName)</td>*@
+                                    </tr>
+                                    <tr>
+                                        @*<th>@Html.DisplayNameFor(p => p.SaleOfficeCode)</th>
+                                            <td>@Html.DisplayFor(p => p.SaleOfficeName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.ProfileShortName)</th>
+                                        <td>@Html.DisplayFor(p => p.ProfileShortName)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.Address)</th>
+                                            <td>@Html.DisplayFor(p => p.Address)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.Phone)</th>
+                                        <td>@Html.DisplayFor(p => p.Phone)</td>
+
+                                        @*@if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+                                            {
+                                                <th>@Html.DisplayNameFor(p => p.CompanyNumber)</th>
+                                                <td>@Html.DisplayFor(p => p.CompanyNumber)</td>
+                                            }
+                                            else
+                                            {
+                                                <th>@Html.DisplayNameFor(p => p.Phone)</th>
+                                                <td>@Html.DisplayFor(p => p.Phone)</td>
+                                            }*@
+
+                                        @*<th>@Html.DisplayNameFor(p => p.Phone)</th>
+                                            <td>@Html.DisplayFor(p => p.Phone)</td>*@
+                                        <th>@LanguageResource.Profile_General_CustomerGroup</th>
+                                        <td>
+                                            @if (Model.profileGroupList != null && Model.profileGroupList.Count > 0)
+                                            {
+                                                foreach (var item in Model.profileGroupList)
+                                                {
+                                                    <span>@item.ProfileGroupName</span>
+                                                    <br />
+                                                }
+                                            }
+                                        </td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.Email)</th>
+                                            <td>@Html.DisplayFor(p => p.Email)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.VisitDate)</th>
+                                        <td>
+                                            @if (Model.VisitDate != null)
+                                            {
+                                                <span>@Model.VisitDate.Value.ToString("dd/MM/yyyy")</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        @*@if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+                                            {
+                                                <th>@Html.DisplayNameFor(p => p.TaxNo)</th>
+                                                <td>@Html.DisplayFor(p => p.TaxNo)</td>
+                                            }
+                                            else
+                                            {
+                                                <th>@Html.DisplayNameFor(p => p.Age)</th>
+                                                <td>@Html.DisplayFor(p => p.Age)</td>
+                                            }*@
+                                        <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                                        <td>@Html.DisplayFor(p => p.ProfileName)</td>
+
+                                        @*<th>@Html.DisplayNameFor(p => p.AddressTypeCode)</th>
+                                            <td>@Html.DisplayFor(p => p.AddressTypeName)</td>*@
+                                        <th>@Html.DisplayNameFor(p => p.Email)</th>
+                                        <td>@Html.DisplayFor(p => p.Email)</td>
+
+                                        @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+                                        {
+                                            <th>@Html.DisplayNameFor(p => p.CustomerCareerCode)</th>
+                                            <td>@Html.DisplayFor(p => p.CustomerCareerName)</td>
+
+                                            @*<th>@Html.DisplayNameFor(p => p.Website)</th>
+                                                <td>@Html.DisplayFor(p => p.Website)</td>*@
+                                        }
+                                        else
+                                        {
+                                            <th></th>
+                                            <td></td>
+                                            @*<th></th>
+                                                <td></td>*@
+                                        }
+                                        <th>@Html.DisplayNameFor(p => p.Note)</th>
+                                        <td>@Html.DisplayFor(p => p.Note)</td>
+                                    </tr>
+                                    <tr>
+                                        @*<th>@LanguageResource.Profile_General_CustomerGroup</th>
+                                            <td>
+                                                @if (Model.profileGroupList != null && Model.profileGroupList.Count > 0)
+                                                {
+                                                    foreach (var item in Model.profileGroupList)
+                                                    {
+                                                        <span>@item.ProfileGroupName</span>
+                                                        <br />
+                                                    }
+                                                }
+                                            </td>*@
+                                        @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+                                        {
+                                            <th>@Html.DisplayNameFor(p => p.TaxNo)</th>
+                                            <td>@Html.DisplayFor(p => p.TaxNo)</td>
+                                        }
+                                        else
+                                        {
+                                            <th>@Html.DisplayNameFor(p => p.Age)</th>
+                                            <td>@Html.DisplayFor(p => p.Age)</td>
+                                        }
+                                        @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+                                        {
+                                            @*<th>@Html.DisplayNameFor(p => p.CustomerCareerCode)</th>
+                                                <td>@Html.DisplayFor(p => p.CustomerCareerName)</td>*@
+
+                                            <th>@Html.DisplayNameFor(p => p.Website)</th>
+                                            <td>@Html.DisplayFor(p => p.Website)</td>
+                                        }
+                                        else
+                                        {
+                                            <th></th>
+                                            <td></td>
+                                            @*<th></th>
+                                                <td></td>*@
+                                        }
+
+                                        @*<th>@Html.DisplayNameFor(p => p.VisitDate)</th>
+                                            <td>
+                                                @if (Model.VisitDate != null)
+                                                {
+                                                    <span>@Model.VisitDate.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>*@
+
+                                        @*<th>@Html.DisplayNameFor(p => p.Note)</th>
+                                            <td>@Html.DisplayFor(p => p.Note)</td>*@
+
+                                        @*<th></th>
+                                            <td></td>*@
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @if (companyList != null && companyList.Count() > 0)
+                    {
+                        <div class="row col-md-6" style="@cssDisplayNoneCompany">
+                            @*<div class="content-header clearfix">
+                                    <h5 class="pull-left">
+                                        @LanguageResource.OverviewCompany.ToUpper()
+                                    </h5>
+                                </div>*@
+                            <div class="overflow-x-scroll">
+                                <table class="table table-bordered table-striped table-hover no-footer">
+                                    <thead class="isd-table-header">
+                                        <tr>
+                                            <th class="text-center">@LanguageResource.Company_CompanyCode</th>
+                                            <th>@LanguageResource.Profile_CustomerTypeCode</th>
+                                            <th>@LanguageResource.Profile_General_CustomerGroup</th>
+                                            <th>@LanguageResource.PersonInCharge</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in companyList)
+                                        {
+                                            <tr>
+                                                <td class="text-center">@Html.DisplayFor(p => item.CompanyCode)</td>
+                                                <td>@Html.DisplayFor(p => item.CustomerTypeName)</td>
+                                                <td>@Html.DisplayFor(p => item.CustomerGroup)</td>
+                                                <td>@Html.DisplayFor(p => item.PersonInCharge)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5">
+
+            <div class="box box-primary box-solid @cssCollapsedPersonInCharge">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.TabInCharge</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaPersonInCharge"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNonePersonInCharge">
+                    <h4>@LanguageResource.MasterData_SalesEmployee</h4>
+                    <div class="box-phutrach">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.Profile_General_EmployeeCode</th>
+                                    <th>@LanguageResource.SalesEmployee_Name</th>
+                                    <th>@LanguageResource.Profile_Department</th>
+                                    <th>@LanguageResource.CompanyId</th>
+                                    <th>@LanguageResource.CreateBy</th>
+                                    <th>@LanguageResource.CreatedTime</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (personInChargeList != null && personInChargeList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in personInChargeList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                            <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                                            <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                            <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="6">@LanguageResource.Grid_NoRecord</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    @*<hr />
+                        <h4>Phòng ban</h4>
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>Mã phòng ban</th>
+                                    <th>Tên phòng ban</th>
+                                    <th>Người tạo</th>
+                                    <th>Ngày tạo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (roleInChargeList != null && roleInChargeList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in roleInChargeList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.RoleCode)</td>
+                                            <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                            <td>@Html.DisplayFor(p => item.CreateTime)</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>*@
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-7">
+            <div class="box box-primary box-solid @cssCollapsedProfileContact">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Profile_Contact</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaProfileContact"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneProfileContact">
+                    <div class="box-lien-he">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.Profile_ProfileCode</th>
+                                    <th>@LanguageResource.Profile_ProfileName</th>
+                                    <th>@LanguageResource.Profile_Phone</th>
+                                    <th>@LanguageResource.Profile_Email</th>
+                                    <th>@LanguageResource.Profile_Position</th>
+                                    <th>@LanguageResource.Profile_Department</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (profileContactList != null && profileContactList.Count() > 0)
+                                {
+                                    var i = 0;
+                                    foreach (var item in profileContactList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center contentProfileContact-hidden">@i</td>
+                                            <td class="contentProfileContact-hidden">@Html.DisplayFor(p => item.ProfileCode)</td>
+                                            <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                                            <td class="text-right">@Html.DisplayFor(p => item.Phone)</td>
+                                            <td>@Html.DisplayFor(p => item.Email)</td>
+                                            <td>@Html.DisplayFor(p => item.PositionName)</td>
+                                            <td>@Html.DisplayFor(p => item.DepartmentName)</td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="dataTables_empty" colspan="9">@LanguageResource.Grid_NoRecord</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary box-solid @cssCollapsedGtb">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Showroom_GTB</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaGtb"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneGtb">
+                    <div class="box-diem-trung-bay">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.TaskCode</th>
+                                    <th>@LanguageResource.Task_Summary</th>
+                                    <th>@LanguageResource.TaskStatus</th>
+                                    <th>@LanguageResource.Assignee</th>
+                                    <th>@LanguageResource.Task_StartDate</th>
+                                    <th>@LanguageResource.Task_EndDate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (gtbList != null && gtbList.Count > 0)
+                                {
+                                    var i = 0;
+                                    foreach (var item in gtbList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Html.DisplayFor(p => item.TaskCode)</td>
+                                            <td>@Html.DisplayFor(p => item.Summary)</td>
+                                            <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+                                            <td>@Html.DisplayFor(p => item.AssigneeName)</td>
+                                            <td>
+                                                @if (item.StartDate != null)
+                                                {
+                                                    <span>@item.StartDate.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.EndDate != null)
+                                                {
+                                                    <span>@item.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td class="dataTables_empty" colspan="7">@LanguageResource.Grid_NoRecord</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-sm-7">
+            <div class="box box-primary  box-solid @cssCollapsedTicket">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Task_Ticket_ShortName</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaTicket"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneTicket">
+                    <div class="box-bao-hanh">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.TaskCode</th>
+                                    <th>@LanguageResource.Task_Summary</th>
+                                    <th>@LanguageResource.Type</th>
+                                    <th>@LanguageResource.TaskStatus</th>
+                                    <th>@LanguageResource.Reporter</th>
+                                    <th>@LanguageResource.Assignee</th>
+                                    <th>@LanguageResource.Task_StartDate</th>
+                                    <th>@LanguageResource.Task_EndDate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ticketList != null && ticketList.Count > 0)
+                                {
+                                    var i = 0;
+                                    foreach (var item in ticketList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td>@i</td>
+                                            <td>@Html.DisplayFor(p => item.TaskCode)</td>
+                                            <td>@Html.DisplayFor(p => item.Summary)</td>
+                                            <td>@Html.DisplayFor(p => item.WorkFlowName)</td>
+                                            <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+                                            <td>@Html.DisplayFor(p => item.ReporterName)</td>
+                                            <td>@Html.DisplayFor(p => item.AssigneeName)</td>
+                                            <td>
+                                                @if (item.StartDate != null)
+                                                {
+                                                    <span>@item.StartDate.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.EndDate != null)
+                                                {
+                                                    <span>@item.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="dataTables_empty" colspan="9">@LanguageResource.Grid_NoRecord</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-primary box-solid @cssCollapsedAppointment">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Task_Activities_ShortName</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaAppointment"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneAppointment">
+                    <div class="box-ghe-tham">
+                        <!--Ghe tham-->
+                        @if (appointmentList != null && appointmentList.Count() > 0)
+                        {
+                            <label>@LanguageResource.Appointment</label>
+                            <table class="table table-bordered table-striped table-hover overViewDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.TaskCode</th>
+                                        <th>@LanguageResource.Task_Summary</th>
+                                        <th>@LanguageResource.Appointment_SaleEmployeeCode</th>
+                                        <th>@LanguageResource.Description</th>
+                                        <th>@LanguageResource.Profile_General_CustomerSource</th>
+                                        <th>@LanguageResource.MasterData_Store</th>
+                                        <th>@LanguageResource.Appointment_VisitDate</th>
+                                        <th>@LanguageResource.Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var i = 0;
+                                        foreach (var item in appointmentList)
+                                        {
+                                            i++;
+                                            <tr>
+                                                <td class="text-center">@i</td>
+                                                <td>@Html.DisplayFor(p => item.TaskCode)</td>
+                                                <td>@Html.DisplayFor(p => item.Summary)</td>
+                                                <td>@Html.DisplayFor(p => item.SaleEmployeeName)</td>
+                                                <td>@Html.Raw(item.Description)</td>
+                                                <td>@Html.DisplayFor(p => item.ShowroomName)</td>
+                                                <td>@Html.DisplayFor(p => item.StoreName)</td>
+                                                <td class="text-center">@Html.DisplayFor(p => item.VisitDate)</td>
+                                                <td>@Html.DisplayFor(p => p.Note)</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        <!--Tham hoi khach hang-->
+                        @if (activitiesList != null && activitiesList.Count() > 0)
+                        {
+                            <label>@LanguageResource.Customer_Appointment</label>
+                            <table class="table table-bordered table-striped table-hover overViewDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.TaskCode</th>
+                                        <th>@LanguageResource.Task_Summary</th>
+                                        <th>@LanguageResource.Type</th>
+                                        <th>@LanguageResource.TaskStatus</th>
+                                        <th>@LanguageResource.Task_PriorityCode</th>
+                                        <th>@LanguageResource.Reporter</th>
+                                        <th>@LanguageResource.Assignee</th>
+                                        <th>@LanguageResource.Task_StartDate</th>
+                                        <th>@LanguageResource.Task_EndDate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var i = 0;
+                                        foreach (var item in activitiesList)
+                                        {
+                                            i++;
+                                            <tr>
+                                                <td class="text-center">@i</td>
+                                                <td>@Html.DisplayFor(p => item.TaskCode)</td>
+                                                <td>@Html.DisplayFor(p => item.Summary)</td>
+                                                <td>@Html.DisplayFor(p => item.WorkFlowName)</td>
+                                                <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+                                                <td>@Html.Raw(item.PriorityText_vi)</td>
+                                                <td>@Html.DisplayFor(p => item.ReporterName)</td>
+                                                <td>@Html.DisplayFor(p => item.AssigneeName)</td>
+                                                <td class="text-right">
+                                                    @if (item.StartDate != null)
+                                                    {
+                                                        <span>@item.StartDate.Value.ToString("dd/MM/yyyy")</span>
+                                                    }
+                                                </td>
+                                                <td class="text-right">
+                                                    @if (item.EndDate != null)
+                                                    {
+                                                        <span>@item.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        <!--Nhiem vu-->
+                        @if (missionList != null && missionList.Count() > 0)
+                        {
+                            <label>@LanguageResource.WorkFlow</label>
+                            <table class="table table-bordered table-striped table-hover overViewDataTable">
+                                <thead>
+                                    <tr>
+                                        <th>@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.TaskCode</th>
+                                        <th>@LanguageResource.Task_Summary</th>
+                                        <th>@LanguageResource.Type</th>
+                                        <th>@LanguageResource.TaskStatus</th>
+                                        <th>@LanguageResource.Task_PriorityCode</th>
+                                        <th>@LanguageResource.Reporter</th>
+                                        <th>@LanguageResource.Assignee</th>
+                                        <th>@LanguageResource.Task_StartDate</th>
+                                        <th>@LanguageResource.Task_EndDate</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        var i = 0;
+                                        foreach (var item in missionList)
+                                        {
+                                            i++;
+                                            <tr>
+                                                <td class="text-center">@i</td>
+                                                <td>@Html.DisplayFor(p => item.TaskCode)</td>
+                                                <td>@Html.DisplayFor(p => item.Summary)</td>
+                                                <td>@Html.DisplayFor(p => item.WorkFlowName)</td>
+                                                <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+                                                <td>@Html.Raw(item.PriorityText_vi)</td>
+                                                <td>@Html.DisplayFor(p => item.ReporterName)</td>
+                                                <td>@Html.DisplayFor(p => item.AssigneeName)</td>
+                                                <td class="text-right">
+                                                    @if (item.StartDate != null)
+                                                    {
+                                                        <span>@item.StartDate.Value.ToString("dd/MM/yyyy")</span>
+                                                    }
+                                                </td>
+                                                <td class="text-right">
+                                                    @if (item.EndDate != null)
+                                                    {
+                                                        <span>@item.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="box box-primary  box-solid @cssCollapsedProductWarranty">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Maintenance_ProWarranty</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaProductWarranty"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneProductWarranty">
+                    <div class="box-bao-hanh">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.ProWarrantyCode</th>
+                                    <th>@LanguageResource.Material_MaterialModel</th>
+                                    <th>@LanguageResource.ProWarranty_SerriNo</th>
+                                    <th>@LanguageResource.WarrantyName</th>
+                                    <th>@LanguageResource.Task_StartDate</th>
+                                    <th>@LanguageResource.Task_EndDate</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (productWarrantyList != null && productWarrantyList.Count > 0)
+                                {
+                                    var i = 0;
+                                    foreach (var item in productWarrantyList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td><a href="/Maintenance/ProductWarranty/Edit/@item.ProductWarrantyId">@Html.DisplayFor(p => item.ProductWarrantyCode)</a></td>
+                                            <td>@Html.DisplayFor(p => item.ProductName)</td>
+                                            <td>@Html.DisplayFor(p => item.SerriNo)</td>
+                                            <td>@Html.DisplayFor(p => item.WarrantyName)</td>
+                                            <td class="text-center">
+                                                @if (item.FromDate != null)
+                                                {
+                                                    <span>@item.FromDate.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>
+                                            <td class="text-center">
+                                                @if (item.ToDate != null)
+                                                {
+                                                    <span>@item.ToDate.Value.ToString("dd/MM/yyyy")</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="dataTables_empty" colspan="9">@LanguageResource.Grid_NoRecord</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="col-sm-5">
+            <div class="box box-primary box-solid @cssCollapsedCustomerTastes">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.CustomerTaste</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaCustomerTastes"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneCustomerTastes">
+                    <div class="box-thi-hieu">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.Product_ERPProductCode</th>
+                                    <th>@LanguageResource.ProductCode</th>
+                                    <th>@LanguageResource.ProductName</th>
+                                    <th>Số lượt liked</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (customerTastesList != null && customerTastesList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in customerTastesList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.MaSAP)</td>
+                                            <td>@Html.DisplayFor(p => item.MaSP)</td>
+                                            <td>@Html.DisplayFor(p => item.TenSP)</td>
+                                            <td class="text-center">@Html.DisplayFor(p => item.SoLuotLiked)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td class="dataTables_empty" colspan="5">@LanguageResource.Grid_NoRecord</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="box box-primary box-solid @cssCollapsedCatalogue">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Catalogue</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaCatalogue"></i></button>
+                    </div>
+                </div>
+                <div class="box-body" style="@cssDisplayNoneCatalogue">
+                    <div class="box-catalogue">
+                        <table class="table table-bordered table-striped table-hover overViewDataTable">
+                            <thead>
+                                <tr>
+                                    <th>@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.Product_ERPProductCode</th>
+                                    <th>Mã CTL</th>
+                                    <th>Tên CTL</th>
+                                    <th>@LanguageResource.Catalogue_Quantity</th>
+                                    <th>Ngày xuất</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (catalogueList != null && catalogueList.Count() > 0)
+                                {
+                                    int i = 0;
+                                    foreach (var item in catalogueList)
+                                    {
+                                        i++;
+                                        <tr>
+                                            <td class="text-center">@i</td>
+                                            <td>@Html.DisplayFor(p => item.ERPProductCode)</td>
+                                            <td>@Html.DisplayFor(p => item.ProductCode)</td>
+                                            <td>@Html.DisplayFor(p => item.ProductName)</td>
+                                            <td class="text-right">@Html.DisplayFor(p => item.Quantity)</td>
+                                            <td class="text-right">@Html.DisplayFor(p => item.CreatedDate)</td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td class="dataTables_empty" colspan="6">@LanguageResource.Grid_NoRecord</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+}
+

@@ -1,0 +1,106 @@
+﻿@model Warranty.Models.CheckWarrantySearchModel
+@using BotDetect.Web.Mvc;
+@using ISD.Constant;
+@{
+
+    MvcCaptcha checkWarCaptcha = new MvcCaptcha("checkWarCaptcha");
+    checkWarCaptcha.UserInputID = "CaptchaCode";
+    bool isSerial = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["isSerial"]);
+}
+<div class="card card-primary card-outline card-outline-tabs">
+    <div class="card-body">
+        <div class="tab-content" id="custom-tabs-four-tabContent">
+
+            <div class="form-horizontal">
+                @using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "frmCheckWarranty" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                    <div class="form-group row">
+                        <div class="offset-4 col-sm-8">
+                            @{
+                                var typeSearch = new List<SelectListItem>();
+                                if (isSerial)
+                                {
+                                    typeSearch.Add(new SelectListItem { Text = "Serial", Value = "Serial", Selected = true });
+                                    typeSearch.Add(new SelectListItem { Text = "Số điện thoại", Value = "Phone" });
+                                }
+                                else
+                                {
+                                    typeSearch.Add(new SelectListItem { Text = "Số OD", Value = "OrderDelivery", Selected = true });
+                                    typeSearch.Add(new SelectListItem { Text = "Số điện thoại", Value = "Phone" });
+                                };
+                            }
+                            @foreach (var item in typeSearch)
+                            {
+                                <label class="label-radio">
+                                    @Html.RadioButton("SearchType", item.Value, item.Selected)
+                                    @item.Text
+                                </label>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group row searchBySerial">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.SearchSeriNo)
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="input-group">
+                                <input type="text" name="SearchSeriNo" class="form-control" placeholder="Serial">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#scanQRCodeModal" onclick="startWebcam();">Quét mã QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row searchByOD" style="display: none">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.SearchOrderDelivery)
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="input-group mb-3">
+                                <input type="text" id="SearchOrderDelivery" name="SearchOrderDelivery" class="form-control" placeholder="Nhập số OD">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#scanOD_QRCodeModal" onclick="startWebcam1()">Quét mã QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row searchByPhone">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.SearchPhone)
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(p => p.SearchPhone, new { @class = "form-control", placeholder = "Số điện thoại" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 text-right">
+                            <label for="checkWarCapcha" class="col-form-label">Mã xác nhận</label>
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.Captcha(checkWarCaptcha)
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-form-label">
+                            @Html.TooltipLabelFor(p => p.CaptchaCode)
+                        </div>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(p => p.CaptchaCode, new { @class = "form-control", placeholder = "Mã xác nhận" })
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-info btn-checkWarranty" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Tra cứu">
+                            Tra cứu
+                        </button>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+    <!-- /.card -->
+</div>

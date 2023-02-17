@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ProductViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.PromotionName)</th>
+            <th>@Html.DisplayNameFor(p => p.EffectFromDate)</th>
+            <th>@Html.DisplayNameFor(p => p.EffectToDate)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="promotionList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td class="text-center">
+                        @i
+                    </td>
+                    <td>
+                        @item.PromotionName
+                    </td>
+                    <td class="text-right">
+                        @string.Format("{0:dd/MM/yyyy}", item.EffectFromDate)
+                    </td>
+                    <td class="text-right">
+                        @string.Format("{0:dd/MM/yyyy}", item.EffectToDate)
+                    </td>
+                    <td class="text-center">
+                        <a class="btn btn-info btn-detail" href="/MasterData/Promotion/View/@item.PromotionId" target="_blank">
+                            @LanguageResource.Details
+                        </a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">
+                    @LanguageResource.Product_PromotionNotif
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

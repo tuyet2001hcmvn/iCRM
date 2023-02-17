@@ -1,0 +1,694 @@
+﻿@model DeliverySearchViewModel
+@{
+    ViewBag.Title = LanguageResource.StockDelivery;
+    string CurrentController = ConstController.StockDelivery;
+    string CurrentArea = ConstArea.Warehouse;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+
+    bool isHasPermission = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CANCEL);
+    bool isHasPermissionEdit = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Edit);
+    bool isHasPermissionEditProfile = HtmlExtensions.GetPermission("Customer/Profile", ConstFunction.Edit, ConstProfileType.Account);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchCompanyId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchCompanyId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchStoreId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchStoreId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchSalesEmployeeCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchSalesEmployeeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchDeliveryCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.SearchDeliveryCode, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchProfileCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.SearchProfileCode)
+                                        @Html.HiddenFor(p => p.SearchProfileId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchProfileName)
+                                    </div>
+                                    <div class="col-md-8" style="display: inline-table">
+                                        @Html.RequiredTextboxFor(p => p.SearchProfileName, new { disabled = "disabled" })
+                                        <div class="input-group-btn">
+                                            <a class="btn btn-danger" id="btn-clearProfile">
+                                                <i class="fa fa-remove"></i>
+                                            </a>
+                                        </div>
+                                        <input id="SearchProfileCodeRecent" name="SearchProfileCodeRecent" type="hidden">
+                                        <input id="SearchProfileNameRecent" name="SearchProfileNameRecent" type="hidden">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchFromDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.SearchFromDate, new { type = "date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchToDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.SearchToDate, new { type = "date" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.isDeleted)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("isDeleted", new List<SelectListItem>(){
+                                        new SelectListItem(){ Text = LanguageResource.Dropdownlist_All, Value = ""},
+                                        new SelectListItem(){ Text = "Vừa tạo", Value = "false" },
+                                        new SelectListItem(){ Text = "Đã hủy", Value = "true" }
+                                    }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchCategoryId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("SearchCategoryId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-4 input-group">
+                                    <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                        <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                    </select>
+                                    <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                        <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                        <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                    </span>
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover dataTableServerSide no-footer tableStockDelivery">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.DeliveryCode</th>
+                                    <th>@LanguageResource.DocumentDate</th>
+                                    <th>@LanguageResource.Profile_Company</th>
+                                    <th>@LanguageResource.MasterData_Store</th>
+                                    <th>@LanguageResource.MasterData_Customer</th>
+                                    <th>@LanguageResource.MasterData_SalesEmployee</th>
+                                    <th>@LanguageResource.Note</th>
+                                    <th class="text-center">@LanguageResource.CreateTime</th>
+                                    <th class="text-center">@LanguageResource.Actived</th>
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section components {
+    <div class="divStockDeliveryPopup"></div>
+    <div id="divDeleteStockDeliveryPopup" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@LanguageResource.Btn_Delete @LanguageResource.Delivery_Bill</h4>
+                </div>
+                <form id="frmConfirmDeleteStockDelivery">
+                    <input type="hidden" name="DeliveryId" />
+                    <div id="divAlertWarningPopup" class="alert alert-warning alert-dismissable" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarningPopup">×</button>
+                        <div class="alert-message">
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="modal-body">
+                            <div class="row text-center alert-message"></div>
+                            <div class="row mt-10">
+                                <div class="col-md-2">
+                                    <div class="label-wrapper">
+                                        <label class="control-label" for="DeletedReason">Lý do hủy</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="input-group input-group-required">
+                                        <input name="DeletedReason" type="text" class="form-control" />
+                                        <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Confirm_No</span>
+                            <a class="btn btn-primary pull-right" id="btn-confirm-cancel-delivery" data-tab="">
+                                @LanguageResource.Confirm_Yes
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script>
+        //Define it
+        var currentUserId = "@CurrentUser.AccountId";
+        var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+            //Set lại thông tin search gần đây khi là back lại
+            var modeTemplateSearch = ISD.GetQueryString("ModeSearch", window.location.href);
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            } else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            //ISD.SearchInitial("@CurrentUrl", true, true);
+            $("#btn-search").trigger("click");
+            ISD.ShowMessage(window.location.href);
+        });
+
+        $(document).on("change", "select[name='CompanyId']", function () {
+            var CompanyId = $(this).val();
+            if (CompanyId == "") {
+                $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetAllStoreForDropDown",
+                success: function (jsonData) {
+                    $("#StoreId").html("");
+                    $("#StoreId").append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    $("#StoreId").trigger("change");
+                    }
+                });
+
+            } else {
+                $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetStoreByCompany",
+                data: {
+                    CompanyId: CompanyId
+                },
+                success: function (jsonData) {
+                    $("#StoreId").html("");
+                    $("#StoreId").append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                    $("#StoreId").trigger("change");
+                }
+                });
+            }
+        });
+        $(document).on("change", "select[name='StoreId']", function () {
+            var StoreId = $(this).val();
+            if (StoreId == "") {
+                $.ajax({
+                type: "POST",
+                    url: "/Warehouse/Stock/GetAllForDropdown",
+                success: function (jsonData) {
+                    $("#StockId").html("");
+                    $("#StockId").append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#StockId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                });
+
+            } else {
+                $.ajax({
+                type: "POST",
+                    url: "/Warehouse/Stock/GetStockByStore",
+                data: {
+                    StoreId: StoreId
+                },
+                success: function (jsonData) {
+                    $("#StockId").html("");
+                    $("#StockId").append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#StockId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+                });
+            }
+        });
+
+        $("#ProductCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/Warehouse/StockReceiving/GetProductCode",
+                    data: JSON.stringify({ "ProductCode": $("#ProductCode").val() }),
+                    dataType: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.ProductCodeText, id: item.ProductId, value: item.ProductCode, name: item.ProductName };
+                        }));
+                        //response(data);
+                    },
+                    error: function (xhr, status, error) {
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            },
+            //prevent another value except dropdown value
+            change: function (event, ui) {
+                if (ui.item === null) {
+                    $("#ProductCode").val("");
+                    $("#ProductName").val("");
+                    $("#ProductId").val("");
+                    $("#ProductCode").focus();
+                }
+            },
+            select: function (event, ui) {
+                $("#ProductCode").val(ui.item.value);
+                $("#ProductCode").prop("disabled", true);
+                $("#ProductName").val(ui.item.name);
+                $("#ProductId").val(ui.item.id);
+            }
+        });
+        $(document).on("click", "#btn-clearProduct", function () {
+            $("#ProductCode").val("");
+            $("#ProductName").val("");
+            $("#ProductId").val("");
+            $("#ProductCode").prop("disabled", false);
+        })
+
+        $("#SearchProfileCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/Customer/Profile/GetProfileByCode",
+                    data: JSON.stringify({ "ProfileCode": $("#SearchProfileCode").val() }),
+                    dataType: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.ProfieLableName, id: item.ProfileId, value: item.ProfileCode, name: item.ProfileName };
+                        }));
+                        //response(data);
+                    },
+                    error: function (xhr, status, error) {
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            },
+            //prevent another value except dropdown value
+            change: function (event, ui) {
+                if (ui.item === null) {
+                    $("#SearchProfileCode").val("");
+                    $("#SearchProfileCodeRecent").val("");
+                    $("#SearchProfileName").val("");
+                    $("#SearchProfileNameRecent").val("");
+                    $("#SearchProfileId").val("");
+                    $("#SearchProfileCode").focus();
+                }
+            },
+            select: function (event, ui) {
+                $("#SearchProfileCode").val(ui.item.value);
+                $("#SearchProfileCode").prop("disabled", true);
+                $("#SearchProfileCodeRecent").val(ui.item.value);
+                $("#SearchProfileName").val(ui.item.name);
+                $("#SearchProfileNameRecent").val(ui.item.name);
+                $("#SearchProfileId").val(ui.item.id);
+            }
+        });
+
+        $(document).on("click", "#btn-clearProfile", function () {
+            $("#SearchProfileCode").val("");
+            $("#SearchProfileName").val("");
+            $("#SearchProfileId").val("");
+            $("#SearchProfileCode").prop("disabled", false);
+        });
+
+        $(document).on("click", ".btn-showStockDelivery", function () {
+            var DeliveryId = $(this).data("id");
+            $(".tableStockDelivery .dropdown-menu").addClass("hidden");
+
+            $.ajax({
+                type: "POST",
+                url: "/Warehouse/StockDelivery/GetProductDetails",
+                data: {
+                    DeliveryId: DeliveryId
+                },
+                success: function (jsonData) {
+                    $(".tableStockDelivery .dropdown-menu").html("");
+                    $.each(jsonData, function (index, value) {
+                        $(".tableStockDelivery .dropdown-menu").append("<li>" + value.ProductName + "</li>");
+                    });
+                    $(".tableStockDelivery .dropdown-menu").removeClass("hidden");
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        $(document).on("click", ".btn-cancel-delivery", function () {
+            var DeliveryId = $(this).data("id");
+            var DeliveryCode = $(this).data("name");
+            $("#divDeleteStockDeliveryPopup #frmConfirmDeleteStockDelivery input[name='DeliveryId']").val(DeliveryId);
+            $("#divDeleteStockDeliveryPopup #frmConfirmDeleteStockDelivery .alert-message").html("Bạn có chắc chắn muốn huỷ phiếu xuất kho " + DeliveryCode + "?");
+            $("#divDeleteStockDeliveryPopup").modal("show");
+        });
+
+        $(document).on("click", "#btn-confirm-cancel-delivery", function () {
+            var DeliveryId = $("#divDeleteStockDeliveryPopup #frmConfirmDeleteStockDelivery input[name='DeliveryId']").val();
+            var DeletedReason = $("#divDeleteStockDeliveryPopup #frmConfirmDeleteStockDelivery input[name='DeletedReason']").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Warehouse/StockDelivery/Cancel",
+                data: {
+                    id: DeliveryId,
+                    DeletedReason: DeletedReason
+                },
+                success: function (jsonData) {
+                    if (jsonData.Success == true) {
+                        $("#divDeleteStockDeliveryPopup").modal("hide");
+                        if ($("#btn-search").length > 0) {
+                            $("#btn-search").trigger("click");
+                        }
+                        alertPopup(true, jsonData.Data);
+                    }
+                    else {
+                        if (jsonData.Data != null && jsonData.Data != "") {
+                            alertWaringPopup(false, jsonData.Data);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alertWaringPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        function alertWaringPopup(isSuccess, message) {
+            $("#divAlertWarningPopup .alert-message").html("");
+            setMessage("#divAlertWarningPopup", message);
+            $('#divAlertWarningPopup').show();
+        }
+
+        $(document).on("hidden.bs.modal", "#divDeleteStockDeliveryPopup", function () {
+            $("#divAlertWarningPopup").hide();
+        });
+
+        $("#btn-search").click(function () {
+            
+            var searchData = GetDataFormSearch();
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, searchData);
+
+            PaggingServerSide("@CurrentUrl");
+        });
+
+        //trigger enter click when fill in search form
+        $(document).on("keyup", "#frmSearch", function (evt) {
+            if (evt.keyCode == 13) {
+                $("#btn-search").trigger("click");
+            }
+        });
+
+        function PaggingServerSide(controller) {
+            $(".dataTableServerSide").DataTable().clear().destroy();
+            $(".dataTableServerSide")
+                .on('processing.dt', function (e, settings, processing) {
+                    ISD.LoadingDataTable(processing, '.dataTableServerSide');
+                })
+                .DataTable({
+                    proccessing: true,
+                    serverSide: true,
+                    paging: true,
+                    scrollX: true,
+                    ajax: {
+                        type: 'POST',
+                        url: "/" + controller + "/_PaggingServerSide",
+                        contentType: 'application/json',
+                        data: function (d) {
+                            var arr = {};
+                            //data search
+                            var data = $("#frmSearch").serializeArray();
+                            $.each(data, function (index, val) {
+                                var obj = {};
+                                obj[val.name] = val.value;
+                                $.extend(true, arr, obj);
+                            });
+                            //data datatable (draw, start, length,...)
+                            $.extend(true, arr, d);
+
+                            return JSON.stringify(arr);
+                        }
+                    },
+                    columns: [
+                        {
+                            "data": "STT",
+                            "className": "text-center isd-table-th-stt"
+                        },
+                        {
+                            "data": "DeliveryCode",
+                            "className": "text-center",
+                            "orderable": true,
+                            "render": function (data, type, row) {
+                                var html = '';
+                                if ("@isHasPermissionEdit" === "True" && row["isDeleted"] !== true) {
+                                    html += '<a href="/@CurrentUrl/Edit/' + row["DeliveryId"] + '" title="Cập nhật phiếu xuất kho">' + data + '</a>';
+                                }
+                                else if ("@isHasPermissionEdit" === "True" && row["isDeleted"] === true) {
+                                    html += '<a href="/@CurrentUrl/View/' + row["DeliveryId"] + '" title="Phiếu đã hủy">' + data + '</a>';
+                                }
+                                else {
+                                    html += '<span>' + data + '</span>';
+                                }
+
+                                html += '<div style="display: inline-flex; position: relative"><a class="btn-showStockDelivery dropdown-toggle" title = "Xem catalog" data-toggle="dropdown" data-id="' + row["DeliveryId"] + '"><i class="fa fa-eye"></i></a ><ul class="dropdown-menu dropdown-menu-filter dropdown-menu-right mr-15 hidden" style="left: 0; min-width: 300px; width: max-content; padding-bottom: 10px"></ul></div>';
+                                html += '<div style="display: inline-flex; position: relative"><a class="btn-printStockDelivery" href = "/Reports/ExportCatalogue/Index/' + data + '" title = "In phiếu xuất kho" target = "_blank"><i class="fa fa-print"></i></a ></div >';
+                                return html;
+                            }
+                        },
+                        {
+                            "data": "DocumentDate",
+                            "orderable": true,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                if (data) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                                return "";
+                            }
+                        },
+                        {
+                            "data": "CompanyName",
+                            "orderable": true,
+                        },
+                        {
+                            "data": "StoreName",
+                            "orderable": true,
+                        },
+                        {
+                            "data": "ProfileName",
+                            "orderable": true,
+                            "render": function (data, type, row) {
+                                var html = '';
+                                if ("@isHasPermissionEditProfile" === "True") {
+                                    html += '<a href="/Customer/Profile/Edit/' + row["ProfileId"] + '">' + data + '</a>';
+                                }
+                                else {
+                                    html += '<span>'+ data +'</span>';
+                                }
+
+                                return html;
+                            }
+                        },
+                        {
+                            "data": "SalesEmployeeName",
+                            "orderable": true,
+                        },
+                        {
+                            "data": "Note",
+                            "orderable": true,
+                        },
+                        {
+                            "data": "CreateTime",
+                            "orderable": true,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                if (data) {
+                                    return moment(data).format("DD/MM/YYYY HH:mm");
+                                }
+                                return "";
+                            }
+                        },
+                        {
+                            "data": "CreateTime",
+                            "orderable": true,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                if (row["isDeleted"] === true) {
+                                    return '<i style="color: orange">Đã hủy</i>';
+                                }
+                                return "";
+                            }
+                        },
+                        {
+                            "data": "DeliveryId",
+                            "orderable": false,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                var html = "";
+                                html += '<a class="btn btn-info btn-edit" href="/@CurrentUrl/View/' + data + '" onclick="$(this).button("loading")"><i class="fa fa-eye"></i> Xem</a>';
+                                html += '<a class="btn btn-success btn-print" href="/Reports/ExportCatalogue/Index/' + row["DeliveryCode"] + '" target="_blank"><i class="fa fa-print"></i> In phiếu</a>';
+                                if ("@isHasPermission" && row["isDeleted"] != true) {
+                                    html += '<a class="btn btn-warning btn-cancel-delivery" data-id="' + data + '" data-name="' + row["DeliveryCode"]+'"><i class="fa fa-trash-o"></i> @LanguageResource.Btn_Cancel</a>';
+                                }
+                                return html;
+                            }
+                        }
+                ],
+                destroy: true,
+                language: {
+                    sProcessing: "Đang xử lý...",
+                    sLengthMenu: "Xem _MENU_ mục",
+                    sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                    sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                    sInfoPostFix: "",
+                    sSearch: "Tìm nội dung:",
+                    sUrl: "",
+                    oPaginate: {
+                        sFirst: "Đầu",
+                        sPrevious: "&laquo;",
+                        sNext: "&raquo;",
+                        sLast: "Cuối"
+                    }
+                },
+                columnDefs: [
+                    { targets: [0, 1], visible: true },
+                    { targets: 'no-sort', visible: false }
+                ],
+                "sDom": '<"top"flp>rt<"bottom"ip><"clear">',
+            });
+        }
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInput(recentSearch) {
+            if (recentSearch.SearchProfileId != "") {
+                $("#SearchProfileCode").prop("disabled", true);
+                $("#SearchProfileCode").val(recentSearch.SearchProfileCodeRecent);
+                $("#SearchProfileName").val(recentSearch.SearchProfileNameRecent);
+            }
+        }
+    </script>
+}

@@ -1,0 +1,28 @@
+﻿@model IEnumerable<ProfileGroupViewModel>
+
+<div class="col-md-6 pl-md-0">
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title pull-left">@LanguageResource.Profile_ProfileGroup</h3>
+            <div class="pull-right">
+                <a class="btn bg-blue" id="btn-create-profileGroup"><i class="fa fa-plus-square"></i></a>
+            </div>
+        </div>
+        <div class="box-body overflow-x-scroll" id="profileGroupList">
+            <table class="table table-bordered table-striped table-hover no-footer">
+                <thead class="isd-table-header">
+                    <tr>
+                        <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                        <th>@Html.DisplayNameFor(p => p.ProfileGroupName)</th>
+                        <th>@Html.DisplayNameFor(p => p.CreateUser)</th>
+                        <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+                        <th class="text-center">@LanguageResource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @Html.Partial("_ListContent")
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

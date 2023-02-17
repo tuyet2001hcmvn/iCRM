@@ -1,0 +1,166 @@
+﻿@model CustomerViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Details + " " + LanguageResource.MasterData_Customer.ToLower();
+    string CurrentController = ConstController.Customer;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("View", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.CustomerId)
+    @Html.HiddenFor(p => p.CustomerCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerCode)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.CustomerCode, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.FullName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.FullName, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerLevelId)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.CustomerLevelName, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerLoyaltyCard)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.CustomerLoyaltyCard, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DateOfBirth)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.DateOfBirth, "{0:dd/MM/yyyy}", new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Gender)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButtonGender(p => p.Gender)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.IdentityNumber)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.IdentityNumber, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CustomerAddress)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.ProvinceName, new { @disabled = "disabled" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.RequiredTextboxFor(p => p.DistrictName, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.CustomerAddress, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Phone)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Phone, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EmailAddress)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EmailAddress, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Fax)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Fax, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CumulativePoint)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.CumulativePoint, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+    </script>
+}
+
+
+

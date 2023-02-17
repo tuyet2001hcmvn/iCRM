@@ -1,0 +1,32 @@
+﻿@model IEnumerable<InventoryViewModel>
+@{
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentController = ConstController.Inventory;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ProductCode)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Qty)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ProductCode)</td>
+                <td>@Html.DisplayFor(p => item.ProductName)</td>
+                <td class="text-right">
+                    @Convert.ToInt32(item.Qty)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

@@ -1,0 +1,476 @@
+﻿@using Newtonsoft.Json;
+@model IEnumerable<OpportunityReportViewModel>
+@{
+    var pivotSetting = (List<FieldSettingModel>)ViewBag.PivotSetting;
+    var search = (OpportunityReportSearchViewModel)ViewBag.Search;
+    var layoutConfigs = (string)ViewBag.LayoutConfigs;
+}
+
+@Html.DevExpress().PivotGrid(settings =>
+{
+    settings.Name = "OpportunityReportPivotGrid";
+    settings.CallbackRouteValues = new { Controller = "TongHopThongTinDuAn", Action = "OpportunityPivotGridPartial", jsonReq = JsonConvert.SerializeObject(search) };
+    settings.Width = Unit.Percentage(100);
+    settings.OptionsPager.RowsPerPage = 20;
+    settings.OptionsPager.PageSizeItemSettings.Visible = true;
+    settings.OptionsCustomization.AllowDrag = true;
+    settings.OptionsCustomization.AllowDragInCustomizationForm = true;
+    settings.OptionsView.ShowRowTotals = true;
+
+    settings.CustomizationFieldsLeft = 600;
+    settings.CustomizationFieldsTop = 400;
+    // if (string.IsNullOrEmpty(layoutConfigs))
+    // {
+    settings.AfterPerformCallback = (sender, e) =>
+    {
+        List<FieldSettingModel> fieldSettingList = new List<FieldSettingModel>();
+        ASPxPivotGrid PivotGrid = sender as ASPxPivotGrid;
+        var listField = PivotGrid.Fields;
+        foreach (PivotGridField field in listField)
+        {
+            FieldSettingModel fieldSetting = new FieldSettingModel();
+            fieldSetting.Caption = field.Caption;
+            fieldSetting.AreaIndex = field.AreaIndex;
+            fieldSetting.FieldName = field.FieldName;
+            fieldSetting.Width = field.Width;
+            if (field.Area == PivotArea.RowArea)
+            {
+                fieldSetting.PivotArea = 0;
+
+            }
+            else
+            {
+                if (field.Area == PivotArea.ColumnArea)
+                {
+                    fieldSetting.PivotArea = 1;
+                }
+                else
+                {
+                    if (field.Area == PivotArea.FilterArea)
+                    {
+                        fieldSetting.PivotArea = 2;
+                    }
+                    else
+                    {
+                        fieldSetting.PivotArea = 3;
+                    }
+                }
+            }
+            if (field.ValueFormat.FormatType == FormatType.Numeric || field.ValueFormat.FormatType == FormatType.DateTime)
+            {
+                fieldSetting.CellFormat_FormatString = field.ValueFormat.FormatString;
+                fieldSetting.CellFormat_FormatType = field.ValueFormat.FormatType.ToString();
+            }
+            fieldSetting.Visible = field.Visible;
+            fieldSettingList.Add(fieldSetting);
+        }
+        Session[CurrentUser.AccountId + "Layout"] = fieldSettingList;
+        Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+    };
+    //  }
+    //  else
+    //  {
+    settings.PreRender = (sender, e) =>
+    {
+        if ((List<FieldSettingModel>)(Session[CurrentUser.AccountId + "Layout"]) == null)
+        {
+            Session[CurrentUser.AccountId + "Layout"] = pivotSetting;
+        }
+
+    };
+    //  }
+
+
+    if (pivotSetting != null && pivotSetting.Count > 0)
+    {
+        foreach (var fieldSetting in pivotSetting)
+        {
+            settings.Fields.Add(field =>
+            {
+                if (fieldSetting.PivotArea == 0)
+                {
+                    field.Area = PivotArea.RowArea;
+                }
+                if (fieldSetting.PivotArea == 1)
+                {
+                    field.Area = PivotArea.ColumnArea;
+                }
+                if (fieldSetting.PivotArea == 2)
+                {
+                    if (fieldSetting.AreaIndex > 10)
+                    {
+                        field.Visible = false;
+                    }
+                    field.Area = PivotArea.FilterArea;
+
+                }
+                if (fieldSetting.PivotArea == 3)
+                {
+                    field.Area = PivotArea.DataArea;
+                }
+                field.FieldName = fieldSetting.FieldName;
+                field.Caption = fieldSetting.Caption;
+                field.AreaIndex = fieldSetting.AreaIndex.Value;
+                if (fieldSetting.Width != null)
+                {
+                    field.Width = fieldSetting.Width.Value;
+                }
+                if (fieldSetting.CellFormat_FormatType == "DateTime")
+                {
+                    field.ValueFormat.FormatType = FormatType.DateTime;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.DateTime;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                }
+                if (fieldSetting.CellFormat_FormatType == "Numeric")
+                {
+                    field.ValueFormat.FormatType = FormatType.Numeric;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.Numeric;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+                    field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                }
+                field.Visible = fieldSetting.Visible.Value;
+            });
+        }
+    }
+    else // default
+    {
+        //Filter Area
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "NumberIndex";
+            field.Caption = "STT";
+            field.AreaIndex = 0;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "InvestorName";
+            field.Caption = "Tên chủ đầu tư";
+            field.AreaIndex = 1;
+            field.Width = 200;
+
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "DesignName";
+            field.Caption = "Tên thiết kế";
+            field.AreaIndex = 2;
+            field.Width = 200;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "SaleOfficeName";
+            field.Caption = "Khu vực";
+            field.Width = 100;
+            field.AreaIndex = 3;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "OpportunityPercentage";
+            field.Caption = "Xác suất(%)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:##,###}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:##,###}";
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.AreaIndex = 4;
+            field.Width = 60;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "SalesEmployeeName1";
+            field.Caption = "NV kinh doanh";
+            field.Width = 100;
+            field.AreaIndex = 5;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "SalesEmployeeName2";
+            field.Caption = "NV Sales Admin";
+            field.Width = 100;
+            field.AreaIndex = 6;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "AccessoryList";
+            field.Caption = "Phụ kiện";
+            field.AreaIndex = 7;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "OpportunityName";
+            field.Caption = "Tên dự án";
+            field.Width = 150;
+            field.AreaIndex = 8;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "ProjectGabarit";
+            field.Caption = "Qui mô";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n0}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n0}";
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.AreaIndex = 9;
+            field.Width = 60;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "ProvinceName";
+            field.Caption = "Tỉnh/TP";
+            field.Width = 100;
+            field.AreaIndex = 10;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "HandoverFurniture";
+            field.Caption = "Tiêu chuẩn bàn giao";
+            field.Width = 150;
+            field.AreaIndex = 11;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "OpportunityStatus";
+            field.Caption = "Tình hình dự án";
+            field.AreaIndex = 12;
+            field.Width = 150;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "SalesEmployeeName3";
+            field.Caption = "Tên NV Spec";
+            field.Width = 100;
+            field.AreaIndex = 13;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "SpecDescription";
+            field.Caption = "Spec";
+            field.Width = 300;
+            field.AreaIndex = 14;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Category";
+            field.Caption = "Nhóm hàng";
+            field.Width = 150;
+            field.AreaIndex = 16;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "CompleteYear";
+            field.Caption = "Năm hoàn thiện";
+            field.AreaIndex = 17;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "OpportunityType";
+            field.Caption = "Loại hình";
+            field.AreaIndex = 18;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "OpportunityUnit";
+            field.Caption = "ĐVT";
+            field.AreaIndex = 19;
+            field.Width = 60;
+        });
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Contractor";
+            field.Caption = "Tên tổng thầu";
+            field.Width = 200;
+            field.AreaIndex = 20;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Competitor";
+            field.Caption = "Đối thủ";
+            field.Width = 200;
+            field.AreaIndex = 21;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Address";
+            field.Caption = "Địa chỉ";
+            field.Width = 150;
+            field.AreaIndex = 22;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Phone";
+            field.Caption = "Điện thoại";
+            field.Width = 80;
+            field.AreaIndex = 23;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Website";
+            field.Caption = "Web";
+            field.Width = 150;
+            field.AreaIndex = 24;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Number1";
+            field.Caption = "Độ phủ thị trường(%)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n0}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n0}";
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.Width = 60;
+            field.AreaIndex = 25;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Number2";
+            field.Caption = "Vốn pháp định(Tỷ)";
+            field.Width = 60;
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.AreaIndex = 25;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "PercentProjectValue";
+            field.Caption = "% giá trị";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:0.n2}";
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.Width = 60;
+            field.AreaIndex = 26;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "CompetitorName";
+            field.Caption = "Tên đối thủ";
+            field.Width = 200;
+            field.AreaIndex = 27;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "OpportunityStatusType";
+            field.Caption = "Tình trạng dự án";
+            field.Width = 150;
+            field.AreaIndex = 28;
+        });
+
+        //DataArea
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "Spec";
+            field.Caption = "GT Spec (Tỷ)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.AreaIndex = 0;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.Width = 80;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "Construction";
+            //field.Caption = "Tổng GTHĐ dự kiến";
+            field.Caption = "GT Thi công (Tỷ)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.AreaIndex = 2;
+            field.Width = 80;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "ProjectWonValue";
+            field.Caption = "Tổng GT trúng thầu (Tỷ)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.Width = 80;
+            field.AreaIndex = 3;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "ProjectLoseValue";
+            field.Caption = "Tổng GT rớt thầu (Tỷ)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.Width = 80;
+            field.AreaIndex = 4;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "ProjectValue";
+            field.Caption = "Tổng GTHĐ dự kiến (Tỷ)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.AreaIndex = 1;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+        });
+    }
+}).Bind(Model).GetHtml()
+
+

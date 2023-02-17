@@ -1,0 +1,176 @@
+﻿@model UploadMultipleImagesViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Upload + " " + LanguageResource.Sale_UploadMultipleImages;
+    string CurrentController = ConstController.Product;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("UploadMultipleImages", "Product", FormMethod.Post, new
+{
+    @enctype = "multipart/form-data",
+    @id = "frmMultipleUpload"
+}))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveSubmitButton("btn-save", LanguageResource.Btn_Save)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                @Html.TooltipLabelFor(p => p.UploadType)
+                            </div>
+                            <div class="col-md-5">
+                                @Html.DropDownList("UploadType", new List<SelectListItem>(){
+                                        new SelectListItem(){Text = LanguageResource.Dropdownlist_Choose, Value = ""},
+                                        new SelectListItem(){Text = LanguageResource.Upload_MainImage, Value = "true"},
+                                        new SelectListItem(){Text = LanguageResource.Upload_VersionImage, Value = "false"}
+                                    }, new { @class = "form-control with-search" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                @Html.TooltipLabelFor(p => p.imageList)
+                            </div>
+                            <div class="col-md-5">
+                                @Html.RequiredTextboxFor(p => p.imageList, new { @type = "file",
+                                                                                @accept = ".jpg, .png",
+                                                                                @multiple = "multiple" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <div class="label-wrapper">
+                                    <label class="control-label">Quy tắc đặt tên hình</label>
+                                </div>
+                            </div>
+                            <div class="col-md-8" id="upload-note">
+                                <ul>
+                                    <li>1. @LanguageResource.Upload_MainImage: <b>MASP.png</b></li>
+                                    <li>2. @LanguageResource.Upload_VersionImage: <b>MASP_MAUSAC_KIEUDANG_GhiChu.png</b></li>
+                                    <li><i>Lưu ý: Tên hình ảnh theo màu sắc và kiểu dáng phải có đủ 4 phần <b>MASP</b> (mã sản phẩm), <b>MAUSAC</b> (mã màu sắc), <b>KIEUDANG</b> (mã kiểu dáng) và <b>GhiChu</b> (ghi chú).</i></li>
+                                    <li>Nếu phiên bản không có kiểu dáng thì đặt tên dạng: <b>MASP_MAUSAC_0_GhiChu.png</b></li>
+                                    <li>3. Vui lòng upload hình ảnh có kích thước 480 x 480</li>
+                                    <li>4. Kích thước mỗi file hình ảnh không quá 1MB</li>
+                                    <li>5. Tổng kích thước file upload không quá 500MB</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="loading-modal"></div>
+
+@section scripts {
+    <script>
+        $(document).on("change", "#imageList", function () {
+            if (this.files != null) {
+                //check total size
+                var totalSize = 0;
+                $("input[type=file]").each(function () {
+                    for (var i = 0; i < this.files.length; i++) {
+                        totalSize += this.files[i].size;
+                    }
+                });
+                var size = totalSize / 1048576;
+
+                //if size > 500MB => show false
+                if (size > 500) {
+                    $('input[type=file]').val('');
+                    alertPopup(false, "Tài liệu có kích thước quá lớn. Vui lòng tải lên không quá 500MB!");
+                }
+                else {
+                    //run each file in upload img
+                    //if not type jpg/png => show false
+                    for (var i = 0; i < this.files.length; i++) {
+                        //get file name
+                        var fileName = this.files[i].name;
+                        //compare with type jpg/png/obj/mtl
+                        if (fileName.indexOf(".jpg") == -1 && fileName.indexOf(".png") == -1) {
+                            //show alert false
+                            alertPopup(false, "Vui lòng chọn đúng loại file!");
+                            $("#btn-save").prop("disabled", true);
+                        }
+                        else {
+                            $("#btn-save").prop("disabled", false);
+                        }
+                    }
+                }
+            }
+        });
+
+        $(document).on("click", "#btn-save", function () {
+            if ($("select#UploadType").val() == "") {
+                alertPopup(false, "Vui lòng chọn kiểu upload hình ảnh!");
+            }
+            else {
+                loading2();
+
+                var form = $("#frmMultipleUpload"),
+                    formData = new FormData(),
+                    formParams = form.serializeArray();
+                if (form.valid()) {
+                    $.each(form.find('input[type="file"]'), function (i, tag) {
+                        $.each($(tag)[0].files, function (i, file) {
+                            formData.append(tag.name, file);
+                        });
+                    });
+
+                    $.each(formParams, function (i, val) {
+                        formData.append(val.name, val.value);
+                    });
+
+                    $.ajax({
+                        url: $(this).attr("action"),
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        type: 'POST',
+                        success: function (jsonData) {
+                            $('input[type=file]').val('');
+                            if (jsonData.Success == true) {
+                                if (jsonData.Data != null) {
+                                    alertPopup(true, jsonData.Data);
+                                }
+                            }
+                            else {
+                                if (jsonData.Data != null && jsonData.Data != "") {
+                                    alertPopup(false, jsonData.Data);
+                                }
+                            }
+                        }
+                    });
+                    return false;
+                }
+                else {
+                    $("body").removeClass("loading2");
+                }
+            }
+        });
+    </script>
+}
+
+
+

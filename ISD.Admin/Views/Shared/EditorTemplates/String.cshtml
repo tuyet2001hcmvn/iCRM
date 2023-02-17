@@ -1,0 +1,10 @@
+﻿@model string
+@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue,
+        new {
+            @class = "form-control",
+            placeholder = ViewData.ModelMetadata.Watermark,
+            @ng_model = ViewData.TemplateInfo.HtmlFieldPrefix /*apply AngularJS vào*/
+        })
+<span class="validation-text field-validation-error">
+    @Html.ValidationMessageFor(v => v)
+</span>

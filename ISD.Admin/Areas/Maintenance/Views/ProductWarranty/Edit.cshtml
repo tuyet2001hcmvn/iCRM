@@ -1,0 +1,259 @@
+﻿@model ProductWarrantyViewModel
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Maintenance_ProWarranty;
+    string CurrentArea = ConstArea.Maintenance;
+    string CurrentController = ConstController.ProductWarranty;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.ProductWarrantyId)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?ModeSearch=Recently")
+        </h1>
+
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+            <a target="_blank" href="/Maintenance/ProductWarranty/Create?CopyFrom=@Model.ProductWarrantyId" class="btn btn-primary btn-create" data-current-url="Maintenance/ProductWarranty" data-id="" data-item-name=""><i class='fa fa-plus-square'></i> Copy</a>
+            <a class="btn btn-info" id="btn-require" onclick="$(this).button('loading')">
+                <i class="fa fa-cog"></i> Yêu cầu bảo hành
+            </a>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(p => p.CompanyId)
+                        @Html.DropDownListFor(p => p.CompanyId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(p => p.ProfileId)
+                        @Html.HiddenFor(p => p.ProfileId)
+                        <div class="input-group">
+                            @Html.RequiredTextboxFor(p => p.Profile_ProfileName, new { @class = " form-control text-box single-line", @readonly = "readonly", @id = "ProfileName" })
+                            <a class="input-group-addon btn btn-default" data-toggle="modal" data-target="#divProfileSearch-warranty">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(p => p.Warranty_ProfileName)
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.Warranty_ProfileName, new { @class = " form-control text-box single-line" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.Phone)
+                        @Html.RequiredTextboxFor(p => p.Phone)
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.Email)
+                        @Html.RequiredTextboxFor(p => p.Email)
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.ProfileShortName)
+                        @Html.RequiredTextboxFor(p => p.ProfileShortName)
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.Age)
+                        @Html.RequiredDropDownListFor(p => p.Age, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-2">
+                        @Html.TooltipLabelFor(p => p.ProvinceId)
+                        @Html.RequiredDropDownListFor(p => p.ProvinceId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.TooltipLabelFor(p => p.DistrictId)
+                        @Html.RequiredDropDownListFor(p => p.DistrictId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                    <div class="form-group col-md-2">
+                        @Html.TooltipLabelFor(p => p.WardId)
+                        @Html.RequiredDropDownListFor(p => p.WardId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.Address)
+                        @Html.RequiredTextboxFor(p => p.Address)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(p => p.ProductId)
+                        @Html.HiddenFor(p => p.ProductId)
+                        <div class="input-group">
+                            @Html.RequiredTextboxFor(p => p.ProductName, new { @class = "form-control text-box single-line", @readonly = "readonly" })
+                            <a class="input-group-addon btn btn-default" data-toggle="modal" data-target="#divProductSearch">
+                                <i class="fa fa-ellipsis-h"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.SerriNo)
+                        @Html.Hidden("SerriNoValid", Model.SerriNo)
+                        @Html.RequiredTextboxFor(p => p.SerriNo)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.WarrantyId)
+                        @Html.RequiredDropDownListFor(p => p.WarrantyId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.ProductWarrantyNo)
+                        @Html.RequiredTextboxFor(p => p.ProductWarrantyNo)
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.SaleOrder)
+                        @Html.RequiredTextboxFor(p => p.SaleOrder)
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.OrderDelivery)
+                        @Html.RequiredTextboxFor(p => p.OrderDelivery)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.FromDate)
+                        @Html.RequiredTextboxFor(p => p.FromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.ToDate)
+                        @Html.HiddenFor(p => p.ToDate,new { @class= "txtToDate" })
+                        @Html.TextBoxFor(p => p.ToDate, "{0:yyyy-MM-dd}", new { @readonly = "readonly", type = "date", @class = "txtToDate form-control" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.Note)
+                        @Html.RequiredTextboxFor(p => p.Note)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.ActivatedQuantity)
+                        @Html.TextBoxFor(p => p.ActivatedQuantity, new { @class="form-control", disabled = "disabled" })
+                    </div>
+                    <div class="form-group col-md-3">
+                        @Html.TooltipLabelFor(p => p.Actived)
+                        @Html.ActivedRadioButton(p => p.Actived)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section components{
+    @Html.Partial("_ProfileSearch", new ProfileSearchViewModel() { hasNoContact = true })
+    @Html.Partial("~/Areas/Sale/Views/Product/_ProductSearch.cshtml", new ProductSearchViewModel())
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+
+        $(document).on("click", ".btn-profile-choose", function () {
+            //get and fill data to student info
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+
+            $("#ProfileId").val(id);
+            $("#ProfileName").val(name);
+
+            //close popup
+            $("#divProfileSearch, .profileSearch").modal("hide");
+        });
+
+        //Tính todate
+        $(document).on("change", " select[name='WarrantyId']", function () {
+            var warrantyId = $(this).val();
+            var fromDate = $("#FromDate").val();
+            CalculatorToDate(warrantyId, fromDate);
+        });
+        $(document).on("change", "#FromDate", function () {
+            var warrantyId = $("#WarrantyId").val();
+            var fromDate = $(this).val();
+            CalculatorToDate(warrantyId, fromDate);
+        });
+        function CalculatorToDate(warrantyId, fromDate) {
+            $.ajax({
+                type: "GET",
+                url: "/Maintenance/ProductWarranty/ToDate",
+                data: {
+                    WarrantyId: warrantyId,
+                    FromDate: fromDate
+                },
+                success: function (jsonData) {
+                    $(".txtToDate").val(jsonData.Data);
+                }
+            });
+        }
+
+        $(document).on("click", "#btn-require", function () {
+            var ProductWarrantyId = $("input[name='ProductWarrantyId']").val();
+            var ProfileId = $("input[name='ProfileId']").val();
+            window.location.href = "/Work/Task/Create?Type=TICKET&ProductWarrantyId=" + ProductWarrantyId + "&ProfileId=" + ProfileId;
+        });
+
+        $(document).on("change", "#ProvinceId", function () {
+            var ProvinceId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/District/GetDistrictByProvince",
+                data: {
+                    ProvinceId: ProvinceId
+                },
+                success: function (jsonData) {
+                    $("#DistrictId").html("");
+                    $("#DistrictId").append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    $("#DistrictId").trigger("change");
+                }
+            });
+        });
+         //change ward
+        $(document).on("change", "select[name='DistrictId']", function () {
+            var DistrictId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Ward/GetWardByDistrict",
+                data: {
+                    DistrictId: DistrictId
+                },
+                success: function (jsonData) {
+                    var $ward = $("#WardId")
+                    $ward.html("");
+                    $ward.append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                    $.each(jsonData, function (index, value) {
+                        $ward.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+            });
+        });
+    </script>
+}

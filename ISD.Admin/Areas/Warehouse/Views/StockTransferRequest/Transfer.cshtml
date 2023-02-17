@@ -1,0 +1,72 @@
+﻿
+@model StockTransferRequestCreateViewModel
+
+@{
+    ViewBag.Title = "CHUYỂN KHO THEO YÊU CẦU "+ ViewBag.Code;
+    string CurrentController = ConstController.StockTransferRequest;
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var id = ViewBag.Id;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    @Html.ValidationSummary(true)
+                    <div class="panel-group" style="margin-top: 15px">
+                        <div class="panel panel-body">
+                            <div class="form-horizontal">
+                                @{ var stockReciveVM = new StockReceivingMasterViewModel
+                                    {
+                                        DocumentDate = DateTime.Now
+                                    }; }
+                                @Html.Partial("~/Areas/Warehouse/Views/StockReceiving/_StockReceivingMaster.cshtml", stockReciveVM)
+                                <div class="form-group panel">
+                                    @Html.Partial("~/Areas/Warehouse/Views/StockDelivery/_CatalogInfo.cshtml", new DeliveryViewModel())
+                                </div>
+                                @Html.Partial("_StockTransferByRequestDetail")
+                                <div class="col-md-12">
+                                    <p id="createBy" class="last-mod">
+                                    </p>
+                                    <p id="lastEditBy" class="last-mod">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+         $(document).ready(function () {         
+            CreateInitial("@id");
+        });
+        var viewType = "Edit";
+        var StockTransferRequestId = "@id";
+    </script>
+    <script src="~/Areas/Warehouse/Scripts/StockTransferByRequest.js"></script>
+}
+

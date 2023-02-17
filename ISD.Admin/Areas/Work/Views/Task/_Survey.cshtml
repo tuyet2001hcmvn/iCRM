@@ -1,0 +1,153 @@
+﻿@model  List<SurveyViewModel>
+@{
+    var SalesEmployeeList = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList;
+}
+<div class="col-md-6 pl-md-0">
+    <div class="box box-info">
+        <div class="box-body">
+            <div class="row">
+
+                @{var index = 0;}
+                @foreach (var item in Model)
+                {
+                    if (index == 0)
+                    {
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="label-wrapper"><label class="control-label" for="TaskStatusId">Người thực hiện khảo sát</label></div>
+                                <div class="input-group input-group-required input-group-select-required">
+                                    @Html.DropDownList("survey[" + index + "].CreateByCode", new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.CreateBy), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="label-wrapper"><label class="control-label" for="TaskStatusId">Ngày thực hiện khảo sát</label></div>
+                                <div class="input-group input-group-required input-group-select-required">
+                                    @Html.TextBox("survey[" + index + "].CreateTime", string.Format("{0:yyyy-MM-dd}", item.CreateTime), new { @type = "date", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            @Html.LabelByPropertyNameFor(x => item.Question, string.Format((index + 1) + ". {0}", item.Question))
+                            @Html.HiddenFor(p => item.TaskSurveyId, new { @Name = "survey[" + index + "].TaskSurveyId" })
+                            @Html.HiddenFor(p => item.SurveyId, new { @Name = "survey[" + index + "].SurveyId" })
+                            @{ int j = 0;}
+                            @foreach (var answer in item.SurveyDetail)
+                            {
+
+                                if (item.Type == "TEXT")
+                                {
+                                    @Html.HiddenFor(p => answer.SurveyDetailId, new { @Name = "survey[" + index + "].SurveyDetailSelected[0].SurveyDetailId" })
+                                    if (item.SurveyDetailSelected != null && item.SurveyDetailSelected.Count() > 0)
+                                    {
+                                        foreach (var selected in item.SurveyDetailSelected)
+                                        {
+                                            if (selected.AnswerValue == answer.AnswerValue)
+                                            {
+                                                @Html.RequiredTextboxFor(p => selected.AnswerValue, new { @Name = "survey[" + index + "].SurveyDetailSelected[0].AnswerValue" })
+                                            }
+                                            else
+                                            {
+                                                @Html.RequiredTextboxFor(p => answer.AnswerValue, new { @Name = "survey[" + index + "].SurveyDetailSelected[0].AnswerValue" })
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.RequiredTextboxFor(p => answer.AnswerValue, new { @Name = "survey[" + index + "].SurveyDetailSelected[0].AnswerValue" })
+                                    }
+                                }
+                                else if (item.Type == "NUMBER")
+                                {
+                                    @Html.HiddenFor(p => answer.SurveyDetailId, new { @Name = "survey[" + index + "].SurveyDetailSelected[0].SurveyDetailId" })
+                                    @Html.RequiredTextboxFor(p => answer.AnswerValue, new { @type = "number", @Name = "survey[" + index + "].SurveyDetailSelected[0].AnswerValue" })
+                                }
+                                else if (item.Type == "RADIO")
+                                {
+                                    @Html.HiddenFor(p => answer.SurveyDetailId, new { @Name = "survey[" + index + "].SurveyDetailSelected[" + j + "].SurveyDetailId" })
+                                    if (item.SurveyDetailSelected != null && item.SurveyDetailSelected.Count() > 0)
+                                    {
+                                        foreach (var selected in item.SurveyDetailSelected)
+                                        {
+                                            if (selected.AnswerValue == answer.AnswerValue)
+                                            {
+                                                @Html.RadioButton("survey[" + index + "].SurveyDetailSelected[0].AnswerValue", selected.AnswerValue, true, new { @Style = "margin-left: 10px;margin-right: 4px;"}) @answer.AnswerText
+                                            }
+                                            else
+                                            {   
+                                                @Html.RadioButton("survey[" + index + "].SurveyDetailSelected[0].AnswerValue", answer.AnswerValue, false, new { @Style = "margin-left: 10px;margin-right: 4px;" }) @answer.AnswerText
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButton("survey[" + index + "].SurveyDetailSelected[0].AnswerValue", answer.AnswerValue, false, new { @Style = "margin-left: 10px;margin-right: 4px;" }) @answer.AnswerText
+
+                                    }
+                                }
+                                else if (item.Type == "CHECKBOX")
+                                {
+                                    @Html.HiddenFor(p => answer.SurveyDetailId, new { @Name = "survey[" + index + "].SurveyDetailSelected[" + j + "].SurveyDetailId" })
+                                    if (item.SurveyDetailSelected != null && item.SurveyDetailSelected.Count() > 0)
+                                    {
+                                        foreach (var selected in item.SurveyDetailSelected)
+                                        {
+                                            if (selected.AnswerValue == answer.AnswerValue)
+                                            {
+                                                @Html.CheckBox("survey[" + index + "].SurveyDetailSelected[" + j + "].AnswerValue", true, new { @Value = answer.AnswerValue, @Style = "margin-left: 10px;margin-right: 4px;" }); @answer.AnswerText
+                                            }
+                                            else
+                                            {
+                                                @Html.CheckBox("survey[" + index + "].SurveyDetailSelected[" + j + "].AnswerValue", false, new { @Value = answer.AnswerValue, @Style = "margin-left: 10px;margin-right: 4px;" }); @answer.AnswerText
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.CheckBox("survey[" + index + "].SurveyDetailSelected[" + j + "].AnswerValue", false, new { @Value = answer.AnswerValue, @Style = "margin-left: 10px;margin-right: 4px;" }); @answer.AnswerText
+
+                                    }
+                                }
+                                else if (item.Type == "DATETIME")
+                                {
+                                    @Html.HiddenFor(p => answer.SurveyDetailId, new { @Name = "survey[" + index + "].SurveyDetailSelected[" + j + "].SurveyDetailId" })
+                                    @Html.RequiredTextboxFor(p => answer.AnswerDatetime, "{0:yyyy-MM-dd}", new { @Name = "survey[" + index + "].SurveyDetailSelected[" + j + "].AnswerDatetime", @type = "datetime" })
+                                }
+                                else if (item.Type == "TEXTAREA")
+                                {
+                                    @Html.HiddenFor(p => answer.SurveyDetailId, new { @Name = "survey[" + index + "].SurveyDetailSelected[" + j + "].SurveyDetailId" })
+                                    if (item.SurveyDetailSelected != null && item.SurveyDetailSelected.Count() > 0)
+                                    {
+                                        foreach (var selected in item.SurveyDetailSelected)
+                                        {
+                                            @Html.TextAreaFor(p => selected.AnswerValue, new { @class = "form-control", @Name = "survey[" + index + "].SurveyDetailSelected[0].AnswerValue" })
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.TextAreaFor(p => answer.AnswerValue, new { @class = "form-control", @Name = "survey[" + index + "].SurveyDetailSelected[0].AnswerValue" })
+                                    }
+                                }
+                                j++;
+                            }
+                            @if (item.Type == "DROPDOWN")
+                            {
+                                <select name="survey[@index].AnswerValue" id="AnswerValue" class="form-control" multiple>
+                                    @foreach (var answer in item.SurveyDetail)
+                                    {
+                                        <option value="@answer.AnswerValue">@answer.AnswerText</option>
+                                    }
+                                </select>
+                            }
+                        </div>
+                    </div>
+                    index++;
+                }
+            </div>
+        </div>
+    </div>
+</div>

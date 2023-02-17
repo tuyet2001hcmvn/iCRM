@@ -1,0 +1,172 @@
+﻿@{
+    ViewBag.Title = LanguageResource.RegisterReceiveNews;
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.RegisterReceiveNews;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @*@HtmlExtensions.CreateButton(CurrentArea, CurrentController)*@
+        <a class="btn btn-success" id="btn-export"><i class="fa fa-download"></i> Export</a>
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="control-label" for="FromDate">
+                                                @LanguageResource.FromDate
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBox("FromDate", null, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="control-label" for="ToDate">
+                                                @LanguageResource.ToDate
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBox("ToDate", null, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="control-label" for="FromDate">
+                                                @LanguageResource.CompanyId
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @*@Html.TextBox("CompanyCode", null, new { @class = "form-control" })*@
+                                        @Html.DropDownList("CompanyCode", null, LanguageResource.Dropdownlist_All)
+                                    </div>
+                                </div>
+                            </div><div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="control-label" for="FromDate">
+                                                @LanguageResource.Configuration_Phone
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBox("PhoneNumber", null, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-4 input-group">
+                                    <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                        <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                    </select>
+                                    <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                        <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                        <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                    </span>
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script>
+	    //Define it
+	    var currentUserId = "@CurrentUser.AccountId";
+	    var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+            //Set lại thông tin search gần đây khi là back lại
+            var modeTemplateSearch = ISD.GetQueryString("ModeSearch", window.location.href);
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            } else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISD.SearchInitial("@CurrentUrl",true);
+            ISD.ShowMessage(window.location.href);
+             $(document).on("click", "#btn-export", function () {
+                    var arr = {};
+                    var data = $("#frmSearch").serializeArray();
+                    $.each(data, function (index, val) {
+                        var obj = {};
+                        obj[val.name] = val.value;
+                        $.extend(true, arr, obj)
+                    });
+                    ISD.Download("/@CurrentUrl/ExportExcel", arr);
+                });
+        });
+        $("#btn-search").click(function () {
+            var searchData = GetDataFormSearch();
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, searchData);
+
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+
+            return JSON.stringify(data);
+        }
+        
+    </script>
+}
+
+

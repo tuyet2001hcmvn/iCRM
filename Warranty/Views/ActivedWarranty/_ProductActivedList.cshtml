@@ -1,0 +1,72 @@
+﻿@model IEnumerable<ProductActivedViewModel>
+@{
+    bool isSerial = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["isSerial"]);
+}
+<table class="light-table" width="100%">
+    <thead>
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ERPProductCode)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ProductName)</th>
+            @if (isSerial)
+            {
+                <th class="text-center">@Html.DisplayNameFor(p => p.SerialNumber)</th>
+            }
+            <th class="text-center">@Html.DisplayNameFor(p => p.Quantity)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Unit)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ActivationQuantity)</th>
+            <th class="text-center">@LanguageResource.Actived_Warranty</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int i = 0;
+            int k = -1;
+
+            foreach (var item in Model)
+            {
+                i++;
+                k++;
+                var inputNameERPProductCode = string.Format("productActivedList[{0}].ERPProductCode", k);
+                var inputNameQuantity = string.Format("productActivedList[{0}].Quantity", k);
+                var inputNameCompanyCode = string.Format("productActivedList[{0}].CompanyCode", k);
+                var inputNameSerialNumber = string.Format("productActivedList[{0}].SerialNumber", k);
+                var inputNameIsActived = string.Format("productActivedList[{0}].isActivedWarranty", k);
+                var inputNameProfileForeignCode = string.Format("productActivedList[{0}].ProfileForeignCode", k);
+                var inputNameWarrantyCode = string.Format("productActivedList[{0}].WarrantyCode", k);
+                var inputNameSaleOrderCode = string.Format("productActivedList[{0}].SaleOrderCode", k);
+                var inputNameDocumentDate = string.Format("productActivedList[{0}].DocumentDate", k);
+                var inputNamePostDate = string.Format("productActivedList[{0}].PostDate", k);
+                var inputNameActivateQuantity = string.Format("productActivedList[{0}].ActivationQuantity", k);
+                <tr>
+                    <td class="text-center">
+                        @i
+                        <input type="hidden" name="@inputNameERPProductCode" value="@item.ERPProductCode" />
+                        <input type="hidden" name="@inputNameQuantity" value="@item.Quantity" />
+                        <input type="hidden" name="@inputNameCompanyCode" value="@item.CompanyCode" />
+                        <input type="hidden" name="@inputNameSerialNumber" value="@item.SerialNumber" />
+                        <input type="hidden" name="@inputNameProfileForeignCode" value="@item.ProfileForeignCode" />
+                        <input type="hidden" name="@inputNameWarrantyCode" value="@item.WarrantyCode" />
+                        <input type="hidden" name="@inputNameSaleOrderCode" value="@item.SaleOrderCode" />
+                        <input type="hidden" name="@inputNameDocumentDate" value="@item.DocumentDate" />
+                        <input type="hidden" name="@inputNamePostDate" value="@item.PostDate" />
+                    </td>
+                    <td class="text-center">@Html.DisplayFor(p => item.ERPProductCode)</td>
+                    <td>@Html.DisplayFor(p => item.ProductName)</td>
+                    @if (isSerial)
+                    {
+                        <td class="text-center">@Html.DisplayFor(p => item.SerialNumber)</td>
+                    }
+                    <td class="text-right">@Html.DisplayFor(p => item.Quantity)</td>
+                    <td class="text-center">@Html.DisplayFor(p => item.Unit)</td>
+                    <td class="text-right">
+                        <input class="form-control text-right activateQty" type="number" name="@inputNameActivateQuantity" value="@item.Quantity" data-row="@k"/>
+                    </td>
+                    <td class="text-center"><input class="itemChecked" id="@inputNameIsActived" name="@inputNameIsActived" type="checkbox" value="true" checked></td>
+                </tr>
+            }
+        }
+
+
+    </tbody>
+</table>

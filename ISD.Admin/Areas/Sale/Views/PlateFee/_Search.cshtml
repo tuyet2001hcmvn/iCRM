@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Search_PlateFeeViewModel>
+@{
+    string CurrentController = ConstController.PlateFee;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.PlateFeeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.PlateFeeName)</th>
+            <th class="text-center product-number">@Html.DisplayNameFor(p => p.NumberOfProduct)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.PlateFeeCode)</td>
+                <td>@Html.DisplayFor(p => item.PlateFeeName)</td>
+                <td class="text-right">@Html.DisplayFor(p => item.NumberOfProduct)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.PlateFeeId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+

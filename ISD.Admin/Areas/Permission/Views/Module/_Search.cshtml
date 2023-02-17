@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ModuleModel>
+@{
+    string CurrentController = ConstController.Module;
+    string CurrentArea = ConstArea.Permission;
+}
+<table id="menuTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ModuleName)</th>
+            <th>@Html.DisplayNameFor(p => p.Description)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Icon)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.ModuleName)</td>
+            <td>@Html.DisplayFor(p => item.Description)</td>
+            <td class="text-center">@Html.DisplayFor(p => item.OrderIndex)</td>
+            <td class="text-center">
+                <i class="@Html.DisplayFor(p => item.Icon)"></i>
+            </td>
+            <td class="text-center">
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.ModuleId)
+                @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.ModuleName, item.ModuleId)
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+
+

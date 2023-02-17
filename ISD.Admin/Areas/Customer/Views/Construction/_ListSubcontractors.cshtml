@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ProfileViewModel>
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        Thầu phụ
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-subcontractors"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentSubcontractors">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                @if (ViewBag.Type == ConstProfileType.Opportunity)
+                {
+                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                    <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                    <th>Đơn vị thi công</th>
+                    @*<th>Địa chỉ</th>*@
+                    <th>HM thi công</th>
+                    <th>Giá trị</th>
+                    <th class="text-center">Trúng thầu</th>
+                    <th>@Html.DisplayNameFor(p => p.CreateUser)</th>
+                    <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+                    <th class="text-center">ĐVTC chính</th>
+                    <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+                }
+                else if (ViewBag.Type == ConstProfileType.Account)
+                {
+                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                    <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                    <th>Tên nhà thầu</th>
+                    <th class="text-center isd-table-th-action" style="width:20%">@LanguageResource.Actions</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
+
+
+

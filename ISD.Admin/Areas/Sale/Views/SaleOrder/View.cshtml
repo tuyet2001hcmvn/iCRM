@@ -1,0 +1,151 @@
+﻿@model SaleOrderView_ViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Details + " " + LanguageResource.MasterData_SaleOrder.ToLower();
+    string CurrentController = ConstController.SaleOrder;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("View", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.SaleOrderId)
+    @Html.HiddenFor(p => p.SaleOrderCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="col-md-12" id="saleorder-code">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.SaleOrderCode)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.SaleOrderCode, new { disabled = "disabled" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="panel panel-default" id="saleorder-info">
+                        <div class="panel-body">
+                            <h3>THÔNG TIN KHÁCH HÀNG</h3>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.CustomerCode)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.CustomerCode, new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.CustomerName)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.CustomerName, new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.Note)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.Note, new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.SystemNote)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.SystemNote, new { disabled = "disabled" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6" id="saleorder-info">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <h3>THÔNG TIN ĐƠN HÀNG</h3>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.StoreName)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.StoreName, new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.CreatedDate)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.CreatedDate, "{0:dd/MM/yyyy}", new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.PaidDate)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.PaidDate, "{0:dd/MM/yyyy}", new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.SubTotal)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.SubTotal, "{0:n0}", new { disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.Total)
+                                </div>
+                                <div class="col-md-9">
+                                    @Html.RequiredTextboxFor(p => p.Total, "{0:n0}", new { disabled = "disabled" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            @Html.Partial("_SaleOrderDetail", Model.detailList)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+

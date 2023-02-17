@@ -1,0 +1,53 @@
+﻿@model IEnumerable<WorkFlowViewModel>
+@{
+    string CurrentArea = ConstArea.Work;
+    string CurrentController = ConstController.WorkFlow;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.WorkFlowCode)</th>
+            <th>@Html.DisplayNameFor(p => p.WorkFlowName)</th>
+            <th>@Html.DisplayNameFor(p => p.WorkflowCategoryCode)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ImageUrl)</th>
+            <th>@Html.DisplayNameFor(p => p.CompanyCode)</th>
+            <th>@Html.DisplayNameFor(p => p.TaskStatusCode)</th>
+            <th>@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.WorkFlowCode)</td>
+                <td>@Html.DisplayFor(p => item.WorkFlowName)</td>
+                <td>@Html.DisplayFor(p => item.WorkflowCategoryCode)</td>
+                <td class="text-center">
+                    @if (item.ImageUrl != null)
+                    {
+                        <img src="/Upload/WorkFlow/@item.ImageUrl" class="image-search-view">
+                    }
+                    else
+                    {
+                        <img src="@ConstDomain.NoImage" class="image-search-view">
+                    }
+                </td>
+                <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                <td>@Html.DisplayFor(p => item.TaskStatusCode)</td>
+                <td>@Html.DisplayFor(p => item.OrderIndex)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.WorkFlowId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

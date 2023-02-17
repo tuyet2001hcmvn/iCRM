@@ -1,0 +1,187 @@
+﻿@model ISD.ViewModels.Sale.SaleOrderMasterViewModel
+@{
+    Layout = null;
+}
+<style>
+    .invoice-template {
+        margin: 0;
+        padding: 0px;
+        width: 100%;
+    }
+
+        .invoice-template div, table {
+            font-family: 'Arial';
+            font-size: 12px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-template h3 {
+            font-family: 'Arial';
+            font-size: 40px;
+            margin: 0;
+            padding: 0;
+        }
+
+        .invoice-template h4 {
+            font-family: 'Arial';
+            font-size: 14px;
+            font-weight: bold;
+            margin: 0;
+            padding: 0;
+        }
+
+            .invoice-template h4.Note {
+                font-family: 'Arial';
+                font-size: 26px;
+                padding: 0;
+            }
+
+    .text-justify {
+        text-align: justify;
+        float: left;
+    }
+</style>
+<div class="invoice-template">
+    <div style="text-align:center;">
+        @*<h4>PHIẾU BÁN XE</h4>
+            <h4>(HOẶC ĐẶT CỌC MUA XE)</h4>*@
+        <h4>PHIẾU XÁC NHẬN</h4>
+    </div>
+    <div style="clear: both"></div>
+    <div style="clear: both"></div>
+
+    @if (Model.Number != null)
+    {
+        <div style="float: left"><h4><strong>Số: @Model.Number</strong></h4></div>
+    }
+    <div style="float: right">Ngày: @Model.CreatedDateText - @Model.CreatedTimeText</div>
+    <div style="clear: both"></div>
+
+    <div style="float: left">Số ĐH: <strong>@Model.SaleOrderMasterCode</strong></div>
+    <div style="clear: both"></div>
+
+    <div style="float: left">Họ & Tên KH: <strong>@Model.CustomerName</strong></div>
+    <div style="clear: both"></div>
+
+    <div style="float: left">Đ/C: <strong>@Model.CustomerFullAddress</strong></div>
+    <div style="clear: both"></div>
+
+    @if (!string.IsNullOrEmpty(Model.TemperatureCondition))
+    {
+        <div style="float: left">Loại xe: <strong>@Model.ProductHierarchy (@Model.TemperatureCondition.Trim())</strong></div>
+    }
+    else
+    {
+        <div style="float: left">Loại xe: <strong>@Model.ProductHierarchy</strong></div>
+    }
+    <div style="float: right">Màu: <strong>@Model.MaterialFreightGroup</strong></div>
+    <div style="clear: both"></div>
+
+    @if (Model.accessoryDetail != null && Model.accessoryDetail.Count > 0)
+    {
+        <div style="float: left">Phụ kiện gắn theo xe: <strong>Có</strong></div>
+    }
+    else
+    {
+        <div style="float: left">Phụ kiện gắn theo xe: <strong>Không</strong></div>
+    }
+    <div style="clear: both"></div>
+    @*Giá Sale Nhập*@
+    <div style="float: left">Giá xuất giao:</div>
+    <div style="float: right"><strong>@Model.SalePriceText</strong></div>
+    <div style="clear: both"></div>
+
+    @*Phụ kiện*@
+    @if (Model.AccessoryTotalPrice.HasValue && Model.AccessoryTotalPrice > 0)
+    {
+        <div style="float: left">Phụ kiện:</div>
+        <div style="float: right"><strong>@Model.AccessoryTotalPriceText</strong></div>
+        <div style="clear: both"></div>
+    }
+
+    @*Lệ phí trước bạ + phí khác = Tổng lệ phí + BH Cứu hộ xe máy + Phụ kiện*@
+    <div style="float: left">Lệ phí trước bạ + phí khác:</div>
+    <div style="float: right"><strong>@Model.FeeTotalText</strong></div>
+    <div style="clear: both"></div>
+
+    @*Chiết khấu*@
+    @if (Model.Discount.HasValue && Model.Discount > 0)
+    {
+        <div style="float: left">Tổng tiền:</div>
+        <div style="float: right"><strong>@Model.Total.FormatCurrency()</strong></div>
+        <div style="clear: both"></div>
+
+        <div style="float: left">Chiết khấu:</div>
+        <div style="float: right"><strong>@Model.Discount.FormatCurrency()</strong></div>
+        <div style="clear: both"></div>
+    }
+
+    <div style="float: left">Tổng cộng:</div>
+    <div style="float: right"><strong>@Model.TotalPriceText</strong></div>
+    <div style="clear: both"></div>
+
+    <table style="width:100%;">
+        <tbody>
+            <tr>
+                <td>
+                    Khách hàng đồng ý
+                </td>
+                <td>
+                    NV bán hàng
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    (kí & ghi rõ họ tên)
+                </td>
+                <td valign="top">
+                    (kí & ghi rõ họ tên)
+                    <br /><br /><br /><br /><br />
+                    <br /><br /><br /><br /><br />
+                    @Model.SalesEmployeeName
+                </td>
+            </tr>
+            @*<tr>
+                    <td>
+                        NV lắp ráp
+                    </td>
+                    <td>
+                        NV giao dịch giấy tờ
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (kí & ghi rõ họ tên)
+                    </td>
+                    <td>
+                        (kí & ghi rõ họ tên)
+                    </td>
+                </tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>
+                <tr><td>&nbsp;</td></tr>*@
+        </tbody>
+    </table>
+    <div style="clear: both"></div>
+
+    <div style="float: left"><strong><u>Lưu ý</u></strong></div>
+    <div style="clear: both"></div>
+    @*<div class="text-justify">*Nhân viên giao dịch giấy tờ phải cập nhật đầy đủ này gửi về Công ty (Hằng lớn) để đối chiếu sổ sách.</div>
+        <div style="clear: both"></div>*@
+    @*<div class="text-justify">*Giá trên không bao gồm lệ phí biển số.</div>
+        <div style="clear: both"></div>*@
+    <div class="text-justify">*Khách hàng thanh toán tại quầy giao dịch.</div>
+    <div style="clear: both"></div>
+    <div class="text-justify">*Khách hàng đã đồng ý giá xuất theo hóa đơn.</div>
+    <div style="clear: both"></div>
+    @*<div class="text-justify">*Khách hàng đã đồng ý, kiểm tra xe thay đổi màu sơn, bánh căm hoặc mâm và xe không trầy xước (nếu có); kiểm tra phụ kiện đồ nghề trước khi nhận xe ra khỏi chi nhánh.</div>
+        <div style="clear: both"></div>*@
+    <div class="text-justify">*Xe mới 100% được bảo hành theo tiêu chuẩn của nhà sản xuất; khách hàng không được đổi trả xe, sau khi ra khỏi chi nhánh.</div>
+    <div style="clear: both"></div>
+    @*<div class="text-justify">*Xe đã đặt cọc khách hàng không được trả lại hoặc đổi xe khác chủng loại.</div>
+        <div style="clear: both"></div>
+        <div class="text-justify">*Nếu khách hàng đặt cọc quá 10 ngày không đến lấy xe coi như mất tiền cọc.</div>*@
+</div>

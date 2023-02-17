@@ -1,0 +1,93 @@
+﻿@model KanbanViewModel
+@{
+    ViewBag.Title = LanguageResource.Kanban;
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.Kanban;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.KanbanCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.KanbanCode, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.KanbanName)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.KanbanName, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.Actived)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("Actived", new List<SelectListItem>()
+                                   {
+                                       new SelectListItem(){Text = LanguageResource.Dropdownlist_All, Value = ""},
+                                       new SelectListItem(){Text = LanguageResource.Actived_True, Value = "true"},
+                                       new SelectListItem(){Text = LanguageResource.Actived_False, Value = "false"}
+                                   }, new { @class = "font-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section scripts {
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+            ISD.SearchInitial("@CurrentUrl");
+            ISD.ShowMessage(window.location.href);
+        });
+    </script>
+}

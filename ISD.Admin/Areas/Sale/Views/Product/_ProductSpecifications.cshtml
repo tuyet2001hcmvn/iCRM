@@ -1,0 +1,34 @@
+﻿@model IEnumerable<ProductViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.SpecificationsId)</th>
+            <th>@Html.DisplayNameFor(p => p.SpecificationsDescription)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="specificationsList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @Html.Partial("_ProductSpecificationsInner", Model)
+        }
+    </tbody>
+    <tfoot id="specifications">
+        <tr>
+            <td></td>
+            <td>
+                @Html.DropDownList("SpecificationsId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+            </td>
+            <td>
+                <input type="text" class="form-control text-box single-line" id="SpecificationsDescription" name="SpecificationsDescription" />
+            </td>
+            <td class="text-center">
+                <a class="btn btn-warning btn-add-row" data-row="2">
+                    @LanguageResource.Btn_AddRow
+                </a>
+            </td>
+        </tr>
+    </tfoot>
+</table>

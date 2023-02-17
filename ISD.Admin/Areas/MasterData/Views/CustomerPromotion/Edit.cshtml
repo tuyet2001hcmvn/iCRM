@@ -1,0 +1,221 @@
+﻿@model PromotionViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_CustomerPromotion.ToLower();
+    string CurrentController = ConstController.CustomerPromotion;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.PromotionId)
+    @Html.HiddenFor(p => p.PromotionCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PromotionCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PromotionCode, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PromotionCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("CatalogCode",null,LanguageResource.Dropdownlist_Choose,new { @class= "form-control select-mission" })
+                                @*<select class="js-example-templating form-control">
+
+                                    <option value="call">Gọi điện thoại</option>
+                                    <option value="opportunity">Cơ hội</option>
+                                    <option value="demo">Demo</option>
+                                    <option value="email">Email</option>
+                                    <option value="fax">Fax</option>
+                                    <option value="trackingImp">Theo dõi thực hiện</option>
+                                    <option value="lunch">Ăn trưa</option>
+                                    <option value="appointment">Cuộc hẹn</option>
+                                    <option value="note">Lưu ý</option>
+                                    <option value="delivery">Giao hàng</option>
+                                    <option value="socialnetwork">Mạng xã hội</option>
+                                    <option value="thank">Bày tỏ lòng biết ơn</option>
+                                </select>*@
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PromotionName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PromotionName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EffectFromDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EffectFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EffectToDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EffectToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ImageUrl)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ImageUrl, new { type = "file" })
+                                @if (Model.ImageUrl != null)
+                                {
+                                    <img id="image-edit-view" src="/Upload/CustomerPromotion/@Model.ImageUrl" />
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @class = "ckeditor", @id = "Description" })
+                                <script type="text/javascript">
+                                    CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        width: 800
+                                    });
+                                    CKEDITOR.instances['Description'].on('change',
+                                        function () { CKEDITOR.instances['Description'].updateElement() });
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Notes)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Notes)
+                            </div>
+                        </div>
+
+                        <div>
+                            <!--mode 1: Create-->
+                            @*@Html.Action("_ProductPromotion", new { id = Model.PromotionId, mode = 2 })*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+
+        //btn-del-product: delete row in product promotion table
+        $(document).on("click", ".btn-del-product", function () {
+            var id = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/CustomerPromotion/DeleteProduct?STT=" + id,
+                data: $("#frmEdit").serialize(),
+                success: function (data) {
+                    $("#productList").html(data);
+                }
+            });
+        });
+
+        //Thêm hình ảnh trước select option
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var baseUrl = "/Images";
+            var $state = $(
+                '<span><img src="' + baseUrl + '/task_' + state.element.value.toLowerCase() + '.png" class="img-flag" /> ' + state.text + '</span>'
+            );
+            return $state;
+        };
+        $(".select-mission").select2({
+            templateResult: formatState
+        });
+        //end thêm ảnh trước select ooption
+
+
+        //btn-add-row: insert new row product
+        $(document).on("click", ".btn-add-row", function () {
+            var ProductId = $("#ProductId").val();
+
+            if (ProductId == "") {
+                alertPopup(false, '@LanguageResource.Promotion_AlertProductId');
+            }
+            else {
+                var frm = $("#frmEdit");
+                if (frm.valid()) {
+                    $.ajax({
+                        url: "/MasterData/CustomerPromotion/InsertProduct",
+                        data: frm.serialize(),
+                        type: 'POST',
+                        success: function (htmlData) {
+                            $("#productList").html(htmlData);
+                            $('#frmCreate select').val($('#frmCreate select option:first-child').val()).trigger("change");
+                        },
+                        error: function (xhr, status, error) {
+                            alertPopup(false, xhr.responseText);
+                        }
+                    });
+                }
+                else {
+                    //show error invalid
+                    var validator = frm.validate();
+                    $.each(validator.errorMap, function (index, value) {
+                        console.log('Id: ' + index + ' Message: ' + value);
+                    });
+                }
+            }
+            return false;
+        });
+    </script>
+}
+
+
+

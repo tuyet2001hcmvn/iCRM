@@ -1,0 +1,34 @@
+﻿@model IEnumerable<ISD.ViewModels.Sale.PaymentMethodViewModel>
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="installmentList[@k].PaymentMethodId" value="@item.PaymentMethodId" />
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @item.PaymentMethodCode
+            </td>
+            <td>
+                @item.PaymentMethodAccount
+            </td>
+            <td class="text-center">
+                @HtmlExtensions.ActivedIcon(item.Actived)
+            </td>
+            <td class="text-center">
+                <a class="btn btn-default btn-edit-modal" data-id="@item.PaymentMethodId">
+                    @LanguageResource.Btn_Edit
+                </a>
+            </td>
+        </tr>
+    }
+}

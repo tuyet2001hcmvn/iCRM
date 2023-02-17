@@ -1,0 +1,92 @@
+﻿@model TemplateAndGiftMemberViewModel
+<div class="panel-body">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProfileCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.ProfileCode, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProfileName)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.ProfileName, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    <a class="btn btn-primary btn-search" id="btn-search-member"><i class="fa fa-search"></i> Tìm kiếm</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div style="display: flex;" class="col-md-1">
+            <label style=" padding-right: 5px; padding-top: 5px;">Xem </label>
+            <select id="changeViewRowMember" style="display: block; width: 100%; min-height: 30px;margin-bottom:5px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <label style=" padding-left: 5px; padding-top: 5px;">mục </label>
+        </div>
+        <div class="pull-right">
+
+            <div id="pagination" class="pagination">
+            </div>
+        </div>
+
+    </div>
+    <div id="divMembers">
+        <table class="table table-bordered table-striped table-hover dataTable no-footer">
+            <thead class="isd-table-header">
+                <tr>
+                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                    <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                    <th>@Html.DisplayNameFor(p => p.ProfileForeignCode)</th>
+                    <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                    <th class="text-center">@LanguageResource.Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tblData">
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        <p id="tblCount"></p>
+    </div>
+</div>
+<script id="data-template" type="x-tmpl-mustache">
+      <tr>
+         <td class="text-center">{{i}}</td>
+         <td><a target="_blank" href="/Customer/Profile/Edit/{{ProfileId}}">{{ProfileCode}}</a></td>
+         <td>{{ProfileForeignCode}}</td>
+        <td><a target="_blank" href="/Customer/Profile/Edit/{{ProfileId}}">{{ProfileName}}</a></td>
+        <td class="text-center">
+        <a target="_blank" class="btn btn-default btn-edit detail-popup" data-campaignid="@ViewBag.Id" data-profileid="{{ProfileId}}"><i class="fa fa-pencil"></i>Cập nhật</a>
+        </td>
+      </tr>
+</script>
+
+

@@ -1,0 +1,30 @@
+﻿@model IEnumerable<ConfigurationViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ImageUrl)</th>
+            <th class="text-center action-width">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="bannerList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @Html.Partial("_BannerInner", Model)
+        }
+    </tbody>
+    <tfoot id="banner">
+        <tr>
+            <td></td>
+            <td class="text-center">
+                <input type="file" class="form-control text-box single-line" id="ImageUrl" name="ImageUrl" />
+            </td>
+            <td class="text-center">
+                <a class="btn btn-warning btn-add-row" data-row="4">
+                    @LanguageResource.Btn_AddRow
+                </a>
+            </td>
+        </tr>
+    </tfoot>
+</table>

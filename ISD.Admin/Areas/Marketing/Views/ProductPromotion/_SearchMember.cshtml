@@ -1,0 +1,76 @@
+﻿@model ProductPromotionDetailViewModel
+@{
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentController = ConstController.ProductPromotion;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="col-md-5">
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.TooltipLabelFor(p => p.ProfileCode)
+        </div>
+        <div class="col-md-8">
+            @Html.RequiredTextboxFor(p => p.ListProfileCode, new { placeholder = "Vd: 1000001;1000002"})
+        </div>
+    </div>
+</div>
+<div class="col-md-5">
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.TooltipLabelFor(p => p.CustomerAccountGroup)
+        </div>
+        <div class="col-md-8">
+            @Html.DropDownListFor(p => p.CustomerAccountGroup, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+        </div>
+    </div>
+</div>
+<div class="col-md-5">
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.TooltipLabelFor(p => p.ProfileName)
+        </div>
+        <div class="col-md-8">
+            @Html.RequiredTextboxFor(p => p.ProfileName)
+        </div>
+    </div>
+</div>
+<div class="col-md-5">
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.TooltipLabelFor(p => p.isHasSAPCode)
+        </div>
+        <div class="col-md-8">
+            <select class="form-control" name="isHasSAPCode">
+                <option selected>@LanguageResource.Dropdownlist_All</option>
+                <option value="true">Có mã SAP</option>
+                <option value="false">Không có mã SAP</option>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="col-md-5">
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+        </div>
+        <div class="col-md-8">
+            @Html.DropDownListFor(p => p.SalesEmployeeCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+        </div>
+    </div>
+</div>
+<div class="col-md-5">
+    <div class="form-group">
+        <div class="col-md-4">
+            @Html.TooltipLabelFor(p => p.RolesCode)
+        </div>
+        <div class="col-md-8">
+            @Html.DropDownListFor(p => p.RolesCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+        </div>
+    </div>
+</div>
+<div class="form-group">
+    <div class="col-md-8 col-md-offset-5">
+        <a class="btn btn-primary btn-search-member" data-controller="@CurrentUrl" data-searchtype="ProductPromotion" id="btn-search-member"><i class="fa fa-search"></i> Tìm kiếm</a>
+        <a class="btn btn-primary btn-reload-member" data-controller="@CurrentUrl" data-searchtype="ProductPromotion" id="btn-reload-member"><i class="fa fa-refresh" aria-hidden="true"></i> </a>
+    </div>
+</div>

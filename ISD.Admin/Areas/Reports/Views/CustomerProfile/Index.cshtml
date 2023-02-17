@@ -1,0 +1,15 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = "Profile khách hàng";
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left"> @ViewBag.Title</h1>
+</div>
+
+<div class="content">
+    <div id="divReport">
+        @Html.Action("DocumentViewerPartial", "CustomerProfile", new { ProfileCode = ViewBag.ProfileCode, CompanyCode = ViewBag.CompanyCode, Year = ViewBag.Year })
+    </div>
+</div>

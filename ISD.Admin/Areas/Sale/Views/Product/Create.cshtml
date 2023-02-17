@@ -1,0 +1,392 @@
+﻿@model ProductViewModel
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.Sale_Product.ToLower();
+    string CurrentController = ConstController.Product;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+
+                    <div id="exTab1" class="nav-tabs-custom">
+                        <ul class="nav nav-pills nav nav-tabs">
+                            <li class="active">
+                                <a href="#tab1" data-toggle="tab">@LanguageResource.Product_Tab1</a>
+                            </li>
+                            @*<li>
+                                <a href="#tab3" data-toggle="tab">@LanguageResource.Product_Tab3</a>
+                            </li>
+                            <li>
+                                <a href="#tab4" data-toggle="tab">@LanguageResource.Product_Tab4</a>
+                            </li>*@
+                        </ul>
+
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane active" id="tab1">
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ERPProductCode)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ERPProductCode)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ProductCode)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ProductCode)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ProductGroups)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ProductGroups)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ProductName)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ProductName)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ParentCategoryId)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownList("ParentCategoryId", null, new { @class = " form-control with-search" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.CategoryId)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownList("CategoryId", null, new { @class = " form-control with-search" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Unit)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.Unit)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Color)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownList("Color", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.SampleValue)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.SampleValue)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ProcessingValue)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ProcessingValue)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Price)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.Price)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-9">
+                                        <div class="btn btn-default btn-seemore" style="width: 100%">
+                                            @LanguageResource.SeeMore
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="hidden-fields hidden">
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.Description)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.Description)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.Thickness)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.Thickness)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.Allocation)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.Allocation)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.Grade)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.Grade)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.Surface)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.Surface)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.NumberOfSurface)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.NumberOfSurface)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.GrossWeight)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.GrossWeight)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.NetWeight)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.NetWeight)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.WeightUnit)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.WeightUnit)
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            @Html.TooltipLabelFor(p => p.OrderIndex)
+                                        </div>
+                                        <div class="col-md-9">
+                                            @Html.RequiredTextboxFor(p => p.OrderIndex)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ImageUrl)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ImageUrl, new { @type = "file" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.isHot)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButtonIs(p => p.isHot)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.isInventory)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButtonIs(p => p.isInventory)
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.WarrantyId)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownListFor(p => p.WarrantyId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Actived)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButton(p => p.Actived)
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            @*<div class="tab-pane" id="tab3">
+                                @Html.Action("_ProductSpecifications", new { mode = 1 })
+                            </div>
+
+                            <div class="tab-pane" id="tab4">
+                                @Html.Action("_ProductAccessory", new { mode = 1 })
+                            </div>*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+            $("#ParentCategoryId").trigger("change");
+            //Product.GetCategory();
+            //Product.GetAccessory();
+            //Product.ChangeColor();
+        });
+
+        //insert new row
+        $(document).on("click", ".btn-add-row", function () {
+            var index = $(this).data("row");
+            if (index == 0) {
+                Product.AddRow("InsertProductColor", "colorList", "color");
+            }
+            else if (index == 1) {
+                Product.AddRow("InsertProductProperties", "propertiesList", "properties");
+            }
+            else if (index == 2) {
+                Product.AddRow("InsertProductSpecifications", "specificationsList", "specifications");
+            }
+            else {
+                Product.AddRow("InsertProductAccessory", "accessoryList", "accessory");
+            }
+        });
+
+        //delete row
+        $(document).on("click", ".btn-del-product", function () {
+            var index = $(this).data("row");
+            var STT = $(this).data("id");
+
+            if (index == 0) {
+                Product.DeleteRow("DeleteProductColor", "colorList", STT);
+            }
+            else if (index == 1) {
+                Product.DeleteRow("DeleteProductProperties", "propertiesList", STT);
+            }
+            else if (index == 2) {
+                Product.DeleteRow("DeleteProductSpecifications", "specificationsList", STT);
+            }
+            else {
+                Product.DeleteRow("DeleteProductAccessory", "accessoryList", STT);
+            }
+        });
+
+        //GetCategoryByBrand
+        @*$(document).on("change", "#ParentCategoryId", function () {
+            var ParentCategoryId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Sale/Product/GetCategoryByBrand",
+                data: {
+                    ParentCategoryId: ParentCategoryId
+                },
+                success: function (jsonData) {
+                    $("#CategoryId").html("");
+                    if (jsonData.length > 0) {
+                        $.each(jsonData, function (index, value) {
+                            $("#CategoryId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                    else {
+                        $("#CategoryId").append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                    }
+                }
+            });
+        });*@
+
+        $(document).on("click", ".btn-seemore", function () {
+            var hasClass = $(".hidden-fields").hasClass("hidden");
+            if (hasClass == true) {
+                $(".hidden-fields").removeClass("hidden");
+                $(".btn-seemore").html("@LanguageResource.SeeLess");
+            }
+            else {
+                $(".hidden-fields").addClass("hidden");
+                $(".btn-seemore").html("@LanguageResource.SeeMore");
+            }
+        });
+    </script>
+}
+

@@ -1,0 +1,287 @@
+﻿@model NewsViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_News.ToLower();
+    string CurrentController = ConstController.News;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.NewsId)
+    @Html.HiddenFor(p => p.NewsCategoryId)
+    @Html.HiddenFor(p => p.NewsCode)
+    @Html.HiddenFor(p => p.ImageUrl)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?Type=" + string.Format("{0}", ViewBag.Type))
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        @*<div class="form-group">
+            <div class="col-md-3">
+                <div class="label-wrapper">
+                    <label class="control-label" for="Title">Danh mục bảng tin</label>
+                </div>
+            </div>
+            <div class="col-md-6">
+                @Html.DropDownList("NewsCategoryId", null, LanguageResource.Dropdownlist_Menu, new { @class = "form-control with-search" })
+            </div>
+        </div>*@
+                        @if ((int)ViewBag.Type == ConstNewsCategoryCode.BangTin)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.Summary)
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("Summary", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.Detail)
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("Detail", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.TypeNews)
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("TypeNews", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Title)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.RequiredTextboxFor(p => p.Title)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.TextAreaFor(p => p.Description, new { @class = "ckeditor", @id = "Description" })
+                                <script type="text/javascript">
+                                    var editor = CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+                                        filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+                                        //filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+                                        //filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+                                        filebrowserWindowWidth: '1000',
+                                        filebrowserWindowHeight: '700'
+                                    });
+                                    CKFinder.setupCKEditor(editor, '/ckfinder/');
+                                    CKEDITOR.instances['Description'].on('change',
+                                        function () { CKEDITOR.instances['Description'].updateElement() });
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ScheduleTime)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.RequiredTextboxFor(p => p.ScheduleTime, "{0:yyyy-MM-ddTHH:mm:ss}", new { type = "datetime-local" })
+                            </div>
+                        </div>
+                        @if ((int)ViewBag.Type == ConstNewsCategoryCode.BangTin)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.EndTime)
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.RequiredTextboxFor(p => p.EndTime, "{0:yyyy-MM-ddTHH:mm:ss}", new { type = "datetime-local" })
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper">
+                                    <label class="control-label" for="Hiển thị">Hiển thị</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="label-radio">
+                                    @Html.CheckBox("isShowOnWeb", Model.isShowOnWeb)
+                                    <label for="isShowOnWeb" class="label-radio" style="padding-right:30px;">Web</label>
+                                    @Html.CheckBox("isShowOnMobile", Model.isShowOnMobile)
+                                    <label for="isShowOnMobile" class="label-radio">Mobile</label>
+                                </div>
+                            </div>
+                        </div>
+                        @if ((int)ViewBag.Type == ConstNewsCategoryCode.BangTin)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.TooltipLabelFor(p => p.GroupEmployeeId)
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("GroupEmployeeId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper">
+                                        <label class="control-label" for="RelatedNews">Liên quan</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <select id="SelectNewsId" name="SelectNewsId" class="form-control" multiple>
+                                        @foreach (var item in Model.RelatedNews)
+                                        {
+                                            <option value="@item.NewsId" selected>@item.Title</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+
+                        }
+                        else
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper">
+                                        <label class="control-label" for="Hiển thị">Thông báo cho</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @{ int i = -1;}
+                                    @foreach (var item in (List<CompanyModel>)ViewBag.Company)
+                                    {
+                                        i++;
+                                        bool checkMapping = false;
+                                        foreach (var item2 in (List<News_Company_Mapping>)ViewBag.News_Company_Mapping)
+                                        {
+                                            if (item2.CompanyId == item.CompanyId)
+                                            {
+                                                checkMapping = true;
+                                                break;
+                                            }
+                                        }
+                                        if (checkMapping == true)
+                                        {
+
+
+                                            <input type="hidden" id="listCompany[@i].CompanyId" name="listCompany[@i].CompanyId" value="@item.CompanyId" />
+                                            <label for="listCompany[@i].isCheckComp" class="label-radio" style="padding-right:30px;">
+                                                @Html.CheckBox("listCompany[" + i + "].isCheckComp", true)
+                                                @item.CompanyShortName
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <input type="hidden" id="listCompany[@i].CompanyId" name="listCompany[@i].CompanyId" value="@item.CompanyId" />
+                                            <label for="listCompany[@i].isCheckComp" class="label-radio" style="padding-right:30px;">
+                                                @Html.CheckBox("listCompany[" + i + "].isCheckComp")
+                                                @item.CompanyShortName
+                                            </label>
+                                        }
+                                    }
+
+
+
+                                </div>
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-6">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ImageUrl)
+                            </div>
+                            <div class="col-md-6">
+                                @*@Html.RequiredTextboxFor(p => p.ImageUrl, new { type = "file" })*@
+                                <input type="file" name="FileUpload" />
+                                @if (Model.ImageUrl != null)
+                                {
+                                    <img id="image-edit-view" src="/Upload/News/Thum/@Model.ImageUrl" />
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section head {
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script src="~/ckfinder/ckfinder.js"></script>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+            Select2_CustomFor_RelatedNews("/MasterData/News/SearchNewSelect2", "#SelectNewsId", "@ViewBag.Type");
+            CKEDITOR.replace('txtCkeditor');
+
+        });
+        function Select2_CustomFor_RelatedNews(url, selector, type, type2, isHasValue) {
+            $(selector).select2({
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            search: params.term, // search term
+                            page: params.page,
+                            type: type,
+                            type2: type2,
+                        };
+                    },
+                    processResults: function (data) {
+                        if (!isHasValue) {
+                            return {
+                                results: $.map(data, function (obj) {
+                                    return { id: obj.value, text: obj.text };
+                                })
+                            };
+                        }
+
+                    }
+                    , minimumInputLength: 0
+
+                }
+            });
+        }
+    </script>
+}

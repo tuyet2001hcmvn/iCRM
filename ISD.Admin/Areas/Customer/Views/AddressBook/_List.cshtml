@@ -1,0 +1,30 @@
+﻿@model IEnumerable<AddressBookViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.AddressBook
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-addressbook"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentAddressBook">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.AddressTypeCode)</th>
+                <th>@Html.DisplayNameFor(p => p.CountryCode)</th>
+                <th>@Html.DisplayNameFor(p => p.Address)</th>
+                <th>@Html.DisplayNameFor(p => p.Note)</th>
+                <th>@Html.DisplayNameFor(p => p.isMain)</th>
+                <th>@Html.DisplayNameFor(p => p.CreateUser)</th>
+                <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

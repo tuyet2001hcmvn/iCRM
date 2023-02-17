@@ -1,0 +1,26 @@
+﻿@model IEnumerable<SponsViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-spons" data-type="@ViewBag.TypeSpons"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentSpons@(ViewBag.TypeSpons)">
+    <table class="table table-bordered table-striped table-hover no-footer" id="tableSpons">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.Descriptions)</th>
+                <th>@Html.DisplayNameFor(p => p.Value)</th>
+                <th>@Html.DisplayNameFor(p => p.Time)</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

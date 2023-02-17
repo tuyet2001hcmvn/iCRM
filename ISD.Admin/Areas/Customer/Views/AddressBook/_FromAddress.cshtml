@@ -1,0 +1,154 @@
+﻿@model AddressBookViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.AddressBookId == Guid.Empty)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @LanguageResource.AddressBook.ToLower()</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@LanguageResource.Update @LanguageResource.AddressBook.ToLower()</h4>
+    }
+</div>
+<div class="modal-body">
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmAddressBook" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ProfileId)
+        @Html.HiddenFor(p => p.AddressBookId)
+
+        <div id="divAlertWarningAddressBook" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="content">
+
+            <div class="box-body">
+                <div class="form-group row">
+                    <div class=" col-md-6">
+                        @Html.TooltipLabelFor(p => p.AddressTypeCode)
+
+                        @*@Html.DropDownList("AddressTypeCode", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control" })*@
+                        @Html.RequiredDropDownListFor(p => p.AddressTypeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TooltipLabelFor(p => p.CountryCode)
+                        @foreach (var item in (SelectList)ViewBag.CountryCode)
+                        {
+                            <label class="label-radio">
+                                @Html.RadioButton("CountryCode", item.Value, item.Selected)
+                                @item.Text
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group row" id="addressVN" >
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.ProvinceId)
+                            @Html.RequiredDropDownListFor(p => p.ProvinceId, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.DistrictId)
+                            @Html.DropDownListFor(p => p.DistrictId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.WardId)
+                            @Html.DropDownListFor(p => p.WardId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+                </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            @Html.TooltipLabelFor(p => p.Address)
+
+                            @Html.RequiredTextboxFor(p => p.Address)
+                        </div>
+                    </div>
+
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        @Html.TooltipLabelFor(p => p.Address2)
+
+                        @Html.RequiredTextboxFor(p => p.Address2)
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-12">
+                        @Html.TooltipLabelFor(p => p.Note)
+
+                        @Html.TextAreaFor(p => p.Note, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-md-12 checkbox">
+                    <label class="Bold">@Html.CheckBox("isMain") @LanguageResource.AddressBook_isMain</label>
+                </div>
+
+            </div>
+        </div>
+
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-addressbook" data-add-success-call-back="ReloadAddressBookList">@LanguageResource.Btn_Save</button>
+</div>
+
+<script>
+    $(document).on("click", "#frmAddressBook input[name='CountryCode']:checked", function () {
+        var countryCode = $(this).val();
+        if (countryCode == "@ConstCountryCode.QT") {
+            $("#frmAddressBook #addressVN").hide();
+        } else {
+            $("#frmAddressBook #addressVN").show();
+        }
+    });
+
+    //Change Province
+    $(document).on("change", "#frmAddressBook select[name='ProvinceId']", function () {
+        var ProvinceId = $(this).val();
+        $.ajax({
+            type: "POST",
+            url: "/MasterData/District/GetDistrictByProvince",
+            data: {
+                ProvinceId: ProvinceId
+            },
+            success: function (jsonData) {
+                var $district = $("#frmAddressBook select[name='DistrictId']");
+                $district.html("");
+                $district.append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                $.each(jsonData, function (index, value) {
+                    $district.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                });
+
+                $district.trigger("change");
+            }
+        });
+    });
+    //change ward
+    $(document).on("change", "#frmAddressBook select[name='DistrictId']", function () {
+        var DistrictId = $(this).val();
+
+        $.ajax({
+            type: "POST",
+            url: "/MasterData/Ward/GetWardByDistrict",
+            data: {
+                DistrictId: DistrictId
+            },
+            success: function (jsonData) {
+                var $ward = $("#frmAddressBook select[name = 'WardId']")
+                $ward.html("");
+                $ward.append("<option value=''>@LanguageResource.Dropdownlist_Choose</option>");
+                $.each(jsonData, function (index, value) {
+                    $ward.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                });
+            }
+        });
+    });
+</script>

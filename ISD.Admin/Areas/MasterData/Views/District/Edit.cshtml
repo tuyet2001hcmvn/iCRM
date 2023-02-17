@@ -1,0 +1,134 @@
+﻿@model DistrictViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_District.ToLower();
+    string CurrentController = ConstController.District;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.DistrictId)
+    @Html.HiddenFor(p => p.ProvinceId)
+    @Html.HiddenFor(p => p.DistrictCodeValid)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProvinceName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ProvinceName, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DistrictCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.DistrictCode)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Appellation)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("Appellation", new List<SelectListItem>(){
+                                        new SelectListItem(){ Text = LanguageResource.District_ThanhPho,
+                                                              Value = LanguageResource.District_ThanhPho },
+                                        new SelectListItem(){ Text = LanguageResource.District_Quan,
+                                                              Value = LanguageResource.District_Quan },
+                                        new SelectListItem(){ Text = LanguageResource.District_Huyen,
+                                                              Value = LanguageResource.District_Huyen },
+                                        new SelectListItem(){ Text = LanguageResource.District_ThiXa,
+                                                              Value = LanguageResource.District_ThiXa },
+                                    }, new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DistrictName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.DistrictName)
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.RegisterVAT)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.RegisterVAT, "{0:n2}")
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.VehicleRegistrationSignature)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.VehicleRegistrationSignature)
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+            $("#RegisterVAT").val($("#RegisterVAT").val().replace(/,/g, '.'));
+        });
+    </script>
+}
+
+
+

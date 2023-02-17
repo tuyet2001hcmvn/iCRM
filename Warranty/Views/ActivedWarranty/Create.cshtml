@@ -1,0 +1,387 @@
+﻿@model WarrantyCustomerViewModel
+@{
+    var productList = (List<ProductActivedViewModel>)ViewBag.ProductActivedList;
+    bool isSerial = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["isSerial"]);
+}
+<div class="card card-lightblue">
+    <div class="card-header">
+        <h3 class="card-title">
+            @ViewBag.Title
+        </h3>
+    </div>
+    @using (Html.BeginForm("Create", null, FormMethod.Post, new { id = "frmCreate" }))
+    {
+        @Html.AntiForgeryToken();
+        @Html.Hidden("Serial", (string)ViewBag.Serial)
+        @Html.Hidden("OrderDelivery", (string)ViewBag.OrderDelivery)
+        @Html.Hidden("CustomerTypeCode", (string)ViewBag.CustomerTypeCode)
+        <div class="card-body">
+            @if (productList.Count > 0)
+            {
+                <div>
+                    @Html.Partial("_ProductActivedList", productList)
+                </div>
+            }
+            <div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-10">
+                        <div id="divProfileName">
+                            @Html.TooltipLabelFor(p => p.ProfileName)
+                        </div>
+                        <div id="Profile_General_ProfileName_BC">
+                            @Html.ValidationMessageFor(p => p.ProfileName, null, new { @class = "validation-text" })
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;Tên&quot;" id="Profile_General_ProfileName" name="ProfileName" type="text" value="@Model.ProfileName">
+                                <div class="required-icon">
+                                    <div class="text">*</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-7">
+                        @Html.TooltipLabelFor(p => p.ProfileShortName)
+                        @Html.TextBoxFor(p => p.ProfileShortName, new { @class = "form-control", @id = "Profile_General_ProfileShortName" })
+                    </div>
+                    <div class="col-sm-3 profileC">
+                        @Html.TooltipLabelFor(p => p.Age)
+                        @Html.DropDownList("Age", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                    </div>
+                    <div class="col-sm-3 profileB">
+                        @Html.TooltipLabelFor(p => p.TaxNo)
+                        @Html.RequiredTextboxFor(p => p.TaxNo)
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-10">
+                        <div class="profileC">
+                            @Html.TooltipLabelFor(p => p.Phone)
+                        </div>
+                        <div class="profileB">
+                            @Html.TooltipLabelFor(p => p.CompanyNumber, "PhoneBusiness")
+                        </div>
+                        <div class="profileC">
+                            @Html.ValidationMessageFor(p => p.Phone, null, new { @class = "validation-text" })
+                            <div class="phoneControls">
+                                <div class="input-group phonenumber input-group-required">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                    </div>
+                                    <input class=" form-control" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;SĐT liên hệ&quot;" id="Profile_General_Phone" name="Phone" type="text" value="@Model.Phone" placeholder="">
+                                    <div class="required-icon">
+                                        <div class="text">*</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profileB">
+                            @Html.ValidationMessageFor(p => p.CompanyNumber, null, new { @class = "validation-text" })
+                            <div class="phoneControls">
+                                <div class="input-group phonenumber input-group-required">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                    </div>
+                                    <input class=" form-control" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;SĐT công ty&quot;" id="Profile_General_Phone" name="CompanyNumber" type="text" value="@Model.Phone" placeholder="Chỉ nhập sđt bàn hoặc số hotline, không nhập số cá nhân">
+                                    <div class="required-icon">
+                                        <div class="text">*</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-10">
+                        <div class="profileC">
+                            @Html.TooltipLabelFor(p => p.Email)
+                        </div>
+                        <div class="profileB">
+                            @Html.TooltipLabelFor(p => p.Email, "EmailBusiness")
+                        </div>
+                        @Html.ValidationMessageFor(p => p.Email, null, new { @class = "validation-text" })
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"> <i class="fa fa-envelope"></i></span>
+                            </div>
+                            @Html.TextBoxFor(p => p.Email, new { @class = " form-control text-box single-line" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group profileB row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-10">
+                        @Html.TooltipLabelFor(p => p.Website)
+                        @Html.TextBoxFor(p => p.Website, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.RequiredProvinceId)
+                        @Html.RequiredIfDropDownListFor(p => p.ProvinceId, null, LanguageResource.Dropdownlist_Choose)
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.DistrictId)
+                        @Html.DropDownList("DistrictId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.WardId)
+                        @Html.DropDownList("WardId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-10">
+                        @Html.TooltipLabelFor(p => p.Address)
+                        @Html.TextBoxFor(p => p.Address, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-1">
+                        <input type="text" style="display: none" />
+                    </div>
+                    <div class="col-md-10">
+                        @Html.TooltipLabelFor(p => p.Note)
+                        @Html.TextBoxFor(p => p.Note, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="profileB" style="width: 85%; margin: auto;">
+                <div class="card card-success card-outline">
+                    <div class="card-header with-border">
+                        <h3 class="card-title">@LanguageResource.Profile_Contact</h3>
+                    </div>
+                    <div class="card-body row">
+                        <div class="form-group col-sm-12 profileB col-form-label">
+                            @Html.TooltipLabelFor(p => p.ContactName)
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line valid" id="ContactName" name="ContactName" type="text" value="" placeholder="" aria-describedby="ContactName-error">
+                                <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div><span class="validation-text field-validation-valid" data-valmsg-for="ContactName" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-6 profileB col-form-label">
+                            @Html.TooltipLabelFor(p => p.Phone)
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line valid" id="PhoneBusiness" name="PhoneBusiness" type="text" value="" placeholder="" aria-describedby="PhoneBusiness-error">
+                                <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div><span class="validation-text field-validation-valid" data-valmsg-for="PhoneBusiness" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-6 profileB col-form-label">
+                            @Html.TooltipLabelFor(p => p.Email)
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line valid" id="EmailBusiness" name="EmailBusiness" type="text" value="" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-6 profileB col-form-label">
+                            @Html.TooltipLabelFor(p => p.DepartmentCode)
+                            @Html.DropDownList("DepartmentCode", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+                        <div class="form-group col-sm-6 profileB col-form-label">
+                            @Html.TooltipLabelFor(p => p.PositionB)
+                            @Html.DropDownList("PositionB", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <a id="btn-register" class="btn bg-blue float-right">Đăng ký</a>
+        </div>
+    }
+
+</div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+        $(document).ready(function () {
+            $('select').select2({
+                width: 'resolve'
+            });
+            $('select').not('.with-search').select2({
+                minimumResultsForSearch: Infinity,
+            });
+            $(".with-search").select2();
+
+            CustomerTypeCodeChangeInitial();
+
+            $("input[name='CustomerTypeCode']").trigger("change");
+
+            $("#btn-register").click(function () {
+                ActivedProduct();
+            });
+        });
+
+        function CustomerTypeCodeChangeInitial() {
+            $(document).on("change", "input[name='CustomerTypeCode']", function () {
+                var customerType = $("input[name='CustomerTypeCode']").val();
+                $("#TypeCode").val(customerType);
+                //Doanh nghiep
+                if (customerType == "B") {
+                    $(".profileB").show();
+                    $(".profileC").hide();
+
+                    $("#divProfileName label").html("@LanguageResource.Profile_NameBussiness");
+                    //Add placeholder: cảnh báo nhập sđt + email
+                    $("#Email").attr("placeholder", "@Html.Raw(LanguageResource.EmailBusiness_Hint)");
+                    $("input[name=CompanyNumber]").attr("placeholder", "@Html.Raw(LanguageResource.PhoneBusiness_Hint)");
+                } else {
+                    //Ca nhan
+                    $(".profileB").hide();
+                    $(".profileC").show();
+                    $("#divProfileName label").html("@Html.Raw(LanguageResource.Profile_NameCustomer)");
+                    //Remove placeholder: cảnh báo nhập sđt + email
+                    $("#Email").attr("placeholder", "");
+                    $("input[name=Phone]").attr("placeholder", "");
+                }
+            });
+        }
+        function setProfileNameWidth(cssClass) {
+            //Nếu 7 remove 8
+            if ($("#Profile_General_ProfileName_BC").hasClass("col-sm-8") && cssClass == "col-sm-7") {
+                $("#Profile_General_ProfileName_BC").removeClass("col-sm-8");
+                $("#Profile_General_ProfileName_BC").addClass("col-sm-7");
+            } else if ($("#Profile_General_ProfileName_BC").hasClass("col-sm-7") && cssClass == "col-sm-8") {
+                $("#Profile_General_ProfileName_BC").removeClass("col-sm-7");
+                $("#Profile_General_ProfileName_BC").addClass("col-sm-8");
+            }
+        }
+
+        function setMessage(message, type) {
+            if (Array.isArray(message)) {
+                var mes = "";
+                $.each(message, function (i, item) {
+                    //Code cũ
+                    //arr[i] = { err: item.ErrorMessage }
+                    if (item.ErrorMessage != undefined && item.ErrorMessage != "") {
+                        mes += item.ErrorMessage + "<br/>";
+                    }
+                    else {
+                        mes += item;
+                    }
+                });
+                Swal.fire({
+                    html: mes,
+                    icon: type,
+                });
+            }
+            else {
+                Swal.fire({
+                    html: message,
+                    icon: type,
+                });
+            }
+        }
+        function ActivedProduct() {
+            var $btn = $("#btn-register");
+            let isValid = true;
+            $btn.html('<div class="spinner-border text-light" role="status"></div>');
+            $('.activateQty').each(function () {
+                let row = $(this).data("row");
+                let isActivate = $('input[name="productActivedList[' + row + '].isActivedWarranty"]:checked').val();
+                if (isActivate) {
+                    let activateQty = $('input[name="productActivedList[' + row + '].ActivationQuantity"]').val();
+                    let quantity = $('input[name="productActivedList[' + row + '].Quantity"]').val();
+                    if (activateQty && quantity) {
+                        let activateQtyValue = parseInt(activateQty);
+                        let quantityValue = parseInt(quantity);
+                        if (quantityValue < activateQtyValue) {
+                            isValid = false;
+                        }
+                    }
+                }
+            });
+
+            if (!isValid) {
+                setMessage("Không thể kích hoạt vượt quá số lượng!", "error");
+                $btn.html("Đăng ký");
+            } else {
+                  $.ajax({
+                type: "POST",
+                url: "/ActivedWarranty/Create",
+                data: $("#frmCreate").serializeArray(),
+                success: function (response) {
+                    $btn.html("Đăng ký");
+                    if (response.Success == true) {
+                        Swal.fire({
+                            html: response.Data,
+                            icon: "info",
+                        }).then((result) => {
+                            if (result.isConfirmed == true) {
+                                window.location.href = "/";
+                            }
+                        });
+                    } else {
+                        setMessage(response.Data, "error");
+                    }
+                }
+            });
+            }
+
+        }
+        //change province
+        $(document).on("change", "select[name='ProvinceId']", function () {
+            var ProvinceId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/ActivedWarranty/GetDistrictByProvince",
+                data: {
+                    ProvinceId: ProvinceId
+                },
+                success: function (jsonData) {
+                    $("#DistrictId").html("");
+                    $("#DistrictId").append("<option value=''>-- Vui lòng chọn --</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    $("#DistrictId").trigger("change");
+                }
+            });
+        });
+        //change district
+        $(document).on("change", "select[name='DistrictId']", function () {
+            var DistrictId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/ActivedWarranty/GetWardByDistrict",
+                data: {
+                    DistrictId: DistrictId
+                },
+                success: function (jsonData) {
+                    var $ward = $("#WardId")
+                    $ward.html("");
+                    $ward.append("<option value=''>-- Vui lòng chọn --</option>");
+                    $.each(jsonData, function (index, value) {
+                        $ward.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+            });
+        });
+    </script>
+} 

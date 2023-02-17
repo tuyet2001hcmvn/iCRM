@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ConfigurationViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="bannerList[@k].BannerId" value="@item.BannerId" />
+        <input type="hidden" name="bannerList[@k].ImageUrl" value="@item.ImageUrl" />
+
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td class="text-center">
+                <img class="img-banner" src="/Upload/Banner/@item.ImageUrl" />
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-row" data-id="@item.BannerId" data-row="4">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

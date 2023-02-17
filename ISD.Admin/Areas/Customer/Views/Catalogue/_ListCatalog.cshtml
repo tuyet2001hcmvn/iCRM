@@ -1,0 +1,45 @@
+﻿@model IEnumerable<DeliveryViewModel>
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.Customer_Catalogue
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" href="/Warehouse/StockDelivery/Create?ProfileId=@ViewBag.ProfileId&TaskId=@ViewBag.TaskId&DeliveryType=CTL" target="_blank">
+            <i class="fa fa-plus-square"></i> @LanguageResource.DeliveryCatalogue
+        </a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentCatalogue">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th class="text-center">@Html.DisplayNameFor(p => p.DeliveryCode)</th>
+                <th>@Html.DisplayNameFor(p => p.StoreName)</th>
+                <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                @if (ViewBag.TaskId != null)
+                {
+                    <th>@Html.DisplayNameFor(p => p.Summary)</th>
+                }
+                <th>@Html.DisplayNameFor(p => p.CreateByName)</th>
+                <th class="text-right">@Html.DisplayNameFor(p => p.DocumentDate)</th>
+                @if (ViewBag.TaskId != null)
+                {
+                    <th class="text-right">@Html.DisplayNameFor(p => p.Total)</th>
+                }
+                <th class="text-center">@LanguageResource.Actived</th>
+                @if (ViewBag.TaskId != null)
+                {
+                    <th class="text-center">@LanguageResource.Actions</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContentCatalog")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
+
+

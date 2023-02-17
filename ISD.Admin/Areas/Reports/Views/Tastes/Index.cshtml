@@ -1,0 +1,53 @@
+﻿@using ISD.Constant;
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Customer_CustomerTaste;
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.Tastes;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    bool isExportPermisstion = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Export);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+        @HtmlExtensions.BackButton(null,null)
+    </h1>
+
+    <div class="pull-right">
+        @if (isExportPermisstion)
+        {
+            <button class="btn btn-success" onclick="ExportPivotGrid('ExportToXLSX_DataAware');"><i class="fa fa-download"></i> Export</button>
+        }
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body" style="overflow-x:scroll;">
+                    @using (Html.BeginForm("ActionPlaceHolder", null, FormMethod.Post, new { id = "PivotGridExportForm" }))
+                    {
+                        @Html.Action("PivotGridPartial")
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section scripts {
+    <script>
+        function ExportPivotGrid(actionName) {
+            var form = $('#PivotGridExportForm'),
+                defaultAction = form.attr('action'),
+                newAction = defaultAction.replace('ActionPlaceHolder', actionName);
+            form.attr('action', newAction);
+            form.submit();
+            form.attr('action', defaultAction);
+        }
+    </script>
+    }

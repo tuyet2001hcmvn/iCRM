@@ -1,0 +1,1183 @@
+﻿@model OpportunityReportSearchViewModel
+@{
+    /**/
+
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_OpportunityReport;
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.OpportunityReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+
+    var SalesEmployeeList1 = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList1;
+    var SalesEmployeeList2 = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList2;
+    var SalesEmployeeList3 = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList3;
+
+    var pivotSetting = (List<FieldSettingModel>)ViewBag.PivotSetting;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <a id="btn-export-pivot" class="btn btn-success btn-export" href="#"><i class="fa fa-download"></i> Export</a>
+        @*<div class="btn-group">
+                <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+                <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>
+                    <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+                </ul>
+            </div>*@
+
+        <a class="btn btn-info" id="btn-export-pdf"><i class="fa fa-print"></i> In báo cáo</a>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+@if (Model != null)
+{
+    @Html.Hidden("ProvinceIdValue", Model.ProvinceId)
+    @Html.Hidden("DistrictIdValue", Model.DistrictId)
+}
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search", }))
+                                        {
+                                            <div id="frm-product" class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.Investor)
+                                                            </div>
+                                                            @*<div class="col-md-8 position-relative dropdown-absolute pl-0">
+                                                                    <div class="input-group">
+                                                                        @Html.HiddenFor(p => p.Investor)
+                                                                            @Html.RequiredTextboxFor(p => p.InvestorName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                                                            <a class="input-group-addon btn btn-danger btn-del-profile" data-field="Investor">
+                                                                                <i class="fa fa-close"></i>
+                                                                            </a>
+                                                                            <a class="input-group-addon btn btn-default btn-get-profile" data-toggle="modal" data-field="Investor">
+                                                                                <i class="fa fa-ellipsis-h"></i>
+                                                                            </a>
+                                                                    </div>
+                                                                </div>*@
+
+                                                        <div class="col-md-8 multi pl-0">
+                                                            @*<select id="Investor" name="Investor" class="form-control">
+                                                                @if (string.IsNullOrEmpty((string)ViewBag.InvestorName))
+                                                                {
+                                                                    /*Giá trị mặc định ban đầu*/
+                                                                    <option value="">@LanguageResource.Dropdownlist_All</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    /*Giá trị được chọn sau khi filter*/
+                                                                    <option value="@ViewBag.InvestorId">@ViewBag.InvestorName</option>
+                                                                }
+                                                            </select>*@
+                                                            @Html.DropDownList("Investor", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+
+
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper">
+                                                                    <label class="control-label" for="IsTopInvestor">
+                                                                        Top chủ đầu tư
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.DropDownListFor(x => x.IsTopInvestor, new List<SelectListItem>()
+                                                                {
+                                                                   new SelectListItem(){Text = LanguageResource.Dropdownlist_All, Value = ""},
+                                                                   new SelectListItem(){Text = LanguageResource.Yes, Value = "true"},
+                                                                   new SelectListItem(){Text = LanguageResource.No, Value = "false"}
+                                                                }, new { @class = "font-control" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.Designer)
+                                                            </div>
+                                                            @*<div class="col-md-8 position-relative dropdown-absolute pl-0">
+                                                                    <div class="input-group">
+                                                                        @Html.HiddenFor(p => p.Designer)
+                                                                        @Html.RequiredTextboxFor(p => p.DesignerName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                                                        <a class="input-group-addon btn btn-danger btn-del-profile" data-field="Designer">
+                                                                            <i class="fa fa-close"></i>
+                                                                        </a>
+                                                                        <a class="input-group-addon btn btn-default btn-get-profile" data-toggle="modal" data-field="Designer">
+                                                                            <i class="fa fa-ellipsis-h"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>*@
+                                                        <div class="col-md-8 multi pl-0">
+                                                            @*<select id="Designer" name="Designer" class="form-control">
+            @if (string.IsNullOrEmpty((string)ViewBag.DesignerName))
+            {
+                /*Giá trị mặc định ban đầu*/
+                <option value="">@LanguageResource.Dropdownlist_All</option>
+            }
+            else
+            {
+                /*Giá trị được chọn sau khi filter*/
+                <option value="@ViewBag.DesignerId">@ViewBag.DesignerName</option>
+            }
+        </select>*@
+                                                            @Html.DropDownList("Designer", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.Contractor)
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @*<select id="Contractor" name="Contractor" class="form-control">
+            @if (string.IsNullOrEmpty((string)ViewBag.ContractorName))
+            {
+                /*Giá trị mặc định ban đầu*/
+                <option value="">@LanguageResource.Dropdownlist_All</option>
+            }
+            else
+            {
+                /*Giá trị được chọn sau khi filter*/
+                <option value="@ViewBag.ContractorId">@ViewBag.ContractorName</option>
+            }
+        </select>*@
+                                                                @Html.DropDownList("Contractor", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.Competitor)
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("Competitor", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+
+                                                                @*<select id="Competitor" name="Competitor" class="form-control" multiple>
+                                                                    @if (string.IsNullOrEmpty((string)ViewBag.CompetitorName))
+                                                                    {
+                                                                        /*Giá trị mặc định ban đầu*/
+                                                                        <option value="">@LanguageResource.Dropdownlist_All</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        /*Giá trị được chọn sau khi filter*/
+                                                                        <option value="@ViewBag.CompetitorId">@ViewBag.CompetitorName</option>
+                                                                    }
+                                                                </select>*@
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SaleOfficeCode)
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("SaleOfficeCode", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.ProvinceId)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.DistrictId)
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("DistrictId", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    @*<div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.SaleSpecCode)
+                                                                </div>
+                                                                <div class="col-md-8 pl-0">
+                                                                    @Html.DropDownList("SaleSpecCode", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                                                </div>
+                                                            </div>
+                                                        </div>*@
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.OpportunityName)
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @*@Html.TextBoxFor(p => p.OpportunityName, new { @class = "form-control" })*@
+                                                                @*<select id="Opportunity" name="Opportunity" class="form-control" multiple>
+                                                                    @if (string.IsNullOrEmpty((string)ViewBag.OpportunityName))
+                                                                    {
+                                                                        /*Giá trị mặc định ban đầu*/
+                                                                        <option value="">@LanguageResource.Dropdownlist_All</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        /*Giá trị được chọn sau khi filter*/
+                                                                        <option value="@ViewBag.OpportunityId">@ViewBag.OpportunityName</option>
+                                                                    }
+                                                                </select>*@
+                                                                @Html.DropDownList("Opportunity", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.OpportunityPercentage)
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("OpportunityPercentage", null, LanguageResource.Dropdownlist_All, new { @class = " form-control", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">NV kinh doanh</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("PersonInChargeSales", new MultiSelectList(SalesEmployeeList1, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_All, new { @class = " form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">NV Sales Admin</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("PersonInChargeSalesAdmin", new MultiSelectList(SalesEmployeeList2, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_All, new { @class = " form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">NV Spec</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("PersonInChargeSpec", new MultiSelectList(SalesEmployeeList3, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_All, new { @class = " form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">Phòng ban</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("RolesCode", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">@LanguageResource.ProjectStatus</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 multi pl-0">
+                                                                @Html.DropDownList("OpportunityStatusType", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">Năm hoàn thiện</label></div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.FromCompleteYear)
+                                                            </div>
+                                                            <div class="col-md-6 pl-0">
+                                                                @Html.DropDownList("FromCompleteYear", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.ToCompleteYear)
+                                                            </div>
+                                                            <div class="col-md-6 pl-0">
+                                                                @Html.DropDownList("ToCompleteYear", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">Giá trị (Tỷ)</label></div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.FromValue)
+                                                            </div>
+                                                            <div class="col-md-6 pl-0">
+                                                                @Html.TextBoxFor(p => p.FromValue, new { @class = "form-control" })
+                                                                <div class="text-right display-for" id="FromValueDisplay"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.ToValue)
+                                                            </div>
+                                                            <div class="col-md-6 pl-0">
+                                                                @Html.TextBoxFor(p => p.ToValue, new { @class = "form-control" })
+                                                                <div class="text-right display-for" id="ToValueDisplay"></div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="frm-button" class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-2 col-md-offset-2">
+                                                            <select id="SearchProjectMode" name="SearchProjectMode">
+                                                                <option value="short">Tên ngắn</option>
+                                                                <option value="full">Tên đầy đủ</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-md-6 col-md-offset-3 input-group">
+                                                            <select id="SearchTemplateId" name="SearchTemplateId">
+                                                                <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                            </select>
+                                                            <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                                <a href="#" class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                                <a href="#" class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                            </span>
+                                                            <a href="#" id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body" style="overflow-x:scroll;">
+                    @Html.Action("OpportunityPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section components {
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @*@Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")*@
+    </div>
+    <div class="divProfilePopup"></div>
+}
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplateNew.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl", "@CurrentController");
+
+            $("#FromValue").trigger("input");
+            $("#ToValue").trigger("input");
+
+            @*Select2_CustomFor_CRM("/Customer/Profile/SearchProfileByType", "#Investor", "@ConstCustomerGroupCode.CHUDAUTU");
+            Select2_CustomFor_CRM("/Customer/Profile/SearchProfileByType", "#Designer", "@ConstCustomerGroupCode.THIETKE", "@ConstCustomerGroupCode.THIETKE_THICONG");
+            Select2_CustomFor_CRM("/Customer/Profile/SearchProfileByType", "#Contractor", "@ConstCustomerGroupCode.TONGTHAU");*@
+
+
+            @*Select2_CustomFor_CRM("/Customer/Profile/SearchProfileByType", "#Investor", "@ConstProfileType.IsInvestor");
+            Select2_CustomFor_CRM("/Customer/Profile/SearchProfileByType", "#Designer", "@ConstProfileType.IsDesigner");
+            Select2_CustomFor_CRM("/Customer/Profile/SearchProfileByType", "#Contractor", "@ConstProfileType.IsContractor");*@
+
+            //Select2_CustomFor_CRM("/Customer/Profile/SearchCompetitor", "#Competitor");
+            //Select2_CustomFor_CRM("/Customer/Profile/SearchOpportunity", "#Opportunity");
+        });
+
+
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+            //Xác suất
+            var opportunityPercentageList = $('#OpportunityPercentage').val();
+            if (opportunityPercentageList != null && opportunityPercentageList.length > 0) {
+                var opportunityPercentage = {};
+                opportunityPercentage['OpportunityPercentage'] = opportunityPercentageList;
+                $.extend(true, arr, opportunityPercentage);
+            }
+            //Chủ đầu tư
+            var InvestorList = $('#Investor').val();
+            if (InvestorList != null && InvestorList.length > 0) {
+                var investor = {};
+                investor['Investor'] = InvestorList;
+                $.extend(true, arr, investor);
+            }
+
+            //Thiết kế
+            var DesignerList = $('#Designer').val();
+            if (DesignerList != null && DesignerList.length > 0) {
+                var designer = {};
+                designer['Designer'] = DesignerList;
+                $.extend(true, arr, designer);
+            }
+
+            //tổng thầu
+            var ContractorList = $('#Contractor').val();
+            if (ContractorList != null && ContractorList.length > 0) {
+                var contractor = {};
+                contractor['Contractor'] = ContractorList;
+                $.extend(true, arr, contractor);
+            }
+
+            //Đối thủ
+            var CompetitorList = $('#Competitor').val();
+            if (CompetitorList != null && CompetitorList.length > 0) {
+                var competitor = {};
+                competitor['Competitor'] = CompetitorList;
+                $.extend(true, arr, competitor);
+            }
+
+
+            //Khu vực
+            var SaleOfficeCodeList = $('#SaleOfficeCode').val();
+            if (SaleOfficeCodeList != null && SaleOfficeCodeList.length > 0) {
+                var saleOfficeCode = {};
+                saleOfficeCode['SaleOfficeCode'] = SaleOfficeCodeList;
+                $.extend(true, arr, saleOfficeCode);
+            }
+            //Quận huyện
+            var DistrictList = $('#DistrictId').val();
+            if (DistrictList != null && DistrictList.length > 0) {
+                var district = {};
+                district['DistrictId'] = DistrictList;
+                $.extend(true, arr, district);
+            }
+
+
+            //Dự án
+            var OpportunityList = $('#Opportunity').val();
+            if (OpportunityList != null && OpportunityList.length > 0) {
+                var opportunity = {};
+                opportunity['Opportunity'] = OpportunityList;
+                $.extend(true, arr, opportunity);
+            }
+
+            //NV kinh doanh
+            var PersonInChargeSalesList = $('#PersonInChargeSales').val();
+            if (PersonInChargeSalesList != null && PersonInChargeSalesList.length > 0) {
+                var personInChargeSales = {};
+                personInChargeSales['PersonInChargeSales'] = PersonInChargeSalesList;
+                $.extend(true, arr, personInChargeSales);
+            }
+
+            //NV Sales admin
+            var PersonInChargeSalesAdminList = $('#PersonInChargeSalesAdmin').val();
+            if (PersonInChargeSalesAdminList != null && PersonInChargeSalesAdminList.length > 0) {
+                var personInChargeSalesAdmin = {};
+                personInChargeSalesAdmin['PersonInChargeSalesAdmin'] = PersonInChargeSalesAdminList;
+                $.extend(true, arr, personInChargeSalesAdmin);
+            }
+
+            //NV spec
+            var PersonInChargeSpecList = $('#PersonInChargeSpec').val();
+            if (PersonInChargeSpecList != null && PersonInChargeSpecList.length > 0) {
+                var personInChargeSpec = {};
+                personInChargeSpec['PersonInChargeSpec'] = PersonInChargeSpecList;
+                $.extend(true, arr, personInChargeSpec);
+            }
+
+            //Phòng ban
+            var RolesCodeList = $('#RolesCode').val();
+            if (RolesCodeList != null && RolesCodeList.length > 0) {
+                var rolesCode = {};
+                rolesCode['RolesCode'] = RolesCodeList;
+                $.extend(true, arr, rolesCode);
+            }
+
+            //Tình trạng dự án
+            var OpportunityStatusTypeList = $('#OpportunityStatusType').val();
+            if (OpportunityStatusTypeList != null && OpportunityStatusTypeList.length > 0) {
+                var opportunityStatusType = {};
+                opportunityStatusType['OpportunityStatusType'] = OpportunityStatusTypeList;
+                $.extend(true, arr, opportunityStatusType);
+            }
+
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            var opportunityPercentageList = $('#OpportunityPercentage').val();
+            if (opportunityPercentageList != null && opportunityPercentageList.length > 0) {
+                var opportunityPercentage = {};
+                opportunityPercentage['OpportunityPercentage'] = opportunityPercentageList;
+                $.extend(true, arr, opportunityPercentage);
+            }
+            //Chủ đầu tư
+            var InvestorList = $('#Investor').val();
+            if (InvestorList != null && InvestorList.length > 0) {
+                var investor = {};
+                investor['Investor'] = InvestorList;
+                $.extend(true, arr, investor);
+            }
+
+            //Thiết kế
+            var DesignerList = $('#Designer').val();
+            if (DesignerList != null && DesignerList.length > 0) {
+                var designer = {};
+                designer['Designer'] = DesignerList;
+                $.extend(true, arr, designer);
+            }
+
+            //tổng thầu
+            var ContractorList = $('#Contractor').val();
+            if (ContractorList != null && ContractorList.length > 0) {
+                var contractor = {};
+                contractor['Contractor'] = ContractorList;
+                $.extend(true, arr, contractor);
+            }
+
+            //Đối thủ
+            var CompetitorList = $('#Competitor').val();
+            if (CompetitorList != null && CompetitorList.length > 0) {
+                var competitor = {};
+                competitor['Competitor'] = CompetitorList;
+                $.extend(true, arr, competitor);
+            }
+
+
+            //Khu vực
+            var SaleOfficeCodeList = $('#SaleOfficeCode').val();
+            if (SaleOfficeCodeList != null && SaleOfficeCodeList.length > 0) {
+                var saleOfficeCode = {};
+                saleOfficeCode['SaleOfficeCode'] = SaleOfficeCodeList;
+                $.extend(true, arr, saleOfficeCode);
+            }
+            //Quận huyện
+            var DistrictList = $('#DistrictId').val();
+            if (DistrictList != null && DistrictList.length > 0) {
+                var district = {};
+                district['DistrictId'] = DistrictList;
+                $.extend(true, arr, district);
+            }
+
+
+            //Dự án
+            var OpportunityList = $('#Opportunity').val();
+            if (OpportunityList != null && OpportunityList.length > 0) {
+                var opportunity = {};
+                opportunity['Opportunity'] = OpportunityList;
+                $.extend(true, arr, opportunity);
+            }
+
+            //NV kinh doanh
+            var PersonInChargeSalesList = $('#PersonInChargeSales').val();
+            if (PersonInChargeSalesList != null && PersonInChargeSalesList.length > 0) {
+                var personInChargeSales = {};
+                personInChargeSales['PersonInChargeSales'] = PersonInChargeSalesList;
+                $.extend(true, arr, personInChargeSales);
+            }
+
+            //NV Sales admin
+            var PersonInChargeSalesAdminList = $('#PersonInChargeSalesAdmin').val();
+            if (PersonInChargeSalesAdminList != null && PersonInChargeSalesAdminList.length > 0) {
+                var personInChargeSalesAdmin = {};
+                personInChargeSalesAdmin['PersonInChargeSalesAdmin'] = PersonInChargeSalesAdminList;
+                $.extend(true, arr, personInChargeSalesAdmin);
+            }
+
+            //NV spec
+            var PersonInChargeSpecList = $('#PersonInChargeSpec').val();
+            if (PersonInChargeSpecList != null && PersonInChargeSpecList.length > 0) {
+                var personInChargeSpec = {};
+                personInChargeSpec['PersonInChargeSpec'] = PersonInChargeSpecList;
+                $.extend(true, arr, personInChargeSpec);
+            }
+
+            //Phòng ban
+            var RolesCodeList = $('#RolesCode').val();
+            if (RolesCodeList != null && RolesCodeList.length > 0) {
+                var rolesCode = {};
+                rolesCode['RolesCode'] = RolesCodeList;
+                $.extend(true, arr, rolesCode);
+            }
+            //Tình trạng dự án
+            var OpportunityStatusTypeList = $('#OpportunityStatusType').val();
+            if (OpportunityStatusTypeList != null && OpportunityStatusTypeList.length > 0) {
+                var opportunityStatusType = {};
+                opportunityStatusType['OpportunityStatusType'] = OpportunityStatusTypeList;
+                $.extend(true, arr, opportunityStatusType);
+            }
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+        @*$(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });*@
+
+         $(document).on("click", "#btn-view", function () {
+             var $btn = $(this);
+             $btn.button("loading")
+             var arr = {};
+             var data = $("#frmSearch").serializeArray();
+
+             var obj = {};
+             $.each(data, function (index, val) {
+                 obj[val.name] = val.value;
+                 $.extend(true, arr, obj)
+             });
+             obj["IsView"] = true;
+             $.extend(true, arr, obj);
+             obj["pivotTemplate"] = $('#TemplateId').val();
+             obj["modeSearch"] = "Recently";
+             $.extend(true, arr, obj);
+             var opportunityPercentageList = $('#OpportunityPercentage').val();
+             if (opportunityPercentageList != null && opportunityPercentageList.length > 0) {
+                 var opportunityPercentage = {};
+                 opportunityPercentage['OpportunityPercentage'] = opportunityPercentageList;
+                 $.extend(true, arr, opportunityPercentage);
+             }
+             //Chủ đầu tư
+             var InvestorList = $('#Investor').val();
+             if (InvestorList != null && InvestorList.length > 0) {
+                 var investor = {};
+                 investor['Investor'] = InvestorList;
+                 $.extend(true, arr, investor);
+             }
+
+             //Thiết kế
+             var DesignerList = $('#Designer').val();
+             if (DesignerList != null && DesignerList.length > 0) {
+                 var designer = {};
+                 designer['Designer'] = DesignerList;
+                 $.extend(true, arr, designer);
+             }
+
+             //tổng thầu
+             var ContractorList = $('#Contractor').val();
+             if (ContractorList != null && ContractorList.length > 0) {
+                 var contractor = {};
+                 contractor['Contractor'] = ContractorList;
+                 $.extend(true, arr, contractor);
+             }
+
+             //Đối thủ
+             var CompetitorList = $('#Competitor').val();
+             if (CompetitorList != null && CompetitorList.length > 0) {
+                 var competitor = {};
+                 competitor['Competitor'] = CompetitorList;
+                 $.extend(true, arr, competitor);
+             }
+
+
+             //Khu vực
+             var SaleOfficeCodeList = $('#SaleOfficeCode').val();
+             if (SaleOfficeCodeList != null && SaleOfficeCodeList.length > 0) {
+                 var saleOfficeCode = {};
+                 saleOfficeCode['SaleOfficeCode'] = SaleOfficeCodeList;
+                 $.extend(true, arr, saleOfficeCode);
+             }
+             //Quận huyện
+             var DistrictList = $('#DistrictId').val();
+             if (DistrictList != null && DistrictList.length > 0) {
+                 var district = {};
+                 district['DistrictId'] = DistrictList;
+                 $.extend(true, arr, district);
+             }
+
+
+             //Dự án
+             var OpportunityList = $('#Opportunity').val();
+             if (OpportunityList != null && OpportunityList.length > 0) {
+                 var opportunity = {};
+                 opportunity['Opportunity'] = OpportunityList;
+                 $.extend(true, arr, opportunity);
+             }
+
+             //NV kinh doanh
+             var PersonInChargeSalesList = $('#PersonInChargeSales').val();
+             if (PersonInChargeSalesList != null && PersonInChargeSalesList.length > 0) {
+                 var personInChargeSales = {};
+                 personInChargeSales['PersonInChargeSales'] = PersonInChargeSalesList;
+                 $.extend(true, arr, personInChargeSales);
+             }
+
+             //NV Sales admin
+             var PersonInChargeSalesAdminList = $('#PersonInChargeSalesAdmin').val();
+             if (PersonInChargeSalesAdminList != null && PersonInChargeSalesAdminList.length > 0) {
+                 var personInChargeSalesAdmin = {};
+                 personInChargeSalesAdmin['PersonInChargeSalesAdmin'] = PersonInChargeSalesAdminList;
+                 $.extend(true, arr, personInChargeSalesAdmin);
+             }
+
+             //NV spec
+             var PersonInChargeSpecList = $('#PersonInChargeSpec').val();
+             if (PersonInChargeSpecList != null && PersonInChargeSpecList.length > 0) {
+                 var personInChargeSpec = {};
+                 personInChargeSpec['PersonInChargeSpec'] = PersonInChargeSpecList;
+                 $.extend(true, arr, personInChargeSpec);
+             }
+
+             //Phòng ban
+             var RolesCodeList = $('#RolesCode').val();
+             if (RolesCodeList != null && RolesCodeList.length > 0) {
+                 var rolesCode = {};
+                 rolesCode['RolesCode'] = RolesCodeList;
+                 $.extend(true, arr, rolesCode);
+             }
+             //Tình trạng dự án
+             var OpportunityStatusTypeList = $('#OpportunityStatusType').val();
+             if (OpportunityStatusTypeList != null && OpportunityStatusTypeList.length > 0) {
+                 var opportunityStatusType = {};
+                 opportunityStatusType['OpportunityStatusType'] = OpportunityStatusTypeList;
+                 $.extend(true, arr, opportunityStatusType);
+             }
+             //Save localStorage
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);
+        });
+        $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+             var $btn = $(this);
+             var arr = {};
+             var data = $("#frmSearch").serializeArray();
+
+             var obj = {};
+             $.each(data, function (index, val) {
+                 obj[val.name] = val.value;
+                 $.extend(true, arr, obj)
+             });
+            obj["IsView"] = true;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            var templateId = $(this).data('id');
+            obj["pivotTemplate"] = templateId;
+            $.extend(true, arr, obj);
+            var opportunityPercentageList = $('#OpportunityPercentage').val();
+            if (opportunityPercentageList != null && opportunityPercentageList.length > 0) {
+                var opportunityPercentage = {};
+                opportunityPercentage['OpportunityPercentage'] = opportunityPercentageList;
+                $.extend(true, arr, opportunityPercentage);
+            }
+            //Chủ đầu tư
+            var InvestorList = $('#Investor').val();
+            if (InvestorList != null && InvestorList.length > 0) {
+                var investor = {};
+                investor['Investor'] = InvestorList;
+                $.extend(true, arr, investor);
+            }
+
+            //Thiết kế
+            var DesignerList = $('#Designer').val();
+            if (DesignerList != null && DesignerList.length > 0) {
+                var designer = {};
+                designer['Designer'] = DesignerList;
+                $.extend(true, arr, designer);
+            }
+
+            //tổng thầu
+            var ContractorList = $('#Contractor').val();
+            if (ContractorList != null && ContractorList.length > 0) {
+                var contractor = {};
+                contractor['Contractor'] = ContractorList;
+                $.extend(true, arr, contractor);
+            }
+
+            //Đối thủ
+            var CompetitorList = $('#Competitor').val();
+            if (CompetitorList != null && CompetitorList.length > 0) {
+                var competitor = {};
+                competitor['Competitor'] = CompetitorList;
+                $.extend(true, arr, competitor);
+            }
+
+            //Khu vực
+            var SaleOfficeCodeList = $('#SaleOfficeCode').val();
+            if (SaleOfficeCodeList != null && SaleOfficeCodeList.length > 0) {
+                var saleOfficeCode = {};
+                saleOfficeCode['SaleOfficeCode'] = SaleOfficeCodeList;
+                $.extend(true, arr, saleOfficeCode);
+            }
+
+            //Quận huyện
+            var DistrictList = $('#DistrictId').val();
+            if (DistrictList != null && DistrictList.length > 0) {
+                var district = {};
+                district['DistrictId'] = DistrictList;
+                $.extend(true, arr, district);
+            }
+
+
+            //Dự án
+            var OpportunityList = $('#Opportunity').val();
+            if (OpportunityList != null && OpportunityList.length > 0) {
+                var opportunity = {};
+                opportunity['Opportunity'] = OpportunityList;
+                $.extend(true, arr, opportunity);
+            }
+
+            //NV kinh doanh
+            var PersonInChargeSalesList = $('#PersonInChargeSales').val();
+            if (PersonInChargeSalesList != null && PersonInChargeSalesList.length > 0) {
+                var personInChargeSales = {};
+                personInChargeSales['PersonInChargeSales'] = PersonInChargeSalesList;
+                $.extend(true, arr, personInChargeSales);
+            }
+
+            //NV Sales admin
+            var PersonInChargeSalesAdminList = $('#PersonInChargeSalesAdmin').val();
+            if (PersonInChargeSalesAdminList != null && PersonInChargeSalesAdminList.length > 0) {
+                var personInChargeSalesAdmin = {};
+                personInChargeSalesAdmin['PersonInChargeSalesAdmin'] = PersonInChargeSalesAdminList;
+                $.extend(true, arr, personInChargeSalesAdmin);
+            }
+
+            //NV spec
+            var PersonInChargeSpecList = $('#PersonInChargeSpec').val();
+            if (PersonInChargeSpecList != null && PersonInChargeSpecList.length > 0) {
+                var personInChargeSpec = {};
+                personInChargeSpec['PersonInChargeSpec'] = PersonInChargeSpecList;
+                $.extend(true, arr, personInChargeSpec);
+            }
+
+            //Phòng ban
+            var RolesCodeList = $('#RolesCode').val();
+            if (RolesCodeList != null && RolesCodeList.length > 0) {
+                var rolesCode = {};
+                rolesCode['RolesCode'] = RolesCodeList;
+                $.extend(true, arr, rolesCode);
+            }
+            //Tình trạng dự án
+            var OpportunityStatusTypeList = $('#OpportunityStatusType').val();
+            if (OpportunityStatusTypeList != null && OpportunityStatusTypeList.length > 0) {
+                var opportunityStatusType = {};
+                opportunityStatusType['OpportunityStatusType'] = OpportunityStatusTypeList;
+                $.extend(true, arr, opportunityStatusType);
+            }
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+
+        $(document).on("click", ".btn-get-profile", function () {
+            var field = $(this).data("field");
+            $.ajax({
+                type: "POST",
+                url: '/Work/Task/_ProfileSearch',
+                data: {
+                    hasNoContact: true,
+                    ProfileType: 'Account'
+                },
+                success: function (html) {
+                    $(".divProfilePopup").html("");
+
+                    $(".divProfilePopup").html(html);
+                    $(".divProfilePopup input[id='SearchProfileId']").val("");
+                    $(".with-search").select2();
+
+                    $(".divProfilePopup #divProfileSearch #ProfileField").val(field);
+                    $(".divProfilePopup #divProfileSearch").modal("show");
+                }
+            });
+        });
+
+        $(document).on("click", ".btn-del-profile", function () {
+            var field = $(this).data("field");
+            if (field === "Investor") {
+                $("input[name='Investor']").val("");
+                $("input[name='InvestorName']").val("");
+            }
+            else if (field === "Designer") {
+                $("input[name='Designer']").val("");
+                $("input[name='DesignerName']").val("");
+            }
+        });
+
+        //$('#FromValue, #ToValue').inputFilter(function (value) {
+        //    return /^-?\d*$/.test(value);
+        //});
+
+        $(document).on("input", "#FromValue", function () {
+            var projectValue = $(this).val();
+            //alert(projectValue);
+            if (projectValue) {
+                var value = parseFloat(projectValue);
+                $("#FromValueDisplay").html(formatCurrency(value) + '  Tỷ');
+            }
+            else {
+                $("#FromValueDisplay").html('');
+            }
+        });
+
+        $(document).on("input", "#ToValue", function () {
+            var projectValue = $(this).val();
+            //alert(projectValue);
+            if (projectValue) {
+                var value = parseFloat(projectValue);
+                $("#ToValueDisplay").html(formatCurrency(value) + '  Tỷ');
+            }
+            else {
+                $("#ToValueDisplay").html('');
+            }
+        });
+
+        $(document).on("change", "select[name='SaleOfficeCode']", function () {
+            var SaleOfficeCode = $(this).val();
+            var ProvinceId = $("#ProvinceIdValue").val();
+            if (!ProvinceId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Customer/Profile/GetProvinceBy",
+                    data: {
+                        SaleOfficeCode: SaleOfficeCode
+                    },
+                    success: function (jsonData) {
+                        var provinceLst = jsonData.provinceList;
+
+                        $("#ProvinceId").html("");
+                        $("#ProvinceId").append("<option value=''>-- Tất cả --</option>");
+                        $.each(provinceLst, function (index, value) {
+                            $("#ProvinceId").append("<option value='" + value.ProvinceId + "'>" + value.ProvinceName + "</option>");
+                        });
+
+                        $("#ProvinceId").trigger("change");
+                        $("#ProvinceIdValue").val("");
+                        $("#DistrictIdValue").val("");
+                    }
+                });
+            }
+        });
+
+        $(document).on("change", "select[name='ProvinceId']", function () {
+            var ProvinceId = $(this).val();
+            var DistrictId = $("#DistrictIdValue").val();
+            if (!DistrictId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/MasterData/District/GetDistrictByProvince",
+                    data: {
+                        ProvinceId: ProvinceId
+                    },
+                    success: function (jsonData) {
+                        $("#DistrictId").html("");
+                        $("#DistrictId").append("<option value=''>-- Tất cả --</option>");
+                        $.each(jsonData, function (index, value) {
+                            $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+
+                        $("#DistrictId").trigger("change");
+                        $("#DistrictIdValue").val("");
+                    }
+                });
+            }
+        });
+
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInputSpecial(recentSearch) {
+            if (recentSearch.SearchProfileId != "") {
+                $("#SearchProfileCode").val(recentSearch.SearchProfileCodeRecent);
+                $("#SearchProfileName").val(recentSearch.SearchProfileNameRecent);
+                $("#SearchProfileCode").prop("disabled", true);
+            }
+            if (recentSearch.SearchProductId != "") {
+                $("#ProductCode").val(recentSearch.SearchProductCodeRecent);
+                $("#ProductName").val(recentSearch.SearchProductNameRecent);
+                $("#ProductCode").prop("disabled", true);
+            }
+        }
+    </script>
+    <script>
+        $(document).on("click", "#btn-export-pdf", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            ExportPDF();
+            setTimeout(function () {
+                $btn.button("reset");
+            }, 3000);
+        });
+        function ExportPDF() {
+
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            ////Save localStorage
+            //localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/Print", arr, true);
+        }
+    </script>
+
+
+}

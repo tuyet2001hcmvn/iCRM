@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Detail_CustomerGiftViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="chosenList[@k].STT" value="@i">
+        <input type="hidden" class="customerId" name="chosenList[@k].CustomerId" value="@item.CustomerId" />
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @item.CustomerCode
+            </td>
+            <td>
+                @item.FullName
+            </td>
+            <td class="text">
+                @item.Phone
+            </td>
+            <td>
+                @item.CustomerLoyaltyCard
+            </td>
+            <td>
+                @item.CustomerLevelName
+            </td>
+            <td>
+                @item.CumulativePoint
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-customer" data-id="@i" data-customer="@item.CustomerId">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

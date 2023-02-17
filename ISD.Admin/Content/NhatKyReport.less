@@ -1,0 +1,93 @@
+﻿#nhatKyReport .box-body {
+    /*overflow-x: scroll;*/
+}
+
+@paddingForTopLeft: 8px;
+@tangWidth: 80px;
+@canWidth: 65px;
+
+#nhatKyReport {
+    /*min-width: 1250px;*/
+    /*width: 1250px;*/
+    #reportDetails {
+        /*padding: 0 !important;*/
+    }
+
+    .my-report {
+        // AngularJS hide until DOM loaded
+        // Remember to add ng-cloak to html: <span ng-model='myModel' ng-cloak></span>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+
+        button {
+            padding: 8px 4px;
+            border-radius: 0;
+            /*width: 53px;*/
+            /*width: auto;*/
+            width: @canWidth;
+        }
+
+        .reportDiary-header {
+            color: #fff;
+            background-color: #286090;
+            border-color: #204d74;
+        }
+
+        .btn-group {
+            display: table-row;
+        }
+        // Tầng
+        .btn-group button:first-child {
+            /*width: auto;*/
+            width: @tangWidth;
+            .reportDiary-header;
+        }
+        // Căn
+        .btn-group:first-child button {
+            height: 60px;
+            .reportDiary-header;
+        }
+        // Style căn trong lưới
+        .btn-group:not(:first-child) button:not(:first-child) {
+            /*width: auto;*/
+        }
+        //Căn trong lưới hiển thị thông tin khi hover
+        .btn-group:not(:first-child) button:not(:first-child):hover:after {
+            content: attr(data-tooltip);
+            white-space: pre;
+            color: #000;
+            position: absolute;
+            /*left: 100%;*/
+            right: 50%;
+            bottom: 100%;
+            margin-left: 5px;
+            background: rgba(255,255,255,1);
+            padding: 12px;
+            border-radius: 3px;
+            text-align: left;
+            border-color: rgba(0,0,0,1);
+            border-width: thin;
+            z-index: 1000;
+        }
+        // Text Tầng/Căn góc trái trên
+        .btn-group:first-child button:first-child {
+            font-weight: bold;
+            height: 60px;
+            width: @tangWidth;
+            background-image: linear-gradient(to bottom left, transparent calc(50% - 2px), #ffffff, transparent calc(50% + 1px));
+        }
+        // Text Tầng góc trái trên
+        button span.left-table {
+            position: absolute;
+            left: @paddingForTopLeft;
+            bottom: @paddingForTopLeft;
+        }
+        // Text Căn góc trái trên
+        button span.left-table + span {
+            position: absolute;
+            right: @paddingForTopLeft;
+            top: @paddingForTopLeft;
+        }
+    }
+}

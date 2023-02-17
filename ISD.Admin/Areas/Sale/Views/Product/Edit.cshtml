@@ -1,0 +1,248 @@
+﻿@model ProductViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Sale_Product.ToLower();
+    string CurrentController = ConstController.Product;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<style>
+    #uploadTable tr td {
+        vertical-align: top;
+    }
+</style>
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.ProductId)
+    @*@Html.HiddenFor(p => p.ERPProductCode)*@
+    @Html.Hidden("ProductCodeValid", Model.ProductCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content" ng-app="myPinImageApp" ng-controller="myPinImageAppController">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+
+                    <div id="exTab1" class="nav-tabs-custom">
+                        <ul class="nav nav-pills nav nav-tabs">
+                            <li class="active">
+                                <a href="#tab1" data-toggle="tab">@LanguageResource.Product_Tab1</a>
+                            </li>
+                            @*<li>
+                                    <a href="#tab2" data-toggle="tab">@LanguageResource.Product_Tab2</a>
+                                </li>
+                                <li>
+                                    <a href="#tab3" data-toggle="tab">@LanguageResource.Product_Tab3</a>
+                                </li>
+                                <li>
+                                    <a href="#tab4" data-toggle="tab">@LanguageResource.Product_Tab4</a>
+                                </li>
+                                <li>
+                                    <a href="#tab5" data-toggle="tab">@LanguageResource.Product_Tab5</a>
+                                </li>
+                                <li>
+                                    <a href="#tab6" data-toggle="tab">@LanguageResource.Product_Tab6</a>
+                                </li>*@
+                        </ul>
+
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane active" id="tab1">
+                                @Html.Partial("_ProductGeneral")
+
+                                @*<hr />
+                                    <h4>@LanguageResource.Product_Color</h4>
+                                    <div id="ProductColorList">
+                                        @Html.Action("_ProductColor", new { ProductId = Model.ProductId, mode = 2 })
+                                    </div>
+
+                                    <hr />
+                                    <div>
+                                        <h4>@LanguageResource.Product_PriceInfo</h4>
+                                        @Html.Action("_ProductPrice", new { ProductId = Model.ProductId })
+                                    </div>
+
+                                    <hr />
+                                    <div>
+                                        <h4>@LanguageResource.Product_StockInfo</h4>
+                                        @Html.Action("_ProductWarehouse", new { ProductId = Model.ProductId })
+                                    </div>*@
+                            </div>
+
+                            @*Đặc tính nổi bật*@
+                            @*<div class="tab-pane" id="tab2">
+                                    @Html.Action("_ProductProperties2", new { ProductId = Model.ProductId, mode = 2 })
+                                </div>*@
+
+                            @*Thông số kỹ thuật*@
+                            @*<div class="tab-pane" id="tab3">
+
+                                    @Html.Action("_ProductSpecifications", new { ProductId = Model.ProductId, mode = 2 })
+                                </div>
+
+                                <div class="tab-pane" id="tab4">
+                                    @Html.Action("_ProductAccessory", new { ProductId = Model.ProductId, mode = 2 })
+                                </div>
+
+                                <div class="tab-pane" id="tab5">
+                                    @Html.Action("_ProductPromotion", new { ProductId = Model.ProductId })
+                                </div>
+
+                                <div class="tab-pane" id="tab6">
+                                    @Html.Action("_ProductCustomerPromotion", new { ProductId = Model.ProductId })
+                                </div>*@
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section components {
+    <!-- Modal Popup Image Detail -->
+    <div id="divImageDetails" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content text-center">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title"></h4>
+                    <h4 class="product-color"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="frmUploadImage">
+                        <table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th class="color-input">@Html.DisplayNameFor(p => p.ColorStyleImage)</th>
+                                    <th class="color-input">@Html.DisplayNameFor(p => p.isDefault)</th>
+                                    <th class="text-center action-width">@LanguageResource.Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detailColorList"></tbody>
+                            <tfoot id="detailColor">
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <input type="file" class="form-control text-box single-line" id="DetailImage" name="DetailImage" />
+                                    </td>
+                                    <td></td>
+                                    <td class="text-center">
+                                        <a class="btn btn-warning btn-add-image">
+                                            @LanguageResource.Btn_AddRow
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    @*REGION: Use AngularJS for InsertProductProperties (Đặc tính nổi bật: chọn điểm trên hình)*@
+    @*<script src="~/Scripts/Product/PinImage.js"></script>*@
+    @*END REGION*@
+
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+            //Product.GetCategory();
+            //Product.GetAccessory();
+            //Product.ChangeColor();
+            //Product.PopupAddImage();
+        });
+
+        @*$(document).on("change", "#ParentCategoryId", function () {
+            var ParentCategoryId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Sale/Product/GetCategoryByBrand",
+                data: {
+                    ParentCategoryId: ParentCategoryId
+                },
+                success: function (jsonData) {
+                    $("#CategoryId").html("");
+                    if (jsonData.length > 0) {
+                        $.each(jsonData, function (index, value) {
+                            $("#CategoryId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                    else {
+                        $("#CategoryId").append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                    }
+                }
+            });
+        });*@
+
+        //insert new row
+        $(document).on("click", ".btn-add-row", function () {
+            var index = $(this).data("row");
+            if (index == 0) {
+                Product.AddRow("InsertProductColor", "colorList", "color");
+            }
+            else if (index == 1) {
+                Product.AddRow("InsertProductProperties", "propertiesList", "properties");
+            }
+            else if (index == 2) {
+                Product.AddRow("InsertProductSpecifications", "specificationsList", "specifications");
+            }
+            else {
+                Product.AddRow("InsertProductAccessory", "accessoryList", "accessory");
+            }
+        });
+
+        //delete row
+        $(document).on("click", ".btn-del-product", function () {
+            var index = $(this).data("row");
+            var STT = $(this).data("id");
+
+            if (index == 0) {
+                Product.DeleteRow("DeleteProductColor", "colorList", STT);
+            }
+            else if (index == 1) {
+                Product.DeleteRow("DeleteProductProperties", "propertiesList", STT);
+            }
+            else if (index == 2) {
+                Product.DeleteRow("DeleteProductSpecifications", "specificationsList", STT);
+            }
+            else {
+                Product.DeleteRow("DeleteProductAccessory", "accessoryList", STT);
+            }
+        });
+
+        $(document).on("click", ".btn-seemore", function () {
+            var hasClass = $(".hidden-fields").hasClass("hidden");
+            if (hasClass == true) {
+                $(".hidden-fields").removeClass("hidden");
+                $(".btn-seemore").html("@LanguageResource.SeeLess");
+            }
+            else {
+                $(".hidden-fields").addClass("hidden");
+                $(".btn-seemore").html("@LanguageResource.SeeMore");
+            }
+        });
+    </script>
+}
+
+
+

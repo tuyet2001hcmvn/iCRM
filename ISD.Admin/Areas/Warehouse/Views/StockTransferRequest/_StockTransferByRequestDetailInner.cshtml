@@ -1,0 +1,61 @@
+﻿
+@model IEnumerable<TransferDetailViewModel>
+@{
+    int i = 0;
+    int k = -1;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+
+        string background_color = "";
+
+<tr class="@background_color">
+    <td class="text-center">
+        @i
+        <input type="hidden" name="transferDetailList[@k].STT" value="@i">
+        <input type="hidden" name="transferDetailList[@k].ProductId" value="@item.ProductId">
+        <input type="hidden" name="transferDetailList[@k].ProductCode" value="@item.ProductCode">
+        <input type="hidden" name="transferDetailList[@k].ProductName" value="@item.ProductName">
+        <input type="hidden" name="transferDetailList[@k].FromStockId" value="@item.FromStockId">
+        <input type="hidden" name="transferDetailList[@k].FromStockName" value="@item.FromStockName">
+        <input type="hidden" name="transferDetailList[@k].ToStockId" value="@item.ToStockId">
+        <input type="hidden" name="transferDetailList[@k].ToStockCode" value="@item.ToStockCode">
+        <input type="hidden" name="transferDetailList[@k].ToStockName" value="@item.ToStockName">
+        <input type="hidden" name="transferDetailList[@k].Quantity" value="@item.Quantity">
+        <input type="hidden" name="transferDetailList[@k].Price" value="@item.Price">
+        <input type="hidden" name="transferDetailList[@k].DetailNote" value="@item.DetailNote">
+        <input type="hidden" name="transferDetailList[@k].UnitPrice" class="transferDetailList-UnitPrice" value="@item.UnitPrice" disabled data-row="@k">
+        @*<input type="hidden" name="transferDetailList[@k].RequestQuantity" value="@item.RequestQuantity"/>*@
+    </td>
+    <td>
+        @Html.DisplayFor(p => item.ProductCode)
+    </td>
+    <td>
+        @Html.DisplayFor(p => item.ProductName)
+    </td>
+    <td class="text-right">
+        @Html.DisplayFor(p => item.RequestQuantity) 
+    </td>
+    <td class="text-right">
+        @Html.DisplayFor(p => item.TransferredQuantity)
+    </td>
+    <td class="text-right">
+        @Html.DisplayFor(p => item.RemainingQuantity)
+    </td>
+    <td class="text-right">
+        @Html.DisplayFor(p => item.TransferQuantity)
+    </td>
+    <td class="text-center">
+
+        <a class="btn btn-danger btn-del-proDetail" data-row="@i" data-id="@item.ProductId">
+            @LanguageResource.Btn_Delete
+        </a>
+    </td>
+</tr>
+    }
+}
+

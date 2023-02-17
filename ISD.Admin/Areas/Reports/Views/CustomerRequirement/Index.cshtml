@@ -1,0 +1,732 @@
+﻿@model AppointmentSearchViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = "BÁO CÁO NHU CẦU KHÁCH HÀNG ĐẾN SHOWROOM";
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.CustomerRequirement;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <div class="btn-group">
+            <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+            <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>
+                <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                                        {
+                                            <div class="panel-body">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-12 select-filter multi input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-play" aria-hidden="true"></i></span>
+                                                            <select class="Filters" name="Filters" multiple="multiple">
+                                                                @foreach (var item in (List<DropdownlistFilter>)ViewBag.Filters)
+                                                                {
+                                                                    <option value="@item.FilterCode">@item.FilterName</option>
+                                                                }
+                                                            </select>
+                                                            <label class="input-group-addon filter-hidden">
+                                                                <input type="checkbox" name="CheckAll" id="CheckAll" />
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper">
+                                                                    <label class="control-label" for="TaskCode">@LanguageResource.ID</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(p => p.TaskCode, new { @class = "form-control text-box single-line" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.ProfileId)
+                                                            </div>
+                                                            <div class="col-md-8 position-relative dropdown-absolute">
+                                                                @Html.HiddenFor(p => p.ProfileId)
+                                                                <div class="input-group">
+                                                                    @Html.RequiredTextboxFor(p => p.ProfileName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                                                    <a class="input-group-addon btn btn-danger btn-del-profile">
+                                                                        <i class="fa fa-close"></i>
+                                                                    </a>
+                                                                    <a class="input-group-addon btn btn-default btn-get-profile" data-toggle="modal">
+                                                                        <i class="fa fa-ellipsis-h"></i>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CompanyId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.CompanyId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.StoreId)
+                                                            </div>
+                                                            <div class="col-md-8 multi">
+                                                                @Html.DropDownListFor(p => p.StoreId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row"></div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SalesEmployeeCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CustomerSourceCode)
+                                                            </div>
+                                                            <div class="col-md-8 multi">
+                                                                @Html.DropDownListFor(p => p.CustomerSourceCode, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row"></div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CustomerGroupCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownList("CustomerGroupCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CommonDate)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.CommonDate, null, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.FromDate)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @if (Model.CommonDate != "Custom")
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.FromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @disabled = "disabled" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.FromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.ToDate)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @if (Model.CommonDate != "Custom")
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.ToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @disabled = "disabled" })
+                                                                }
+                                                                else
+                                                                {
+                                                                    @Html.TextBoxFor(model => model.ToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group hidden hidden_CustomerClassCode">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CustomerClassCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.CustomerClassCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-5 hidden hidden_SaleOfficeCode">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SaleOfficeCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SaleOfficeCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 hidden hidden_CustomerTypeCode">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CustomerTypeCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.CustomerTypeCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5 hidden hidden_Age">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper">
+                                                                    <label class="control-label">@LanguageResource.Profile_Age</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownList("Age", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 hidden hidden_TaskStatusId">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.TaskStatusId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.TaskStatusId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 hidden hidden_Phone">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.Phone)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(p => p.Phone, new { @class = "form-control text-box single-line" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5 hidden hidden_TaxNo">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.TaxNo)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.TextBoxFor(p => p.TaxNo, new { @class = "form-control text-box single-line" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-5 hidden hidden_CustomerCareerCode">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CustomerCareerCode)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownList("CustomerCareerCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.CommonCreateDate)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(p => p.CommonCreateDate, null, new { @class = "form-control with-search" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.CreateFromDate)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @if (Model.CommonCreateDate != "Custom")
+                                                                    {
+                                                                        @Html.TextBoxFor(model => model.CreateFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @disabled = "disabled" })
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.TextBoxFor(model => model.CreateFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.CreateToDate)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @if (Model.CommonCreateDate != "Custom")
+                                                                    {
+                                                                        @Html.TextBoxFor(model => model.CreateToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", @disabled = "disabled" })
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.TextBoxFor(model => model.CreateToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class=" row col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-5 col-md-offset-4 input-group">
+                                                            <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                                                <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                            </select>
+                                                            <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                                <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                                <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                            </span>
+                                                            <a id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+                                                            
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+               
+                <div class="panel-body" style="overflow-x:scroll;">
+
+                    @Html.Action("CustomerRequirementPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loading-modal"></div>
+<div class="delete-confirm"></div>
+@section components {
+    <div class="divProfilePopup"></div>
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+}
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                console.log(recentSearch);
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl","@CurrentController");
+            ISD.ShowMessage(window.location.href);
+            $(".ico-help").hide();
+            $(".Filters").select2({
+                multiple: true,
+                placeholder: "Thêm các trường tìm kiếm..."
+            });
+            $(".select-filter .select2 .select2-search__field").css("width", "200px");
+            ISDCacheInput.Init(currentPageId);
+        });
+        $(document).on("change", ".Filters", function () {
+            var arr = $(this).val();
+            $("div[class*='hidden_']").addClass("hidden");
+            $.each(arr, function (index, value) {
+                //console.log(value);
+                $(".hidden_" + value).removeClass("hidden");
+            });
+        });
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").is(':checked')) {
+                $(".Filters > option").prop("selected", "selected");
+                $(".Filters").trigger("change");
+            } else {
+                $(".Filters > option").removeAttr("selected");
+                $(".Filters").trigger("change");
+            }
+        });
+        //change company
+        $(document).on("change", "select[name='CompanyId']", function () {
+            var CompanyId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetStoreByCompany",
+                data: {
+                    CompanyId: CompanyId,
+                    IfCompanyIdNullGetAll: true,
+                },
+                success: function (jsonData) {
+                    $("#StoreId").html("");
+                     $("#StoreId").append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    //$("#StoreId").trigger("change");
+                }
+            });
+        });
+
+        $(document).on("click", ".btn-get-profile", function () {
+            loading2();
+            $.ajax({
+                type: "POST",
+                url: '/Work/Task/_ProfileSearch',
+                data: {
+                    hasNoContact: true,
+                    ProfileType: 'Account'
+                },
+                success: function (html) {
+                    $("body").removeClass("loading2");
+                    $(".divProfilePopup").html("");
+                    $(".divContactPopup").html("");
+                    $(".divConstructionPopup").html("");
+
+                    $(".divProfilePopup").html(html);
+                    $(".with-search").select2();
+                    $(".divProfilePopup #divProfileSearch").modal("show");
+                }
+            });
+        });
+
+        $(document).on("click", ".divProfilePopup .btn-profile-choose", function () {
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+
+            $("input[name='CustomerTypeCode']").val("Account");
+            $("input[name='ProfileId']").val(id).trigger('change');
+            $("input[name='ProfileName']").val(name);
+        });
+
+        $(document).on("click", ".btn-del-profile", function () {
+            $("input[name='ProfileId']").val("");
+            $("input[name='ProfileName']").val("");
+        });
+
+        //CommonDate
+        $(document).on("change", "select[name='CommonDate']", function () {
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("#frmSearch input[name='FromDate']").val(jsonData.FromDate);
+                    $("#frmSearch input[name='ToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("#frmSearch input[name='FromDate']").prop("disabled", true);
+                        $("#frmSearch input[name='ToDate']").prop("disabled", true);
+                    } else {
+                        $("#frmSearch input[name='FromDate']").prop("disabled", false);
+                        $("#frmSearch input[name='ToDate']").prop("disabled", false);
+                    }
+
+                }
+            });
+        });
+
+
+
+        //Ngày tạo
+        $(document).on("change", "select[name='CommonCreateDate']", function () {
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("#frmSearch input[name='CreateFromDate']").val(jsonData.FromDate);
+                    $("#frmSearch input[name='CreateToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("#frmSearch input[name='CreateFromDate']").prop("disabled", true);
+                        $("#frmSearch input[name='CreateToDate']").prop("disabled", true);
+                    } else {
+                        $("#frmSearch input[name='CreateFromDate']").prop("disabled", false);
+                        $("#frmSearch input[name='CreateToDate']").prop("disabled", false);
+                    }
+
+                }
+            });
+        });
+
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            //CustomerSourceCode: Nguồn khách hàng (Địa điểm khách ghé)
+            var csc = [];
+            var customerSourceCode = $('#CustomerSourceCode').select2('data');
+            $.each(customerSourceCode, function (index, item) {
+                csc.push(item.id);
+            });
+            arr.CustomerSourceCode = csc;
+            //Chi nhánh
+            var storeList = [];
+            var stores = $('#StoreId').select2('data');
+            $.each(stores, function (index, item) {
+                storeList.push(item.id);
+            });
+            arr.StoreId = storeList;
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            //CustomerSourceCode: Nguồn khách hàng (Địa điểm khách ghé)
+            var csc = [];
+            var customerSourceCode = $('#CustomerSourceCode').select2('data');
+            $.each(customerSourceCode, function (index, item) {
+                csc.push(item.id);
+            });
+            arr.CustomerSourceCode = csc;
+            //Chi nhánh
+            var storeList = [];
+            var stores = $('#StoreId').select2('data');
+            $.each(stores, function (index, item) {
+                storeList.push(item.id);
+            });
+            arr.StoreId = storeList;
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-view", function () {
+
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            //CustomerSourceCode: Nguồn khách hàng (Địa điểm khách ghé)
+            var csc = [];
+            var customerSourceCode = $('#CustomerSourceCode').select2('data');
+            $.each(customerSourceCode, function (index, item) {
+                csc.push(item.id);
+            });
+            arr.CustomerSourceCode = csc;
+            //Chi nhánh
+            var storeList = [];
+            var stores = $('#StoreId').select2('data');
+            $.each(stores, function (index, item) {
+                storeList.push(item.id);
+            });
+            arr.StoreId = storeList;
+            obj["IsView"] = true;
+            obj["pivotTemplate"] = $('#TemplateId').val();
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ViewDetail", arr);
+        });
+         $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+             var arr = {};
+             var data = $("#frmSearch").serializeArray();
+             var obj = {};
+             $.each(data, function (index, val) {
+
+                 obj[val.name] = val.value;
+                 $.extend(true, arr, obj)
+             });
+             //CustomerSourceCode: Nguồn khách hàng (Địa điểm khách ghé)
+             var csc = [];
+             var customerSourceCode = $('#CustomerSourceCode').select2('data');
+             $.each(customerSourceCode, function (index, item) {
+                 csc.push(item.id);
+             });
+             arr.CustomerSourceCode = csc;
+             //Chi nhánh
+             var storeList = [];
+             var stores = $('#StoreId').select2('data');
+             $.each(stores, function (index, item) {
+                 storeList.push(item.id);
+             });
+             arr.StoreId = storeList;
+            obj["IsView"] = true;
+             var templateId = $(this).data('id');
+             obj["pivotTemplate"] = templateId;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+        $("#btn-searchAppointment").click(function () {
+        });
+        //set default form submit => click btn-search button
+        $("#frmSearch").submit(function (e) {
+            e.preventDefault();
+            $("#btn-searchAppointment").trigger("click");
+        });
+
+        //trigger enter click when fill in search form
+        $(document).on("keyup", "#frmSearch", function (evt) {
+            if (evt.keyCode == 13) {
+                $("#btn-searchAppointment").trigger("click");
+            }
+        });
+
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+
+            //Chi nhánh
+            var StoreIdList = $('#StoreId').val();
+            if (StoreIdList != null && StoreIdList.length > 0) {
+                var storeId = {};
+
+                storeId['StoreId'] = StoreIdList;
+                $.extend(true, data, storeId);
+            }
+            //Nguồn khách hàng
+            var CustomerSourceCodeList = $('#CustomerSourceCode').val();
+            if (CustomerSourceCodeList != null && CustomerSourceCodeList.length > 0) {
+                var customerSourceCode = {};
+
+                customerSourceCode['CustomerSourceCode'] = CustomerSourceCodeList;
+                $.extend(true, data, customerSourceCode);
+            }
+            //Filter
+            var FiltersList = $('.Filters').val();
+            if (FiltersList != null && FiltersList.length > 0) {
+                var filters = {};
+
+                filters['Filters'] = FiltersList;
+                $.extend(true, data, filters);
+            }
+            return JSON.stringify(data);
+        }
+
+    </script>
+}

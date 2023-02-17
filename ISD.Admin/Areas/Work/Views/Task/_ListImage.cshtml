@@ -1,0 +1,90 @@
+﻿@model IEnumerable<FileAttachmentViewModel>
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td class="text-center">
+                <a href="/Upload/Document/@item.FileUrl" target="_blank">
+                    @if (item.FileAttachmentCode == ConstFileAttachmentCode.Image)
+                    {
+                        <img style="width: 50px; height: 50px" src="/Upload/Document/@item.FileUrl" />
+                    }
+                    else if (item.FileAttachmentCode == ConstFileAttachmentCode.Excel)
+                    {
+                        if (item.FileExtention == ".xls")
+                        {
+                            <img class="img-modal-task" src="/Upload/FileType/file_xls.png" />
+                        }
+                        else
+                        {
+                            <img class="img-modal-task" src="/Upload/FileType/file_xlsx.png" />
+                        }
+                    }
+                    else if (item.FileAttachmentCode == ConstFileAttachmentCode.Word)
+                    {
+                        if (item.FileExtention == ".doc")
+                        {
+                            <img class="img-modal-task" src="/Upload/FileType/file_doc.png" />
+                        }
+                        else
+                        {
+                            <img class="img-modal-task" src="/Upload/FileType/file_docx.png" />
+                        }
+                    }
+                    else if (item.FileAttachmentCode == ConstFileAttachmentCode.Pdf)
+                    {
+                        <img class="img-modal-task" src="/Upload/FileType/file_pdf.png" />
+                    }
+                    else if (item.FileAttachmentCode == ConstFileAttachmentCode.PowerPoint)
+                    {
+                        if (item.FileExtention == ".ppt")
+                        {
+                            <img class="img-modal-task" src="/Upload/FileType/file_ppt.png" />
+                        }
+                        else
+                        {
+                            <img class="img-modal-task" src="/Upload/FileType/file_pptx.png" />
+                        }
+                    }
+                    else
+                    {
+                        <img class="img-modal-task" src="/Upload/FileType/file_sound.png" />
+                    }
+                </a>
+            </td>
+            <td>
+                <a href="/Upload/Document/@item.FileUrl" target="_blank">
+                    @Html.DisplayFor(p => item.FileAttachmentName)
+                </a>
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(p => item.FileExtention)
+            </td>
+            <td class="text-center">
+                @if (item.CreateTime != null)
+                {
+                    <span>@item.CreateTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</span>
+                }
+            </td>
+            <td class="text-center">
+                <a class="btn btn-info" href="/Upload/Document/@item.FileUrl" download="@item.FileAttachmentName" target="_blank">
+                    <i class="fa fa-download"></i> @LanguageResource.Btn_Download
+                </a>
+                <a class="btn btn-danger btn-del-file" data-id="@item.FileAttachmentId" data-tab="true">
+                    <i class="fa fa-trash-o"></i> @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd">
+        <td valign="top" colspan="6" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td>
+    </tr>
+}

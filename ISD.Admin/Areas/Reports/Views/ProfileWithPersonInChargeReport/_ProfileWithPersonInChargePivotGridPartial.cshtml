@@ -1,0 +1,257 @@
+﻿@using Newtonsoft.Json;
+@model IEnumerable<ProfileWithPersonInChargeReportViewModel>
+@{
+    var pivotSetting = (List<FieldSettingModel>)ViewBag.PivotSetting;
+    var search = (ProfileWithPersonInChargeReportSearchViewModel)ViewBag.Search;
+    var layoutConfigs = (string)ViewBag.LayoutConfigs;
+}
+@Html.DevExpress().PivotGrid(settings =>
+{
+    settings.Name = "ProfileWithPersonInChargePivotGrid";
+    settings.CallbackRouteValues = new { Controller = "ProfileWithPersonInChargeReport", Action = "ProfileWithPersonInChargeGridPartial", jsonReq = JsonConvert.SerializeObject(search) };
+    //settings.Width = Unit.Percentage(500);
+    settings.OptionsPager.RowsPerPage = 20;
+    settings.OptionsPager.PageSizeItemSettings.Visible = true;
+    settings.OptionsCustomization.AllowDrag = true;
+    settings.OptionsCustomization.AllowDragInCustomizationForm = true;
+    settings.CustomizationFieldsLeft = 600;
+    settings.CustomizationFieldsTop = 400;
+    settings.OptionsCustomization.AllowSortBySummary = false;
+    settings.OptionsCustomization.AllowSort = true;
+    settings.OptionsBehavior.BestFitMode = PivotGridBestFitMode.None;
+    if (string.IsNullOrEmpty(layoutConfigs))
+    {
+        settings.AfterPerformCallback = (sender, e) =>
+        {
+            List<FieldSettingModel> fieldSettingList = new List<FieldSettingModel>();
+            ASPxPivotGrid PivotGrid = sender as ASPxPivotGrid;
+            var listField = PivotGrid.Fields;
+            foreach (PivotGridField field in listField)
+            {
+                FieldSettingModel fieldSetting = new FieldSettingModel();
+                fieldSetting.Caption = field.Caption;
+                fieldSetting.AreaIndex = field.AreaIndex;
+                fieldSetting.FieldName = field.FieldName;
+                if (field.Area == PivotArea.RowArea)
+                {
+                    fieldSetting.PivotArea = 0;
+
+                }
+                else
+                {
+                    if (field.Area == PivotArea.ColumnArea)
+                    {
+                        fieldSetting.PivotArea = 1;
+                    }
+                    else
+                    {
+                        if (field.Area == PivotArea.FilterArea)
+                        {
+                            fieldSetting.PivotArea = 2;
+                        }
+                        else
+                        {
+                            fieldSetting.PivotArea = 3;
+                        }
+                    }
+                }
+                if (field.ValueFormat.FormatType == FormatType.Numeric || field.ValueFormat.FormatType == FormatType.DateTime)
+                {
+                    fieldSetting.CellFormat_FormatString = field.ValueFormat.FormatString;
+                    fieldSetting.CellFormat_FormatType = field.ValueFormat.FormatType.ToString();
+                }
+                fieldSetting.Visible = field.Visible;
+                fieldSettingList.Add(fieldSetting);
+            }
+            Session[CurrentUser.AccountId + "Layout"] = fieldSettingList;
+            Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+        };
+    }
+    else
+    {
+        settings.PreRender = (sender, e) =>
+        {
+            MVCxPivotGrid PivotGrid = sender as MVCxPivotGrid;
+            //PivotGrid.LoadLayoutFromString(layoutConfigs);
+            Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+        };
+    }
+
+
+    if (pivotSetting != null && pivotSetting.Count > 0)
+    {
+        foreach (var fieldSetting in pivotSetting)
+        {
+            settings.Fields.Add(field =>
+            {
+                if (fieldSetting.PivotArea == 0)
+                {
+                    field.Area = PivotArea.RowArea;
+                }
+                if (fieldSetting.PivotArea == 1)
+                {
+                    field.Area = PivotArea.ColumnArea;
+                }
+                if (fieldSetting.PivotArea == 2)
+                {
+                    if (fieldSetting.AreaIndex > 10)
+                    {
+                        field.Visible = false;
+                    }
+                    field.Area = PivotArea.FilterArea;
+                }
+                if (fieldSetting.PivotArea == 3)
+                {
+                    field.Area = PivotArea.DataArea;
+                }
+                field.FieldName = fieldSetting.FieldName;
+                field.Caption = fieldSetting.Caption;
+                field.AreaIndex = fieldSetting.AreaIndex.Value;
+                if (fieldSetting.CellFormat_FormatType == "DateTime")
+                {
+                    field.ValueFormat.FormatType = FormatType.DateTime;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.DateTime;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                }
+                if (fieldSetting.CellFormat_FormatType == "Numeric")
+                {
+                    field.ValueFormat.FormatType = FormatType.Numeric;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.Numeric;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+                    field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                }
+                field.Visible = fieldSetting.Visible.Value;
+            });
+        }
+    }
+    else // default
+    {
+        //Filter Area
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "WardName";
+            field.Caption = "Phường/Xã";
+            field.AreaIndex = 0;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "DistrictName";
+            field.Caption = "Quận/Huyện";
+            field.AreaIndex = 1;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "ProvinceName";
+            field.Caption = "Tỉnh/Thành phố";
+            field.AreaIndex = 2;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Phone";
+            field.Caption = "SĐT";
+            field.AreaIndex = 3;
+
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.FilterArea;
+            field.FieldName = "Email";
+            field.Caption = "Email";
+            field.AreaIndex = 4;
+        });
+        //Row Area
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "SalesEmployeeName";
+            field.Caption = "Nhân viên kinh doanh";
+            field.AreaIndex = 0;
+        });
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ProfileCode";
+            field.Caption = "Mã CRM";
+            field.AreaIndex = 2;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ProfileForeignCode";
+            field.Caption = "Mã SAP";
+            field.AreaIndex = 3;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ProfileName";
+            field.Caption = "Tên khách hàng";
+            field.AreaIndex = 4;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "Address";
+            field.Caption = "Địa chỉ";
+            field.AreaIndex = 5;
+
+        });
+
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "CustomerCareerName";
+            field.Caption = "Ngành nghề";
+            field.AreaIndex = 6;
+        });
+
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "SaleOfficeName";
+            field.Caption = "Khu vực";
+            field.AreaIndex = 7;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ForeignCustomer";
+            field.Caption = "Thị trường";
+            field.AreaIndex = 8;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "CustomerTypeName";
+            field.Caption = "Phân loại KH";
+            field.AreaIndex = 9;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "CustomerGroupName";
+            field.Caption = "Nhóm KH";
+            field.AreaIndex = 10;
+        });
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "RolesName";
+            field.Caption = "Phòng ban";
+            field.AreaIndex = 11;
+        });
+    }
+
+}).Bind(Model).GetHtml()

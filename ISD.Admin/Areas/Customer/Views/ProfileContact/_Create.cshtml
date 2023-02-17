@@ -1,0 +1,412 @@
+﻿@model ProfileViewModel
+@{
+    var personInChargeList = (List<PersonInChargeViewModel>)ViewBag.PersonInChargeList;
+    //var roleInChargeList = (List<RoleInChargeViewModel>)ViewBag.RoleInChargeList;
+
+    var EmployeeList = ViewBag.EmployeeList;
+    var PersonRoleList = ViewBag.PersonRoleCodeList;
+    var RoleList = ViewBag.RoleList;
+}
+
+<div class="row">
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.ProfileId, new { @id = "ProfileContact_Create_ProfileId" })
+        @Html.Hidden("PhoneValid", Model.Phone, new { @id = "ProfileContact_Create_PhoneValid" })
+        @Html.Hidden("TypeCode", ConstCustomerType.Contact, new { @id = "ProfileContact_Create_TypeCode" })
+        @Html.Hidden("Type", ConstCustomerType.Contact, new { @id = "ProfileContact_Create_TypeCode" })
+        @Html.Hidden("EmailValid", Model.Email, new { @id = "ProfileContact_Create_EmailValid" })
+        @Html.Hidden("CustomerTypeCode", ConstCustomerType.Contact, new { @id = "ProfileContact_Create_CustomerTypeCode" })
+        @Html.HiddenFor(model => model.isForeignCustomer, new { @id = "ProfileContact_Create_isForeignCustomer" })
+
+        <div class="form-group">
+            <div class="col-md-3"></div>
+            <div class="col-md-9 label-wrapper">@Html.CheckBox("isMain") <label class="label-radio" for="isMain">Liên hệ chính.</label></div>
+        </div>
+
+        <div class="form-group">
+            <div id="divProfileName" class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ProfileName)
+
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.ProfileName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.DayOfBirth)
+            </div>
+            <div class="col-md-8">
+                <span class="day-of-birth">
+                    @Html.DropDownList("DayOfBirth", "--")
+                </span>
+                /
+                <span class="month-of-birth">
+                    @Html.DropDownList("MonthOfBirth", "--")
+                </span>
+            </div>
+        </div>
+
+        <!--Begin - For Contact-->
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="label-wrapper">
+                    @Html.Label("CompanyId", LanguageResource.Profile_CustomerId, new { @class = "control-label" })
+                </div>
+            </div>
+            <div class="col-md-8">
+                @Html.HiddenFor(p => p.CompanyId)
+                @Html.TextBoxFor(p => p.CompanyName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ProfileContactPosition)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.ProfileContactPosition)
+            </div>
+        </div>*@
+        <!--End - For Contact-->
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Phone)
+            </div>
+            <div class="col-md-8">
+                @Html.ValidationMessageFor(p => p.Phone, null, new { @class = "validation-text" })
+                <div class="input-group" id="profile-contact-phone">
+                    <div class="input-group-addon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    @Html.TextBoxFor(p => p.Phone, new { @class = " form-control text-box single-line" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Email)
+            </div>
+            <div class="col-md-8">
+                @Html.ValidationMessageFor(p => p.Email, null, new { @class = "validation-text" })
+                <div class="input-group">
+
+                    <div class="input-group-addon">
+                        <i class="fa fa-envelope"></i>
+                    </div>
+                    @Html.TextBoxFor(p => p.Email, new { @class = " form-control text-box single-line" })
+                </div>
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ProvinceId)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.DistrictId)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownList("DistrictId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.WardId)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownList("WardId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Address)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.Address)
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-3">@Html.TooltipLabelFor(p => personInChargeList[0].SalesEmployeeName)</div>
+            <div class="col-md-8">
+                @if (personInChargeList != null && personInChargeList.Count > 0)
+                {
+                    int i = 0;
+                    foreach (var item in personInChargeList)
+                    {
+                        <div class="personInChargeControl">
+                            <div class="row personCharge_fields">
+
+                                <div class="input-group">
+                                    @Html.RequiredExDropDownListFor(p => personInChargeList[i].SalesEmployeeCode, new SelectList(EmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "with-search personEmployeeCode" })
+                                    <div class="input-group-btn">
+                                        @if (i == 0)
+                                        {
+                                            <button class="btn btn-success btn-addPersonInCharge" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-danger btn-removePersonInCharge" type="button"> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        i++;
+                    }
+                }
+                else
+                {
+                    <div class="personInChargeControl">
+                        <div class="row personCharge_fields">
+                            <div class="input-group">
+                                @Html.RequiredExDropDownListFor(p => personInChargeList[0].SalesEmployeeCode, new SelectList(EmployeeList, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_Choose, new { @class = "with-search personEmployeeCode" })
+                                <div class="input-group-btn">
+                                    <button class="btn btn-success btn-addPersonInCharge" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.DepartmentCode)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownListFor(p => p.DepartmentCode, (IEnumerable<SelectListItem>)ViewBag.DepartmentCodeList, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ProfileContactPosition)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownListFor(p => p.ProfileContactPosition, (IEnumerable<SelectListItem>)ViewBag.ProfileContactPositionList, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- #region Old code -->
+@*<div class="box-body">
+        @Html.HiddenFor(model => model.ProfileId, new { @id = "ProfileContact_Create_ProfileId" })
+        @Html.Hidden("PhoneValid", Model.Phone, new { @id = "ProfileContact_Create_PhoneValid" })
+        @Html.Hidden("TypeCode", ConstCustomerType.Contact, new { @id = "ProfileContact_Create_TypeCode" })
+        @Html.Hidden("EmailValid", Model.Email, new { @id = "ProfileContact_Create_EmailValid" })
+        @Html.Hidden("CustomerTypeCode", ConstCustomerType.Contact, new { @id="ProfileContact_Create_CustomerTypeCode"})
+        @Html.HiddenFor(model => model.isForeignCustomer, new { @id="ProfileContact_Create_isForeignCustomer"})
+
+        <div class="row">
+            <div id="divProfileName" class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.ProfileName)
+                @Html.RequiredTextboxFor(p => p.ProfileName)
+            </div>
+            <div class="form-group col-md-6">
+
+                @Html.TooltipLabelFor(p => p.DayOfBirth)
+
+                <span class="day-of-birth">
+                    @Html.DropDownList("DayOfBirth", "--")
+                </span>
+                /
+                <span class="month-of-birth">
+                    @Html.DropDownList("MonthOfBirth", "--")
+                </span>
+
+            </div>
+        </div>
+
+        <!--Begin - For Contact-->
+        <div class="form-group col-md-6">
+            @Html.Label("CompanyId", LanguageResource.Profile_CustomerId)
+            @Html.HiddenFor(p => p.CompanyId)
+            @Html.TextBoxFor(p => p.CompanyName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+        </div>
+        <div class="form-group col-md-6">
+            @Html.TooltipLabelFor(p => p.ProfileContactPosition)
+            @Html.RequiredTextboxFor(p => p.ProfileContactPosition)
+        </div>
+        <!--End - For Contact-->
+        <div class="row">
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.Phone)
+                @Html.ValidationMessageFor(p => p.Phone, null, new { @class = "validation-text" })
+                <div class="input-group">
+                    <div class="input-group-addon">
+                        <i class="fa fa-phone"></i>
+                    </div>
+                    @Html.TextBoxFor(p => p.Phone, new { @class = " form-control text-box single-line" })
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.Email)
+                @Html.ValidationMessageFor(p => p.Email, null, new { @class = "validation-text" })
+                <div class="input-group">
+
+                    <div class="input-group-addon">
+                        <i class="fa fa-envelope"></i>
+                    </div>
+                    @Html.TextBoxFor(p => p.Email, new { @class = " form-control text-box single-line" })
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.ProvinceId)
+                @Html.DropDownListFor(p => p.ProvinceId, (IEnumerable<SelectListItem>)ViewBag.ProvinceIdList, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+            <div class="form-group col-md-6">
+                @Html.TooltipLabelFor(p => p.DistrictId)
+                @Html.DropDownListFor(p => p.DistrictId, (IEnumerable<SelectListItem>)ViewBag.DistrictIdList, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-md-12">
+                @Html.TooltipLabelFor(p => p.Address)
+                @Html.RequiredTextboxFor(p => p.Address)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">@Html.TooltipLabelFor(p => personInChargeList[0].SalesEmployeeName)</div>
+            <div class="col-md-6">@Html.TooltipLabelFor(p => personInChargeList[0].RoleCode)</div>
+        </div>
+        @if (personInChargeList != null && personInChargeList.Count > 0)
+        {
+            int i = 0;
+            foreach (var item in personInChargeList)
+            {
+        <div class="personInChargeControl">
+            <div class="row personCharge_fields">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.RequiredExDropDownListFor(p => personInChargeList[i].SalesEmployeeCode, new SelectList(EmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "with-search personEmployeeCode" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.RequiredExDropDownListFor(p => personInChargeList[i].RoleCode, new SelectList(PersonRoleList, "CatalogCode", "CatalogText_vi", item.RoleCode), LanguageResource.Dropdownlist_Choose, new { @class = "with-search personRoleCode" })
+                            <div class="input-group-btn">
+                                @if (i == 0)
+                                        {
+                                <button class="btn btn-success btn-addPersonInCharge" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                                        }
+                                        else
+                                        {
+                                <button class="btn btn-danger btn-removePersonInCharge" type="button"> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> </button>
+                                        }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                i++;
+            }
+        }
+        else
+        {
+        <div class="personInChargeControl">
+            <div class="row personCharge_fields">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.RequiredExDropDownListFor(p => personInChargeList[0].SalesEmployeeCode, new SelectList(EmployeeList, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_Choose, new { @class = "with-search personEmployeeCode" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.RequiredExDropDownListFor(p => personInChargeList[0].RoleCode, new SelectList(PersonRoleList, "CatalogCode", "CatalogText_vi"), LanguageResource.Dropdownlist_Choose, new { @class = "with-search personRoleCode" })
+                            <div class="input-group-btn">
+                                <button class="btn btn-success btn-addPersonInCharge" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+        <div class="row">
+            <div class="col-md-12">@Html.TooltipLabelFor(p => roleInChargeList[0].RoleName)</div>
+        </div>
+        @if (roleInChargeList != null && roleInChargeList.Count > 0)
+        {
+            int i = 0;
+            foreach (var item in roleInChargeList)
+            {
+        <div class="roleInChargeControl">
+            <div class="row roleCharge_fields">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.RequiredExDropDownListFor(p => roleInChargeList[i].RolesId, new SelectList(RoleList, "RolesId", "RolesName", item.RolesId), LanguageResource.Dropdownlist_Choose, new { @class = "with-search roleChargeRoleId" })
+                            <div class="input-group-btn">
+                                @if (i == 0)
+                                        {
+                                <button class="btn btn-success btn-addRoleInCharge" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                                        }
+                                        else
+                                        {
+                                <button class="btn btn-danger btn-removeRoleInCharge" type="button"> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> </button>
+                                        }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+                i++;
+            }
+        }
+        else
+        {
+        <div class="roleInChargeControl">
+            <div class="row roleCharge_fields">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.RequiredExDropDownListFor(p => roleInChargeList[0].RolesId, new SelectList(RoleList, "RolesId", "RolesName"), LanguageResource.Dropdownlist_Choose, new { @class = "with-search roleChargeRoleId" })
+                            <div class="input-group-btn">
+                                <button class="btn btn-success btn-addRoleInCharge" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+        <div class="row">
+            <div class="col-md-12 label-wrapper">@Html.CheckBox("isMain") Liên hệ chính.</div>
+        </div>
+    </div>*@
+<!-- #endregion -->
+
+<script>
+    renderRequiredTextBox();
+    $('select').select2({
+        minimumResultsForSearch: Infinity
+    });
+    function renderRequiredTextBox() {
+        var $div = $("#profile-contact-phone");
+        $div.addClass("input-group-required");
+        $div.append('<div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>');
+    }
+</script>

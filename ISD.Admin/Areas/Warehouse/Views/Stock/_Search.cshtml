@@ -1,0 +1,42 @@
+﻿@model IEnumerable<StockViewModel>
+@{
+    string CurrentController = ConstController.Stock;
+
+    string CurrentArea = ConstArea.Warehouse;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.StockCode)</th>
+            <th>@Html.DisplayNameFor(p => p.StockName)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateBy)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center isd-table-th-stt">@i</td>
+                <td>@Html.DisplayFor(p => item.StockCode)</td>
+                <td>@Html.DisplayFor(p => item.StockName)</td>
+                <td>@Html.DisplayFor(p => item.CreateByName)</td>
+                <td class="text-center">@Html.DisplayFor(p => item.CreateTime)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.StockId)
+                    @*@HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.StockName, item.StockId)*@
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

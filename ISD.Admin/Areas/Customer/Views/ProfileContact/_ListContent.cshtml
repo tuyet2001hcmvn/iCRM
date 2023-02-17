@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ProfileViewModel>
+@{
+    /**/
+
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.ProfileContact;
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+@{ int i = 0; }
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center contentProfileContact-hidden">@i</td>
+            @if (string.IsNullOrEmpty(ViewBag.Type) || ViewBag.Type != ConstProfileType.Opportunity)
+            {
+                <td class="contentProfileContact-hidden">@Html.DisplayFor(p => item.ProfileCode)</td>
+            }
+
+            <td>@Html.DisplayFor(p => item.ProfileName)</td>
+            <td class="text-center contentProfileContact-hidden">@Html.DisplayFor(p => item.DateOfBirthWithFormat)</td>
+            <td class="text-right">@Html.DisplayFor(p => item.Phone)</td>
+            <td>@Html.DisplayFor(p => item.Email)</td>
+            @*<td class="contentProfileContact-hidden">@Html.DisplayFor(p => item.Address)</td>*@
+            <td>@Html.DisplayFor(p => item.PositionName)</td>
+            <td>@Html.DisplayFor(p => item.DepartmentName)</td>
+            <td class="contentProfileContact-hidden">@Html.DisplayFor(p => item.PersonInChargeListName)</td>
+            <td class="text-center contentProfileContact-hidden">@HtmlExtensions.ActivedIcon(item.IsMain, true)</td>
+            @if (string.IsNullOrEmpty(ViewBag.Type) || ViewBag.Type != ConstProfileType.Opportunity)
+            {
+                <td class="contentProfileContact-hidden">@Html.DisplayFor(p => item.CreateUser)</td>
+                <td class="text-center contentProfileContact-hidden">@Html.DisplayFor(p => item.CreateTime)</td>
+            }
+            <td class="text-center contentProfileContact-hidden">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            @if (string.IsNullOrEmpty(ViewBag.Type) || ViewBag.Type != ConstProfileType.Opportunity)
+            {
+                <td class="text-center">
+                    <a class="btn btn-default btn-edit" data-id="@item.ProfileId"><i class="fa fa-pencil"></i>Sửa</a>
+                    <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.ProfileId" data-item-name="@item.ProfileName" data-delete-success-call-back="ReloadProfileContactList"><i class="fa fa-trash-o"></i> Xóa</a>
+                </td>
+            }
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="14" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

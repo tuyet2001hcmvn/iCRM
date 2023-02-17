@@ -1,0 +1,213 @@
+﻿@{ 
+    var companyCode = System.Configuration.ConfigurationManager.AppSettings["CompanyCode"];
+    var CompanyName = "Công Ty Cổ Phần Gỗ An Cường";
+    if (companyCode == ISD.Constant.ConstCompanyCode.Malloca)
+    {
+        CompanyName = "Công Ty TNHH Malloca Việt Nam";
+    }
+    if (companyCode == ISD.Constant.ConstCompanyCode.Aconcept)
+    {
+        CompanyName = "Công Ty TNHH AConcept Việt Nam";
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>@ViewBag.Title - @CompanyName</title>
+
+
+    @Styles.Render("~/Content/css")
+    <link href="~/Content/plugins/fontawesome-free/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    <link href="~/Content/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" rel="stylesheet" />
+    <link href="~/Content/AdminLTE-3/css/adminlte.css" rel="stylesheet" />
+    <link href="@BotDetect.Web.CaptchaUrls.Absolute.LayoutStyleSheetUrl" rel="stylesheet" type="text/css" />
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("head", required: false)
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <a href="/">
+                    <img class="img-fluid" src="~/Content/Images/logo-ancuong.png" width="300" height="150" />
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <a href="/">
+                    <img class="img-fluid" src="~/Content/Images/logo-malloca.png" width="300" height="150" />
+                </a>
+            </div>
+            <div class="col-md-4 text-center">
+                <a href="/">
+                    <img class="img-fluid" src="~/Content/Images/aconcept_logo-.png" width="300" height="150" />
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <nav class="navbar nav-tabs card-header-tabs navbar-expand-lg navbar-light bg-light">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        @{
+                            var currentAction = ViewContext.RouteData.Values["Action"].ToString();
+                            var currentController = ViewContext.RouteData.Values["Controller"].ToString();
+                            var currentUrl = currentController + "/" + currentAction;
+                        }
+                        <ul class="navbar-nav">
+                            <li class="nav-item @(currentUrl == "Home/Index" ? "active" : "")">
+                                @Html.ActionLink("Tra cứu TTBH", "Index", "Home", null, new { @class = "nav-link" })
+                            </li>
+                            <li class="nav-item @(currentUrl == "ActivedWarranty/Index" ? "active" : "")">
+                                @Html.ActionLink("Kích hoạt bảo hành", "Index", "ActivedWarranty", null, new { @class = "nav-link" })
+                            </li>
+                            <li class="nav-item @(currentUrl == "WarrantyRequest/Index" ? "active" : "")">
+                                @Html.ActionLink("Yêu cầu bảo hành", "Index", "WarrantyRequest", null, new { @class = "nav-link" })
+                            </li>
+                            @*<li class="nav-item @(currentUrl == "Home/UserManual" ? "active" : "")">
+                                    @Html.ActionLink("Hướng dẫn sử dụng", "UserManual", "Home", null, new { @class = "nav-link" })
+                                </li>*@
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+            <div class="card-body">
+                @if (TempData["AlertMessage"] != null)
+                {
+                    <div id="AlertBox" class="alert @TempData["AlertType"] hide">
+                        @TempData["AlertMessage"]
+                    </div>
+                }
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <div class="container">
+        <footer class="main-footer">
+            <div>
+                <div class="row">
+                    <div class="col-md-4">
+
+                        <h5 class="text-uppercase font-weight-bold">Cty Cổ phần Gỗ An Cường</h5>
+                        <div>
+                            <strong>Địa chỉ:</strong>
+                            Đường ĐT 747B, Kp.Phước Hải, P.Thái Hòa, TX.Tân Uyên, T.Bình Dương
+                        </div>
+                        <strong>Hotline:</strong> <a href="tel:19006944">1900 6944</a><br />
+                        <strong>Website:</strong> <a href="https://ancuong.com" target="_blank">https://ancuong.com</a>
+                    </div>
+                    <hr class="clearfix w-100 d-md-none pb-3">
+                    <div class="col-md-4">
+                        <h5 class="text-uppercase font-weight-bold">CTy TNHH Malloca Việt Nam</h5>
+                        <div>
+                            <strong>Địa chỉ:</strong>
+                            279 Nguyễn Văn Trỗi, Phường 10, Quận Phú Nhuận, TP.Hồ Chí Minh
+                        </div>
+                        <strong>Hotline:</strong> <a href="tel:1800 1212">1800 1212</a>  <br />
+                        <strong>Website:</strong> <a href="https://malloca.com" target="_blank">https://malloca.com</a>
+
+                    </div>
+                    <hr class="clearfix w-100 d-md-none pb-3">
+                    <div class="col-md-4">
+                        <h5 class="text-uppercase font-weight-bold">CTy TNHH AConcept Việt Nam</h5>
+                        <div>
+                            <strong>Địa chỉ:</strong>
+                            702/1K Sư Vạn Hạnh , Phường 12, Quận 10, TP.Hồ Chí Minh
+                        </div>
+                        <strong>SĐT:</strong> <a href="tel:02839303312">(028) 3930.33.12</a> / <a href="tel:02439329696">(024) 3932.96.96</a>  <br />
+                        <strong>Website:</strong> <a href="https://aconcept-vn.com" target="_blank">https://aconcept-vn.com</a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="footer-copyright py-3" style="font-size: 0.8rem;">
+                <a href="https://isdcorp.vn" target="_blank" class="text-gray"> <i>Được xây dựng và phát triển bởi ISD Corp © 2020</i></a>
+            </div>
+        </footer>
+    </div>
+    <div class="modal fade" id="scanQRCodeModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-center">
+                <div class="modal-body">
+                    <video id="player" width="100%" autoplay playsinline muted></video>
+                    <canvas id="canvasU" class="d-none"></canvas>
+                    <div id="flashOut"> </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="capture" class="btn btn-primary" onclick="UploadToCloud()">Chụp</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="videoOff();">Đóng</button>
+                    @*<button type="button" id="snap" class="btn btn-primary" onclick="UploadToCloud();">Quét</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="scanOD_QRCodeModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content text-center">
+                <div class="modal-body">
+                    <video id="player" width="100%" autoplay playsinline muted></video>
+                    <canvas id="canvasU" class="d-none"></canvas>
+                    <div id="flashOut"> </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="capture" class="btn btn-primary" onclick="UploadToCloud_OD()">Chụp</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="videoOff1();">Đóng</button>
+                    @*<button type="button" id="snap" class="btn btn-primary" onclick="UploadToCloud();">Quét</button>*@
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/select2.min.js"></script>
+    @Scripts.Render("~/bundles/warranryjs")
+    <script>
+        $(document).ready(function () {
+            //Chuyển hướng https
+            if (location.protocol !== 'https:') {
+                location.replace(`https:${location.href.substring(location.protocol.length)}`);
+            }
+            //Remove backlink captcah
+            var botDetect = $("a[title ~= 'BotDetect']");
+            botDetect.removeAttr("style").removeAttr("href").css('visibility', 'hidden');
+
+            var timedelay = getCookie("timer");
+            setTimeout(function () {
+                $(".btn-sendOTP").prop('disabled', false);
+                document.cookie = "timer=0";//Xoá timer trong cookie
+            }, timedelay);
+
+            //Box notification
+            $('#AlertBox').removeClass('hide');
+            $('#AlertBox').delay(5000).slideUp(500);
+        })
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>

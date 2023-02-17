@@ -1,0 +1,21 @@
+﻿@model IEnumerable<ModuleViewModel>
+<ul class="nav navbar-nav hidden-xs">
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true"> @ViewBag.SelectedItemText <span class="caret"></span></a>
+        <ul class="dropdown-menu dropdown-menu-module" role="menu">
+            @foreach (var module in Model.Where(p => p.isSystemModule != true))
+            {
+                <li><a href="/Module/@module.ModuleId"><i class="@module.Icon"></i> @module.ModuleName</a></li>
+            }
+            @{ var SettingModuleList = Model.Where(p => p.isSystemModule == true).ToList();}
+            @if (SettingModuleList != null && SettingModuleList.Count > 0)
+            {
+                <li class="divider"></li>
+                foreach (var module in SettingModuleList)
+                {
+                    <li><a href="/Module/@module.ModuleId"><i class="@module.Icon"></i> @module.ModuleName</a></li>
+                }
+            }
+        </ul>
+    </li>
+</ul>

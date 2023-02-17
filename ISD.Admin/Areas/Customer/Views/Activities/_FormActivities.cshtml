@@ -1,0 +1,75 @@
+﻿@model TaskTransitionLogViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">@LanguageResource.Update @LanguageResource.TabActivities.ToLower()</h4>
+</div>
+<div class="modal-body">
+    <div id="divAlertWarningTaskTransition" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+        <div class="alert-message">
+        </div>
+    </div>
+    <div class="content">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmTaskTransition" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+
+            @Html.HiddenFor(p => p.TaskId)
+            @Html.HiddenFor(p => p.FromStatusId)
+            @Html.HiddenFor(p => p.TaskTransitionLogId)
+
+            <div class="content">
+
+                <div class="box-body">
+                    <div class="form-group row">
+                        <div class=" col-md-6">
+                            @Html.TooltipLabelFor(p => p.FromStatusId)
+
+                            @Html.RequiredDropDownListFor(p => p.FromStatusId, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search", @disabled = "disabled" })
+                        </div>
+                        <div class=" col-md-6">
+                            @Html.TooltipLabelFor(p => p.ToStatusId)
+                            @*@if (Model.ToStatusId.HasValue)
+                                {
+                                    @Html.RequiredDropDownListFor(p => p.ToStatusId, null, null, new { @class = " form-control with-search", @disabled = "disabled" })
+                                    @Html.HiddenFor(p => p.ToStatusId)
+                                }
+                                else
+                                {
+                                    @Html.RequiredDropDownListFor(p => p.ToStatusId, null, null, new { @class = " form-control with-search" })
+                                }*@
+                            @Html.RequiredDropDownListFor(p => p.ToStatusId, null, null, new { @class = " form-control with-search" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class=" col-md-12">
+                            @Html.TooltipLabelFor(p => p.Note)
+
+                            @Html.TextAreaFor(p => p.Note, new { @class = "form-control" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class=" col-md-6">
+                            @Html.TooltipLabelFor(p => p.ApproveBy)
+
+                            @Html.RequiredDropDownListFor(p => p.ApproveBy, null, null, new { @class = " form-control with-search" })
+                        </div>
+                        <div class=" col-md-6">
+                            @Html.TooltipLabelFor(p => p.ApproveTime)
+                            @Html.RequiredTextboxFor(p => p.ApproveTime, new { @type = "date", @Value = Model.ApproveTime.Value.ToString("yyyy-MM-dd") })
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-status" data-add-success-call-back="ReloadActivitiesList">@LanguageResource.Btn_Save</button>
+</div>

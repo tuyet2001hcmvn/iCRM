@@ -1,0 +1,279 @@
+﻿@model TechnicalServicesReportSearchViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+
+    ViewBag.Title = LanguageResource.TechnicalServices;
+    Html.HiddenFor(x => x.IsCallFirst);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left"> @ViewBag.Title</h1>
+</div>
+<div class="content content-report">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("Index", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    @Html.HiddenFor(p => p.IsCallFirst)
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.WorkFlowId)
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @*@Html.DropDownList("WorkFlowId", null, null, new { @class = "form-control with-search", multiple = "multiple" })*@
+                                    <select class="form-control" multiple="multiple" name="WorkFlowId" id="WorkFlowId">
+                                        @if (ViewBag.WorkFlowId != null)
+                                        {
+                                            var WorkFlowId = (List<SelectListItem>)ViewBag.WorkFlowId;
+                                            foreach (var item in WorkFlowId)
+                                            {
+                                                string selected = "";
+                                                if (item.Selected)
+                                                {
+                                                    selected = "selected";
+                                                }
+                                                <option @selected value="@item.Value">
+                                                    @item.Text
+                                                </option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.TaskStatusCode)
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @*@Html.DropDownList("TaskStatusCode", null, null, new { @class = "form-control with-search", multiple = "multiple" })*@
+
+                                    <select class="form-control" multiple="multiple" name="TaskStatusCode" id="TaskStatusCode">
+                                        @if (ViewBag.TaskStatusCode != null)
+                                        {
+                                            var TaskStatusCode = (List<SelectListItem>)ViewBag.TaskStatusCode;
+                                            foreach (var item in TaskStatusCode)
+                                            {
+                                                string selected = "";
+                                                if (item.Selected)
+                                                {
+                                                    selected = "selected";
+                                                }
+                                                <option @selected value="@item.Value">
+                                                    @item.Text
+                                                </option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.RolesCode)
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @*@Html.DropDownList("RolesCode", null, null, new { @class = "form-control with-search", multiple = "multiple" })*@
+                                    <select class="form-control" multiple="multiple" name="RolesCode" id="RolesCode">
+                                        @if (ViewBag.RolesCode != null)
+                                        {
+                                            var RolesCode = (List<SelectListItem>)ViewBag.RolesCode;
+                                            foreach (var item in RolesCode)
+                                            {
+                                                string selected = "";
+                                                if (item.Selected)
+                                                {
+                                                    selected = "selected";
+                                                }
+                                                <option @selected value="@item.Value">
+                                                    @item.Text
+                                                </option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.ServiceTechnicalTeamCode)
+                                </div>
+                                <div class="col-md-8 multi pl-0">
+                                    @*@Html.DropDownList("ServiceTechnicalTeamCode", null, null, new { @class = "form-control with-search", multiple = "multiple" })*@
+                                    <select class="form-control" multiple="multiple" name="ServiceTechnicalTeamCode" id="ServiceTechnicalTeamCode">
+                                        @if (ViewBag.ServiceTechnicalTeamCode != null)
+                                        {
+                                            var ServiceTechnicalTeamCode = (List<SelectListItem>)ViewBag.ServiceTechnicalTeamCode;
+                                            foreach (var item in ServiceTechnicalTeamCode)
+                                            {
+                                                string selected = "";
+                                                if (item.Selected)
+                                                {
+                                                    selected = "selected";
+                                                }
+                                                <option @selected value="@item.Value">
+                                                    @item.Text
+                                                </option>
+                                            }
+
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.CommonDate)
+                                </div>
+                                <div class="col-md-8 pl-0">
+                                    @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Time", @id = "datetime", Name = "CommonDate" })
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="row Time">
+
+                        @*Từ ngày*@
+                        <div class="col-md-5 ">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.FromDate)
+                                </div>
+                                <div class="col-md-8 pl-0">
+                                    @Html.TextBoxFor(model => model.FromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                </div>
+                            </div>
+                        </div>
+                        @*Đến ngày*@
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <div class="col-md-4">
+                                    @Html.TooltipLabelFor(p => p.ToDate)
+                                </div>
+                                <div class="col-md-8 pl-0">
+                                    @Html.TextBoxFor(model => model.ToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.TooltipLabelFor(p => p.TypeDate)
+                    </div>
+                    <div class="col-md-8   pl-0">
+                        @Html.DropDownListFor(x => x.TypeDate, new List<SelectListItem>()
+                        {
+                            new SelectListItem(){Text = "Tháng", Value = "MONTH"},
+                            new SelectListItem(){Text = "Quý", Value = "QUARTER"}
+                        }, new { @class = "font-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <div class="col-md-4">
+                        @Html.TooltipLabelFor(p => p.Month)
+                    </div>
+                    <div class="col-md-2   pl-0">
+                        @Html.RequiredTextboxFor(p=>p.Month, new {@type= "number" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TooltipLabelFor(p => p.Year)
+                    </div>
+                    <div class="col-md-2   pl-0">
+                        @Html.RequiredTextboxFor(p => p.Year, new { @type = "number" })
+
+                    </div>
+                </div>
+            </div>
+        </div>*@
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-5">
+                                <input type="submit" class="btn bg-blue" id="btn-view" value="Xem báo cáo" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <div class="panel panel-default panel-search">
+                <div class="panel-body" style="padding:0px">
+                    <div id="divReport">
+                        @if (Model.IsCallFirst == false)
+                        {
+                            @Html.Action("DocumentViewerPartialFirstCall", "TechnicalServicesTicketMLCReport", new { searchViewModel = Model})
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            //$("#TypeDate").trigger("change");
+        })
+        //$(document).on("change", "#TypeDate", function () {
+        //    $data = $(this).val();
+        //    if ($data === 'MONTH') {
+        //        $("label[for='Month']").text("Tháng");
+        //        $("input[name='Month']").attr("min",1).attr("max",12);
+        //    } else if ($data === 'QUARTER') {
+        //        $("label[for='Month']").text("Quý");
+        //        $("input[name='Month']").attr("min", 1).attr("max", 4);
+        //    }
+        //})
+
+        $(document).on("change", ".ddl-common-date", function () {
+            var cssClass = $(this).data('id');
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("." + cssClass + " input[name='FromDate']").val(jsonData.FromDate);
+                    $("." + cssClass + " input[name='ToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("." + cssClass + " input[name='FromDate']").prop("readonly", true);
+                        $("." + cssClass + " input[name='ToDate']").prop("readonly", true);
+                    } else {
+                        $("." + cssClass + " input[name='FromDate']").prop("readonly", false);
+                        $("." + cssClass + " input[name='ToDate']").prop("readonly", false);
+                    }
+
+                }
+            });
+        });
+    </script>
+}

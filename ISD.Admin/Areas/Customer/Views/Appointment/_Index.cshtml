@@ -1,0 +1,65 @@
+﻿@model IEnumerable<AppointmentViewModel>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-6">
+                Tổng số kết quả:
+            </div>
+            <div class="col-md-6">
+                <input type="text" disabled value="" id="resultThisPeriod" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-6">
+                Tổng số kỳ trước: <span class="ico-help" title="Chưa tính được với ngày ghé thăm tùy chỉnh!"><i class="fa fa-question-circle"></i></span>
+            </div>
+            <div class="col-md-6">
+                <input type="text" disabled value="" id="resultPreviousCount" />
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <div class="col-md-6">
+                Tỷ lệ (kỳ này/kỳ trước):
+            </div>
+            <div class="col-md-6">
+                <input type="text" disabled value="" id="resultRatio" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="table table-bordered table-striped table-hover no-footer dataTableServerSide">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@LanguageResource.ID</th>
+            <th>@Html.DisplayNameFor(p => p.Summary)</th>
+            <th>@Html.DisplayNameFor(p => p.TaskStatusId)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileId)</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.TaxNo)</th>
+            <th>@Html.DisplayNameFor(p => p.Address)</th>
+            <th>@Html.DisplayNameFor(p => p.Email)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerTypeName)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerGroupName)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerCareerCode)</th>
+            <th>@Html.DisplayNameFor(p => p.SaleEmployeeCode)</th>
+            @*<th>@Html.DisplayNameFor(p => p.StartDate)</th>
+            <th>@Html.DisplayNameFor(p => p.EndDate)</th>*@
+            <th>@Html.DisplayNameFor(p => p.Description)</th>
+            <th>@Html.DisplayNameFor(p => p.ShowroomCode)</th>
+            <th>@Html.DisplayNameFor(p => p.StoreName)</th>
+            <th>@Html.DisplayNameFor(p => p.customerTasteLst)</th>
+            <th>@Html.DisplayNameFor(p => p.customerCatalogueLst)</th>
+            <th>@Html.DisplayNameFor(p => p.VisitDate)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+</table>

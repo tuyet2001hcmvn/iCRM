@@ -1,0 +1,65 @@
+﻿@model ProfileViewModel
+@if (Model != null)
+{
+    {
+        Layout = "~/Views/Shared/_Layout_blank.cshtml";
+        ViewBag.Title = Model.ProfileName;
+    }
+
+    @section head{
+        <style>
+            .container {
+                padding-right: 5px;
+                padding-left: 5px;
+                margin-right: unset;
+                margin-left: unset;
+                padding-top: 5px;
+            }
+
+            .row {
+                padding: unset;
+            }
+
+            .content {
+                padding: unset;
+            }
+
+            .row {
+                margin-right: unset;
+                margin-left: unset;
+            }
+
+            .col-xs-4, .col-xs-7 {
+                float: left;
+            }
+
+            .col-xs-4 {
+                text-align: right;
+            }
+
+            .col-xs-4, .col-xs-7 {
+                position: relative;
+                min-height: 1px;
+                padding-left: 8px;
+                padding-bottom: 4px;
+            }
+        </style>
+
+    }
+
+    <div class="content">
+
+        @Html.Action("_Detail", "Overview", new { @id = Model.ProfileId, @CompanyCode = (string)ViewBag.CompanyCode })
+
+    </div>
+}
+else
+{
+    {
+        Layout = "~/Views/Shared/_Layout_blank.cshtml";
+        ViewBag.Title = "Khách hàng này không tồn tại!";
+    }
+    <div class="content">
+        <p style="color:red">Khách hàng này không tồn tại!</p>
+    </div>
+}

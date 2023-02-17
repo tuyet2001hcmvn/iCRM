@@ -1,0 +1,153 @@
+﻿@model ProvinceViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_Province.ToLower();
+    string CurrentController = ConstController.Province;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.ProvinceId)
+    @Html.HiddenFor(p => p.ProvinceCodeValid)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProvinceCode)
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.ProvinceCode))
+                                {
+                                    @Html.RequiredTextboxFor(p => p.ProvinceCode)
+                                    @Html.HiddenFor(p => p.ProvinceCode)
+                                }
+                                else
+                                {
+                                    @Html.RequiredTextboxFor(p => p.ProvinceCode)
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProvinceName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ProvinceName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Area)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Area)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ConfigPriceCode)
+                            </div>
+                            <div class="col-md-9">
+                                @{ 
+                                    string giaXuatHoaDon = string.Empty;
+                                    string giaApThue = string.Empty;
+                                    string giaCaoHon = string.Empty;
+                                    if (Model.ConfigPriceCode == ViewBag.GiaXuatHD)
+                                    {
+                                        giaXuatHoaDon = "checked";
+                                    }
+                                    else if (Model.ConfigPriceCode == ViewBag.GiaApThue)
+                                    {
+                                        giaApThue = "checked";
+                                    }
+                                    else if (Model.ConfigPriceCode == ViewBag.GiaCaoHon)
+                                    {
+                                        giaCaoHon = "checked";
+                                    }
+                                }
+                                <span>
+                                    <input type="radio" value="@ViewBag.GiaXuatHD" name="ConfigPriceCode" id="gia-xuat-hoa-don" @giaXuatHoaDon>
+                                    <label class="label-radio" for="gia-xuat-hoa-don">@LanguageResource.InvoicePrice</label>
+                                </span>
+                                <br />
+                                <span>
+                                    <input type="radio" value="@ViewBag.GiaApThue" name="ConfigPriceCode" id="gia-ap-thue" @giaApThue>
+                                    <label class="label-radio" for="gia-ap-thue">@LanguageResource.GiaApThue</label>
+                                </span>
+                                <br />
+                                <span>
+                                    <input type="radio" value="@ViewBag.GiaCaoHon" name="ConfigPriceCode" id="gia-cao-hon" @giaCaoHon>
+                                    <label class="label-radio" for="gia-cao-hon">@LanguageResource.GiaCaoHon</label>
+                                </span>
+                            </div>
+                        </div>*@
+
+                        @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.IsHasLicensePrice)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButtonIs(p => p.IsHasLicensePrice)
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+    </script>
+}
+
+
+

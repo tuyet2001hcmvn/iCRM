@@ -1,0 +1,1623 @@
+﻿@model TaskSearchViewModel
+@using ISD.Extensions
+@{
+    string Title = ViewBag.Title;
+    string CurrentArea = ConstArea.Work;
+    string CurrentController = ConstController.Task;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    bool isHasPermissionEdit = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Edit, "?Type=" + ViewBag.Type);
+    bool isHasPermissionDelete = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Delete, "?Type=" + ViewBag.Type);
+    bool isHasPermissionEditProfile = HtmlExtensions.GetPermission("Customer/Profile", ConstFunction.Edit, "?Type=Account");
+    bool isHasPermissionSync = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.SYNC, "?Type=" + ViewBag.Type);
+    bool isHasPermissionCancel = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CANCEL, "?Type=" + ViewBag.Type);
+    bool isHasPermissionCreate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Create, "?Type=" + ViewBag.Type);
+    bool isHasPermissionExport = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Export, "?Type=" + ViewBag.Type);
+    string parameters = string.Format("?Type={0}&Reporter={1}&Assignee={2}", ViewBag.Type, ViewBag.Reporter, ViewBag.Assignee);
+    var GoogleMapAPIKey = ViewBag.GoogleMapAPIKey;
+    var MarkerCluster = "https://unpkg.com/@google/markerclustererplus@4.0.1/dist/markerclustererplus.min.js";
+
+    var hiddenClass = "";
+    var hiddenGTBClass = "";
+    var hiddenNotQNAClass = "";
+    var hiddenNotMISSIONClass = "";
+    var hiddenNotBOOKINGVISITClass = "";
+    if (ViewBag.Type != ConstWorkFlowCategory.THKH && ViewBag.Type != ConstWorkFlowCategory.TICKET && ViewBag.Type != ConstWorkFlowCategory.TICKET_MLC)
+    {
+        hiddenClass = "display-none";
+    }
+
+    if (ViewBag.Type != ConstWorkFlowCategory.GTB)
+    {
+        hiddenGTBClass = "display-none";
+    }
+    if (ViewBag.Type == ConstWorkFlowCategory.QNA)
+    {
+        hiddenNotQNAClass = "display-none";
+    }
+    if (ViewBag.Type == ConstWorkFlowCategory.MISSION)
+    {
+        hiddenNotMISSIONClass = "display-none";
+    }
+    if (ViewBag.Type == ConstWorkFlowCategory.BOOKING_VISIT)
+    {
+        hiddenNotBOOKINGVISITClass = "display-none";
+    }
+}
+
+@section head {
+    <!--Kanban-->
+    <link href="~/Scripts/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+    <link href="~/Scripts/jqwidgets/styles/jqx.material-green.css" rel="stylesheet" />
+    <!--CKEDITOR-->
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script src="~/ckfinder/ckfinder.js"></script>
+    <!--Calendar-->
+    <link href="~/Content/Calendar/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/Content/Calendar/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @if (ViewBag.Type != ConstWorkFlowCategory.MyWork && ViewBag.Type != ConstWorkFlowCategory.MyFollow)
+        {
+            @Title.FirstCharToUpper(false)
+        }
+        else
+        {
+            @Title
+        }
+    </h1>
+    <div class="pull-right">
+        <!--Nếu không là MyWork và MyFollow thì mới có Thêm mới-->
+        @if (ViewBag.Type != ConstWorkFlowCategory.MyWork && ViewBag.Type != ConstWorkFlowCategory.MyFollow && ViewBag.Type != ConstWorkFlowCategory.MyCalendar)
+        {
+            @HtmlExtensions.CreateButton(CurrentArea, CurrentController, parameters)
+            if (isHasPermissionSync && ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+            {
+                <a class="btn btn-info btn-sync-product">
+                    <i class="fa fa-refresh"></i> Đồng bộ sản phẩm
+                </a>
+
+               
+            }
+            if (isHasPermissionSync && (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC || ViewBag.Type == ConstWorkFlowCategory.TICKET))
+            {
+                <a class="btn btn-info btn-sync-product-color">
+                    <i class="fa fa-refresh"></i>  Đồng bộ mã màu
+                
+                </a>
+            }
+
+            if (isHasPermissionExport && ViewBag.Type == ConstWorkFlowCategory.BOOKING_VISIT)
+            {
+                <a id="btn-export" class="btn btn-success btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a>
+            }
+        }
+    </div>
+</div>
+
+<div class="content">
+    <div class="panel-group">
+        @Html.Partial("_Filter")
+        @*@Html.Hidden("Type", (string)ViewBag.Type)*@
+        @if (ViewBag.Type == ConstWorkFlowCategory.MyWork || ViewBag.Type == ConstWorkFlowCategory.MyFollow)
+        {
+            @Html.Hidden("KanbanId", (Guid?)ViewBag.KanbanId)
+        }
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-search" data-toggle="tab" id="toggle-tab-search">@LanguageResource.Task_CommonTask</a>
+                    </li>
+                    <li class="hide-kanban">
+                        <a href="#tab-kanban" data-toggle="tab" id="toggle-tab-kanban">@LanguageResource.Kanban</a>
+                    </li>
+                    @if (ViewBag.Type == ConstWorkFlowCategory.MyWork || ViewBag.Type == ConstWorkFlowCategory.MyFollow)
+                    {
+                        <li class="hide-calendar">
+                            <a href="#tab-calendar" data-toggle="tab" id="toggle-tab-calendar">@LanguageResource.Calendar</a>
+                        </li>
+                    }
+                    @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+                    {
+                        <li class="hide-map">
+                            <a href="#tab-map" data-toggle="tab" id="toggle-tab-map">
+                                @LanguageResource.Maps
+                                <span class="ico-help" title="Bản đồ hiển thị 300 địa điểm gần nhất"><i class="fa fa-question-circle"></i></span>
+                            </a>
+
+                        </li>
+                        <li class="hide-calendarGTB">
+                            <a href="#tab-calendarGTB" data-toggle="tab" id="toggle-tab-calendarGTB">@ViewBag.EstimatedTitle</a>
+                        </li>
+                    }
+                </ul>
+
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="tab-search">
+                        @Html.Partial("_ListTask")
+                    </div>
+                    <div class="tab-pane hide-kanban" id="tab-kanban">
+                        <div class="kanbanContainer">
+                            <div id="kanban" class="kanbanClass"></div>
+                        </div>
+                    </div>
+                    @if (ViewBag.Type == ConstWorkFlowCategory.MyWork || ViewBag.Type == ConstWorkFlowCategory.MyFollow)
+                    {
+                        <div class="tab-pane hide-calendar" id="tab-calendar">
+                            <div id="calendar"></div>
+                        </div>
+                    }
+                    @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+                    {
+                        <div class="tab-pane hide-map" id="tab-map">
+                            <div id="map" style="height: 700px;"></div>
+                        </div>
+                        <div class="tab-pane hide-calendarGTB" id="tab-calendarGTB">
+                            <div id="calendarGTB"></div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+<div class="loading-modal"></div>
+
+@section components {
+    <div class="modal fade" id="popupTaskKanban" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_DeletePopups")
+    <div class="modal fade" id="popupSaveTaskStatus" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="divProfilePopup"></div>
+    <div class="divContactPopup"></div>
+    <div class="divConstructionPopup"></div>
+
+    <div class="divSyncProduct">
+        <div id="divSyncProduct" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-sm">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">ĐỒNG BỘ THÔNG TIN SẢN PHẨM TỪ SAP</h4>
+                    </div>
+                    <form class="frmSyncProduct">
+                        <div class="form-horizontal">
+                            <div class="modal-body">
+                                <div id="divAlertPopupWarning" class="alert alert-warning alert-dismissable" style="display: none">
+                                    <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertPopupWarning">×</button>
+                                    <div class="alert-message">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            <div class="label-wrapper">
+                                                <label class="control-label" for="CompanyId">Công ty</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CompanyCode")
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="col-md-3">
+                                            <div class="label-wrapper">
+                                                <label class="control-label" for="ERPProductCode">Mã SAP</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <input type="text" name="SyncERPProductCode" class="form-control text-box single-line" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Btn_Cancel</span>
+                                <a class="btn btn-primary pull-right" id="btn-confirm-sync">
+                                    @LanguageResource.Btn_Sync
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divSyncProductColor">
+        <div id="divSyncProductColor" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-sm">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">ĐỒNG BỘ MÃ MÀU SẢN PHẨM TỪ AC LIBRARY</h4>
+                    </div>
+                    <form class="frmSyncProductColor">
+                        <div class="form-horizontal">
+                            <div class="modal-body">
+                                <div id="divAlertPopupWarning" class="alert alert-warning alert-dismissable" style="display: none">
+                                    <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertPopupWarning">×</button>
+                                    <div class="alert-message">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Btn_Cancel</span>
+                                <a class="btn btn-primary pull-right" id="btn-confirm-sync-product-color">
+                                    @LanguageResource.Btn_Sync
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--Popup ghi chú ngắn-->
+    <div class="modal fade" id="popupTaskShortNote" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title">
+                        <a href=""><i class="fa fa-eye mr-5"></i></a> <span id="popup-title"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="divAlertWarningTaskShortNote" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+                        <div class="alert-message">
+                        </div>
+                    </div>
+                    <div class="content">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmUpdateTaskShortNote" }))
+                        {
+                            <div class="box-body">
+                                <div>
+                                    <input id="ShortNoteTaskId" name="ShortNoteTaskId" type="hidden" value="">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!--Ghi chú ngắn-->
+                                            <div class="form-group">
+                                                <div>
+                                                    <div class="label-wrapper"><label class="control-label" for="Description">Ghi chú ngắn</label></div>
+                                                </div>
+                                                <div>
+                                                    <textarea class="form-control" cols="20" id="ShortNote" name="ShortNote" rows="4"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-short-note">Lưu</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <!--Kanban-->
+    <script src="~/Scripts/jqwidgets/jqxsortable.js"></script>
+    <script src="~/Scripts/jqwidgets/jqxdata.js"></script>
+    <script src="~/Scripts/jqwidgets/jqxcore.js"></script>
+    <script src="~/Scripts/jqwidgets/jqxkanban.js"></script>
+    <script src="~/Scripts/jqwidgets/jqxdragdrop.js"></script>
+    <script src="~/Areas/Work/Scripts/ISD.Kanban.js"></script>
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script>
+        //Define it
+        var currentUserId = "@CurrentUser.AccountId";
+        var currentPageId = "@ViewBag.PageId";
+    </script>
+    <!--Calendar-->
+    @if (ViewBag.Type == ConstWorkFlowCategory.MyWork || ViewBag.Type == ConstWorkFlowCategory.MyFollow || @ViewBag.Type == ConstWorkFlowCategory.GTB)
+    {
+        <script src="~/Scripts/Calendar/moment.js"></script>
+        <script src="~/Scripts/Calendar/fullcalendar.min.js"></script>
+        <script src="~/Scripts/Calendar/Shared.js"></script>
+    }
+    <!--Google maps-->
+    @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+    {
+        <script src="https://maps.googleapis.com/maps/api/js?language=vi&key=@GoogleMapAPIKey"></script>
+        <script>
+
+            var bounds = new google.maps.LatLngBounds();
+            var infowindow = new google.maps.InfoWindow();
+            var marker, i;
+            function GoogleMapsInitialize(locations, country) {
+                var style = {
+                    hide: [
+                        {
+                            featureType: 'poi',
+                            stylers: [{ visibility: 'off' }]
+                        },
+                        {
+                            featureType: 'transit',
+                            elementType: 'labels.icon',
+                            stylers: [{ visibility: 'off' }]
+                        }
+                    ]
+                };
+                //defaultZoom = 12; // Zoom to
+                //defaultLatLng = { lat: 21.030653, lng: 105.847130 }; // Hà nội (SaleOffice)
+                map = new google.maps.Map(document.getElementById('map'));
+                map.setOptions({ styles: style.hide });
+
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': country }, function (results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        map.setCenter(results[0].geometry.location);
+                    }
+                });
+
+                var markers = [];
+                var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                if (locations != null && locations.length > 0) {
+                    for (i = 0; i < locations.length; i++) {
+                        var colorMarker = 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+                        marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(locations[i].lat, locations[i].lng),
+                            map: map,
+                            icon: colorMarker,
+                            //label: labels[i % labels.length]
+                        });
+                        bounds.extend(marker.position);
+
+                        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                            return function () {
+                                infowindow.setContent("<b>" + locations[i].name + "</b><br><p>" + locations[i].address + "</p>");
+                                infowindow.open(map, marker);
+                            }
+                        })(marker, i));
+                        markers.push(marker);
+                    }
+                    //map.fitBounds(bounds);
+                }
+                //(optional) restore the zoom level after the map is done scaling
+                var listener = google.maps.event.addListener(map, "idle", function () {
+                    map.setZoom(10);
+                    google.maps.event.removeListener(listener);
+                    var markerCluster = new MarkerClusterer(map, markers,
+                        { imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m' });
+                });
+                
+
+            }
+        </script>
+    }
+
+<script>
+        //load default and set event
+        $(document).ready(function () {
+            //Set lại thông tin search gần đây khi là back lại
+            var modeTemplateSearch = ISD.GetQueryString("ModeSearch", window.location.href);
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            } else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            PaggingServerSide_Task("@CurrentUrl");
+            ISD.ShowMessage(window.location.href);
+            ISD.Delete();
+            ISD.Cancel();
+            ISD.DateTimeInitial();
+
+            //select2 multiple
+            $(".Filters").select2({
+                multiple: true,
+                placeholder: "Thêm các trường tìm kiếm..."
+            });
+            $(".select-filter .select2 .select2-search__field").css("width", "200px");
+            //chọn tab theo config
+            $("#toggle-" + getParam('tab')).trigger("click");
+
+            //các lỗi bảo hành thường gặp
+            GetUsualError();
+        });
+
+
+        function loading2Modal() {
+            $("#popupTaskKanban").addClass("loading2");
+        }
+
+        $(document).on("change", ".Filters", function () {
+            var arr = $(this).val();
+            $("div[class*='hidden_']").addClass("hidden");
+            $.each(arr, function (index, value) {
+                //console.log(value);
+                $(".hidden_" + value).removeClass("hidden");
+            });
+        });
+
+        $(document).on("change", "select[name='Reporter']", function () {
+            var Reporter = $("select[name='Reporter']").val();
+            var Assignee = $("select[name='Assignee']").val();
+            var href = "/Work/Task/Create?Type=@ViewBag.Type&Reporter=" + Reporter + "&Assignee=" + Assignee;
+            $("#btn-create").attr("href", href);
+        });
+
+        $(document).on("change", "select[name='Assignee']", function () {
+            var Reporter = $("select[name='Reporter']").val();
+            var Assignee = $("select[name='Assignee']").val();
+            var href = "/Work/Task/Create?Type=@ViewBag.Type&Reporter=" + Reporter + "&Assignee=" + Assignee;
+            $("#btn-create").attr("href", href);
+        });
+
+        $("#CheckAll").click(function () {
+            if ($("#CheckAll").is(':checked')) {
+                $(".Filters > option").prop("selected", "selected");
+                $(".Filters").trigger("change");
+            } else {
+                $(".Filters > option").removeAttr("selected");
+                $(".Filters").trigger("change");
+            }
+        });
+
+
+        $(document).on("change", "#ProvinceId", function () {
+            var ProvinceId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/District/GetDistrictByProvince",
+                data: {
+                    ProvinceId: ProvinceId
+                },
+                success: function (jsonData) {
+                    $("#DistrictId").html("");
+                    $("#DistrictId").append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#DistrictId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    $("#DistrictId").trigger("change");
+                }
+            });
+        });
+
+        $(document).on("change", "select[name='DistrictId']", function () {
+            var DistrictId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Ward/GetWardByDistrict",
+                data: {
+                    DistrictId: DistrictId
+                },
+                success: function (jsonData) {
+                    var $ward = $("#WardId")
+                    $ward.html("");
+                    $ward.append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                    $.each(jsonData, function (index, value) {
+                        $ward.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                }
+            });
+        });
+
+
+        // TaskStatusCode: có giá trị => reset: TaskProcessCode
+        $(document).on("change", "#TaskStatusCode", function () {
+            if ($(this).val()) {
+                $("#TaskProcessCode").val('');
+                $('#TaskProcessCode').trigger('change');
+            }
+        });
+        $(document).on("change", "#TaskProcessCode", function () {
+            if ($(this).val()) {
+                $("#TaskStatusCode").val('');
+                $('#TaskStatusCode').trigger('change');
+            }
+        });
+        //common date
+        $(document).on("change", ".ddl-common-date", function () {
+            var cssClass = $(this).data('id');
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("." + cssClass + " input[name='" + cssClass+ "FromDate']").val(jsonData.FromDate);
+                    $("." + cssClass + " input[name='" + cssClass + "ToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("disabled", true);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("disabled", true);
+                    } else {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("disabled", false);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("disabled", false);
+                    }
+
+                }
+            });
+        });
+
+        $("#btn-search").click(function () {
+            $("#btn-search").button('loading');
+
+            var searchData = GetDataFormSearch();
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, searchData);
+
+            PaggingServerSide_Task("@CurrentUrl");
+        });
+
+        //trigger enter click when fill in search form
+        $(document).on("keyup", "#frmSearch", function (evt) {
+            if (evt.keyCode == 13) {
+                $("#btn-search").trigger("click");
+            }
+        });
+
+        //Đồng bộ sản phẩm
+        $(document).on("click", ".btn-sync-product", function () {
+            $(".divSyncProduct input[name='SyncERPProductCode']").val("");
+            $(".divSyncProduct #divSyncProduct").modal("show");
+        });
+        //Đồng bộ mã màu sản phẩm
+        $(document).on("click", ".btn-sync-product-color", function () {
+            $(".divSyncProductColor #divSyncProductColor").modal("show");
+        });
+
+        $(document).on("click", "#btn-confirm-sync", function () {
+            var $btn = $(this);
+            var CompanyCode = $(".divSyncProduct select[name='CompanyCode']").val();
+            var SyncERPProductCode = $(".divSyncProduct input[name='SyncERPProductCode']").val();
+            if (SyncERPProductCode == null || SyncERPProductCode == "") {
+                alertModalPopup("Vui lòng nhập mã SAP cần đồng bộ!");
+            }
+            else {
+                $btn.button("loading");
+                $.ajax({
+                    type: "POST",
+                    url: '/Sale/Product/SyncProduct',
+                    data: {
+                        ERPProductCode: SyncERPProductCode,
+                        CompanyCode : CompanyCode
+                    },
+                    success: function (html) {
+                        if (html.Success == true) {
+                            $(".divSyncProduct #divSyncProduct").modal("hide");
+                            if (html.Message != null && html.Message != "") {
+                                alertPopup(false, html.Message);
+                            }
+                            else {
+                                alertPopup(true, "Đã đồng bộ thành công sản phẩm có mã SAP \"" + SyncERPProductCode + "\".");
+                                //PaggingServerSide_Profile("@CurrentUrl");
+                            }
+                        }
+                        else {
+                            alertModalPopup("Đã có lỗi xảy ra: " + html.Message);
+                        }
+                        $btn.button("reset");
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", "#btn-confirm-sync-product-color", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+                $.ajax({
+                    type: "POST",
+                    url: '/Sale/Product/SyncProductColor',
+                    success: function (html) {
+                        if (html.Success == true) {
+                            $(".divSyncProductColor #divSyncProductColor").modal("hide");
+                            if (html.Message != null && html.Message != "") {
+                                alertPopup(false, html.Message);
+                            }
+                            else {
+                                alertPopup(true, "Đã đồng bộ thành công!");
+                            }
+                        }
+                        else {
+                            alertModalPopup("Đã có lỗi xảy ra: " + html.Message);
+                        }
+                        $btn.button("reset");
+                    }
+                });
+        });
+
+        $(document).on("change", "#divCancelPopup #CancelType", function () {
+            var dataText = $(this).val();
+            if (dataText != "Other") {
+                $("#divCancelPopup #CancelReason").prop("readonly", true);
+                $("#divCancelPopup #CancelReason").val(dataText);
+            } else {
+                $("#divCancelPopup #CancelReason").val("");
+                $("#divCancelPopup #CancelReason").prop("readonly", false);
+            }
+
+        })
+</script>
+
+    @if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+    {
+        <script>
+                 function PaggingServerSide_Task(controller) {
+                    $(".dataTableServerSide").DataTable().clear().destroy();
+                    $(".dataTableServerSide")
+                        .on("xhr.dt", function (e, settings, json, xhr) {
+                            //console.log("json", json);
+                            $("#btn-search").button('reset');
+
+                            //Kanban
+                            if (json.isRenderKanban == true) {
+                                GetKanban(json);
+                                $(".hide-kanban").removeClass("hidden");
+                            }
+                            else {
+                                $(".hide-kanban").addClass("hidden");
+                            }
+                            //Calendar
+                            if ("@ViewBag.Type" == "@ConstWorkFlowCategory.MyWork" || "@ViewBag.Type" == "@ConstWorkFlowCategory.MyFollow")
+                            {
+                                $('#calendar').fullCalendar("destroy");
+                                calendarFunction(json.data);
+                            }
+                            //Maps
+        @*if ("@ViewBag.Type" == "@ConstWorkFlowCategory.GTB") {
+                var locationArr = [];
+                $.each(json.data, function (index, item) {
+                    if (item.VisitAddress != null && item.Actived == true) {
+                        locationArr.push({ name: item.Summary, address: item.VisitAddress, lat: item.lat, lng: item.lng });
+                    }
+                });
+                GoogleMapsInitialize(locationArr, json.CurrentLocation);
+
+                $('#calendarGTB').fullCalendar("destroy");
+                calendarFunction(json.calendarList);
+            }*@
+       })
+                        .on('processing.dt', function (e, settings, processing) {
+                            ISD.LoadingDataTable(processing, '.dataTableServerSide');
+                        })
+                        .DataTable({
+                        proccessing: true,
+                        serverSide: true,
+                        paging: true,
+                        scrollX: true,
+                        //scrollCollapse: true,
+                        //fixedColumns: {
+                        //    leftColumns: 3
+                        //},
+                        ajax: {
+                            type: 'POST',
+                            url: "/" + controller + "/_PaggingServerSide",
+                            contentType: 'application/json',
+                            data: function (d) {
+                                var arr = {};
+                                //data search
+                                var data = $("#frmSearch").serializeArray();
+                                $.each(data, function (index, val) {
+                                    var obj = {};
+                                    obj[val.name] = val.value;
+                                    $.extend(true, arr, obj);
+                                });
+                                //data datatable (draw, start, length,...)
+                                $.extend(true, arr, d);
+
+                                //Type
+                                var type = getParam("Type");
+                                var obj = {};
+                                obj["Type"] = type;
+                                $.extend(true, arr, obj);
+
+                                //UsualErrorCode
+                                var errorList = $('#UsualErrorCode').val();
+                                if (errorList != null && errorList.length > 0) {
+                                    var error = {};
+                                    error['UsualErrorCode'] = errorList;
+                                    $.extend(true, arr, error);
+                                }
+
+                                //ProductColorCode
+                                var colorList = $('#ProductColorCode').val();
+                                if (colorList != null && colorList.length > 0) {
+                                    var color = {};
+                                    color['ProductColorCode'] = colorList;
+                                    $.extend(true, arr, color);
+                                }
+
+                                //Loại
+                                var workFlowList = $('#WorkFlowIdList').val();
+                                if (workFlowList != null && workFlowList.length > 0) {
+                                    var workFlow = {};
+                                    workFlow['WorkFlowIdList'] = workFlowList;
+                                    $.extend(true, arr, workFlow);
+                                }
+                                //TT bảo hành
+                                var ServiceTechnicalTeamCodeList = $('#ServiceTechnicalTeamCode').val();
+                                if (ServiceTechnicalTeamCodeList != null && ServiceTechnicalTeamCodeList.length > 0) {
+                                    var ServiceTechnicalTeamCode = {};
+                                    ServiceTechnicalTeamCode['ServiceTechnicalTeamCode'] = ServiceTechnicalTeamCodeList;
+                                    $.extend(true, arr, ServiceTechnicalTeamCode);
+                                }
+                                //Phòng ban
+                                var departmentCodeList = $('#DepartmentCode').val();
+                                if (departmentCodeList != null && departmentCodeList.length > 0) {
+                                    var departmentCode = {};
+                                    departmentCode['DepartmentCode'] = departmentCodeList;
+                                    $.extend(true, arr, departmentCode);
+                                }
+
+                                var tabName = $(".nav-tabs li.active a").attr("href");
+                                if (tabName == "#tab-map") {
+                                    var tab = {};
+                                    tab['tab'] = tabName;
+                                    $.extend(true, arr, tab);
+                                }
+
+                                return JSON.stringify(arr);
+                            }
+                        },
+                        columns: [
+                            //1. STT
+                            {
+                                "data": "STT",
+                                "className": "text-center"
+                            },
+                            //2. TaskCode
+                            {
+                                "data": "TaskCode",
+                                "className": "text-center",
+                                "orderable": true,
+                                "render": function (data, type, row) {
+                                    if (type === "display" || type === "filter") {
+                                        @*if ("@isHasPermissionEdit" == "True" || "@isHasPermissionEdit" == "true") {
+                                            return "<a href=\"/Work/Task/Edit/" + row["TaskId"] + "\">" + data + "</a><span><a class='btn-showTaskPopup' title='Cập nhật nhanh' data-id='" + row["TaskId"] + "'><i class='fa fa-pencil-square-o'></i></a></span>";
+                                        }
+                                        else {
+                                            return data;
+                                        }*@
+
+                                        var htmlContent = "";
+                                        if (("@isHasPermissionEdit" == "True" || "@isHasPermissionEdit" == "true") && row["Actived"] == true) {
+                                            htmlContent += "<a target='_blank' href=\"/Work/Task/Edit/" + row["TaskId"] + "\">" + data + "</a><span><a class='btn-showTaskPopup' title='Cập nhật nhanh' data-id='" + row["TaskId"] + "'><i class='fa fa-pencil-square-o'></i></a></span>";
+                                        }
+                                        else {
+                                            htmlContent = data;
+                                        }
+
+                                        @*if (("@isHasPermissionCancel" == "True" || "@isHasPermissionCancel" == "true") && row["Actived"] == true) {
+                                            htmlContent += "<span><a class=\"btn-cancel\" title='Hủy' style=\"color: #f0ad4e;cursor: pointer;margin-left: 5px;\" data-current-url=\"Work/Task\" data-id='" + row["TaskId"] + "' data-item-name='" + row["Summary"] + "'><i class='fa fa-trash-o'></i></a></span>";
+                                        }*@
+                                        return htmlContent;
+                                    }
+                                    return "";
+                                }
+                            },
+                            //3. ProfileName
+                            {
+                                "data": "ProfileName",
+                                "orderable": true,
+                                "render": function (data, type, row) {
+                                    if (type === "display" || type === "filter") {
+                                        if (data != null && data != "") {
+                                            if ("@isHasPermissionEditProfile" == "True" || "@isHasPermissionEditProfile" == "true") {
+                                                return "<a target='_blank' href=\"/Customer/Profile/Edit/" + row["ProfileId"] + "\">" + data + "</a>";
+                                            }
+                                            else {
+                                                return data;
+                                            }
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            //4. ProfileAddress
+                            {
+                                "data": "ProfileAddress",
+                                "orderable": false
+                            },
+                            //5. ProfilePhone
+                            {
+                                "data": "Phone",
+                                "orderable": false
+                                //"render": function (data, type, row) {
+                                //    if (type === "display" || type === "filter") {
+                                //        return "<a href=\"/Work/Task/Edit/" + row["TaskId"] + "\">" + data + "</a>";
+                                //    }
+                                //    return "";
+                                //}
+                            },
+                            //6. Description
+                            {
+                                "data": "Description",
+                                "render": function (data, type, row) {
+                                    if (type === "display" || type === "filter") {
+                                        if (data != null) {
+                                            return "<a target='_blank' href=\"/Work/Task/Edit/" + row["TaskId"] + "\" title=\"" + row["DetailSummary"] + "\">" + data + "</a>";
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            //7. WorkFlowName
+                            {
+                                "data": "WorkFlowName",
+                                "orderable": true
+                            },
+                            //8. TaskStatusName
+                            {
+                                "data": "TaskStatusName",
+                                "orderable": true,
+                                "createdCell": function (td, cellData, rowData, row, col) {
+                                    if (cellData != "") {
+                                        $(td).css("background-color", rowData["TaskStatusBackgroundColor"]);
+                                        $(td).css("color", rowData["TaskStatusColor"]);
+                                    }
+                                }
+                            },
+                            //9. Result
+                            {
+                                "data": "ShortCustomerReviews",
+                                "render": function (data, type, row) {
+                                    // If display or filter data is requested, format the date
+                                    if (type === "display" || type === "filter") {
+                                        if (data != null) {
+                                            return "<a href=\"/Work/Task/Edit/" + row["TaskId"] + "\" title=\"" + row["CustomerReviews"] + "\">" + data + "</a>";
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            //10. AssigneeName
+                            {
+                                "data": "AssigneeName"
+                            },
+                            //11. StartDate
+                            {
+                                "data": "StartDate",
+                                "className": "text-center",
+                                "render": function (data, type, row) {
+                                    // If display or filter data is requested, format the date
+                                    if (type === "display" || type === "filter") {
+                                        if (data != null) {
+                                            return moment(data).format("DD/MM/YYYY");
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            //12. EndDate
+                            {
+                                "data": "EndDate",
+                                "className": "text-center",
+                                "render": function (data, type, row) {
+                                    // If display or filter data is requested, format the date
+                                    if (type === "display" || type === "filter") {
+                                        if (data != null) {
+                                            return moment(data).format("DD/MM/YYYY");
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            //13 CreateByName
+                           {
+                                "data": "CreateByName",
+                                "className": "text-center",
+                                "orderable": false,
+                                },
+                            //15. CreateTime
+                            {
+                                "data": "CreateTime",
+                                "className": "text-center @hiddenClass",
+                                "render": function (data, type, row) {
+                                    // If display or filter data is requested, format the date
+                                    if (type === "display" || type === "filter") {
+                                        if (data != null) {
+                                            return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                        }
+                                    }
+                                    return "";
+                                }
+                            },
+                            //15. Actions
+                            {
+                                "data": "TaskId",
+                                "orderable": false,
+                                "className": "text-center",
+                                "render": function (data, type, row) {
+                                    if (type === "display" || type === "filter") {
+                                        @*if ("@isHasPermissionDelete" == "True" || "@isHasPermissionDelete" == "true") {
+                                            return "<a class=\"btn btn-danger btn-delete\" data-current-url=\"Work/Task\" data-id='" + data + "' data-item-name='" + row["Summary"] + "' onclick=\"$(this).button('loading')\"><i class='fa fa-trash-o'></i> Xóa</a>";
+                                        }*@
+
+                                        var htmlContent = "";
+                                        if (row["Actived"] == false) {
+                                            htmlContent = "<span style=\"color:#f39c12\"><i>Hủy (" + (row["CancelReason"] ? row["CancelReason"] : "") + ")</i></span>";
+                                        }
+                                        else
+                                        {
+                                            @*if ("@isHasPermissionCancel" == "True" || "@isHasPermissionCancel" == "true") {
+                                                htmlContent += "<a class=\"btn btn-warning btn-cancel\" data-current-url=\"Work/Task\" data-id='" + data + "' data-item-name='" + row["Summary"] + "' onclick=\"$(this).button('loading')\"><i class='fa fa-ban'></i> Hủy</a>";
+                                            }*@
+                                            if ("@isHasPermissionDelete" == "True" || "@isHasPermissionDelete" == "true") {
+                                                htmlContent += "<a class=\"btn btn-danger btn-delete\" data-current-url=\"Work/Task\" data-id='" + data + "' data-item-name='" + row["Summary"] + "' onclick=\"$(this).button('loading')\"><i class='fa fa-trash-o'></i> Xóa</a>";
+                                            }
+                                            @*if ("@isHasPermissionCreate" == "True" || "@isHasPermissionCreate" == "true") {
+                                                htmlContent += "<a target=\"_blank\" href =\"/Work/Task/Create?Type=TICKET_MLC&Reporter=&Assignee=&CopyFrom=" + data + "\" class=\"btn btn-primary btn-create\" data-current-url=\"Work/Task\" data-id='" + data + "' data-item-name='" + row["Summary"] + "'\"><i class='fa fa-plus-square'></i> Copy và tạo mới</a>";
+                                            }*@
+                                        }
+                                        return htmlContent;
+                                    }
+                                    return "";
+                                }
+                            },
+                            //19.
+                            {
+                                "data": "ProcessCodeIndex",
+                                "className": "hidden",
+                            }
+                        ],
+                        destroy: true,
+                        language: {
+                            sProcessing: "Đang xử lý...",
+                            sLengthMenu: "Xem _MENU_ mục",
+                            sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                            sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                            sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                            sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                            sInfoPostFix: "",
+                            sSearch: "Tìm nội dung:",
+                            sUrl: "",
+                            oPaginate: {
+                                sFirst: "Đầu",
+                                sPrevious: "&laquo;",
+                                sNext: "&raquo;",
+                                sLast: "Cuối"
+                            }
+                        },
+                        columnDefs: [
+                            { targets: [0, 1], visible: true },
+                            { targets: 'no-sort', visible: false }
+                        ],
+                        "sDom": '<"top"flp>rt<"bottom"ip><"clear">'
+                    });
+                }
+        </script>
+    }
+    else
+    {
+<script>
+         function PaggingServerSide_Task(controller) {
+            $(".dataTableServerSide").DataTable().clear().destroy();
+            $(".dataTableServerSide")
+                .on("xhr.dt", function (e, settings, json, xhr) {
+                    //console.log("json", json);
+                    $("#btn-search").button('reset');
+                    if (json) {
+                        //Kanban
+                        if (json.isRenderKanban == true) {
+                            GetKanban(json);
+                            $(".hide-kanban").removeClass("hidden");
+                        }
+                        else {
+                            $(".hide-kanban").addClass("hidden");
+                        }
+                        //Calendar
+                        if ("@ViewBag.Type" == "@ConstWorkFlowCategory.MyWork" || "@ViewBag.Type" == "@ConstWorkFlowCategory.MyFollow")
+                        {
+                            $('#calendar').fullCalendar("destroy");
+                            calendarFunction(json.data);
+                        }
+                        //Maps
+                        if ("@ViewBag.Type" == "@ConstWorkFlowCategory.GTB") {
+                            var locationArr = [];
+                            $.each(json.data, function (index, item) {
+                                if (item.VisitAddress != null && item.Actived == true) {
+                                    locationArr.push({ name: item.Summary, address: item.VisitAddress, lat: item.lat, lng: item.lng });
+                                }
+                            });
+                            GoogleMapsInitialize(locationArr, json.CurrentLocation);
+
+                            $('#calendarGTB').fullCalendar("destroy");
+                            calendarFunction(json.calendarList);
+                        }
+                    }
+
+                })
+                .on('processing.dt', function (e, settings, processing) {
+                    ISD.LoadingDataTable(processing, '.dataTableServerSide');
+                })
+                .DataTable({
+                proccessing: true,
+                serverSide: true,
+                paging: true,
+                scrollX: true,
+                //scrollCollapse: true,
+                //fixedColumns: {
+                //    leftColumns: 3
+                //},
+                ajax: {
+                    type: 'POST',
+                    url: "/" + controller + "/_PaggingServerSide",
+                    contentType: 'application/json',
+                    data: function (d) {
+                        var arr = {};
+                        //data search
+                        var data = $("#frmSearch").serializeArray();
+                        $.each(data, function (index, val) {
+                            var obj = {};
+                            obj[val.name] = val.value;
+                            $.extend(true, arr, obj);
+                        });
+                        //data datatable (draw, start, length,...)
+                        $.extend(true, arr, d);
+
+                        //Type
+                        var type = getParam("Type");
+                        var obj = {};
+                        obj["Type"] = type;
+                        $.extend(true, arr, obj);
+
+                        //UsualErrorCode
+                        var errorList = $('#UsualErrorCode').val();
+                        if (errorList != null && errorList.length > 0) {
+                            var error = {};
+                            error['UsualErrorCode'] = errorList;
+                            $.extend(true, arr, error);
+                        }
+
+                        //ProductColorCode
+                        var colorList = $('#ProductColorCode').val();
+                        if (colorList != null && colorList.length > 0) {
+                            var color = {};
+                            color['ProductColorCode'] = colorList;
+                            $.extend(true, arr, color);
+                        }
+
+                        var tabName = $(".nav-tabs li.active a").attr("href");
+                        if (tabName == "#tab-map") {
+                            var tab = {};
+                            tab['tab'] = tabName;
+                            $.extend(true, arr, tab);
+                        }
+
+                        return JSON.stringify(arr);
+                    }
+                },
+                columns: [
+                    //1. STT
+                    {
+                        "data": "STT",
+                        "className": "text-center"
+                    },
+                    //2. TaskCode
+                    {
+                        "data": "TaskCode",
+                        "className": "text-center",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (row["SubtaskCode"]) {
+                                    data = row["SubtaskCode"];
+                                }
+                                var htmlContent = "";
+                                if (("@isHasPermissionEdit" == "True" || "@isHasPermissionEdit" == "true") && row["Actived"] == true) {
+                                    htmlContent += "<a target='_blank' href=\"/Work/Task/Edit/" + row["TaskId"] + "\">" + data + "</a><span><a class='btn-showTaskPopup' title='Cập nhật nhanh' data-id='" + row["TaskId"] + "'><i class='fa fa-pencil-square-o'></i></a></span>";
+                                }
+                                else {
+                                    htmlContent = data;
+                                }
+
+                                if (("@isHasPermissionCancel" == "True" || "@isHasPermissionCancel" == "true") && row["Actived"] == true) {
+                                    htmlContent += "<span><a class=\"btn-cancel\" title='Hủy' style=\"color: #f0ad4e;cursor: pointer;margin-left: 5px;\" data-current-url=\"Work/Task\" data-id='" + row["TaskId"] + "' data-item-name='" + row["Summary"] + "'><i class='fa fa-trash-o'></i></a></span>";
+                                }
+                                return htmlContent;
+                            }
+                            return "";
+                        }
+                    },
+                    //3. Summary
+                    {
+                        "data": "Summary",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (row["Actived"] == true) {
+                                    return "<a target='_blank' href=\"/Work/Task/Edit/" + row["TaskId"] + "\">" + data + "</a>";
+                                }
+                                return data;
+                            }
+                            return "";
+                        }
+                    },
+                    //3. Description
+                    {
+                        "data": "Description",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    if (row["Actived"] == true) {
+                                        return "<a target='_blank' href=\"/Work/Task/Edit/" + row["TaskId"] + "\" title=\"" + row["DetailSummary"] + "\">" + data + "</a>";
+                                    }
+                                    return data;
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //4. WorkFlowName
+                    {
+                        "data": "WorkFlowName",
+                        "orderable": true,
+                        "className": "@hiddenNotQNAClass"
+                    },
+                    //5. TaskStatusName
+                    {
+                        "data": "TaskStatusName",
+                        "orderable": true,
+                        "createdCell": function (td, cellData, rowData, row, col) {
+                            if (cellData != "") {
+                                $(td).css("background-color", rowData["TaskStatusBackgroundColor"]);
+                                $(td).css("color", rowData["TaskStatusColor"]);
+                            }
+                        }
+                    },
+                    //6. PriorityText_vi
+                    {
+                        "data": "PriorityText_vi",
+                        "orderable": true,
+                        "className": "@hiddenNotQNAClass"
+                    },
+                    //VisitAddress
+                    {
+                        "data": "VisitAddress",
+                        "className": "@hiddenGTBClass @hiddenNotQNAClass",
+                        "orderable": false,
+                        //"render": function (data, type, row) {
+                        //    //return data;
+                        //    return "<div>" + data + "</div>";
+                        //}
+                    },
+                    //7. ProfileCode
+                    {
+                        "data": "ProfileCode",
+                        "className": "text-center @hiddenNotQNAClass @hiddenNotMISSIONClass",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data != null && data != "") {
+                                    if ("@isHasPermissionEditProfile" == "True" || "@isHasPermissionEditProfile" == "true") {
+                                        return "<a target='_blank' href=\"/Customer/Profile/Edit/" + row["ProfileId"] + "\" onclick=\"$(this).button('loading')\">" + data + "</a>";
+                                    }
+                                    else {
+                                        return data;
+                                    }
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //8. ProfileForeignCode
+                    {
+                        "data": "ProfileForeignCode",
+                        "className": "text-center @hiddenNotQNAClass @hiddenNotMISSIONClass",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data != null && data != "") {
+                                    if ("@isHasPermissionEditProfile" == "True" || "@isHasPermissionEditProfile" == "true") {
+                                        return "<a target='_blank' href=\"/Customer/Profile/Edit/" + row["ProfileId"] + "\" onclick=\"$(this).button('loading')\">" + data + "</a>";
+                                    }
+                                    else {
+                                        return data;
+                                    }
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //9. ProfileName
+                    {
+                        "data": "ProfileName",
+                        "orderable": true,
+                        "className": "@hiddenNotQNAClass @hiddenNotMISSIONClass",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data != null && data != "") {
+                                    if ("@isHasPermissionEditProfile" == "True" || "@isHasPermissionEditProfile" == "true") {
+                                        return "<a  target='_blank' href=\"/Customer/Profile/Edit/" + row["ProfileId"] + "\" onclick=\"$(this).button('loading')\">" + data + "</a>";
+                                    }
+                                    else {
+                                        return data;
+                                    }
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //10. ProfileAddress
+                    {
+                        "data": "ProfileAddress",
+                        "orderable": false,
+                        "className": "@hiddenNotQNAClass @hiddenNotMISSIONClass",
+                    },
+                    //11. ReporterName
+                    {
+                        "data": "ReporterName",
+                        "orderable": true,
+                    },
+                    //12. AssigneeName
+                    {
+                        "data": "AssigneeName"
+                    },
+                    //13. StartDate
+                    {
+                        "data": "StartDate",
+                        "className": "text-center @hiddenNotQNAClass",
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //14. EstimateEndDate
+                    {
+                        "data": "EstimateEndDate",
+                        "className": "text-center @hiddenNotQNAClass @hiddenNotBOOKINGVISITClass",
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //15. EndDate
+                    {
+                        "data": "EndDate",
+                        "className": "text-center @hiddenNotQNAClass @hiddenNotBOOKINGVISITClass",
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //16. CheckInTime
+                    {
+                        "data": "CheckInTime",
+                        "className": "text-center @hiddenClass",
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //17. CheckOutTime
+                    {
+                        "data": "CheckOutTime",
+                        "className": "text-center @hiddenClass",
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    //18. Actions
+                    {
+                        "data": "TaskId",
+                        "orderable": false,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                var htmlContent = "";
+                                if (row["Actived"] == false) {
+                                    htmlContent = "<span style=\"color:#f39c12\"><i>Hủy (" + (row["CancelReason"] ? row["CancelReason"] : "") + ")</i></span>";
+                                }
+                                else
+                                {
+                                    if ("@isHasPermissionCancel" == "True" || "@isHasPermissionCancel" == "true") {
+                                        htmlContent += "<a class=\"btn btn-warning btn-cancel\" data-current-url=\"Work/Task\" data-id='" + data + "' data-item-name='" + row["Summary"] + "' onclick=\"$(this).button('loading')\"><i class='fa fa-ban'></i> Hủy</a>";
+                                    }
+                                    if ("@isHasPermissionDelete" == "True" || "@isHasPermissionDelete" == "true") {
+                                        htmlContent += "<a class=\"btn btn-danger btn-delete\" data-current-url=\"Work/Task\" data-id='" + data + "' data-item-name='" + row["Summary"] + "' onclick=\"$(this).button('loading')\"><i class='fa fa-trash-o'></i> Xóa</a>";
+                                    }
+                                }
+                                return htmlContent;
+                            }
+                            return "";
+                        }
+                    },
+                    //19.
+                    {
+                        "data": "ProcessCodeIndex",
+                        "className": "hidden",
+                    }
+                ],
+                destroy: true,
+                language: {
+                    sProcessing: "Đang xử lý...",
+                    sLengthMenu: "Xem _MENU_ mục",
+                    sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                    sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                    sInfoPostFix: "",
+                    sSearch: "Tìm nội dung:",
+                    sUrl: "",
+                    oPaginate: {
+                        sFirst: "Đầu",
+                        sPrevious: "&laquo;",
+                        sNext: "&raquo;",
+                        sLast: "Cuối"
+                    }
+                },
+                columnDefs: [
+                    { targets: [0, 1], visible: true },
+                    { targets: 'no-sort', visible: false }
+                ],
+                "sDom": '<"top"flp>rt<"bottom"ip><"clear">'
+            });
+        }
+</script>
+    }
+
+    @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+    {
+        <script src="@MarkerCluster"></script>
+    }
+
+<script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            //console.log(data)
+            //Filter
+            var FiltersList = $('.Filters').val();
+            if (FiltersList != null && FiltersList.length > 0) {
+                var filters = {};
+
+                filters['Filters'] = FiltersList;
+                $.extend(true, data, filters);
+            }
+            //Mã màu SP
+            var ProductColorCodeList = $('#ProductColorCode').val();
+            if (ProductColorCodeList != null && ProductColorCodeList.length > 0) {
+                var productColorCode = {};
+
+                productColorCode['ProductColorCode'] = ProductColorCodeList;
+                $.extend(true, data, productColorCode);
+            }
+            //Các lỗi BH thường gặp
+            var UsualErrorCodeList = $('#UsualErrorCode').val();
+            if (UsualErrorCodeList != null && UsualErrorCodeList.length > 0) {
+                var usualErrorCode = {};
+
+                usualErrorCode['UsualErrorCode'] = UsualErrorCodeList;
+                $.extend(true, data, usualErrorCode);
+            }
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        /*function FillToInput(recentSearch) {
+            var Filters = recentSearch.Filters;
+            if (Array.isArray(Filters)) {
+                $(".Filters").val(Filters);
+                $(".Filters").trigger('change');
+            }
+            if (recentSearch.CheckAll) {
+                $("#CheckAll").prop('checked', true);
+            }
+            var ProductColorCode = recentSearch.ProductColorCode;
+            if (Array.isArray(ProductColorCode)) {
+                $("#ProductColorCode").val(ProductColorCode);
+                $("#ProductColorCode").trigger('change');
+            }
+            var UsualErrorCode = recentSearch.UsualErrorCode;
+            if (Array.isArray(UsualErrorCode)) {
+                $("#UsualErrorCode").val(UsualErrorCode);
+                $("#UsualErrorCode").trigger('change');
+            }
+
+            //Input type = text
+            $("#TaskCode").val(recentSearch.TaskCode);
+            $("#Summary").val(recentSearch.Summary);
+            $("#ProfileId").val(recentSearch.ProfileId);
+            $("#ProfileName").val(recentSearch.ProfileName);
+            $("#CompanyId").val(recentSearch.CompanyId);
+            $("#CompanyName").val(recentSearch.CompanyName);
+
+            $("#ReceiveFromDate").val(recentSearch.ReceiveFromDate);
+            $("#ReceiveToDate").val(recentSearch.ReceiveToDate);
+            $("#StartFromDate").val(recentSearch.StartFromDate);
+            $("#StartToDate").val(recentSearch.StartToDate);
+            $("#EstimateEndFromDate").val(recentSearch.EstimateEndFromDate);
+            $("#EstimateEndToDate").val(recentSearch.EstimateEndToDate);
+            $("#EndFromDate").val(recentSearch.EndFromDate);
+            $("#EndToDate").val(recentSearch.EndToDate);
+
+            //Input type = select
+            if (recentSearch.Actived) {
+                $("#Actived").val(recentSearch.Actived).change();
+            }
+            if (recentSearch.TaskProcessCode) {
+                $("#TaskProcessCode").val(recentSearch.TaskProcessCode).change();
+            }
+            if (recentSearch.Reporter) {
+                $("#Reporter").val(recentSearch.Reporter).change();
+            }
+            if (recentSearch.TaskStatusCode) {
+                $("#TaskStatusCode").val(recentSearch.TaskStatusCode).change();
+            }
+            if (recentSearch.Assignee) {
+                $("#Assignee").val(recentSearch.Assignee).change();
+            }
+            if (recentSearch.WorkFlowId) {
+                $("#WorkFlowId").val(recentSearch.WorkFlowId).change();
+            }
+            if (recentSearch.CreateBy) {
+                $("#CreateBy").val(recentSearch.CreateBy).change();
+            }
+            if (recentSearch.PriorityCode) {
+                $("#PriorityCode").val(recentSearch.PriorityCode).change();
+            }
+            if (recentSearch.ErrorTypeCode) {
+                $("#ErrorTypeCode").val(recentSearch.ErrorTypeCode).change();
+            }
+            if (recentSearch.ErrorCode) {
+                $("#ErrorCode").val(recentSearch.ErrorCode).change();
+            }
+            if (recentSearch.ProductCategoryCode) {
+                $("#ProductCategoryCode").val(recentSearch.ProductCategoryCode).change();
+            }
+            if (recentSearch.ProfileGroupCode) {
+                $("#ProfileGroupCode").val(recentSearch.ProfileGroupCode).change();
+            }
+            if (recentSearch.SalesSupervisorCode) {
+                $("#SalesSupervisorCode").val(recentSearch.SalesSupervisorCode).change();
+            }
+            if (recentSearch.DepartmentCode) {
+                $("#DepartmentCode").val(recentSearch.DepartmentCode).change();
+            }
+            if (recentSearch.EndCommonDate) {
+                $("#EndCommonDate").val(recentSearch.EndCommonDate).change();
+            }
+            if (recentSearch.EstimateEndCommonDate) {
+                $("#EstimateEndCommonDate").val(recentSearch.EstimateEndCommonDate).change();
+            }
+            if (recentSearch.ReceiveCommonDate) {
+                $("#ReceiveCommonDate").val(recentSearch.ReceiveCommonDate).change();
+            }
+            if (recentSearch.StartCommonDate) {
+                $("#StartCommonDate").val(recentSearch.StartCommonDate).change();
+            }
+            if (recentSearch.CreatedCommonDate) {
+                $("#CreatedCommonDate").val(recentSearch.CreatedCommonDate).change();
+            }
+            if (recentSearch.CreatedCommonDate) {
+                $("#CompletedEmployee").val(recentSearch.CompletedEmployee).change();
+            }
+            if (recentSearch.ProvinceId) {
+                $("#ProvinceId").val(recentSearch.ProvinceId).change();
+            }
+            if (recentSearch.DistrictId) {
+                $("#DistrictId").val(recentSearch.DistrictId).change();
+            }
+            if (recentSearch.WardId) {
+                $("#WardId").val(recentSearch.WardId).change();
+            }
+        }
+        */
+
+        function GetUsualError() {
+            $.ajax({
+                type: "POST",
+                url: "/Work/Task/GetUsualErrorByProductCategory",
+                data: {
+                    IsTakeAll: true
+                },
+                success: function (jsonData) {
+                    $("#UsualErrorCode").html("");
+                    //$("#UsualErrorCode").append("<option value=''>-- Vui lòng chọn --</option>");
+                    if (jsonData != null && jsonData.length > 0) {
+                        $.each(jsonData, function (index, value) {
+                            $("#UsualErrorCode").append("<option value='" + value.CatalogCode + "'>" + value.CatalogText_vi + "</option>");
+                        });
+                    }
+                }
+            });
+        };
+
+
+        $(document).on("click", "#btn-export", function () {
+             getDataReport("/@CurrentUrl/ExportExcel");
+        });
+
+    function getDataReport(url) {
+        var arr = {};
+        var data = $("#frmSearch").serializeArray();
+
+        var obj = {};
+        $.each(data, function (index, val) {
+            obj[val.name] = val.value;
+            $.extend(true, arr, obj)
+        });
+
+        //UsualErrorCode
+        var errorList = $('#UsualErrorCode').val();
+        if (errorList != null && errorList.length > 0) {
+            var error = {};
+            error['UsualErrorCode'] = errorList;
+            $.extend(true, arr, error);
+        }
+
+        //ProductColorCode
+        var colorList = $('#ProductColorCode').val();
+        if (colorList != null && colorList.length > 0) {
+            var color = {};
+            color['ProductColorCode'] = colorList;
+            $.extend(true, arr, color);
+        }
+        var searchData = GetDataFormSearch();
+        //Save localStorage
+        //localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+        localStorage.setItem('pageId-' + currentPageId, searchData);
+        ISD.Download(url, arr);
+    }
+</script>
+
+}

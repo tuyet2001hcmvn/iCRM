@@ -1,0 +1,52 @@
+﻿@model IEnumerable<PriceProductViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ColorName)</th>
+            <th>@Html.DisplayNameFor(p => p.StyleName)</th>
+            <th>@Html.DisplayNameFor(p => p.Price)</th>
+            <th>@Html.DisplayNameFor(p => p.EffectToDate)</th>
+            <th>@Html.DisplayNameFor(p => p.UserPost)</th>
+        </tr>
+    </thead>
+    <tbody id="priceList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.ColorName)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.StyleName)
+            </td>
+            <td class="text-right">
+                @Html.DisplayFor(model => item.Price)
+            </td>
+            <td class="text-right">
+                @Html.DisplayFor(model => item.EffectToDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.UserPost)
+            </td>
+        </tr>
+            }
+        }
+        else
+        {
+                <tr>
+                    <td colspan="6" class="text-center">
+                        @LanguageResource.Product_NotExistPrice
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>

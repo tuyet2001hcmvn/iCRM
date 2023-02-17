@@ -1,0 +1,124 @@
+﻿@model IEnumerable<DeliveryViewModel>
+@{
+    string CurrentController = ConstController.StockDelivery;
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    bool isHasPermission = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Delete);
+    bool isHasPermissionEdit = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Edit);
+    bool isHasPermissionEditProfile = HtmlExtensions.GetPermission("Customer/Profile", ConstFunction.Edit, ConstProfileType.Account);
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer tableStockDelivery">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.DeliveryCode)</th>
+            <th>@Html.DisplayNameFor(p => p.DocumentDate)</th>
+            <th>@Html.DisplayNameFor(p => p.CompanyId)</th>
+            <th>@Html.DisplayNameFor(p => p.StoreId)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileId)</th>
+            <th>@Html.DisplayNameFor(p => p.SalesEmployeeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.Note)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th class="text-center">@LanguageResource.Actived</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center isd-table-th-stt">@i</td>
+                <td class="text-center">
+                    <!--Có quyền sửa và chưa hủy phiếu-->
+                    @if (isHasPermissionEdit == true && item.isDeleted != true)
+                    {
+                        <a href="~/@CurrentUrl/Edit/@item.DeliveryId" title="Cập nhật phiếu xuất kho">
+                            @Html.DisplayFor(p => item.DeliveryCode)
+                        </a>
+                    }
+                    else if (isHasPermissionEdit == true && item.isDeleted == true)
+                    {
+                        <a href="~/@CurrentUrl/View/@item.DeliveryId" title="Phiếu đã hủy">
+                            @Html.DisplayFor(p => item.DeliveryCode)
+                        </a>
+                    }
+                    else
+                    {
+                        <span>@Html.DisplayFor(p => item.DeliveryCode)</span>
+                    }
+                    <div style="display: inline-flex; position: relative">
+                        <a class="btn-showStockDelivery dropdown-toggle"
+                           title="Xem catalog"
+                           data-toggle="dropdown"
+                           data-id="@item.DeliveryId">
+                            <i class="fa fa-eye"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-filter dropdown-menu-right mr-15 hidden"
+                            style="left: 0; min-width: 300px; width: max-content; padding-bottom: 10px"></ul>
+                    </div>
+                    <div style="display: inline-flex; position: relative">
+                        <a class="btn-printStockDelivery"
+                           href="~/Reports/ExportCatalogue/Index/@item.DeliveryCode"
+                           title="In phiếu xuất kho"
+                           target="_blank">
+                            <i class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </td>
+                <td class="text-center">
+                    @if (item.DocumentDate != null)
+                    {
+                        <span>@item.DocumentDate.Value.ToString("dd/MM/yyyy")</span>
+                    }
+                </td>
+                <td>@Html.DisplayFor(p => item.CompanyName)</td>
+                <td>@Html.DisplayFor(p => item.StoreName)</td>
+                <td>
+                    @if (isHasPermissionEditProfile == true)
+                    {
+                        <a href="~/Customer/Profile/Edit/@item.ProfileId">
+                            @Html.DisplayFor(p => item.ProfileName)
+                        </a>
+                    }
+                    else
+                    {
+                        <span>@Html.DisplayFor(p => item.ProfileName)</span>
+                    }
+                </td>
+                <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                <td>@Html.DisplayFor(p => item.Note)</td>
+                <td class="text-center">
+                    @if (item.CreateTime != null)
+                    {
+                        <span>@item.CreateTime.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                    }
+                </td>
+                <td class="text-center">
+                    @if (item.isDeleted == true)
+                    {
+                        <i style="color: orange">Đã hủy</i>
+                    }
+                </td>
+                <td class="text-center">
+                    @HtmlExtensions.ViewButton(CurrentArea, CurrentController, item.DeliveryId)
+                    <a class="btn btn-success btn-print" href="~/Reports/ExportCatalogue/Index/@item.DeliveryCode" target="_blank">
+                        <i class="fa fa-print"></i> In phiếu
+                    </a>
+                    @if (isHasPermission && item.isDeleted != true)
+                    {
+                        <a class="btn btn-warning btn-delete-delivery" data-id="@item.DeliveryId" data-name="@item.DeliveryCode">
+                            <i class="fa fa-trash-o"></i> @LanguageResource.Btn_Cancel
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

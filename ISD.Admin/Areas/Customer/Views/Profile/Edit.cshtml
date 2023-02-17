@@ -1,0 +1,559 @@
+﻿@model ProfileViewModel
+@{
+    ViewBag.Title = Model.ProfileName;
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Profile;
+    string BackCurrentController = string.Format("{0}?Type={1}", ConstController.Profile, Model.ProfileTypeCode);
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    bool isHasPermissionPrintProfile = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.PRINTPROFILE, "?Type=" + Model.ProfileTypeCode);
+
+    string generalActive = string.Empty;
+    if (Model.ProfileTypeCode != ConstProfileType.Account && Model.ProfileTypeCode != ConstProfileType.Opportunity)
+    {
+        generalActive = "active";
+    }
+}
+
+<input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+<input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+<input type="hidden" name="ProfileCategory" id="ProfileCategory" value="@Model.ProfileTypeCode" />
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @Model.ProfileName
+        @HtmlExtensions.BackButton(CurrentArea, BackCurrentController, "&ModeSearch=Recently")
+    </h1>
+    <div class="pull-right">
+        @if (Model.ProfileTypeCode == ConstProfileType.Lead)
+        {
+            <a class="btn btn-info" id="btn-convert" data-current-url="@CurrentUrl" data-id="@Model.ProfileId" data-item-name="@Model.ProfileName">
+                <i class="fa fa-refresh"></i> Chuyển thành Update dự án
+            </a>
+
+        }
+        @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+        @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinueEdit)
+        @if (Model.ProfileTypeCode == ConstProfileType.Account)
+        {
+            if (isHasPermissionPrintProfile == true)
+            {
+                <a class="btn btn-info btn-printStockDelivery" data-id="@Model.ProfileCode" ><i class="fa fa-print"></i> Profile</a>
+            }
+        }
+        else if (Model.ProfileTypeCode == ConstProfileType.Opportunity)
+        {
+            if (isHasPermissionPrintProfile == true)
+            {
+                <a class="btn btn-info" target="_blank" href="/Reports/ManagementReport?Id=@Model.ProfileCode"><i class="fa fa-print"></i> Profile</a>
+            }
+        }
+    </div>
+</div>
+
+<div class="content">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <li class="active">
+                            <a href="#overview" data-toggle="tab">@LanguageResource.GeneralInformation</a>
+                        </li>
+                    }
+                    else if (Model.ProfileTypeCode == ConstProfileType.Opportunity)
+                    {
+                        <li class="active">
+                            <a href="#overview" data-toggle="tab">@LanguageResource.GeneralInformation</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Opportunity)
+                    {
+                        <li class="@generalActive">
+                            <a href="#tab-thong-tin" data-toggle="tab">Thông tin chi tiết</a>
+                        </li>
+                    }
+                    else if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <li class="@generalActive">
+                            <a href="#tab-thong-tin" data-toggle="tab">@LanguageResource.Details</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="@generalActive">
+                            <a href="#tab-thong-tin" data-toggle="tab">@LanguageResource.GeneralInformation</a>
+                        </li>
+                    }
+
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <li>
+                            <a href="#tab-lien-he" data-toggle="tab">@LanguageResource.Profile_Contact</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <li>
+                            <a href="#tab-ghe-tham" data-toggle="tab">@LanguageResource.Task_Activities_ShortName</a>
+                        </li>
+                        <li>
+                            <a href="#tab-dich-vu" data-toggle="tab">
+                                @if (CurrentUser.CompanyCode == ConstCompanyCode.Malloca || CurrentUser.CompanyCode == ConstCompanyCode.Aconcept)
+                                {
+                                    <span>@LanguageResource.Task_Ticket_ShortName</span>
+                                }
+                                else
+                                {
+                                    <span>@LanguageResource.HandleComplaints</span>
+                                }
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#tab-goc-tb" data-toggle="tab">@LanguageResource.Showroom_GTB</a>
+                        </li>
+                        <li>
+                            <a href="#tab-dia-chi" data-toggle="tab">@LanguageResource.AddressBook</a>
+                        </li>
+                        <li>
+                            <a href="#tab-phu-trach" data-toggle="tab">@LanguageResource.TabInCharge</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Opportunity)
+                    {
+                        @*<li>
+                                <a href="#tab-chu-dau-tu" data-toggle="tab">@LanguageResource.TabInvestor</a>
+                            </li>
+                            <li>
+                                <a href="#tab-thiet-ke" data-toggle="tab">@LanguageResource.TabConsultingDesign</a>
+                            </li>
+                            <li>
+                                <a href="#tab-tong-thau" data-toggle="tab">@LanguageResource.TabGeneralContractor</a>
+                            </li>*@
+                        <li>
+                            <a href="#tab-don-vi-lien-quan" data-toggle="tab">Đơn vị liên quan</a>
+                        </li>
+                        <li>
+                            <a href="#tab-thi-cong" data-toggle="tab">@LanguageResource.TabConstruction</a>
+                        </li>
+                        <li>
+                            <a href="#tab-doi-thu" data-toggle="tab">@LanguageResource.TabCompetitor</a>
+                        </li>
+                        <li>
+                            <a href="#tab-hoat-dong" data-toggle="tab">@LanguageResource.TabActivities</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Lead)
+                    {
+                        <li>
+                            <a href="#tab-don-vi-lien-quan" data-toggle="tab">Đơn vị liên quan</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Competitor)
+                    {
+                        <li>
+                            <a href="#tab-dia-chi" data-toggle="tab">@LanguageResource.AddressBook</a>
+                        </li>
+                    }
+                    <li>
+                        <a href="#tab-tai-lieu" data-toggle="tab">@LanguageResource.Customer_FileAttachment</a>
+                    </li>
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <li>
+                            <a href="#tab-catalogue" data-toggle="tab">@LanguageResource.Catalogue</a>
+                        </li>
+                        <li>
+                            <a href="#tab-thi-hieu" data-toggle="tab">@LanguageResource.CustomerTaste</a>
+                        </li>
+
+                        if (!string.IsNullOrEmpty(Model.ProfileForeignCode))
+                        {
+                            <li>
+                                <a href="#tab-don-hang" data-toggle="tab">@LanguageResource.CustomerSaleOrder</a>
+                            </li>
+                        }
+
+                        <li>
+                            <a href="#tab-revenue" data-toggle="tab">@LanguageResource.Revenue</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <li>
+                            <a href="#tab-thau-phu" data-toggle="tab">@LanguageResource.Subcontractors</a>
+                        </li>
+                        <li>
+                            <a href="#tab-tai-tro" data-toggle="tab">@LanguageResource.Customer_Spons</a>
+                        </li>
+                    }
+                    @if (Model.ProfileTypeCode != ConstProfileType.Lead && Model.ProfileTypeCode != ConstProfileType.Competitor)
+                    {
+                        <li>
+                            <a href="#tab-thay-doi" data-toggle="tab">@LanguageResource.ChangeDataLog</a>
+                        </li>
+                    }
+
+                </ul>
+
+                <div class="tab-content clearfix">
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account || Model.ProfileTypeCode == ConstProfileType.Opportunity)
+                    {
+                        <div class="tab-pane active" id="overview">
+                            @Html.Action("_Index", "Overview", Model.ProfileId)
+                        </div>
+                    }
+                    <div class="tab-pane @generalActive" id="tab-thong-tin">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true)
+                            @Html.Hidden("Type", (string)ViewBag.Type)
+                            @Html.Partial("_EditForm")
+                            @Html.Action("_LogChange", "Shared", new { Model.CreateBy, Model.CreateTime, Model.LastEditBy, Model.LastEditTime, Model.ExtendCreateBy, Model.ExtendCreateTime, area = "" })
+                        }
+                    </div>
+                    <div class="tab-pane" id="tab-lien-he">
+                        @Html.Action("_List", "ProfileContact", Model.CompanyId)
+                    </div>
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <div class="tab-pane" id="tab-ghe-tham">
+                            @Html.Action("_List", "Appointment", Model.ProfileId)
+
+                            @Html.Action("_List", "Task", new { area = "Work", ProfileId = Model.ProfileId, Type = ConstWorkFlowCategory.THKH })
+
+                            @Html.Action("_List", "Task", new { area = "Work", ProfileId = Model.ProfileId, Type = ConstWorkFlowCategory.ACTIVITIES })
+                        </div>
+                        <div class="tab-pane" id="tab-dich-vu">
+                            @Html.Action("_List", "Task", new { area = "Work", ProfileId = Model.ProfileId, Type = ConstWorkFlowCategory.TICKET })
+
+                            @Html.Action("_List", "Task", new { area = "Work", ProfileId = Model.ProfileId, Type = ConstWorkFlowCategory.TICKET_MLC })
+                        </div>
+
+                        <div class="tab-pane" id="tab-goc-tb">
+                            @Html.Action("_List", "Task", new { area = "Work", ProfileId = Model.ProfileId, Type = ConstWorkFlowCategory.GTB })
+
+                            @Html.Action("_List", "Task", new { area = "Work", ProfileId = Model.ProfileId, Type = ConstWorkFlowCategory.THKH, VisitTypeCode = "DTB" })
+                        </div>
+                        <div class="tab-pane" id="tab-dia-chi">
+                            @Html.Action("_List", "AddressBook", Model.ProfileId)
+                        </div>
+                        <div class="tab-pane" id="tab-phu-trach">
+                            @Html.Action("_List", "PersonInCharge", Model.ProfileId)
+                        </div>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Opportunity)
+                    {
+                        @*<div class="tab-pane" id="tab-chu-dau-tu">
+                                @Html.Action("_List", "Investor", Model.ProfileId)
+                            </div>
+
+                            <div class="tab-pane" id="tab-thiet-ke">
+                                @Html.Action("_List", "ConsultingDesign", Model.ProfileId)
+                            </div>
+
+                            <div class="tab-pane" id="tab-tong-thau">
+                                @Html.Action("_List", "GeneralContractor", Model.ProfileId)
+                            </div>*@
+
+                        <div class="tab-pane" id="tab-don-vi-lien-quan">
+                            @*CHỦ ĐẦU TƯ*@
+                            @Html.Action("_List", "Investor", Model.ProfileId)
+                            @*THIẾT KẾ*@
+                            @Html.Action("_List", "ConsultingDesign", Model.ProfileId)
+                            @*TỔNG THẦU*@
+                            @Html.Action("_List", "GeneralContractor", Model.ProfileId)
+                            @*ĐƠN VỊ TƯ VẤN GIÁM SÁT*@
+                            @Html.Action("_List", "ConsultingUnit", Model.ProfileId)
+                        </div>
+
+                        <div class="tab-pane" id="tab-thi-cong">
+                            @*Căn mẫu*@
+                            @Html.Action("_ListInternal", "Construction", new { Model.ProfileId, Type = Model.ProfileTypeCode })
+                            @*Đại trà*@
+                            @Html.Action("_ListCompetitor", "Construction", new { Model.ProfileId, Type = Model.ProfileTypeCode })
+                            @*Thầu phụ*@
+                            @Html.Action("_ListSubcontractors", "Construction", new { Model.ProfileId, Type = Model.ProfileTypeCode })
+                        </div>
+
+                        <div class="tab-pane" id="tab-doi-thu">
+                            @Html.Action("_List", "Competitor", Model.ProfileId)
+                        </div>
+
+                        <div class="tab-pane" id="tab-hoat-dong">
+                            @Html.Action("_List", "Activities", Model.ProfileId)
+                        </div>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Lead)
+                    {
+                        <div class="tab-pane" id="tab-don-vi-lien-quan">
+                            @Html.Action("_List", "Investor", Model.ProfileId)
+                            @Html.Action("_List", "ConsultingDesign", Model.ProfileId)
+                        </div>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Competitor)
+                    {
+                        <div class="tab-pane" id="tab-dia-chi">
+                            @Html.Action("_List", "AddressBook", Model.ProfileId)
+                        </div>
+                    }
+                    <div class="tab-pane" id="tab-tai-lieu">
+                        @Html.Action("_List", "FileAttachment", Model.ProfileId)
+                        @Html.Action("_List", "CertificateAC", Model.ProfileId)
+                    </div>
+                    <div class="tab-pane" id="tab-catalogue">
+                        @Html.Action("_ListCatalog", "Catalogue", new { ProfileId = Model.ProfileId })
+
+
+                        @Html.Action("_List", "ProductPromotion", new { id = Model.ProfileId })
+                    </div>
+                    <div class="tab-pane" id="tab-thi-hieu">
+                        @Html.Action("_List", "CustomerTaste", Model.ProfileId)
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.ProfileForeignCode))
+                    {
+                        <div class="tab-pane" id="tab-don-hang">
+                            @Html.Action("_List", "CustomerSaleOrder")
+                        </div>
+                    }
+                    @if (ViewBag.isViewRevenue == true)
+                    {
+                        <div class="tab-pane" id="tab-revenue">
+                            @Html.Action("_ProfileRevenue", "Revenue", Model.ProfileId)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="tab-pane" id="tab-revenue">
+                            <div class="text-center">
+                                @LanguageResource.Revenue_NotPermission
+                            </div>
+                        </div>
+                    }
+                    @if (Model.ProfileTypeCode == ConstProfileType.Account)
+                    {
+                        <div class="tab-pane" id="tab-thau-phu">
+                            @Html.Action("_ListSubcontractors", "Construction", new { Model.ProfileId, Type = Model.ProfileTypeCode })
+                        </div>
+                        <div class="tab-pane" id="tab-tai-tro">
+                            @Html.Action("_List", "Spons", new { Model.ProfileId, Type = "Spons" })
+
+                            @Html.Action("_List", "Spons", new { Model.ProfileId, Type = "Gift" })
+                        </div>
+                    }
+                    <div class="tab-pane" id="tab-thay-doi">
+                        @Html.Action("_List", "ChangeDataLog", new { area = "Utilities", id = Model.ProfileId, Type = Model.ProfileTypeCode })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loading-modal"></div>
+@section components{
+    <div>
+        @if (ViewBag.Type != ConstProfileType.Account)
+        {
+            @Html.Action("_ProfileSearch", new ProfileSearchViewModel() { hasNoContact = true })
+        }
+    </div>
+    @if (Model.ProfileTypeCode == ConstProfileType.Lead)
+    {
+        @Html.Partial("./Partials/_ConvertModalPartial")
+    }
+    <div class="modal fade" id="popupProfile" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+    <div class="divProductPopup"></div>
+    <!-- Chủ đầu tư -->
+    <div id="divInvestorPopup"></div>
+    <!-- Tư vấn-Thiết kế -->
+    <div id="divDesignPopup"></div>
+    <!-- Tổng thầu -->
+    <div id="divContractorPopup"></div>
+    <!-- Đơn vị tư vấn giám sát -->
+    <div id="divConsultingPopup"></div>
+    <!-- Thi công -->
+    <div id="divConstructionPopup"></div>
+    <!-- Thông tin liên hệ-->
+    @Html.Partial("_ContactInformation")
+    <!-- Đối thủ -->
+    <div id="divOppCompetitorPopup"></div>
+    <!-- Profile -->
+    <!-- Profile -->
+    <div id="divPrintProfilePopup">
+        @Html.Partial("_PrintProfilePopup")
+    </div>
+}
+
+@section scripts {
+    <script>
+        var CurrentUrl = "@CurrentUrl";
+        var Profile_NameBussiness = "@LanguageResource.Profile_NameBussiness";
+        var Profile_NameCustomer = "@LanguageResource.Profile_NameCustomer";
+        var EmailBusiness_Hint = "@Html.Raw(LanguageResource.EmailBusiness_Hint)";
+        var PhoneBusiness_Hint = "@Html.Raw(LanguageResource.PhoneBusiness_Hint)";
+
+        //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.ShowMessage(window.location.href);
+            ISD.EditInitial(CurrentUrl);
+            //Reset dropdownlist after reset form
+            $('#frmEdit').on('reset', function (e) {
+                setTimeout(function () {
+                    $("#select2-CompanyId-container").text($("#CompanyId").find(':selected').text());
+                })
+            });
+            $("input[name='IsAnCuongAccessory']").trigger("change");
+            $("input[name='IsThiCong']").trigger("change");
+            $("input[name='isForeignCustomer']").trigger("change");
+            $("input[name='ContractValue']").trigger("change");
+            $("select[name='Dropdownlist8']").trigger("change");
+            $("input[name='isCompetitor']").trigger("change");
+            CustomerTypeCodeChangeInitial();
+            ISD.Delete();
+            if ("@Model.ProfileTypeCode" === "@ConstProfileType.Lead")
+            {
+                ISD.Convert();
+            }
+            GetCustomerSaleOrder();
+            $(document).on("click", "#btn-save-fake", function () {
+                $("#btn-save").click();
+                $(this).button("reset");
+            });
+            $(document).on("click", "#btn-save-edit-fake", function () {
+                $("#btn-save-continue").click();
+                $(this).button("reset");
+            });
+            IsCreateRequestChange();
+
+            Select2_CustomForList("/Sale/Product/SearchProductBy", ".specInternalMaterial");
+            Select2_CustomForList("/Customer/Profile/SearchCompetitorBy", ".specCompetitor");
+            Select2_CustomForList("/Customer/Profile/SearchCompetitorBy", ".constructionCompetitor");
+
+        });
+
+        $(document).on("change", "#isCreateRequest", function () {
+            IsCreateRequestChange();
+        });
+        function IsCreateRequestChange() {
+            var isCreateRequest = $('#isCreateRequest').val();
+            if (isCreateRequest != 'True') {
+                $('.ecc-field').hide();
+            }
+            else {
+                if ($('#PartnerFunctionCode').val() == null || $('#PartnerFunctionCode').val() == undefined || $('#PartnerFunctionCode').val() == "") {
+                    $('#PartnerFunctionCode').val("PartnerFunction_0").change();
+                }
+                if ($('#PaymentTermCode').val() == null || $('#PaymentTermCode').val() == undefined || $('#PaymentTermCode').val() == "") {
+                    $('#PaymentTermCode').val("1001").change();
+                }
+                if ($('#PaymentMethodCode').val() == null || $('#PaymentMethodCode').val() == undefined || $('#PaymentMethodCode').val() == "") {
+                    $('#PaymentMethodCode').val("PaymentMethod_A").change();
+                }
+                if ($('#CustomerAccountAssignmentGroupCode').val() == null || $('#CustomerAccountAssignmentGroupCode').val() == undefined || $('#CustomerAccountAssignmentGroupCode').val() == "") {
+                    $('#CustomerAccountAssignmentGroupCode').val("Z1").change();
+                }
+                if ($('#ReconcileAccountCode').val() == null || $('#ReconcileAccountCode').val() == undefined || $('#ReconcileAccountCode').val() == "") {
+                    $('#ReconcileAccountCode').val("1311000100").change();
+                }
+                if ($('#TaxClassificationCode').val() == null || $('#TaxClassificationCode').val() == undefined || $('#TaxClassificationCode').val() == "") {
+                    $('#TaxClassificationCode').val("TaxClassification_1").change();
+                }
+                if ($('#CurrencyCode').val() == null || $('#CurrencyCode').val() == undefined || $('#CurrencyCode').val() == "") {
+                    $('#CurrencyCode').val("VND").change();
+                }
+                $('.ecc-field').show();
+            }
+        }
+
+        $(document).on("change", "input[name='CustomerTypeCode']", function myfunction() {
+            CustomerTypeCodeChangeInitial();
+        });
+
+        $(document).on('shown.bs.modal', '#divProfileSearch', function (e) {
+            var btn = e.relatedTarget;
+            var field = $(btn).data('field');
+            if (!field) {
+                field = "";
+            }
+            $("#divProfileSearch #ProfileField").val(field);
+
+            var fieldRow = $(btn).data('row');
+            $("#divProfileSearch #ProfileFieldRow").val(fieldRow);
+        });
+
+
+        $("input[type=radio]").on("click", function (e) {
+            var countRadio = $("input[name='" + $(this).attr("name") + "']");
+            if ($(this).hasClass("checked") == true) {
+                $(this).removeClass("checked");
+                $(this).removeAttr("checked");
+            } else {
+                for (var i = 0; i < countRadio.length; i++) {
+                    $(countRadio[i]).removeClass("checked");
+                }
+                $(this).addClass("checked");
+            }
+        })
+
+        $("#Profile_General_Phone").on("change", function () {
+            $this = $(this);
+            $.ajax({
+                type: 'post',
+                url: '/Customer/Profile/CheckExistingPhone',
+                data: {
+                    Phone: $this.val(),
+                    PhoneValid: $("#PhoneValid").val(),
+                    TypeCode: $("#Type").val()
+                },
+                success: function (jsonData) {
+                    if (!jsonData) {
+                        $("span[data-valmsg-for='Phone']").text("SĐT liên hệ đã tồn tại!");
+                    } else {
+                        $("span[data-valmsg-for='Phone']").text("");
+                    }
+                }
+            });
+        })
+        $("#Address").on("change", function () {
+            $this = $(this);
+            $.ajax({
+                type: 'post',
+                url: '/Customer/Profile/CheckExistingAddress',
+                data: {
+                    Address: $this.val(),
+                    AddressValid: $("#AddressValid").val(),
+                    Type: $("#Type").val()
+                },
+                success: function (jsonData) {
+                    if (!jsonData) {
+                        $("span[data-valmsg-for='Address']").text("Địa chỉ đã tồn tại!");
+                    } else {
+                        $("span[data-valmsg-for='Address']").text("");
+                    }
+                }
+            });
+        })
+        $(document).on("click", ".btn-printStockDelivery", function () {
+            $data = $(this).data("id");
+            $("#divPrintProfilePopup #frmPrintProfile input[name='Id']").val($data);
+            $("#divPrintProfilePopup #popup-print-profile").modal("show");
+        })
+
+        $(document).on("click", "#btn-popup-print-profile", function () {
+            var $Id = $("#divPrintProfilePopup #popup-print-profile input[name='Id']").val();
+            var $CompanyCode = $("#divPrintProfilePopup #popup-print-profile select[name='CompanyCode']").val();
+            var $Year = $("#divPrintProfilePopup #popup-print-profile input[name='Year']").val();
+            $("#divPrintProfilePopup #popup-print-profile").modal("hide");
+            window.open("/Reports/CustomerProfile?Id=" + $Id + "&CompanyCode=" + $CompanyCode + "&Year=" + $Year, '_blank');
+        })
+    </script>
+    @Scripts.Render("~/areas/customer/scripts/js")
+}

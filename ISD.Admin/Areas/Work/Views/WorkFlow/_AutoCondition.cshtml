@@ -1,0 +1,145 @@
+﻿@model IEnumerable<AutoConditionViewModel>
+
+@foreach (var item in Model)
+{
+
+    <div class="AutoCondition_View">
+
+        @Html.Hidden("AutoConditionId", item.AutoConditionId)
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.AdditionalSQLText)
+            </div>
+            <div class="col-md-8">
+                @{
+                    var listAdditionalSQLText = new List<SelectListItem>(){
+                                           new SelectListItem(){ Text= LanguageResource.Dropdownlist_Choose,
+                                                           Value=""},
+                                           new SelectListItem(){ Text = LanguageResource.Condition_AND,
+                                                                 Value = LanguageResource.Condition_AND },
+                                           new SelectListItem(){ Text = LanguageResource.Condition_OR,
+                                                                 Value = LanguageResource.Condition_OR },
+                                       };
+                    //Html.DropDownList("AdditionalSQLText",new SelectList(listAdditionalSQLText,null), new { @class = "form-control" });
+
+                }
+                @Html.DropDownList("AdditionalSQLText", new SelectList(listAdditionalSQLText, "Value", "Text", item.AdditionalSQLText), new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.ConditionType)
+            </div>
+            <div class="col-md-8">
+
+                @{
+                    var listCondtionType = new List<SelectListItem>(){
+                                           new SelectListItem(){ Text= LanguageResource.Dropdownlist_Choose,
+                                                             Value= LanguageResource.Dropdownlist_Choose },
+                                          new SelectListItem(){ Text = LanguageResource.ConditionType_Field,
+                                                                Value = LanguageResource.ConditionType_Field },
+                                          new SelectListItem(){ Text = LanguageResource.ConditionType_Time,
+                                                                Value = LanguageResource.ConditionType_Time },
+                                       };
+
+                }
+                @Html.DropDownList("ConditionType", new SelectList(@listCondtionType, "Value", "Text", item.ConditionType), new { @class = "form-control" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.Field)
+            </div>
+            <div class="col-md-8">
+                @if (item.ConditionType == "TIME")
+                {
+                    <input type="text" id="TIME" value=@item.Field class="form-control">
+                    @Html.DropDownList("Field", new SelectList(ViewBag.ListField, "Value", "Text", ""), new { @class = "form-control hidden" })
+
+                }
+                else
+                {
+                    <input type="hidden" id="TIME">
+                    @Html.DropDownList("Field", new SelectList(ViewBag.ListField, "Value", "Text", item.Field), new { @class = "form-control" })
+                }
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.ComparisonType)
+            </div>
+            <div class="col-md-8">
+                @{
+                    var listComparisonType = new List<SelectListItem>(){
+                                           new SelectListItem(){ Text= LanguageResource.Dropdownlist_Choose,
+                                                             Value= "" },
+                                          new SelectListItem(){ Text = LanguageResource.is_equal_to,
+                                                                Value = LanguageResource.is_equal_to },
+                                          new SelectListItem(){ Text = LanguageResource.is_less_than,
+                                                                Value = LanguageResource.is_less_than },
+                                          new SelectListItem(){ Text = LanguageResource.is_more_than,
+                                                                Value = LanguageResource.is_more_than },
+                                          new SelectListItem(){ Text = LanguageResource.is_less_than_or_equal_to,
+                                                                Value = LanguageResource.is_less_than_or_equal_to },
+                                          new SelectListItem(){ Text = LanguageResource.is_more_than_or_equal_to,
+                                                                Value = LanguageResource.is_more_than_or_equal_to },
+                                       };
+
+                }
+                @Html.DropDownList("ComparisonType", new SelectList(@listComparisonType, "Value", "Text", item.ComparisonType), new { @class = "form-control" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.ValueType)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownList("ValueType", new List<SelectListItem>(){
+                                          new SelectListItem(){ Text = LanguageResource.Value_Type_Input,
+                                                                Value = LanguageResource.Value_Type_Input },
+                                          new SelectListItem(){ Text = LanguageResource.Value_Type_API,
+                                                                Value = LanguageResource.Value_Type_API },
+
+                                      }, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.Value)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBox("Value", item.Value, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => item.SQLText)
+            </div>
+            <div class="col-md-8">
+                @Html.TextBox("SQLText", item.SQLText, new { @class = "form-control", @disabled = true })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-group">
+                <div class="col-md-3">
+
+                </div>
+                <div class="col-md-8">
+                    <button style="float:right" type="button" class="btn btn-info bg-blue" id="btn-Create-AutoCondition"> <i class="fa fa-plus-square"></i> Thêm </button>
+                    <button style="float:right" type="button" class="btn btn-info btn-danger" id="btn-Delete-AutoCondition"> <i class="fa fa-minus-square"></i> Delete </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+}

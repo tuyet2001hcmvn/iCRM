@@ -1,0 +1,102 @@
+﻿@model IEnumerable<TaskViewModel>
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" href="/Work/task/Create?Type=@ViewBag.Type&ProfileId=@ViewBag.ProfileId" target="_blank"><i class="fa fa-plus-square"></i> @LanguageResource.Create</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th class="text-center">@Html.DisplayNameFor(p => p.TaskCode)</th>
+                @if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                {
+                    <th>@Html.DisplayNameFor(p => p.Description)</th>
+                    <th>@Html.DisplayNameFor(p => p.WorkFlowId)</th>
+                    <th>@Html.DisplayNameFor(p => p.TaskStatusId)</th>
+                    <th>Kết quả</th>
+                    <th>@Html.DisplayNameFor(p => p.Property5)</th>
+                }
+                else
+                {
+                    <th>@Html.DisplayNameFor(p => p.Summary)</th>
+                    <th>@Html.DisplayNameFor(p => p.WorkFlowId)</th>
+                    <th>@Html.DisplayNameFor(p => p.TaskStatusId)</th>
+                    <th>@Html.DisplayNameFor(p => p.PriorityCode)</th>
+                }
+
+                <th>@LanguageResource.Reporter</th>
+                <th>@LanguageResource.Assignee</th>
+                <th class="text-right">@LanguageResource.Task_StartDate</th>
+                <th class="text-right">@LanguageResource.Task_EndDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 0; }
+            @if (Model != null && Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    i++;
+                    <tr>
+                        <td class="text-center">@i</td>
+                        <td class="text-center">
+                            <a href="/Work/Task/Edit/@item.TaskId" target="_blank">
+                                @Html.DisplayFor(p => item.TaskCode)
+                            </a>
+                        </td>
+                        @if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                        {
+                            <td>@Html.DisplayFor(p => item.Description)</td>
+                            <td>@Html.DisplayFor(p => item.WorkFlowName)</td>
+                            <td style="color:@item.TaskStatusColor;background-color:@item.TaskStatusBackgroundColor">@Html.DisplayFor(p => item.TaskStatusName)</td>
+                            <td>@Html.DisplayFor(p => item.CustomerReviews)</td>
+                            <td>@Html.DisplayFor(p => item.Property5)</td>
+                        }
+                        else
+                        {
+                            <td>@Html.DisplayFor(p => item.Summary)</td>
+                            <td>@Html.DisplayFor(p => item.WorkFlowName)</td>
+                            <td style="color:@item.TaskStatusColor;background-color:@item.TaskStatusBackgroundColor">@Html.DisplayFor(p => item.TaskStatusName)</td>
+                            <td>@Html.DisplayFor(p => item.PriorityText_vi)</td>
+                        }
+
+                        <td>@Html.DisplayFor(p => item.ReporterName)</td>
+                        <td>@Html.DisplayFor(p => item.AssigneeName)</td>
+                        <td class="text-right">
+                            @if (item.StartDate != null)
+                            {
+                                <span>@item.StartDate.Value.ToString("dd/MM/yyyy")</span>
+                            }
+                        </td>
+                        <td class="text-right">
+                            @if (item.EndDate != null)
+                            {
+                                <span>@item.EndDate.Value.ToString("dd/MM/yyyy")</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="odd">
+                    @if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                    {
+                        <td valign="top" colspan="11" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td>
+                    }
+                    else
+                    {
+                        <td valign="top" colspan="10" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td>
+                    }
+                </tr>
+            }
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

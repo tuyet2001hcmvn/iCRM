@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - @LanguageResource.ProjectName</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link href="~/Content/typeahead/typeahead.css" rel="stylesheet" />
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    @*<link href="~/Content/Color/bootstrap-colorpicker.css" rel="stylesheet" />*@
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/custom")
+    @Scripts.Render("~/bundles/modernizr")
+
+    @Html.DevExpress().GetStyleSheets(
+    new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Editors },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.HtmlEditor },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.GridView },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.CardView },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.PivotGrid },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Chart },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Report },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Scheduler },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.TreeList },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.RichEdit },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Spreadsheet },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.SpellChecker }
+)
+    @Html.DevExpress().GetScripts(
+    new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+    new Script { ExtensionSuite = ExtensionSuite.HtmlEditor },
+    new Script { ExtensionSuite = ExtensionSuite.GridView },
+    new Script { ExtensionSuite = ExtensionSuite.CardView },
+    new Script { ExtensionSuite = ExtensionSuite.PivotGrid },
+    new Script { ExtensionSuite = ExtensionSuite.Editors },
+    new Script { ExtensionSuite = ExtensionSuite.Chart },
+    new Script { ExtensionSuite = ExtensionSuite.Report },
+    new Script { ExtensionSuite = ExtensionSuite.Scheduler },
+    new Script { ExtensionSuite = ExtensionSuite.TreeList },
+    new Script { ExtensionSuite = ExtensionSuite.RichEdit },
+    new Script { ExtensionSuite = ExtensionSuite.Spreadsheet },
+    new Script { ExtensionSuite = ExtensionSuite.SpellChecker }
+)
+    @RenderSection("head", required: false)
+
+</head>
+<body class="skin-strong-blue sidebar-mini ng-scope sidebar-collapse">
+    <div class="wrapper">
+        <header class="main-header">
+            <!-- Logo -->
+            <a href="/" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini">
+                    <img src="/Images/img-01.png" width="50" />
+                </span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg">
+                    @LanguageResource.ProjectName
+                </span>
+            </a>
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top">
+                <!-- Sidebar toggle button-->
+                <a class="sidebar-toggle" role="button" data-toggle="push-menu">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav pull-right">
+                        @if (CurrentUser.SaleOrgName != "" && CurrentUser.SaleOrgName != null)
+                        {
+                            <li>
+                                <a class="btn menu-saleorg" data-toggle="modal" data-target="#storeModal">
+                                    <i class="fa fa-map-marker"></i> @CurrentUser.SaleOrg | @CurrentUser.SaleOrgName
+                                </a>
+                            </li>
+                        }
+                        <li>
+                            <a class="btn">
+                                <i class="fa fa-user-circle-o"></i> @CurrentUser.RolesName
+                            </a>
+                        </li>
+                        <!--Notification-->
+                        <li class="dropdown messages-menu">
+                            @Html.Action("_NotificationMenu", "Shared", new { area = "" })
+                        </li>
+                        <!--User: Change Password, Logout-->
+                        <li class="dropdown pull-right menu-profile">
+                            <a class="btn account dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-user account-icon" aria-hidden="true"></i>
+                                <span class="account-name">
+                                    @if (CurrentUser.UserName != "" && CurrentUser.UserName != null)
+                                    {
+                                        var name = CurrentUser.FullName + " (" + CurrentUser.UserName + ")";//char.ToUpper(CurrentUser.UserName[0]) + CurrentUser.UserName.Substring(1);
+                                        <span class="account-info">@name</span>
+                                    }
+                                </span>
+                                <span class='caret'></span>
+                            </a>
+                            <ul class="dropdown-menu pull-right">
+                                <li>
+                                    <a href="/Permission/Auth/ChangePassword">
+                                        <i class="fa fa-key"></i> @LanguageResource.Permission_ChangePassword
+                                    </a>
+                                </li>
+                                <li class="divider"></li>
+                                <li>
+                                    <a href="/Permission/Auth/Logout">
+                                        <i class="fa fa-sign-out"></i> @LanguageResource.Permission_Logout
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        @*<li>
+                                @{
+                                    MultiLanguage.GetDefaultLanguage();
+                                }
+                                @using (Html.BeginForm("ChangeLanguage", "Home", new { @area = "" }, FormMethod.Get, new { @id = "frmChangeLanguage" }))
+                                {
+                                    <div>
+                                        @Html.DropDownList("lang", new SelectList(MultiLanguage.AvailableLanguages, "LanguageCultureName", "LanguageFullName", MultiLanguage.GetCurrentLanguage()), null, new { @class = "pull-right page-language", @onchange = "this.form.submit()" })
+                                        @Html.Hidden("ReturnUrl", Request.Url.AbsoluteUri)
+                                    </div>
+                                }
+                            </li>*@
+                    </ul>
+                </div>
+                @Html.Action("_Module", "Shared", new { area = "", SelectedModuleName = ViewBag.SelectedModuleName })
+            </nav>
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                <div class="sidebar-form">
+                    <div id="search-box">
+                        <input type="text" class="form-control isd-search-box typeahead" placeholder="@LanguageResource.SideBar_Search" />
+                    </div>
+                </div>
+                @Html.Action("_Sidebar", "Shared", new { area = "", SelectedModuleId = ViewBag.SelectedModuleId })
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div class="app-overlay" style="display: none;">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+            @Html.Partial("Notifications")
+            <div>
+                @RenderBody()
+            </div>
+            <div class="loading-content">Loading...</div>
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <div class="text-left hidden-xs col-md-6">
+                <strong>Copyright &copy; @DateTime.Now.Year <a href="https://isdcorp.vn" title="Công ty Cổ Phần Phát Triển Phần Mềm Thông Minh ISD" target="_blank">ISD Corp</a>.</strong> All rights reserved.
+            </div>
+            <!-- To the right -->
+            <div class="text-right hidden-xs col-md-6">
+                v1.0
+            </div>
+            <!-- Default to the left -->
+        </footer>
+    </div>
+
+    @*@Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryval")*@
+    @RenderSection("jquery", required: false)
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/AdminLTE-2.4.3/dist/js/adminlte.min.js"></script>
+    <script src="~/Scripts/datatables.min.js"></script>
+    <script src="~/Scripts/typeahead/typeahead.bundle.min.js"></script>
+    <!--Select2-->
+    <script src="~/Scripts/select2.min.js"></script>
+    @Scripts.Render("~/scripts/common/js")
+    <script src="~/Scripts/moment.js"></script>
+    <script type="text/javascript">
+       var net5apidomain ='@Net5ApiDomain';
+    </script>
+    <!--Cookie-->
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    @RenderSection("components", required: false)
+    <div id="dynamicModalContainer"></div>
+    @Html.Partial("./Partials/_DeleteModalPartial")
+    @Html.Partial("./Partials/_ImportModalPartial")
+    @Html.Action("_StoreModalPartial", "Shared", new { area = "" })
+    @*<script src="~/Scripts/jquery.dataTables.min.js"></script>*@
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/numeric-comma.js"></script>
+    @Scripts.Render("~/scripts/common/shared")
+    @RenderSection("scripts", required: false)
+
+
+</body>
+</html>

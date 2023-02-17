@@ -1,0 +1,110 @@
+﻿@model IEnumerable<ISD.ViewModels.Sale.PaymentMethodViewModel>
+@{
+    var transferList = Model.Where(p => p.PaymentMethodType == ConstPaymentMethodByStore.ChuyenKhoan).ToList();
+    var installmentList = Model.Where(p => p.PaymentMethodType == ConstPaymentMethodByStore.TraGop).ToList();
+}
+
+<!--Tiền mặt-->
+<div class="form-group">
+    <div class="col-md-3">
+        <div class="label-wrapper">
+            <label class="control-label">
+                @LanguageResource.Account_Cash
+            </label>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="input-group input-group-required">
+            <input class="form-control text-box single-line valid" id="PaymentMethod_Cash" name="PaymentMethod_Cash" type="text" value="@ViewBag.Account_Cash">
+        </div>
+    </div>
+</div>
+
+<!--Chuyển khoản-->
+<div class="form-group">
+    <div class="col-md-3">
+        <div class="label-wrapper">
+            <label class="control-label">
+                @LanguageResource.Account_Tranfer
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="pull-right" style=" margin-bottom: 10px;">
+    <a class="btn btn-primary btn-add-transfer">
+        +
+    </a>
+</div>
+
+<table id="transferTable" class="table table-bordered table-striped table-hover no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.PaymentMethodCode)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.PaymentMethodAccount)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center action-width">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="transferList">
+        @if (transferList != null && transferList.Count() > 0)
+        {
+            @Html.Action("_Transfer", "Store", new { paymentList = Model })
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="dataTables_empty text-center">
+                    @LanguageResource.Transfer_NullValue
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<!--Trả góp-->
+<div class="form-group">
+    <div class="col-md-3">
+        <div class="label-wrapper">
+            <label class="control-label">
+                @LanguageResource.Account_Installment
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="pull-right" style=" margin-bottom: 10px;">
+    <a class="btn btn-primary btn-add-installment">
+        +
+    </a>
+</div>
+
+<table id="installmentTable" class="table table-bordered table-striped table-hover no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.PaymentMethodCode)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.PaymentMethodAccount)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center action-width">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="installmentList">
+        @if (installmentList != null && installmentList.Count() > 0)
+        {
+            @Html.Action("_Installment", "Store", new { paymentList = Model })
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="dataTables_empty text-center">
+                    @LanguageResource.Installment_NullValue
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<ProfileViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left contentProfileContact-hidden">
+        @LanguageResource.Profile_Contact
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-profile-contact"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentProfileContact">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt contentProfileContact-hidden">@LanguageResource.NumberIndex</th>
+                <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.DayOfBirth)</th>
+                @*<th>@Html.DisplayNameFor(p => p.ProfileContactPosition)</th>*@
+                <th>@Html.DisplayNameFor(p => p.Phone)</th>
+                <th>@Html.DisplayNameFor(p => p.Email)</th>
+                @*<th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.Address)</th>*@
+                <th>@Html.DisplayNameFor(p => p.ProfileContactPosition)</th>
+                <th>@Html.DisplayNameFor(p => p.DepartmentCode)</th>
+                <th class="contentProfileContact-hidden">@LanguageResource.Contact_PersonInCharge</th>
+                <th class="text-center contentProfileContact-hidden">@Html.DisplayNameFor(p => p.IsMain)</th>
+                <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.CreateUser)</th>
+                <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.CreateTime)</th>
+                <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.Actived)</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

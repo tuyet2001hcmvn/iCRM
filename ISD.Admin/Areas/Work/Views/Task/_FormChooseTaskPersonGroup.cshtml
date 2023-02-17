@@ -1,0 +1,102 @@
+﻿@model TaskGroupViewModel
+@using ISD.Core
+@{
+//var accountInGroup = Model.accountInGroup ?? new List<TaskAssignViewModel>();
+}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-primary">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">@LanguageResource.Btn_Choose @LanguageResource.Assignee</h4>
+        </div>
+
+        <div class="modal-body">
+            <div id="divModalAlertWarning" class="alert alert-warning alert-dismissable modalAlert" style="display: none">
+                <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                <div class="modal-alert-message">
+                </div>
+            </div>
+
+            <form id="frmTaskPersonGroup">
+                <div class="form-horizontal">
+                    <!--Tên nhóm-->
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.GroupName)
+                        </div>
+                        <div class="col-md-8 display-for" id="group-name">
+                            @Html.DisplayFor(p => p.GroupName)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="label-wrapper"><label class="control-label">Thành viên trong nhóm</label></div>
+                        </div>
+                        <div class="col-md-8">
+                            @*<div class="personGroupControls">
+                                        <div class="personGroup">
+                                            <div class="col-md-6 no-padding">
+                                                @Html.DropDownListFor(p => accountInGroup[0].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_ChooseEmployee, new { @class = "form-control with-search employeeGroupCode", @data_row = 0 })
+                                            </div>
+                                            <div class="col-md-6 input-group">
+                                                <div class="display-for roleName roleName_0"></div>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default btn-addPersonGroup" type="button">
+                                                        <span class="glyphicon glyphicon-plus"></span>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                            <div class="row"></div>
+                                        </div>
+
+                                </div>*@
+                         
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="content">
+                            <div class="form-horizontal">
+                                <div class="panel-group">
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div id="divSearchResult"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+            <button type="button" class="btn btn-primary btn-save-task-person-group">@LanguageResource.Btn_Save</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setModalMessage(div, message) {
+        if (Array.isArray(message)) {
+            var arr = [];
+            $.each(message, function (i, item) {
+                arr[i] = { err: item }
+                $(div + " .modal-alert-message").append("<li>" + arr[i].err + "</li>");
+            });
+        }
+        else {
+            $(div + " .modal-alert-message").html(message);
+        }
+    }
+    function alertTaskGroupModalPopup(message) {
+        setModalMessage("#divTaskGroupPopup #divModalAlertWarning", message);
+        setTimeout(function () {
+            $('#divTaskGroupPopup #divModalAlertWarning').show();
+        }, 500)
+    }
+</script>

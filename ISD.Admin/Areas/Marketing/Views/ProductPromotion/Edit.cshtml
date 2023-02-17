@@ -1,0 +1,403 @@
+﻿@model ProductPromotionViewModel
+@{
+    ViewBag.Title = LanguageResource.Update + " " + ViewBag.Title;
+    string CurrentArea = ConstArea.Marketing;
+
+    string CurrentController = ConstController.ProductPromotion;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+@section head{
+    <style>
+        .pagination {
+            display: inline-block;
+            margin: 0px 17px 5px 0px;
+        }
+
+            .pagination a {
+                color: black;
+                float: left;
+                padding: 8px 16px;
+                text-decoration: none;
+                transition: background-color .3s;
+                border: 1px solid #ddd;
+            }
+
+                .pagination a.active {
+                    background-color: #4CAF50;
+                    color: white;
+                    border: 1px solid #4CAF50;
+                }
+
+                .pagination a:hover:not(.active) {
+                    background-color: #ddd;
+                }
+        .table-border {
+            border: 1px solid #ddd;
+            padding: 2px;
+        }
+    </style>
+    } 
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?Type=" + ViewBag.Type)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                {
+                    //@Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    @Html.HiddenFor(x => x.ProductPromotionId)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ProductPromotionTitle)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.RequiredTextboxFor(p => p.ProductPromotionTitle)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.IsSendCatalogue)
+                        </div>
+                        <div class="col-md-6">
+                            @if (Model.IsSendCatalogue != null)
+                            {
+                                @Html.CheckBox("IsSendCatalogue", Model.IsSendCatalogue.Value, new { @disabled = true })
+                            }
+                            else
+                            {
+                                @Html.CheckBox("IsSendCatalogue", new { @disabled = true })
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.SendTypeCode)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.RequiredDropDownListFor(p => p.SendTypeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupId)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.RequiredDropDownListFor(p => p.TargetGroupId, null, LanguageResource.Dropdownlist_Choose, new { @disabled = true })
+                        </div>
+                    </div>
+                    <div id="divStart" class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.StartTime)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.RequiredTextboxFor(p => p.StartTime, "{0:yyyy-MM-dd}", new { @type = "date" })
+                        </div>
+                    </div>
+                    <div id="divEnd" class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.EndTime)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.RequiredTextboxFor(p => p.EndTime, "{0:yyyy-MM-dd}", new { @type = "date" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Actived)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.ActivedRadioButton(p => p.Actived)
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">Danh sách khách hàng</h3>
+                <div class="pull-right">
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmSearchMember" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    @Html.HiddenFor(x => x.ProductPromotionId)
+                    @Html.HiddenFor(x => x.IsSendCatalogue)
+                    @Html.Partial("_SearchMember", new ProductPromotionDetailViewModel())
+
+                }
+            </div>
+        </div>
+        <div class="box panel-group">
+            <div class="panel-body">
+                <div class="tbl-member"></div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loading-modal"></div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+            $("#btn-search-member").trigger("click");
+        });
+        $(document).on("change", ".change-update", function () {
+            var $html = $(this);
+            var $row = $html.data("row");
+            var $index = $html.data("index");
+            var ProductPromotionId = $("input[name='ProductPromotionId']").val();
+            var ProductPromotionDetailId = $("input[name='TargetGroup[" + $index +"].ProductPromotionDetailId']").val();
+            var ProductPromotionContactId = $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].ProductPromotionContactId']").val();
+            var profileId = $("input[name='TargetGroup["+ $index +"].ProfileId']").val();
+            var status = $("input[name='TargetGroup[" + $index + "].Status']").is(":checked");
+            var checkAddress = $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].CheckAddress']").is(":checked");
+            var address = "";
+            if (checkAddress == true || checkAddress == 'True' || checkAddress == 'true') {
+                address = $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").val();
+            } else {
+                address = $("select[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").val();
+            }
+            var checkContact = $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].CheckContact']").is(":checked");
+            var contactName = $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactName']").val();
+            var contactPhone = $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactPhone']").val();
+            var profileContactId = $("select[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ProfileContactId']").val();
+            var formData = new FormData();
+            formData.append("ProductPromotionId", ProductPromotionId);
+            formData.append("ProductPromotionDetailId", ProductPromotionDetailId);
+            formData.append("ProductPromotionContactId", ProductPromotionContactId);
+            formData.append("ProfileId", profileId);
+            formData.append("Status", status);
+            formData.append("CheckAddress", checkAddress);
+            formData.append("Address", address);
+            formData.append("CheckContact", checkContact);
+            formData.append("ContactName", contactName);
+            formData.append("ContactPhone", contactPhone);
+            formData.append("ProfileContactId", profileContactId);
+            loading2();
+            $.ajax({
+                type: "POST",
+                url: "/@CurrentUrl/UpdateStatusCustomer/",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (jsonData) {
+                    $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].ProductPromotionContactId']").val(jsonData.Data);
+                },
+            })
+        })
+
+        $(document).on("click", ".check-all-status", function () {
+            if ($(this).is(":checked") == true || $(this).is(":checked") == 'true' || $(this).is(":checked") == 'True') {
+                $.each($('.check-status:not(":checked")'), function (i, val) {
+                    $(val).trigger("click");
+                });
+            } else {
+
+                $.each($('.check-status:checked'), function (i, val) {
+                    $(val).trigger("click");
+                });
+            }
+        })
+        $(document).on("click", "#btn-search-member", function () {
+            GetMemberTargetGroup(1, 0);
+        })
+
+        $(document).on("click", "#pagination a", function () {
+            var draw = $(this).data("index");
+            start = 0;
+            if (draw != 1) {
+                start = (((draw - 1) * 10) - 1);
+            }
+            GetMemberTargetGroup(draw, start);
+        })
+
+        $(document).on("click", "#btn-reload-member", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            $.ajax({
+                type: "POST",
+                url: "/@CurrentUrl/UpdateProductPromotionDetail/" + $("#ProductPromotionId").val(),
+                success: function (jsonData) {
+                    $btn.button("reset");
+                    if (jsonData.Success == true) {
+                        GetMemberTargetGroup(1, 0);
+                    } else {
+                        alertPopup(false, jsonData.Message);
+                    }
+                },
+            })
+        })
+
+        function GetMemberTargetGroup(draw, start) {
+            var frm = $("#frmSearchMember"),
+                formData = new FormData(),
+                formParams = frm.serializeArray();
+            $.each(formParams, function (i, val) {
+                formData.append(val.name, val.value);
+            });
+            formData.append("draw", draw);
+            formData.append("draw", draw);
+            formData.append("length", 10);
+            formData.append("start", start);
+            loading2();
+            $.ajax({
+                type: "POST",
+                url: "/@CurrentUrl/_GetMemberTargetGroup",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (jsonData) {
+                    if (jsonData.isSuccess == false) {
+                        ISD.alertPopup(false, jsonData.message);
+                    } else {
+                        $(".tbl-member").html(jsonData);
+                    }
+                },
+            })
+        }
+        $(document).on("click", ".check-address", function () {
+            var $html = $(this);
+            var $row = $html.data("row");
+            var $index = $html.data("index");
+            console.log($html.is(':checked'));
+            if ($html.is(':checked')) {
+                $("input[name='TargetGroup["+$index+"].ProfileAddress["+ $row +"].Address']").removeClass("hidden").removeAttr("disabled");
+                $("select[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").addClass("hidden").attr("disabled", "disabled");
+            } else {
+                $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").addClass("hidden").attr("disabled", "disabled");
+                $("select[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").removeClass("hidden").removeAttr("disabled");
+            }
+        });
+        $(document).on("click", ".check-contact", function () {
+            var $html = $(this);
+            var $row = $html.data("row");
+            var $index = $html.data("index");
+            if ($html.is(':checked')) {
+                $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactName']").removeClass("hidden").removeAttr("disabled");
+                $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactPhone']").removeClass("hidden").removeAttr("disabled");
+                $("select[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ProfileContactId']").addClass("hidden").attr("disabled", "disabled");
+            } else {
+                $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactName']").addClass("hidden").attr("disabled", "disabled");
+                $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactPhone']").addClass("hidden").attr("disabled", "disabled");
+                $("select[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ProfileContactId']").removeClass("hidden").removeAttr("disabled");
+            }
+        });
+
+        $(document).on("click", ".btn-add-contact", function (e) {
+            e.preventDefault();
+            var $dataIndex = $(this).data("index");
+            $(".customer-target-group-" + $dataIndex).each(function (index, value) {
+                indexRowPerson = index;
+            });
+            indexRowPerson++;
+
+            var controlForm = $('.customer-target-group-controls-' + $dataIndex + ':first'),
+                currentEntry = $(this).parents('.customer-target-group-' + $dataIndex +':last'),
+                newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+            //ProductPromotionContactId
+            newEntry.find('.address_ProductPromotionContactId_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + indexRowPerson + '].ProductPromotionContactId').val('');
+            newEntry.find('.address_ProductPromotionContactId_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.address_ProductPromotionContactId_' + $dataIndex).data('index', $dataIndex);
+            newEntry.find('.contact_ProductPromotionContactId_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ProductPromotionContactId').val('');
+            newEntry.find('.contact_ProductPromotionContactId_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.contact_ProductPromotionContactId_' + $dataIndex).data('index', $dataIndex);
+            //Check-address
+            newEntry.find('.check-address-' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex +'].ProfileAddress[' + indexRowPerson +'].CheckAddress');
+            newEntry.find('.check-address-' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.check-address-' + $dataIndex).data('index', $dataIndex);
+            //Address
+            newEntry.find('.addressText_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + indexRowPerson + '].Address').val('');
+            newEntry.find('.addressText_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.addressText_' + $dataIndex).data('index', $dataIndex);
+            newEntry.find('.address_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + indexRowPerson + '].Address').val('');
+            newEntry.find('.address_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.address_' + $dataIndex).data('index', $dataIndex);
+
+
+            //check-Contact
+            newEntry.find('.check-contact-' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].CheckContact');
+            newEntry.find('.check-contact-' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.check-contact-' + $dataIndex).data('index', $dataIndex);
+            //Contact
+            newEntry.find('.contactName_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ContactName').val('');
+            newEntry.find('.contactName_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.contactName_' + $dataIndex).data('index', $dataIndex);
+            newEntry.find('.contactPhone_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ContactPhone').val('');
+            newEntry.find('.contactPhone_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.contactPhone_' + $dataIndex).data('index', $dataIndex);
+            newEntry.find('.contact_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ProfileContactId').val('');
+            newEntry.find('.contact_' + $dataIndex).data('row', indexRowPerson);
+            newEntry.find('.contact_' + $dataIndex).data('index', $dataIndex);
+
+
+            controlForm.find('.customer-target-group-' + $dataIndex +':not(:first) .btn-add-contact')
+                .removeClass('btn-add-contact').addClass('btn-remove-contact')
+                .removeClass('btn-default').addClass('btn-danger')
+                .data('row', indexRowPerson)
+                .html('<span class="glyphicon glyphicon-minus"></span>');
+        });
+        $(document).on('click', '.btn-remove-contact', function (e) {
+            e.preventDefault();
+            var $dataIndex = $(this).data("index");
+
+            //Xoá trong db nếu đã có contact
+            var $html = $(this);
+            var $row = $html.data("row");
+            var $index = $html.data("index");
+            var ProductPromotionContactId = $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].ProductPromotionContactId']").val();
+            if (ProductPromotionContactId != null && ProductPromotionContactId != undefined && ProductPromotionContactId != 'undefined') {
+                removeContact(ProductPromotionContactId)
+            }
+            $(this).parents('.customer-target-group-' + $dataIndex + ':last').remove();
+            $(".customer-target-group-" + $dataIndex).each(function (index, value) {
+                $(this).find('.check-address').attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + index + '].CheckAddress');
+                $(this).find('.check-address').data('row', index);
+                $(this).find('.addressText_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + index + '].Address');
+                $(this).find('.addressText_' + $dataIndex).data('row', index);
+                $(this).find('.address_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + index + '].Address');
+                $(this).find('.address_' + $dataIndex).data('row', index);
+                $(this).find('.check-contact').attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index + '].CheckContact');
+                $(this).find('.check-contact').data('row', index);
+                $(this).find('.contactName_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index + '].ContactName');
+                $(this).find('.contactName_' + $dataIndex).data('row', index);
+                $(this).find('.contactPhone_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index + '].ContactPhone');
+                $(this).find('.contactPhone_' + $dataIndex).data('row', index);
+                $(this).find('.contact_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index + '].ProfileContactId');
+                $(this).find('.contact_' + $dataIndex).data('row', index);
+            });
+            return false;
+        });
+
+        function removeContact(ProductPromotionContactId) {
+            var formData = new FormData();
+            formData.append("ProductPromotionContactId", ProductPromotionContactId);
+            $.ajax({
+                type: "POST",
+                url: "/@CurrentUrl/DeleteContact/",
+                data: formData,
+                processData: false,
+                contentType: false,
+            })
+        }
+    </script>
+}
+

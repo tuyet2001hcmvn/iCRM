@@ -1,0 +1,39 @@
+﻿@model TaskViewModel
+
+<div class="pl-md-0" id="frmUpdateTask">
+    <div class="box box-info">
+        <div class="box-body">
+            <div class="row">
+
+                <div class="mt-30">
+                    <ul class="nav nav-pills">
+                        <li class="active">
+                            <a href="#tab-comment" data-toggle="tab">@LanguageResource.Comment (@Model.NumberOfComments)</a>
+                        </li>
+                        <li>
+                            <a href="#tab-file" data-toggle="tab">@LanguageResource.Task_FileUrl (@Model.NumberOfFiles)</a>
+                        </li>
+                        <li>
+                            <a href="#tab-history" data-toggle="tab">@LanguageResource.History</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content clearfix">
+                    <div id="tab-comment" class="active tab-pane form-group mt-10">
+                        @Html.Partial("_CommentTab", Model)
+                    </div>
+
+                    <div id="tab-file" class="tab-pane form-group mt-10">
+                        @Html.Partial("_FileTab", Model)
+                    </div>
+
+                    <div id="tab-history" class="tab-pane form-group mt-10">
+                        @Html.Partial("_HistoryTab", Model)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

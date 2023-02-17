@@ -1,0 +1,18 @@
+﻿@model LogChangeViewModel
+<div class="col-md-12">
+    <p class="last-mod">
+        @string.Format(LanguageResource.CreateByAt, Model.CreateName, Model.CreateTime)
+    </p>
+    @if (Model.LastEditBy != null)
+    {
+        <p class="last-mod">
+            @string.Format(LanguageResource.LastEditByAt, Model.LastEditName, Model.LastEditTime)
+        </p>
+    }
+    @if (Model.ExtendCreateBy != null)
+    {
+        <p class="last-mod">
+            @string.Format(LanguageResource.ExtendByAt, Model.ExtendCreateName, Model.ExtendCreateTime)
+        </p>
+    }
+</div>

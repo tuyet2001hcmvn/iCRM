@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SMSModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.SMSLog;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>Gửi đến</th>
+            <th>Brand</th>
+            <th>Nội dung</th>
+            <th>Thời gian gửi</th>
+            <th class="text-center">Trạng thái</th>
+            @*<th class="text-center isd-table-th-action">@LanguageResource.Actions</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.SMSTo)</td>
+                <td>@Html.DisplayFor(p => item.BrandName)</td>
+                <td>@Html.DisplayFor(p => item.SMSContent)</td>
+                <td>@Html.DisplayFor(p => item.CreateDate)</td>
+                @if (item.isSent == true)
+                {
+                    <td><i class="fa fa-check true-icon"></i> Đã gửi thành công</td>
+                }
+                else
+                {
+                    <td><i class="fa fa-close false-icon"></i> Gửi thất bại <br /> @item.ErrorMessage</td>
+                }
+                @*<td class="text-center">
+                        @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.WorkFlowId)
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

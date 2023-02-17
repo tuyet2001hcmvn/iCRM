@@ -1,0 +1,155 @@
+﻿@model IEnumerable<DeliveryDetailViewModel>
+
+<div class="panel panel-default isd-panel">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse-product">@LanguageResource.Sale_Product</a>
+        </h4>
+    </div>
+    <div id="collapse-product" class="panel-collapse collapse in">
+        <div class="content-header-in-panel">
+            <div class="panel-input form-group">
+                <div class="col-md-4">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            @Html.Label(LanguageResource.StoreId, new { @class = "control-label" })
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("StoreId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                </div>
+            </div>
+            <div class="panel-input form-group">
+                <div class="col-md-4">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Warehouse_StockExport</label>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <input class="form-control" name="StockCode" id="StockCode" tabindex="1" disabled />
+                        <input id="StockId" name="StockId" type="hidden" value="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control" name="StockName" id="StockName" disabled />
+                </div>
+                @*<div class="col-md-3 no-padding">
+                    <div class="panel-label col-md-4 hidden">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Notes</label>
+                        </div>
+                    </div>
+                    <div class="col-md-8 hidden">
+                        <input class="form-control" name="ProductStockNote" id="ProductStockNote" tabindex="2" />
+                    </div>
+                </div>*@
+                <div class="col-md-3">
+                    <div class="panel-label col-md-3 no-padding">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Warehouse_StochOnHand</label>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="number" class="form-control" name="ProductQuantinyOnHand" id="ProductQuantinyOnHand" disabled />
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-danger" id="btn-del-product" style="margin-top: 2px; position: absolute; right: 20px">
+                            <i class="fa fa-remove"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-input form-group">
+                <div class="col-md-4">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Product</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <input class="form-control" name="ProductCode" id="ProductCode" tabindex="3" />
+                        <input id="ProductId" name="ProductId" type="hidden" value="">
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-default" id="btn-search-product" style="margin-top: 2px; position: absolute; right: 20px">
+                            <i class="fa fa-ellipsis-h"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control" name="ProductName" id="ProductName" disabled />
+                </div>
+                @*<div class="col-md-3 no-padding">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Price</label>
+                        </div>
+                    </div>
+                    <div class="col-md-8">*@
+                        <input class="form-control" name="ProductPrice" id="ProductPrice" type="hidden" tabindex="4" />
+                    @*</div>
+                </div>*@
+                <div class="col-md-3">
+                    <div class="panel-label col-md-3 no-padding">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Warehouse_ExportNumber</label>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <input class="form-control text-right" name="ProductQuantity" id="ProductQuantity" type="number" tabindex="5" />
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-primary" id="btn-add-deliveryDetail" style="margin-top: 2px; position: absolute; right: 20px" tabindex="6">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <table id="deliceryDetailTable" class="table table-bordered table-hover no-footer detail-table">
+                <thead class="isd-table-header">
+                    <tr>
+                        <th class="text-center">@LanguageResource.NumberIndex</th>
+                        <th>@Html.DisplayNameFor(p => p.StockCode)</th>
+                        <th>@Html.DisplayNameFor(p => p.StockId)</th>
+                        <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+                        <th>@Html.DisplayNameFor(p => p.ProductId)</th>
+                        <th style="width:100px">@Html.DisplayNameFor(p => p.Quantity)</th>
+                        @*<th>@Html.DisplayNameFor(p => p.Price)</th>*@
+                        @*<th>@Html.DisplayNameFor(p => p.UnitPrice)</th>*@
+                        <th class="text-center">@LanguageResource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="deliveryDetailList">
+                    @if (Model != null && Model.Count() > 0)
+                    {
+                        @Html.Partial("_DeliveryDetailInner")
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="text-center" colspan="7">
+                                @LanguageResource.Warehouse_PleaseAddProduct
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot id="deliveryDetail">
+                    @*<tr>
+                        <td colspan="6" class="text-right">
+                            <strong>@LanguageResource.SaleOrder_SubTotal</strong>
+                        </td>
+                        <td id="total" class="text-right"></td>
+                        <td></td>
+                    </tr>*@
+                </tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+

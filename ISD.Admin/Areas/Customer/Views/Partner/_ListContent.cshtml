@@ -1,0 +1,32 @@
+﻿@model IEnumerable<PartnerViewModel>
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Partner;
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+<tr>
+    <td class="text-center">@i</td>
+    <td>@Html.DisplayFor(p => item.PartnerTypeName)</td>
+    <td>@Html.DisplayFor(p => item.PartnerName)</td>
+    <td>@Html.DisplayFor(p => item.Note)</td>
+    <td>@Html.DisplayFor(p => item.CreateUser)</td>
+    <td>@Html.DisplayFor(p => item.CreateTime)</td>
+    <td class="text-center">
+        <a class="btn btn-default btn-edit" data-id="@item.PartnerId"><i class="fa fa-pencil"></i>Sửa</a>
+        <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.PartnerId" data-item-name="@item.PartnerName" data-delete-success-call-back="ReloadPartnerList">
+            <i class="fa fa-trash-o"></i> Xóa
+        </a>
+    </td>
+</tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="7" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

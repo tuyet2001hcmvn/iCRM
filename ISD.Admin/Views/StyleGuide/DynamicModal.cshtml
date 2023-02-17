@@ -1,0 +1,49 @@
+﻿@model IEnumerable<AccessoryViewModel>
+@{
+    ViewBag.Title = "DynamicModal";
+
+    //string CurrentController = "StyleGuide";
+    //string CurrentArea = "Pagination";
+
+
+    //string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+</div>
+<div class="content">
+
+
+    <div class="panel-group">
+        <div class="form-horizontal">
+            <div class="panel panel-default panel-search">
+                <div class="panel-body">
+
+                    <input type="button" value="Mở dynamic mô-đao" onclick="openDynamicModal()">
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        function openDynamicModal() {
+            var header = "Cái này là tiêu đề của mô-đao";
+            var content = "Cái này là nội dung bỏ <b>HTML</b> vô được luôn";
+            var strSubmitFunc = "dynamicModalFunction()"; // Bấm ok thì gọi hàm này, cancel thì đóng mô-đao
+            var btnText = "Có";
+            ISD.CreateModal(header, content, strSubmitFunc, btnText);
+        }
+
+        function dynamicModalFunction() {
+            alert("Đây là cái dynamicModalFunction");
+            ISD.CloseModal(); // Đóng mô đao bằng code
+        }
+    </script>
+}

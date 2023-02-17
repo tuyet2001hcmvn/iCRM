@@ -1,0 +1,36 @@
+﻿@model IEnumerable<AppointmentViewModel>
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Appointment;
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+@{ int i = 0; }
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.TaskCode)</td>
+            <td>@Html.DisplayFor(p => item.Summary)</td>
+            <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+            <td>@Html.DisplayFor(p => item.SaleEmployeeName)</td>
+            @*<td>@Html.DisplayFor(p => item.StartDate)</td>
+                <td>@Html.DisplayFor(p => item.EndDate)</td>*@
+            <td>@Html.Raw(item.Description)</td>
+            <td>@Html.DisplayFor(p => item.ShowroomName)</td>
+            <td>@Html.DisplayFor(p => item.StoreName)</td>
+            <td class="text-center">@Html.DisplayFor(p => item.VisitDate)</td>
+            <td class="text-center">@Html.DisplayFor(p => item.CreateTime)</td>
+            <td class="text-center">
+                <a class="btn btn-default btn-edit" data-id="@item.AppointmentId" onclick="$(this).button('loading')"><i class="fa fa-pencil"></i> Sửa</a>
+                <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" onclick="$(this).button('loading')" data-id="@item.AppointmentId" data-item-name="@item.Summary" data-delete-success-call-back="ReloadAppointmentList"><i class="fa fa-trash-o"></i> Xóa</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="12" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

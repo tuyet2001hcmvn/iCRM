@@ -1,0 +1,110 @@
+﻿@model KanbanViewModel
+@section head {
+    <link href="~/Scripts/jqwidgets/styles/jqx.base.css" rel="stylesheet" />
+    <link href="~/Scripts/jqwidgets/styles/jqx.material-green.css" rel="stylesheet" />
+}
+
+<div class="content">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">@ViewBag.Title</h3>
+        </div>
+        <div class="box-body">
+            @Html.HiddenFor(p => p.KanbanId)
+            <div class="dropdown-kanban">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.WorkFlowId)
+                    </div>
+                    <div>
+                        @Html.DropDownList("WorkFlowId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                </div>
+            </div>
+            <div class="kanbanContainer">
+                <div id="kanban" class="kanbanClass"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jqwidgets/jqxsortable.js"></script>
+    <script src="~/Scripts/jqwidgets/jqxdata.js"></script>
+    <script src="~/Scripts/jqwidgets/jqxkanban.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            GetDataWorkFlow();
+        });
+
+        $(document).on("change", "select[name='WorkFlowId']", function () {
+            GetDataWorkFlow();
+        });
+
+        $('#kanban').on('itemMoved', function (event) {
+            var KanbanId = $("input[name='KanbanId']").val();
+            var args = event.args;
+            var TaskStatusId = args.itemId;
+            var OrderIndex = args.newColumn.dataField;
+
+            $.ajax({
+                type: "POST",
+                url: "/Work/Kanban/SaveTaskStatusMapping",
+                data: {
+                    KanbanId: KanbanId,
+                    TaskStatusId: TaskStatusId,
+                    OrderIndex: OrderIndex
+                },
+                success: function (jsonData) {
+
+                }
+            });
+        });
+
+        function GetDataWorkFlow() {
+            var KanbanId = $("input[name='KanbanId']").val();
+            var WorkFlowId = $("select[name='WorkFlowId']").val();
+            $.ajax({
+                type: "POST",
+                url: "/Work/Kanban/GetAllWorkflow",
+                data: {
+                    KanbanId: KanbanId,
+                    WorkFlowId: WorkFlowId
+                },
+                success: function (jsonData) {
+                    //console.log(jsonData);
+                    GetKanban(jsonData);
+                }
+            });
+        }
+
+        function GetKanban(jsonData) {
+            var fields = [
+                { name: "id", type: "string" },
+                { name: "status", map: "state", type: "string" },
+                { name: "text", map: "label", type: "string" },
+                { name: "tags", type: "string" },
+                { name: "color", map: "hex", type: "string" }
+            ];
+
+            var source =
+            {
+                localData: jsonData.kanbanDetailList,
+                dataType: "array",
+                dataFields: fields
+            }
+            //console.log(source);
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            $('#kanban').jqxKanban({
+                source: dataAdapter,
+                width: '100%',
+                theme: "material-green",
+                height: '100%',
+                columns: jsonData.columns
+            });
+        }
+    </script>
+}

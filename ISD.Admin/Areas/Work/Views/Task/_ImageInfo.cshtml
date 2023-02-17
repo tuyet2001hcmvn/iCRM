@@ -1,0 +1,27 @@
+﻿@model TaskViewModel
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.Task_FileUrl
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue btn-add-file"><i class="fa fa-plus-square"></i> @LanguageResource.Btn_Create</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentTaskProduct">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th class="text-center">@LanguageResource.FileAttachmentName</th>
+                <th>@LanguageResource.FileAttachmentName</th>
+                <th class="text-center">@LanguageResource.FileAttachmentCode</th>
+                <th class="text-center">@LanguageResource.CreateTime</th>
+                <th class="text-center isd-table-th-action" style="width: 220px;">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody class="div-list-file">
+            @Html.Partial("_ListImage", Model.taskFileList)
+        </tbody>
+    </table>
+</div>

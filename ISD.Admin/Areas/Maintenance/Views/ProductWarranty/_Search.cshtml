@@ -1,0 +1,48 @@
+﻿@model IEnumerable<ProductWarrantyViewModel>
+@{
+    string CurrentArea = ConstArea.Maintenance;
+    string CurrentController = ConstController.ProductWarranty;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ProductWarrantyCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th>@Html.DisplayNameFor(p => p.WarrantyName)</th>
+            <th>@Html.DisplayNameFor(p => p.SerriNo)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductWarrantyNo)</th>
+            <th>@Html.DisplayNameFor(p => p.FromDate)</th>
+            <th>@Html.DisplayNameFor(p => p.ToDate)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ProductWarrantyCode)</td>
+                <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                <td>@Html.DisplayFor(p => item.ProductName)</td>
+                <td>@Html.DisplayFor(p => item.WarrantyName)</td>
+                <td>@Html.DisplayFor(p => item.SerriNo)</td>
+                <td>@Html.DisplayFor(p => item.ProductWarrantyNo)</td>
+                <td>@Html.DisplayFor(p => item.FromDate)</td>
+                <td>@Html.DisplayFor(p => item.ToDate)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.ProductWarrantyId)
+                    @*@HtmlExtensions.DeleteButton(CurrentArea, CurrentController, string.Format("Phiếu bảo hảnh {0} của {1}. Sản phẩm: {2}",item.ProductWarrantyNo,item.ProfileName,item.ProductName), item.ProductWarrantyId)*@
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

@@ -1,0 +1,87 @@
+﻿@model StockViewModel
+@using MvcCheckBoxList.Model
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.Warehouse_Stock.ToLower();
+    string CurrentController = ConstController.Stock;
+    string CurrentArea = ConstArea.Warehouse;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        @*<div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#stock" data-toggle="tab" aria-expanded="true">@LanguageResource.Warehouse_Stock</a></li>
+                <li class=""><a href="#stock_Store" data-toggle="tab" aria-expanded="false">Kho chinh nhánh</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="stock">*@
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+                    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.StockCode)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.StockCode)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.StockName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.StockName)
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.StockId)
+                        </div>
+                        <div class="col-md-9 div-checkbox">*@
+                            @* 1.checkbox name, 2.list all, 3.value, 4.display name, 5.selected list *@
+                            @*@Html.CheckBoxListFor(p => p.StockId, p => p.StoreList, p1 => p1.StoreId, p1 => p1.StoreName, p => null, Position.Vertical)
+                        </div>
+                    </div>*@
+                    @*<div class="form-group col-md-6">
+                            @Html.TooltipLabelFor(p => p.Actived)
+                            @Html.ActivedRadioButton(p => p.Actived)
+                        </div>*@
+                }
+            </div>
+        </div>
+    </div>
+    @*<div class="tab-pane" id="stock_Store">
+                        @Html.Action("StockInStore")
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</div>
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+    </script>
+}

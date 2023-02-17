@@ -1,0 +1,130 @@
+﻿@model TaskViewModel
+@using ISD.Core
+@{
+    //Cấu hình thuộc tính
+    var configList = (List<WorkFlowConfigModel>)ViewBag.WorkFlowConfig;
+    var fieldCodeList = (List<string>)ViewBag.WorkFlowConfigCode;
+    var hiddenFieldList = (List<string>)ViewBag.WorkFlowHiddenField;
+    var fieldList = (List<WorkFlowFieldModel>)ViewBag.WorkFlowField;
+}
+
+<style>
+    .pt-2 {
+        padding-top: 12px !important;
+    }
+</style>
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.Task_Accessory
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue btn-add-product"><i class="fa fa-plus-square"></i> @LanguageResource.Btn_Create</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentTaskProduct">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, Guid?>(p => p.ProductId)))
+                {
+                    <th class="text-center">@LanguageResource.Product_ERPProductCode</th>
+                    @*<th class="text-center">@LanguageResource.Product_ProductCode</th>*@
+                    <th>@LanguageResource.ProductName</th>
+                    if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                    {
+                        <th>Serial number</th>
+                    }
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, int?>(p => p.Qty)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.Qty, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, int?>(p1 => p1.Qty)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Unit)))
+                {
+                    <th>@LanguageResource.Unit</th>
+                }
+
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductLevelCode)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.ProductLevelCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductLevelCode)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductColorCode)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.ProductColorCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductColorCode)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductCategoryCode)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.ProductCategoryCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductCategoryCode)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.UsualErrorCode)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.UsualErrorCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.UsualErrorCode)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ErrorCode)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.ErrorCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ErrorCode)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Accessory)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.Accessory, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.Accessory)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.ProductValue)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.ProductValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.ProductValue)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.WarrantyValue)))
+                {
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.WarrantyValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.WarrantyValue)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains("AccErrorTypeCode"))
+                {
+
+                    <th class="pt-2">
+                        @Html.LabelByPropertyNameFor(p => p.AccErrorTypeCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.AccErrorTypeCode)).Select(p => p.Note).FirstOrDefault())
+                    </th>
+                }
+                @if (fieldCodeList.Contains("AccQuantity"))
+                {
+
+                    <th class="pt-2">
+                        Số lượng (PK)
+                        @*@Html.LabelByPropertyNameFor(p => p.WarrantyValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.WarrantyValue)).Select(p => p.Note).FirstOrDefault())*@
+                    </th>
+                }
+                @if (fieldCodeList.Contains("AccTypeCode"))
+                {
+
+                    <th class="pt-2">
+                        Loại (PK)
+                        @*@Html.LabelByPropertyNameFor(p => p.WarrantyValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.WarrantyValue)).Select(p => p.Note).FirstOrDefault())*@
+                    </th>
+                }
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListProduct", Model.taskProductList)
+        </tbody>
+    </table>
+</div>

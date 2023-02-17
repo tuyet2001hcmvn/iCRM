@@ -1,0 +1,418 @@
+﻿@model TemplateAndGiftCampaignEditModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.TemplateAndGiftCampaign.ToLower();
+    string CurrentController = ConstController.TemplateAndGiftCampaign;
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var id = ViewBag.Id;
+}
+<style>
+    .ui-autocomplete {
+        z-index: 9999 !important;
+    }
+</style>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(p => p.Id)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TemplateAndGiftCampaignCode)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.TemplateAndGiftCampaignCode, new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TemplateAndGiftCampaignName)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.TemplateAndGiftCampaignName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TemplateAndGiftTargetGroupName)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredDropDownListFor(p => p.TemplateAndGiftTargetGroupId, Enumerable.Empty<SelectListItem>(), LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p id="createBy" class="last-mod">
+                        </p>
+                        <p id="lastEditBy" class="last-mod">
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-member" aria-expanded="true" data-toggle="tab">@LanguageResource.MemberOfTargetGroup<span id="totalMember">(0)</span></a>
+                    </li>
+                    <li>
+                        <a href="#tab-thay-doi" data-toggle="tab">@LanguageResource.ChangeDataLog</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="tab-member">
+                        @Html.Partial("_Member")
+                    </div>
+                    <div class="tab-pane" id="tab-thay-doi">
+                        @Html.Action("_List", "ChangeDataLog", new { area = "Utilities", @id = id })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+<div class="loading-modal"></div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+@section components {
+    <div class="delete-confirm"></div>
+    <div class="modal fade" id="popupDetail" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                @Html.Partial("_DetailPopup")
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/jquery.twbsPagination.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script src="~/Areas/Marketing/Scripts/mustache.min.js"></script>
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        var currentController = "@CurrentUrl";
+        var pageConfig = {
+            pageSize: $('#changeViewRowMember').val(),
+            pageIndex: 1,
+        }
+        var productList = [];
+        $(document).ready(function () {
+            var id = $("#Id").val();
+            //ISDNET5.init();
+            ISDNET5.EditInitial("@CurrentUrl");
+            SearchText_ProductCode();
+            // ISDNET5.loadMember("@CurrentUrl", false);
+            GetMemberByCampaign("@CurrentUrl", false);
+           // LoadTargetGroup();
+            $(document).on("change", "#changeViewRowMember", function () {
+                pageConfig.pageSize = $('#changeViewRowMember').val();
+                GetMemberByCampaign("@CurrentUrl", true);
+            });
+            $(document).on('click', '.detail-popup', function () {
+                $('#ProfileId').val($(this).data("profileid"));
+                $('#CampaignId').val($(this).data("campaignid"));
+                LoadData();
+
+                //$('#frmView #Id').val($(this).data("id"))
+                $('#modal-title').html("CHI TIẾT gỬI MẪU & QUÀ TẾT")
+                //$('#btn-popup-edit').attr('data-id', id);
+
+                $("#popupDetail").modal("show");
+            });
+            $(document).on('click', '#btn-add-product', function () {
+                var productId = $('.add-product #ProductId').val();
+                var address = $('.add-product #Address').val();
+                var quantity = $('.add-product #Quantity').val();
+                var productName = $('.add-product #ProductName').val();
+                if (productId == '' || productId == null || productId == undefined) {
+                    alertPopup(false, "Vui lòng chọn sản phẩm");
+                    $("#ProductName").focus();
+                }
+                else {
+                    if (address == '' || address == null || address == undefined) {
+                        alertPopup(false, "Vui lòng nhập địa chỉ");
+                        $(".add-product #Address").focus();
+                    }
+                    else {
+                        if (quantity == '' || quantity == null || quantity == undefined || parseInt(quantity) < 1) {
+                            alertPopup(false, "Vui lòng Nhập số lượng lớn hơn 0");
+                            $("#Quantity").focus();
+                        }
+                        else {
+                            var isExist = false;
+                            for (var i = 0; i < productList.length; i++) {
+                                if (productList[i].productId == productId && productList[i].address == address) {
+                                    alertPopup(false, "Địa chỉ và sản phẩm đã tồn tại");
+                                    isExist = true;
+                                    break;
+                                }
+
+                            }
+                            if (!isExist) {
+                                var product = {
+                                    productId: productId,
+                                    address: address,
+                                    quantity: quantity,
+                                    productName: productName,
+                                    tempalteAndGiftMemberId: $('#MemberId').val(),
+                                    createBy: currentUser
+                                }
+                                productList.push(product);
+                                $('.add-product #ProductId').val('');
+                                $('.add-product #Address').val('');
+                                $('.add-product #Quantity').val('');
+                                $('.add-product #ProductName').val('');
+                            }
+
+                        }
+                    }
+                }
+                RenderTable(productList);
+            });
+            $(document).on('click', '#btn-popup-edit', function () {
+                var obj = {
+                    TempalteAndGiftMemberId: $('#MemberId').val(),
+                    CreateBy: currentUser,
+                    ListDetail: productList
+                }
+                var url = net5apidomain + "api/Marketing/TemplateAndGiftCampaigns/MemberAddress"
+                SaveData(obj, url);
+                $('.add-product #ProductId').val('');
+                $('.add-product #Address').val('');
+                $('.add-product #Quantity').val('');
+                $('.add-product #ProductName').val('');
+                productList = [];
+                $("#popupDetail").modal("hide");
+            });
+            $(document).off('click', '#btn-search-member').on('click', '#btn-search-member', function () {
+                GetMemberByCampaign("@CurrentUrl", true);
+            });
+        });
+        function SearchText_ProductCode() {
+            $("#ProductName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/Sale/Product/SearchProductByCodeOrName",
+                        data: JSON.stringify({ "SearchText": $("#ProductName").val() }),
+                        dataType: "json",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return { label: item.ProductName, id: item.ProductId, value: item.ProductCode, code: item.ProductName };
+                            }));
+                            //response(data);
+                        },
+                        error: function (xhr, status, error) {
+                            alertPopup(false, xhr.responseText);
+                        }
+                    });
+                },
+                autoFocus: true,
+                //prevent another value except dropdown value
+                //change: function (event, ui) {
+                //    if (ui.item === null) {
+                //        $("#ProductName").val("");
+                //        $("#ProductId").val("");
+                //        $("#Quantiny").val("");
+                //        $("#ProductName").focus();
+                //    }
+                //},
+                select: function (event, ui) {
+                    //$("#ProductCode").val(ui.item.value);
+                    //$("#ProductCode").prop("disabled", true);
+                    $("#ProductId").val(ui.item.id);
+                    $("#ProductName").val(ui.item.label);
+                    $("#Quantity").focus();
+                    //$.ajax({
+                    //    type: "POST",
+                    //    url: "/Warehouse/StockTransfer/GetProducOnHand",
+                    //    data: {
+                    //        ProductId: ui.item.id,
+                    //        StockId: $("#FromStockId").val(),
+                    //    },
+                    //    success: function (xhr, status, error) {
+                    //        $("#ProductQuantinyOnHand").val(xhr.Qty);
+                    //    },
+                    //    error: function (xhr, status, error) {
+                    //        alertPopup(false, xhr.responseText);
+                    //    }
+                    //});
+
+                    //tab or enter auto select first (autofocus = true)
+                    if (event.keyCode === 9 || event.keyCode === 13) {
+                        event.preventDefault();
+                        $("#ProductName").val(ui.item.value);
+                    }
+                }
+            });
+        }
+        
+        function LoadData() {
+            var profileId = $('#ProfileId').val();
+            var campaignId = $('#CampaignId').val();
+            $.ajax({
+                url: net5apidomain + "api/Marketing/TemplateAndGiftCampaigns/MemberAddress?campaignId=" + campaignId + "&profileId=" + profileId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.isSuccess == true) {
+                        $("#frmView #ProfileName").val(res.data.profileName);
+                        $("#frmView #Address").val(res.data.address);
+                        $("#MemberId").val(res.data.id);
+                        if (res.data.listDetail != null) {
+                            productList = res.data.listDetail;
+                            RenderTable(productList);
+                        }
+                    }
+
+                }
+
+            });
+        }
+        function GetMemberByCampaign(controller, changePageSize) {
+            var id = $("#Id").val();
+            var profileName = $('#ProfileName').val();
+
+            var profileCode = $('#ProfileCode').val();
+
+            if (profileCode == "" || profileCode == undefined || profileCode == null) {
+                profileCode = "";
+            }
+            if (profileName == "" || profileName == undefined || profileName == null) {
+                profileName = "";
+            }
+            var url = net5apidomain + 'api/' + controller + 's/Members?CampaignId=' + id;
+            url = url + '&ProfileCode=' + profileCode + '&ProfileName=' + profileName + '&pageIndex=' + pageConfig.pageIndex + '&pageSize=' + pageConfig.pageSize;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function (res) {
+                    if (res.isSuccess) {
+                         var data = res.data.list;
+                            var html = '';
+                            var template = $('#data-template').html();
+                            $('#tblData').html("");
+                            $('#totalMember').html("(" + res.data.totalRow + ")");
+                            $.each(data, function (i, item) {
+                                html += Mustache.render(template, {
+                                    i: i + 1,
+                                    ProfileId: item.profileId,
+                                    ProfileCode: item.profileCode == -1 ? "" : item.profileCode,
+                                    ProfileForeignCode: item.profileForeignCode,
+                                    ProfileName: item.profileName,
+                                    Email: item.email,
+                                    Address: item.address,
+                                });
+                            });
+                            $('#tblData').html(html);
+                            ISDNET5.paging(res.data.totalRow, function () {
+                                GetMemberByCampaign("@CurrentUrl", false);
+                            }, pageConfig.pageSize, changePageSize);
+                        if (res.data.totalRow == 0) {
+                            $('#tblCount').html("Không tìm thấy dòng nào phù hợp");
+                        }
+                        else {
+                            var rowInPage = parseInt(Object.keys(data).length);
+                            var count = "Đang xem " + (pageConfig.pageIndex * pageConfig.pageSize - pageConfig.pageSize + 1) + " đến " + (((pageConfig.pageIndex - 1) * pageConfig.pageSize) + rowInPage) + " trong tổng số " + res.data.totalRow + " mục"
+                            $('#tblCount').html(count);
+                        }
+                            
+                        
+                    }
+                    else {
+                        alertPopup(false, res.responseJSON.message);
+                    }
+                },
+                error: function (res) {
+                    alertPopup(false, res.responseJSON.message);
+                }
+            });
+        }
+        function RenderTable(data) {
+            var len = productList.length;
+            console.log(len);
+            tbody = '';
+            if (len > 0) {
+                for (var i = 0; i < len; i++) {
+                    var tr = '<tr>' +
+                        '<td class="text-center">' + parseInt(i + 1) + '</td >' +
+                        '<td>' + productList[i].address + '</td >' +
+                        '<td>' + productList[i].productName + '</td >' +
+                        '<td class="text-center">' + productList[i].quantity + '</td >'+
+                    //'<td class="text-center">' + productList[i].transferredQuantity + '</td >' +
+                    //'<td class="text-center">' + productList[i].remainingQuantity + '</td >' +
+                    //'<td class="text-center "> <input data-id="' + productList[i].id + '" class="form-control transfer-quantity" type="number" min="0" step="1"></td >' +
+
+                    '</tr>';
+                    tbody = tbody + tr;
+                }
+                $('#tblProduct').html(tbody);
+            }
+            else {
+                tbody = '<tr>Không có dữ liêu</tr>';
+                $('#tblProduct').html(tbody);
+            }
+        }
+        function SaveData(data, saveToApiUrl) {
+            var $btn = $("#btn-save");
+            $btn.button('loading');
+            $.ajax({
+                type: "POST"/*httpMethod*/,
+                url: saveToApiUrl,
+                data: JSON.stringify(data),
+                processData: false,
+                contentType: "application/json",
+                success: function (res) {
+
+                    if (res.isSuccess == true) {
+                        alertPopup(true, res.message);
+                        productList = [];
+                        $btn.button('reset');
+
+                    }
+                    else {
+                        var resObj = JSON.parse(res);
+                        alertPopup(false, resObj.Message);
+                    }
+                },
+                error: function (res) {
+                    var resObj = JSON.parse(res);
+                    alertPopup(false, resObj.Message);
+                }
+            });
+        }
+    </script>
+
+}
+
+
+
+

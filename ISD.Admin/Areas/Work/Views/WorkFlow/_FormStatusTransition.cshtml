@@ -1,0 +1,170 @@
+﻿@model StatusTransitionViewModel
+@{
+    var isReadonly = false;
+    var type = ViewBag.Type;
+}
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.StatusTransitionId == Guid.Empty)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @LanguageResource.StatusTransition.ToLower()</h4>
+    }
+    else
+    {
+        isReadonly = true;
+        <h4 class="modal-title">@LanguageResource.Update @LanguageResource.StatusTransition.ToLower()</h4>
+    }
+</div>
+
+<div class="modal-body">
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmStatusTransition" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.WorkFlowId)
+        @Html.HiddenFor(p => p.StatusTransitionId)
+        <input id="ToPosition" name="ToPosition" type="hidden" value="@Model.StatusTransitionIn">
+        <input id="FromPosition" name="FromPosition" type="hidden" value="@Model.StatusTransitionOut">
+        //<input id="FromStatusId" name="FromStatusId" type="hidden" value="@Model.FromStatusId">
+        @Html.HiddenFor(p => p.ToStatusId)
+
+        <div id="divAlertWarning_StatusTransition" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.TransitionName)
+                    </div>
+                    <div class="col-md-8">
+
+                        @Html.RequiredTextboxFor(p => p.TransitionName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.Description)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.BranchName)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(p => p.BranchName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.FromStatusId)
+                    </div>
+                    <div class="col-md-8">
+                        @if (type == true)
+                        {
+                            @Html.DropDownList("FromStatus", new SelectList(ViewBag.listTaskStatus, "Value", "Text", @Model.FromStatusId), new { @class = "form-control", @disabled = true })
+                        }
+                        else
+                        {
+                            @Html.DropDownList("FromStatus", new SelectList(ViewBag.listTaskStatus, "Value", "Text", @Model.FromStatusId), new { @class = "form-control" })
+                        }
+                        @*@Html.RequiredDropDownListFor(p => p.FromStatusId, null, null, new { @class = "form-control", @readonly = "readonly" })*@
+                        @*@Html.HiddenFor(p => p.FromStatusId)*@
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.ToStatusId)
+                    </div>
+                    <div class="col-md-8">
+                        @if (type == true)
+                        {
+
+                            @Html.DropDownList("ToStatus", new SelectList(ViewBag.listTaskStatus, "Value", "Text", @Model.ToStatusId), new { @class = "form-control", @disabled = true })
+                        }
+                        else
+                        {
+                            @Html.DropDownList("ToStatus", new SelectList(ViewBag.listTaskStatus, "Value", "Text", @Model.ToStatusId), new { @class = "form-control" })
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.isCreateUserPermission)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RadioButtonTextFor(p => p.isCreateUserPermission, LanguageResource.HasPermission, LanguageResource.UnHasPermission)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.isAssigneePermission)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RadioButtonTextFor(p => p.isAssigneePermission, LanguageResource.HasPermission, LanguageResource.UnHasPermission)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.isReporterPermission)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RadioButtonTextFor(p => p.isReporterPermission, LanguageResource.HasPermission, LanguageResource.UnHasPermission)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.isRequiredComment)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RadioButtonTextFor(p => p.isRequiredComment, LanguageResource.Yes, LanguageResource.No)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.Color)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(p => p.Color, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.isAutomaticTransitions)
+                    </div>
+                    <div class="col-md-8" id="isAutomaticTransition">
+                        @Html.RadioButtonTextFor(p => p.isAutomaticTransitions, LanguageResource.Yes, LanguageResource.No)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    <div class="form-horizontal" id="AutoCondition">
+
+    </div>
+</div>
+
+<div class="modal-footer">
+    @if (type == true)
+    {
+        <button style="float:left" type="button" class="btn btn-danger btn-delete" id="btn-delete" data-dismiss="modal">@LanguageResource.Btn_Delete</button>
+        <button type="button" class="btn btn-default btnFormStatusTransition" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    }
+    else
+    {
+        <button type="button" class="btn btn-default btnFormStatusTransition" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    }
+
+    <button type="button" class="btn btn-primary btn-save-statusTransition" data-add-success-call-back="ReloadTaskStatusList">@LanguageResource.Btn_Save</button>
+</div>

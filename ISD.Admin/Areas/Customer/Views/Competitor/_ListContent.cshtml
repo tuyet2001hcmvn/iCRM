@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ProfileViewModel>
+@{
+    /**/
+
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Competitor;
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+@{ int i = 0; }
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td><a href="/@CurrentArea/Profile/Edit/@item.ProfileId" target="_blank">@Html.DisplayFor(p => item.ProfileCode)</a></td>
+            <td>@Html.DisplayFor(p => item.ProfileName)</td>
+            <td>@Html.DisplayFor(p => item.Address)</td>
+            <td>@Html.DisplayFor(p => item.CreateUser)</td>
+            <td class="text-center">@Html.DisplayFor(p => item.CreateTime)</td>
+            @*<td class="text-center">
+                @if (item.IsMain == true)
+                {
+                    <i class="fa fa-check true-icon"></i>
+                }
+            </td>*@
+            <td class="text-center">
+                @*<a class="btn btn-info btn-view-contact" data-id="@item.ProfileId"><i class="fa fa-eye"></i> Xem liên hệ</a>
+                @if (item.IsMain == false || item.IsMain == null)
+                {
+                    <a style="margin-top:7px;" class="btn btn-success btn-main" data-id="@item.OpportunityPartnerId"><i class="fa fa-check"></i> Chủ đầu tư chính</a>
+                }*@
+                <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.OpportunityPartnerId" data-item-name="Đối thủ: @item.ProfileName" data-delete-success-call-back="ReloadCompetitorList"><i class="fa fa-trash-o"></i> Xóa</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="13" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

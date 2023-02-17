@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - @LanguageResource.ProjectName</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+    <link href="~/Content/typeahead/typeahead.css" rel="stylesheet" />
+    <link href="~/Content/select2.min.css" rel="stylesheet" />
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/custom")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("head", required: false)
+</head>
+<body class="hold-transition">
+    <div class="container">
+        @RenderBody()
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/jquery.number.min.js"></script>
+    @RenderSection("jquery", required: false)
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/AdminLTE-2.4.3/dist/js/adminlte.min.js"></script>
+    <script src="~/Scripts/datatables.min.js"></script>
+    <script src="~/Scripts/typeahead/typeahead.bundle.min.js"></script>
+    <!--Select2-->
+    <script src="~/Scripts/select2.min.js"></script>
+    @Scripts.Render("~/scripts/common/js")
+    <script src="~/Scripts/moment.js"></script>
+    <script type="text/javascript">
+       var net5apidomain ='@Net5ApiDomain';
+    </script>
+    <!--Cookie-->
+    <script src="~/Scripts/jquery.cookie.js"></script>
+    @RenderSection("components", required: false)
+    <div id="dynamicModalContainer"></div>
+   
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/numeric-comma.js"></script>
+    @Scripts.Render("~/scripts/common/shared")
+    @RenderSection("scripts", required: false)
+
+
+
+</body>
+</html>

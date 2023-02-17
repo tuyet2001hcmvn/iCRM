@@ -1,0 +1,12 @@
+@Html.DevExpress().DocumentViewer(settings =>
+{
+
+    settings.Name = "DocumentViewer";
+    settings.CallbackRouteValues = new { Controller = "TechnicalServicesTicketMLCReport", Action = "DocumentViewerPartial", jsonReq = Newtonsoft.Json.JsonConvert.SerializeObject(Model) };
+    settings.ExportRouteValues = new { Controller = "TechnicalServicesTicketMLCReport", Action = "DocumentViewerPartialExport", jsonReq = Newtonsoft.Json.JsonConvert.SerializeObject(Model) };
+    settings.Report = (TechnicalServicesXtraReport)ViewData["TechnicalServices_Report"];
+    settings.ToolbarMode = DocumentViewerToolbarMode.Ribbon;
+    settings.ClientSideEvents.Init = "function init(s) { var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor); var createFrameElement = s.viewer.printHelper.createFrameElement; s.viewer.printHelper.createFrameElement = function(name) { var frameElement = createFrameElement.call(this, name); if (isChrome) { frameElement.addEventListener('load', function(e) { if (frameElement.contentDocument.contentType !== 'text/html') frameElement.contentWindow.print(); }); } return frameElement;}}";
+
+}).GetHtml()
+

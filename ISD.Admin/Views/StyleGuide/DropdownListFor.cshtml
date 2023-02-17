@@ -1,0 +1,69 @@
+﻿@model CustomerViewModel
+@{
+    ViewBag.Title = "DropdownListFor";
+
+    //string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+</div>
+<div class="content">
+
+
+    <div class="panel-group">
+        <div class="form-horizontal">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @Html.RequiredDropDownListFor(p => p.ProvinceId, (List<SelectListItem>)ViewBag.ProvinceIdList, LanguageResource.Dropdownlist_All)
+                    @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_Choose, new {
+                              @class = "form-control with-search"
+                          })
+
+                    @Html.RequiredDropDownListFor(p => p.ProvinceId, (List<SelectListItem>)ViewBag.ProvinceIdList, LanguageResource.Dropdownlist_All)
+
+
+                    @*@Html.DropDownListFor(p => p.ProvinceId, new List<SelectListItem>(){
+                            new SelectListItem(){Text = LanguageResource.Dropdownlist_All, Value = ""},
+                            new SelectListItem(){Text = "Bình Thuận", Value = "b8afca4c-2533-44ad-ad5b-b85c3c4a39fa"},
+                            new SelectListItem(){Text = "Vũng Tàu", Value = "a3f740b4-e4be-4b4f-b985-8db656b13903"}
+                        }, new { @class = "form-control" })*@
+
+                    @*@Html.DropDownListFor(p => p.ProvinceId, new SelectList(
+                                                          new List<SelectListItem>{
+                                                               new SelectListItem(){Text = LanguageResource.Dropdownlist_All, Value = ""},
+                                                                new SelectListItem(){Text = "Bình Thuận", Value = "b8afca4c-2533-44ad-ad5b-b85c3c4a39fa"},
+                                                                new SelectListItem(){Text = "Vũng Tàu", Value = "a3f740b4-e4be-4b4f-b985-8db656b13903"}
+                                                            },
+                                                          "Value",
+                                                          "Text",
+                                                           Model.ProvinceId
+                                                   ), new { @class = "form-control" })
+
+                        @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })*@
+
+                    @*@Html.DropDownListFor(model => model.ProvinceId,
+                        new List<SelectListItem> {
+                             new SelectListItem { Value = "" , Text = "Option A" },
+                             new SelectListItem { Value = "b8afca4c-2533-44ad-ad5b-b85c3c4a39fa" , Text = "Option B", Selected = true },
+                             new SelectListItem { Value = "a3f740b4-e4be-4b4f-b985-8db656b13903" , Text = "Option C" }
+                          },
+                        new { @class="myselect"})*@
+
+
+                    @Model.ProvinceId
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+
+        $(document).ready(function () {
+        });
+    </script>
+}

@@ -1,0 +1,496 @@
+﻿@model TargetGroupEditViewModel
+@using MvcCheckBoxList.Model
+@{
+    ViewBag.Title = LanguageResource.Edit + " " + ((string)ViewBag.Title).ToLower();
+
+    string CurrentArea = ConstArea.Marketing;
+
+    string CurrentController = ConstController.TargetGroup;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    string BackCurrentController = string.Format("{0}?Type={1}", CurrentController, ViewBag.Type);
+    string BackCurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, BackCurrentController);
+
+    string BaseAddress = Net5ApiDomain;
+    string ApiUrl = BaseAddress + "api/" + CurrentUrl + "s";
+    string EditBy = CurrentUser.AccountId.ToString();
+    string ImportUrl = ConstantApi.ImportMemberToTargetGroupUrl;
+    var id = ViewBag.Id;
+    bool isHasPermissionExport = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Import, "?Type=" + ViewBag.Type);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, BackCurrentController)
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_Save)
+
+
+
+        @*<a id="btn-importExcel" class="btn btn-export btn-success" style="margin-right: 8px;">
+                <i class="fa fa-download"></i> Import
+            </a>*@
+        @if ((string)ViewBag.Type != ConstMarketingType.ProductPromotion)
+        {
+            <a class="btn btn-export btn-success" id="btn-export" style="margin-right: 8px;">
+                <i class="fa fa-download"></i> Export
+            </a>
+            <button class="btn btn-success" data-target="#importexcel-window" data-toggle="modal" id="btn-import"><i class="fa fa-upload"></i> Import khách hàng</button>
+
+            <button class="btn btn-success" data-target="#importexcel-window" data-toggle="modal" id="btn-import-external"><i class="fa fa-upload"></i> Import khách ngoài</button>
+        }
+        else
+        {
+            <button class="btn btn-success btn-get-profile" id="btn-get-profile"><i class="fa fa-plus"></i> Thêm khách hàng</button>
+        }
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(p => p.Id)
+                    @Html.HiddenFor(p => p.Type)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupCode)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.TargetGroupCode, new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupName)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.TargetGroupName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Actived)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.ActivedRadioButton(p => p.Actived)
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p id="createBy" class="last-mod">
+                        </p>
+                        <p id="lastEditBy" class="last-mod">
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-member" aria-expanded="true" data-toggle="tab">@LanguageResource.MemberOfTargetGroup<span id="totalMember">(0)</span></a>
+                    </li>
+                    @if ((string)ViewBag.Type != ConstMarketingType.ProductPromotion)
+                    {
+                        <li>
+                            <a href="#tab-member-external" aria-expanded="true" data-toggle="tab">@LanguageResource.ExternalMemberOfTargetGroup<span id="totalMember2">(0)</span></a>
+                        </li>
+                    }
+                    <li>
+                        <a href="#tab-thay-doi" data-toggle="tab">@LanguageResource.ChangeDataLog</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="tab-member">
+                        @Html.Partial("LoadMember")
+                    </div>
+                    @if ((string)ViewBag.Type != ConstMarketingType.ProductPromotion)
+                    {
+                        <div class="tab-pane" id="tab-member-external">
+                            @Html.Partial("LoadExternalMember")
+                        </div>
+                    }
+                    <div class="tab-pane" id="tab-thay-doi">
+                        @Html.Action("_List", "ChangeDataLog", new { area = "Utilities", @id = id })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+<div class="loading-modal"></div>
+@section components {
+    <div class="divProfilePopup"></div>
+}
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/jquery.twbsPagination.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script src="~/Areas/Marketing/Scripts/mustache.min.js"></script>
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        var currentController = "@CurrentUrl";
+        $(document).ready(function () {
+            var id = $("#Id").val();
+            ISDNET5.init();
+            ISDNET5.EditInitial("@CurrentUrl");
+            ISDNET5.UploadFile("@CurrentUrl");
+            ISDNET5.loadMember("@CurrentUrl", false);
+            if ("@ViewBag.Type" != "@ConstMarketingType.ProductPromotion")
+            {
+                ISDNET5.loadExternalMember("@CurrentUrl", false);
+            }
+            $(document).on("click", "#btn-import-external", function () {
+                $(this).data("type", "external");
+                console.log($(this).data("type"));
+            });
+            $(document).on("click", "#btn-export", function () {
+                     var arr = {};
+                     var obj = {};
+                     obj["TargetGroupId"] = id;
+                $.extend(true, arr, obj)
+                ISD.Download("/Marketing/TargetGroup/ExportExcel", arr);
+            });
+
+            $(document).on("click", ".btn-get-profile", function () {
+                loading2();
+                $.ajax({
+                    type: "POST",
+                    url: '/Marketing/TargetGroup/_ProfileSearch',
+                    data: {
+                        ProfileType: 'Account'
+                    },
+                    success: function (html) {
+                        $("body").removeClass("loading2");
+                        $(".divProfilePopup").html(html);
+                        $(".with-search").select2();
+                        $(".divProfilePopup #divProfileSearch").modal("show");
+                    }
+                });
+            });
+
+            $(document).on("click", "#btn-profile-search", function () {
+                var $btn = $(this);
+                var frmElement = $(this).closest('form').attr('id');
+                PaggingServerSide_ProfileSearch("/Marketing/TargetGroup/_ProfileSearchResult", frmElement);
+                $(".divProfilePopup .btn-parent-checked").removeAttr("checked");
+            });
+
+            function PaggingServerSide_ProfileSearch(url, frm) {
+                loading2();
+                $("#" + frm + " .searchTable").DataTable().clear().destroy();
+                $("#" + frm + " .searchTable")
+                    .on('processing.dt', function (e, settings, processing) {
+                        ISD.LoadingDataTable(processing, '#' + frm + ' .searchTable');
+                    })
+                    .DataTable({
+                    proccessing: true,
+                    serverSide: true,
+                    paging: true,
+                    scrollX: true,
+
+                    ajax: {
+                        type: 'POST',
+                        url: url,
+                        contentType: 'application/json',
+                        data: function (d) {
+                            var arr = {};
+                            //data search
+                            var data = $("#" + frm).serializeArray();
+                            $.each(data, function (index, val) {
+                                var obj = {};
+                                obj[val.name] = val.value;
+                                $.extend(true, arr, obj);
+                            });
+
+                            var target = {};
+                            target["TargetGroupId"] = $("#Id").val();
+                            $.extend(true, arr, target);
+                            //data datatable (draw, start, length,...)
+                            $.extend(true, arr, d);
+
+                            return JSON.stringify(arr);
+                        }
+                    },
+                    columns: [
+                        //1. STT
+                        {
+                            "data": "STT",
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                if (type === "display" || type === "filter") {
+                                    if (row["InTarget"] != true && row["InTarget"] != 'true' && row["InTarget"] != "True") {
+                                        return "<input type=\"checkbox\" class=\"check-children btn-profile-checked \" data-id='" + row["ProfileId"] + "' data-code='" + row["ProfileCode"] + "' data-name='" + row["ProfileName"] + "' />";
+                                    } else {
+                                        return "<input type=\"checkbox\" class=\"check-children btn-profile-checked \" data-id='" + row["ProfileId"] + "' data-code='" + row["ProfileCode"] + "' data-name='" + row["ProfileName"] + "' checked />";
+                                    }
+                                }
+                                return "";
+                            }
+                        },
+                        //2. ProfileCode
+                        {
+                            "data": "ProfileCode",
+                            "className": "text-center",
+                            "orderable": true,
+                            "render": function (data, type, row) {
+                                if (type === "display" || type === "filter") {
+                                    //if (row["InTarget"] != true && row["InTarget"] != 'true' && row["InTarget"] != "True") {
+                                    //    return "<a class=\"btn-profile-choose\" data-id='" + row["ProfileId"] + "' data-code='" + row["ProfileCode"] + "' data-name='" + row["ProfileName"] + "'>" + data + "</a>";
+                                    //}
+                                    return data;
+                                }
+                                return "";
+                            }
+                        },
+                        //3. ProfileForeignCode
+                        {
+                            "data": "ProfileForeignCode",
+                            "className": "text-center",
+                            "orderable": true,
+                        },
+                        //4. ProfileName
+                        {
+                            "data": "ProfileName",
+                            "orderable": true
+                        },
+                        //7. Phone
+                        {
+                            "data": "Phone", "className": "text-right", "orderable": false
+                        },
+                        //8. Email
+                        {
+                            "data": "Email", "orderable": false
+                        },
+                        //9. Address
+                        {
+                            "data": "Address", "orderable": false
+                        },
+                        //10. CreateUser
+                        {
+                            "data": "CreateUser"
+                        },
+                        //11. CreateTime
+                        {
+                            "data": "CreateTime",
+                            "orderable": true,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                // If display or filter data is requested, format the date
+                                if (type === "display" || type === "filter") {
+                                    return moment(data).format("DD/MM/YYYY HH:mm:ss");
+                                }
+                                return data;
+                            }
+                        },
+                        //12. Actived
+                        {
+                            "data": "Actived",
+                            "orderable": false,
+                            "className": "text-center",
+                            "render": function (data, type, row) {
+                                if (type === "display" || type === "filter") {
+                                    if (data == true) {
+                                        return "<i class='fa fa-check true-icon'></i>";
+                                    }
+                                    else {
+                                        return "<i class='fa fa-close false-icon'></i>";
+                                    }
+                                }
+                                return data;
+                            }
+                        }
+                    ],
+                    destroy: true,
+                    language: {
+                        sProcessing: "Đang xử lý...",
+                        sLengthMenu: "Xem _MENU_ mục",
+                        sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                        sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                        sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                        sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                        sInfoPostFix: "",
+                        sSearch: "Tìm nội dung:",
+                        sUrl: "",
+                        oPaginate: {
+                            sFirst: "Đầu",
+                            sPrevious: "&laquo;",
+                            sNext: "&raquo;",
+                            sLast: "Cuối"
+                        }
+                    },
+                    columnDefs: [
+                        { targets: [0, 1], visible: true },
+                        { targets: 'no-sort', visible: false }
+                    ],
+                    "sDom": '<"top"flp>rt<"bottom"ip><"clear">',
+                });
+                //var $btn = $("#btn-profile-search");
+
+                //var $btn = $("#" + frmElement + " #btn-profile-search");
+            }
+
+            @*$(document).on("click", ".divProfilePopup .btn-profile-choose", function (e) {
+                var id = $(this).data("id");
+                $this = $(this);
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: '/Marketing/TargetGroup/AddMember',
+                    data: {
+                        TargetGroupId: $("#Id").val(),
+                        ProfileId: id
+                    },
+                    success: function (joinData) {
+                        if (joinData.Success) {
+                            $($this.parent()).html($this.data("code"))
+                            ISDNET5.loadMember("@CurrentUrl", false);
+                        }
+                    }
+                });
+            });*@
+            $(document).on("change", ".divProfilePopup .btn-profile-checked", function (e) {
+                var id = $(this).data("id");
+                $this = $(this);
+                e.preventDefault();
+                if ($this.is(":checked")) {
+                    $.ajax({
+                        type: "POST",
+                        url: '/Marketing/TargetGroup/AddMember',
+                        data: {
+                            TargetGroupId: $("#Id").val(),
+                            ProfileId: id
+                        },
+                        success: function (jsonData) {
+                            if (jsonData.Success) {
+                                ISDNET5.loadMember("@CurrentUrl", false);
+                            }
+                        }
+                    });
+                } else {
+                    removeMember($("#Id").val(), id);
+                }
+            });
+            $(document).on("click", ".btn-delete-member", function (e) {
+                var id = $(this).data("id");
+                removeMember($("#Id").val(), id);
+            });
+
+            $(document).on("change", ".divProfilePopup .btn-parent-checked", function (e) {
+                e.preventDefault();
+                var $this = $(this);
+                var frm = $("#frmProfileSearchPopup"),
+                    formData = new FormData(),
+                    formParams = frm.serializeArray();
+                $.each(formParams, function (i, val) {
+                    formData.append(val.name, val.value);
+                });
+                formData.append("TargetGroupId", $("#Id").val());
+                if ($this.is(":checked")) {
+                    loading2();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Marketing/TargetGroup/AddListMember",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (jsonData) {
+                            if (jsonData.Success) {
+                                ISDNET5.loadMember("@CurrentUrl", false);
+                                $(".divProfilePopup .btn-profile-checked").attr("checked", "checked");
+                            }
+                        }
+                    });
+                } else {
+                    loading2();
+                    $.ajax({
+                        type: "POST",
+                        url: "/Marketing/TargetGroup/RemoveListMember",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (jsonData) {
+                            if (jsonData.Success) {
+                                ISDNET5.loadMember("@CurrentUrl", false);
+                                $(".divProfilePopup .btn-profile-checked").removeAttr("checked");
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            $(document).on("change", "#ProvinceId", function () {
+                 var ProvinceId = $(this).val();
+                 loading2();
+                $.ajax({
+                    type: "POST",
+                    url: "/MasterData/District/GetDistrictByProvince",
+                    data: {
+                        ProvinceId: ProvinceId
+                    },
+                    success: function (jsonData) {
+                        var $districtId = $("#DistrictId")
+                        $districtId.html("");
+                        $districtId.append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                        $.each(jsonData, function (index, value) {
+                            $districtId.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                });
+            });
+            //change ward
+            $(document).on("change", "select[name='DistrictId']", function () {
+                var DistrictId = $(this).val();
+                loading2();
+                $.ajax({
+                    type: "POST",
+                    url: "/MasterData/Ward/GetWardByDistrict",
+                    data: {
+                        DistrictId: DistrictId
+                    },
+                    success: function (jsonData) {
+                        var $ward = $("#WardId")
+                        $ward.html("");
+                        $ward.append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                        $.each(jsonData, function (index, value) {
+                            $ward.append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                });
+            });
+
+
+            function removeMember(targetGroupId, profileId) {
+                loading2();
+                $.ajax({
+                        type: "POST",
+                        url: '/Marketing/TargetGroup/RemoveMember',
+                        data: {
+                            TargetGroupId: targetGroupId,
+                            ProfileId: profileId
+                        },
+                        success: function (jsonData) {
+                            if (jsonData.Success) {
+                                ISDNET5.loadMember("@CurrentUrl", false);
+                            }
+                        }
+                    });
+            }
+        });
+    </script>
+}
+
+
+
+

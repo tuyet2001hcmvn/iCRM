@@ -1,0 +1,43 @@
+﻿@model IEnumerable<ISD.ViewModels.MasterData.NewsCategoryViewModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.NewsCategory;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.NewsCategoryName)</th>
+            <th>@Html.DisplayNameFor(p => p.Description)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateBy)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th>@Html.DisplayNameFor(p => p.ImageUrl)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.NewsCategoryName)</td>
+            <td>@Html.Raw(item.Description)</td>
+            <td>@Html.DisplayFor(p => item.CreateByName)</td>
+            <td>@Html.DisplayFor(p => item.CreateTime)</td>
+            <td class="text-center"><img src="/Upload/NewsCategory/Thum/@item.ImageUrl" height="42" /></td>
+            <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            <td class="text-center">
+                @*<a class="btn btn-info btn-view" href="/MasterData/News/Detail/@item.NewsCategoryId" onclick="$(this).button('loading')"><i class="fa fa-eye"></i> Xem</a>*@
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.NewsCategoryId)
+                @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, null, item.NewsCategoryId)
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

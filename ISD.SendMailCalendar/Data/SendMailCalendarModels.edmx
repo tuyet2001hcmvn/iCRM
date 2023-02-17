@@ -1,0 +1,748 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SendMailCalendarEntities1.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ProfileModel">
+          <Key>
+            <PropertyRef Name="ProfileId" />
+          </Key>
+          <Property Name="ProfileId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ProfileCode" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProfileForeignCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="isForeignCustomer" Type="bit" />
+          <Property Name="CustomerTypeCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="Title" Type="nvarchar" MaxLength="10" />
+          <Property Name="ProfileName" Type="nvarchar" MaxLength="255" />
+          <Property Name="ProfileShortName" Type="nvarchar" MaxLength="255" />
+          <Property Name="AbbreviatedName" Type="nvarchar" MaxLength="50" />
+          <Property Name="DayOfBirth" Type="int" />
+          <Property Name="MonthOfBirth" Type="int" />
+          <Property Name="YearOfBirth" Type="int" />
+          <Property Name="Age" Type="nvarchar" MaxLength="10" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="SAPPhone" Type="nvarchar" MaxLength="100" />
+          <Property Name="Email" Type="nvarchar" MaxLength="500" />
+          <Property Name="Address" Type="nvarchar" MaxLength="4000" />
+          <Property Name="CountryCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="SaleOfficeCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="ProvinceId" Type="uniqueidentifier" />
+          <Property Name="DistrictId" Type="uniqueidentifier" />
+          <Property Name="WardId" Type="uniqueidentifier" />
+          <Property Name="Note" Type="nvarchar" MaxLength="1000" />
+          <Property Name="VisitDate" Type="datetime" />
+          <Property Name="Actived" Type="bit" />
+          <Property Name="ImageUrl" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CreateByEmployee" Type="nvarchar" MaxLength="20" />
+          <Property Name="CreateAtCompany" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateAtSaleOrg" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateBy" Type="uniqueidentifier" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="LastEditBy" Type="uniqueidentifier" />
+          <Property Name="LastEditTime" Type="datetime" />
+          <Property Name="CustomerAccountGroupCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomerGroupCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="PaymentTermCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomerAccountAssignmentGroupCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CashMgmtGroupCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReconcileAccountCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomerSourceCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="TaxNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Website" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomerCareerCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="CompanyNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="AddressTypeCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProjectCode" Type="int" />
+          <Property Name="ProjectStatusCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="QualificationLevelCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ProjectSourceCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ReferenceProfileId" Type="uniqueidentifier" />
+          <Property Name="ContractValue" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Text1" Type="nvarchar" MaxLength="500" />
+          <Property Name="Text2" Type="nvarchar" MaxLength="500" />
+          <Property Name="Text3" Type="nvarchar" MaxLength="500" />
+          <Property Name="Text4" Type="nvarchar" MaxLength="500" />
+          <Property Name="Text5" Type="nvarchar" MaxLength="500" />
+          <Property Name="Dropdownlist1" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist2" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist3" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist4" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist5" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist6" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist7" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist8" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist9" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dropdownlist10" Type="nvarchar" MaxLength="50" />
+          <Property Name="Date1" Type="datetime" />
+          <Property Name="Date2" Type="datetime" />
+          <Property Name="Date3" Type="datetime" />
+          <Property Name="Date4" Type="datetime" />
+          <Property Name="Date5" Type="datetime" />
+          <Property Name="ProjectLocation" Type="nvarchar" MaxLength="4000" />
+          <Property Name="IsAnCuongAccessory" Type="bit" />
+          <Property Name="Laminate" Type="nvarchar" MaxLength="200" />
+          <Property Name="MFC" Type="nvarchar" MaxLength="200" />
+          <Property Name="Veneer" Type="nvarchar" MaxLength="200" />
+          <Property Name="Flooring" Type="nvarchar" MaxLength="200" />
+          <Property Name="Accessories" Type="nvarchar" MaxLength="200" />
+          <Property Name="KitchenEquipment" Type="nvarchar" MaxLength="200" />
+          <Property Name="OtherBrand" Type="nvarchar" MaxLength="200" />
+          <Property Name="HandoverFurniture" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="CampaignModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CampaignCode" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CampaignName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="ContentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TargetGroupId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SaleOrg" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="uniqueidentifier" />
+          <Property Name="isImmediately" Type="bit" />
+          <Property Name="ScheduledToStart" Type="datetime" />
+          <Property Name="CreateBy" Type="uniqueidentifier" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="LastEditBy" Type="uniqueidentifier" />
+          <Property Name="LastEditTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="ContentModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ContentCode" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ContentName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="FromEmailAccountId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SenderName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SaleOrg" Type="nvarchar" MaxLength="50" />
+          <Property Name="Subject" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="Content" Type="ntext" Nullable="false" />
+          <Property Name="Actived" Type="bit" />
+          <Property Name="CreateBy" Type="uniqueidentifier" />
+          <Property Name="CreateTime" Type="datetime" />
+          <Property Name="LastEditBy" Type="uniqueidentifier" />
+          <Property Name="LastEditTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="EmailAccountModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ServerProviderId" Type="uniqueidentifier" />
+          <Property Name="SenderName" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="ContactName" Type="nvarchar(max)" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Account" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Password" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Signature" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="IsSender" Type="bit" />
+        </EntityType>
+        <EntityType Name="MailServerProviderModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Protocol" Type="nvarchar(max)" />
+          <Property Name="IncomingHost" Type="nvarchar(max)" />
+          <Property Name="IncomingPort" Type="int" />
+          <Property Name="OutgoingHost" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="OutgoingPort" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MemberOfTargetGroupModel">
+          <Key>
+            <PropertyRef Name="TargetGroupId" />
+            <PropertyRef Name="ProfileId" />
+          </Key>
+          <Property Name="TargetGroupId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ProfileId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SendMailCalendarModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CampaignId" Type="uniqueidentifier" />
+          <Property Name="ToProfileId" Type="uniqueidentifier" />
+          <Property Name="ToEmail" Type="nvarchar" MaxLength="200" />
+          <Property Name="IsSend" Type="bit" />
+          <Property Name="Param" Type="nvarchar(max)" />
+          <Property Name="IsBounce" Type="bit" />
+          <Property Name="IsOpened" Type="bit" />
+        </EntityType>
+        <EntityType Name="TargetGroupModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TargetGroupCode" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TargetGroupName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreateBy" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CreateTime" Type="datetime" Nullable="false" />
+          <Property Name="LastEditBy" Type="uniqueidentifier" />
+          <Property Name="Actived" Type="bit" Nullable="false" />
+          <Property Name="LastEditTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Unfollow">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Email" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="CatalogModel">
+          <Key>
+            <PropertyRef Name="CatalogId" />
+          </Key>
+          <Property Name="CatalogId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CatalogTypeCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="CatalogCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="CatalogText_en" Type="nvarchar" MaxLength="1000" />
+          <Property Name="CatalogText_vi" Type="nvarchar" MaxLength="1000" />
+          <Property Name="OrderIndex" Type="int" />
+          <Property Name="Actived" Type="bit" />
+        </EntityType>
+        <Association Name="FK_CampaignModel_CatalogModel">
+          <End Role="CatalogModel" Type="Self.CatalogModel" Multiplicity="0..1" />
+          <End Role="CampaignModel" Type="Self.CampaignModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CatalogModel">
+              <PropertyRef Name="CatalogId" />
+            </Principal>
+            <Dependent Role="CampaignModel">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberOfTagetGroupModel_TargetGroupModel">
+          <End Role="TargetGroupModel" Type="Self.TargetGroupModel" Multiplicity="1" />
+          <End Role="MemberOfTargetGroupModel" Type="Self.MemberOfTargetGroupModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TargetGroupModel">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberOfTargetGroupModel">
+              <PropertyRef Name="TargetGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SendMailCalendarEntities1StoreContainer">
+          <EntitySet Name="ProfileModel" EntityType="Self.ProfileModel" Schema="Customer" store:Type="Tables" />
+          <EntitySet Name="CampaignModel" EntityType="Self.CampaignModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="ContentModel" EntityType="Self.ContentModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="EmailAccountModel" EntityType="Self.EmailAccountModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="MailServerProviderModel" EntityType="Self.MailServerProviderModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="MemberOfTargetGroupModel" EntityType="Self.MemberOfTargetGroupModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="SendMailCalendarModel" EntityType="Self.SendMailCalendarModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="TargetGroupModel" EntityType="Self.TargetGroupModel" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="Unfollow" EntityType="Self.Unfollow" Schema="Marketing" store:Type="Tables" />
+          <EntitySet Name="CatalogModel" EntityType="Self.CatalogModel" Schema="tMasterData" store:Type="Tables" />
+          <AssociationSet Name="FK_CampaignModel_CatalogModel" Association="Self.FK_CampaignModel_CatalogModel">
+            <End Role="CatalogModel" EntitySet="CatalogModel" />
+            <End Role="CampaignModel" EntitySet="CampaignModel" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberOfTagetGroupModel_TargetGroupModel" Association="Self.FK_MemberOfTagetGroupModel_TargetGroupModel">
+            <End Role="TargetGroupModel" EntitySet="TargetGroupModel" />
+            <End Role="MemberOfTargetGroupModel" EntitySet="MemberOfTargetGroupModel" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SendMailCalendarEntities1" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SendMailCalendarEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ProfileModels" EntityType="SendMailCalendarEntities1.ProfileModel" />
+          <EntitySet Name="CampaignModels" EntityType="SendMailCalendarEntities1.CampaignModel" />
+          <EntitySet Name="ContentModels" EntityType="SendMailCalendarEntities1.ContentModel" />
+          <EntitySet Name="EmailAccountModels" EntityType="SendMailCalendarEntities1.EmailAccountModel" />
+          <EntitySet Name="MailServerProviderModels" EntityType="SendMailCalendarEntities1.MailServerProviderModel" />
+          <EntitySet Name="MemberOfTargetGroupModels" EntityType="SendMailCalendarEntities1.MemberOfTargetGroupModel" />
+          <EntitySet Name="SendMailCalendarModels" EntityType="SendMailCalendarEntities1.SendMailCalendarModel" />
+          <EntitySet Name="TargetGroupModels" EntityType="SendMailCalendarEntities1.TargetGroupModel" />
+          <EntitySet Name="CatalogModels" EntityType="SendMailCalendarEntities1.CatalogModel" />
+          <AssociationSet Name="FK_CampaignModel_CatalogModel" Association="SendMailCalendarEntities1.FK_CampaignModel_CatalogModel">
+            <End Role="CatalogModel" EntitySet="CatalogModels" />
+            <End Role="CampaignModel" EntitySet="CampaignModels" />
+          </AssociationSet>
+          <AssociationSet Name="FK_MemberOfTagetGroupModel_TargetGroupModel" Association="SendMailCalendarEntities1.FK_MemberOfTagetGroupModel_TargetGroupModel">
+            <End Role="TargetGroupModel" EntitySet="TargetGroupModels" />
+            <End Role="MemberOfTargetGroupModel" EntitySet="MemberOfTargetGroupModels" />
+          </AssociationSet>
+          <EntitySet Name="Unfollows" EntityType="SendMailCalendarEntities1.Unfollow" />
+        </EntityContainer>
+        <EntityType Name="ProfileModel">
+          <Key>
+            <PropertyRef Name="ProfileId" />
+          </Key>
+          <Property Name="ProfileId" Type="Guid" Nullable="false" />
+          <Property Name="ProfileCode" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProfileForeignCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="isForeignCustomer" Type="Boolean" />
+          <Property Name="CustomerTypeCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Title" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProfileName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ProfileShortName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AbbreviatedName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DayOfBirth" Type="Int32" />
+          <Property Name="MonthOfBirth" Type="Int32" />
+          <Property Name="YearOfBirth" Type="Int32" />
+          <Property Name="Age" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SAPPhone" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="CountryCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SaleOfficeCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ProvinceId" Type="Guid" />
+          <Property Name="DistrictId" Type="Guid" />
+          <Property Name="WardId" Type="Guid" />
+          <Property Name="Note" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="VisitDate" Type="DateTime" Precision="3" />
+          <Property Name="Actived" Type="Boolean" />
+          <Property Name="ImageUrl" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CreateByEmployee" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CreateAtCompany" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateAtSaleOrg" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateBy" Type="Guid" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="LastEditBy" Type="Guid" />
+          <Property Name="LastEditTime" Type="DateTime" Precision="3" />
+          <Property Name="CustomerAccountGroupCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerGroupCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentTermCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerAccountAssignmentGroupCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CashMgmtGroupCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReconcileAccountCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerSourceCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TaxNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Website" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerCareerCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AddressTypeCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectCode" Type="Int32" />
+          <Property Name="ProjectStatusCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="QualificationLevelCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ProjectSourceCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceProfileId" Type="Guid" />
+          <Property Name="ContractValue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Text1" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Text2" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Text3" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Text4" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Text5" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist2" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist3" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist4" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist5" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist7" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist8" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist9" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dropdownlist10" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Date1" Type="DateTime" Precision="3" />
+          <Property Name="Date2" Type="DateTime" Precision="3" />
+          <Property Name="Date3" Type="DateTime" Precision="3" />
+          <Property Name="Date4" Type="DateTime" Precision="3" />
+          <Property Name="Date5" Type="DateTime" Precision="3" />
+          <Property Name="ProjectLocation" Type="String" MaxLength="4000" FixedLength="false" Unicode="true" />
+          <Property Name="IsAnCuongAccessory" Type="Boolean" />
+          <Property Name="Laminate" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="MFC" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Veneer" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Flooring" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Accessories" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="KitchenEquipment" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="OtherBrand" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="HandoverFurniture" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CampaignModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CampaignCode" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CampaignName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContentId" Type="Guid" Nullable="false" />
+          <Property Name="TargetGroupId" Type="Guid" Nullable="false" />
+          <Property Name="SaleOrg" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Guid" />
+          <Property Name="isImmediately" Type="Boolean" />
+          <Property Name="ScheduledToStart" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="Guid" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="LastEditBy" Type="Guid" />
+          <Property Name="LastEditTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="CatalogModel" Relationship="SendMailCalendarEntities1.FK_CampaignModel_CatalogModel" FromRole="CampaignModel" ToRole="CatalogModel" />
+        </EntityType>
+        <EntityType Name="ContentModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ContentCode" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ContentName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FromEmailAccountId" Type="Guid" Nullable="false" />
+          <Property Name="SenderName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SaleOrg" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Subject" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Content" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Actived" Type="Boolean" />
+          <Property Name="CreateBy" Type="Guid" />
+          <Property Name="CreateTime" Type="DateTime" Precision="3" />
+          <Property Name="LastEditBy" Type="Guid" />
+          <Property Name="LastEditTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="EmailAccountModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ServerProviderId" Type="Guid" />
+          <Property Name="SenderName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ContactName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Account" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Signature" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsSender" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="MailServerProviderModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Protocol" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IncomingHost" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IncomingPort" Type="Int32" />
+          <Property Name="OutgoingHost" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="OutgoingPort" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MemberOfTargetGroupModel">
+          <Key>
+            <PropertyRef Name="TargetGroupId" />
+            <PropertyRef Name="ProfileId" />
+          </Key>
+          <Property Name="TargetGroupId" Type="Guid" Nullable="false" />
+          <Property Name="ProfileId" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="TargetGroupModel" Relationship="SendMailCalendarEntities1.FK_MemberOfTagetGroupModel_TargetGroupModel" FromRole="MemberOfTargetGroupModel" ToRole="TargetGroupModel" />
+        </EntityType>
+        <EntityType Name="SendMailCalendarModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="CampaignId" Type="Guid" />
+          <Property Name="ToProfileId" Type="Guid" />
+          <Property Name="ToEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="IsSend" Type="Boolean" />
+          <Property Name="Param" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsBounce" Type="Boolean" />
+          <Property Name="IsOpened" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="TargetGroupModel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="TargetGroupCode" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TargetGroupName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateBy" Type="Guid" Nullable="false" />
+          <Property Name="CreateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LastEditBy" Type="Guid" />
+          <Property Name="Actived" Type="Boolean" Nullable="false" />
+          <Property Name="LastEditTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="MemberOfTargetGroupModels" Relationship="SendMailCalendarEntities1.FK_MemberOfTagetGroupModel_TargetGroupModel" FromRole="TargetGroupModel" ToRole="MemberOfTargetGroupModel" />
+        </EntityType>
+        <EntityType Name="CatalogModel">
+          <Key>
+            <PropertyRef Name="CatalogId" />
+          </Key>
+          <Property Name="CatalogId" Type="Guid" Nullable="false" />
+          <Property Name="CatalogTypeCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CatalogCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CatalogText_en" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="CatalogText_vi" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="OrderIndex" Type="Int32" />
+          <Property Name="Actived" Type="Boolean" />
+          <NavigationProperty Name="CampaignModels" Relationship="SendMailCalendarEntities1.FK_CampaignModel_CatalogModel" FromRole="CatalogModel" ToRole="CampaignModel" />
+        </EntityType>
+        <Association Name="FK_CampaignModel_CatalogModel">
+          <End Type="SendMailCalendarEntities1.CatalogModel" Role="CatalogModel" Multiplicity="0..1" />
+          <End Type="SendMailCalendarEntities1.CampaignModel" Role="CampaignModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CatalogModel">
+              <PropertyRef Name="CatalogId" />
+            </Principal>
+            <Dependent Role="CampaignModel">
+              <PropertyRef Name="Status" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_MemberOfTagetGroupModel_TargetGroupModel">
+          <End Type="SendMailCalendarEntities1.TargetGroupModel" Role="TargetGroupModel" Multiplicity="1" />
+          <End Type="SendMailCalendarEntities1.MemberOfTargetGroupModel" Role="MemberOfTargetGroupModel" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TargetGroupModel">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MemberOfTargetGroupModel">
+              <PropertyRef Name="TargetGroupId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="Unfollow">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SendMailCalendarEntities1StoreContainer" CdmEntityContainer="SendMailCalendarEntities">
+          <EntitySetMapping Name="ProfileModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.ProfileModel">
+              <MappingFragment StoreEntitySet="ProfileModel">
+                <ScalarProperty Name="HandoverFurniture" ColumnName="HandoverFurniture" />
+                <ScalarProperty Name="OtherBrand" ColumnName="OtherBrand" />
+                <ScalarProperty Name="KitchenEquipment" ColumnName="KitchenEquipment" />
+                <ScalarProperty Name="Accessories" ColumnName="Accessories" />
+                <ScalarProperty Name="Flooring" ColumnName="Flooring" />
+                <ScalarProperty Name="Veneer" ColumnName="Veneer" />
+                <ScalarProperty Name="MFC" ColumnName="MFC" />
+                <ScalarProperty Name="Laminate" ColumnName="Laminate" />
+                <ScalarProperty Name="IsAnCuongAccessory" ColumnName="IsAnCuongAccessory" />
+                <ScalarProperty Name="ProjectLocation" ColumnName="ProjectLocation" />
+                <ScalarProperty Name="Date5" ColumnName="Date5" />
+                <ScalarProperty Name="Date4" ColumnName="Date4" />
+                <ScalarProperty Name="Date3" ColumnName="Date3" />
+                <ScalarProperty Name="Date2" ColumnName="Date2" />
+                <ScalarProperty Name="Date1" ColumnName="Date1" />
+                <ScalarProperty Name="Dropdownlist10" ColumnName="Dropdownlist10" />
+                <ScalarProperty Name="Dropdownlist9" ColumnName="Dropdownlist9" />
+                <ScalarProperty Name="Dropdownlist8" ColumnName="Dropdownlist8" />
+                <ScalarProperty Name="Dropdownlist7" ColumnName="Dropdownlist7" />
+                <ScalarProperty Name="Dropdownlist6" ColumnName="Dropdownlist6" />
+                <ScalarProperty Name="Dropdownlist5" ColumnName="Dropdownlist5" />
+                <ScalarProperty Name="Dropdownlist4" ColumnName="Dropdownlist4" />
+                <ScalarProperty Name="Dropdownlist3" ColumnName="Dropdownlist3" />
+                <ScalarProperty Name="Dropdownlist2" ColumnName="Dropdownlist2" />
+                <ScalarProperty Name="Dropdownlist1" ColumnName="Dropdownlist1" />
+                <ScalarProperty Name="Text5" ColumnName="Text5" />
+                <ScalarProperty Name="Text4" ColumnName="Text4" />
+                <ScalarProperty Name="Text3" ColumnName="Text3" />
+                <ScalarProperty Name="Text2" ColumnName="Text2" />
+                <ScalarProperty Name="Text1" ColumnName="Text1" />
+                <ScalarProperty Name="ContractValue" ColumnName="ContractValue" />
+                <ScalarProperty Name="ReferenceProfileId" ColumnName="ReferenceProfileId" />
+                <ScalarProperty Name="ProjectSourceCode" ColumnName="ProjectSourceCode" />
+                <ScalarProperty Name="QualificationLevelCode" ColumnName="QualificationLevelCode" />
+                <ScalarProperty Name="ProjectStatusCode" ColumnName="ProjectStatusCode" />
+                <ScalarProperty Name="ProjectCode" ColumnName="ProjectCode" />
+                <ScalarProperty Name="AddressTypeCode" ColumnName="AddressTypeCode" />
+                <ScalarProperty Name="CompanyNumber" ColumnName="CompanyNumber" />
+                <ScalarProperty Name="CustomerCareerCode" ColumnName="CustomerCareerCode" />
+                <ScalarProperty Name="Website" ColumnName="Website" />
+                <ScalarProperty Name="TaxNo" ColumnName="TaxNo" />
+                <ScalarProperty Name="CustomerSourceCode" ColumnName="CustomerSourceCode" />
+                <ScalarProperty Name="ReconcileAccountCode" ColumnName="ReconcileAccountCode" />
+                <ScalarProperty Name="CashMgmtGroupCode" ColumnName="CashMgmtGroupCode" />
+                <ScalarProperty Name="CustomerAccountAssignmentGroupCode" ColumnName="CustomerAccountAssignmentGroupCode" />
+                <ScalarProperty Name="PaymentTermCode" ColumnName="PaymentTermCode" />
+                <ScalarProperty Name="CustomerGroupCode" ColumnName="CustomerGroupCode" />
+                <ScalarProperty Name="CustomerAccountGroupCode" ColumnName="CustomerAccountGroupCode" />
+                <ScalarProperty Name="LastEditTime" ColumnName="LastEditTime" />
+                <ScalarProperty Name="LastEditBy" ColumnName="LastEditBy" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="CreateAtSaleOrg" ColumnName="CreateAtSaleOrg" />
+                <ScalarProperty Name="CreateAtCompany" ColumnName="CreateAtCompany" />
+                <ScalarProperty Name="CreateByEmployee" ColumnName="CreateByEmployee" />
+                <ScalarProperty Name="ImageUrl" ColumnName="ImageUrl" />
+                <ScalarProperty Name="Actived" ColumnName="Actived" />
+                <ScalarProperty Name="VisitDate" ColumnName="VisitDate" />
+                <ScalarProperty Name="Note" ColumnName="Note" />
+                <ScalarProperty Name="WardId" ColumnName="WardId" />
+                <ScalarProperty Name="DistrictId" ColumnName="DistrictId" />
+                <ScalarProperty Name="ProvinceId" ColumnName="ProvinceId" />
+                <ScalarProperty Name="SaleOfficeCode" ColumnName="SaleOfficeCode" />
+                <ScalarProperty Name="CountryCode" ColumnName="CountryCode" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="SAPPhone" ColumnName="SAPPhone" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Age" ColumnName="Age" />
+                <ScalarProperty Name="YearOfBirth" ColumnName="YearOfBirth" />
+                <ScalarProperty Name="MonthOfBirth" ColumnName="MonthOfBirth" />
+                <ScalarProperty Name="DayOfBirth" ColumnName="DayOfBirth" />
+                <ScalarProperty Name="AbbreviatedName" ColumnName="AbbreviatedName" />
+                <ScalarProperty Name="ProfileShortName" ColumnName="ProfileShortName" />
+                <ScalarProperty Name="ProfileName" ColumnName="ProfileName" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="CustomerTypeCode" ColumnName="CustomerTypeCode" />
+                <ScalarProperty Name="isForeignCustomer" ColumnName="isForeignCustomer" />
+                <ScalarProperty Name="ProfileForeignCode" ColumnName="ProfileForeignCode" />
+                <ScalarProperty Name="ProfileCode" ColumnName="ProfileCode" />
+                <ScalarProperty Name="ProfileId" ColumnName="ProfileId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CampaignModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.CampaignModel">
+              <MappingFragment StoreEntitySet="CampaignModel">
+                <ScalarProperty Name="LastEditTime" ColumnName="LastEditTime" />
+                <ScalarProperty Name="LastEditBy" ColumnName="LastEditBy" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="ScheduledToStart" ColumnName="ScheduledToStart" />
+                <ScalarProperty Name="isImmediately" ColumnName="isImmediately" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="SaleOrg" ColumnName="SaleOrg" />
+                <ScalarProperty Name="TargetGroupId" ColumnName="TargetGroupId" />
+                <ScalarProperty Name="ContentId" ColumnName="ContentId" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="CampaignName" ColumnName="CampaignName" />
+                <ScalarProperty Name="CampaignCode" ColumnName="CampaignCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContentModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.ContentModel">
+              <MappingFragment StoreEntitySet="ContentModel">
+                <ScalarProperty Name="LastEditTime" ColumnName="LastEditTime" />
+                <ScalarProperty Name="LastEditBy" ColumnName="LastEditBy" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="Actived" ColumnName="Actived" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Subject" ColumnName="Subject" />
+                <ScalarProperty Name="SaleOrg" ColumnName="SaleOrg" />
+                <ScalarProperty Name="SenderName" ColumnName="SenderName" />
+                <ScalarProperty Name="FromEmailAccountId" ColumnName="FromEmailAccountId" />
+                <ScalarProperty Name="ContentName" ColumnName="ContentName" />
+                <ScalarProperty Name="ContentCode" ColumnName="ContentCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmailAccountModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.EmailAccountModel">
+              <MappingFragment StoreEntitySet="EmailAccountModel">
+                <ScalarProperty Name="IsSender" ColumnName="IsSender" />
+                <ScalarProperty Name="Signature" ColumnName="Signature" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Account" ColumnName="Account" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ContactName" ColumnName="ContactName" />
+                <ScalarProperty Name="SenderName" ColumnName="SenderName" />
+                <ScalarProperty Name="ServerProviderId" ColumnName="ServerProviderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MailServerProviderModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.MailServerProviderModel">
+              <MappingFragment StoreEntitySet="MailServerProviderModel">
+                <ScalarProperty Name="OutgoingPort" ColumnName="OutgoingPort" />
+                <ScalarProperty Name="OutgoingHost" ColumnName="OutgoingHost" />
+                <ScalarProperty Name="IncomingPort" ColumnName="IncomingPort" />
+                <ScalarProperty Name="IncomingHost" ColumnName="IncomingHost" />
+                <ScalarProperty Name="Protocol" ColumnName="Protocol" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MemberOfTargetGroupModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.MemberOfTargetGroupModel">
+              <MappingFragment StoreEntitySet="MemberOfTargetGroupModel">
+                <ScalarProperty Name="ProfileId" ColumnName="ProfileId" />
+                <ScalarProperty Name="TargetGroupId" ColumnName="TargetGroupId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SendMailCalendarModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.SendMailCalendarModel">
+              <MappingFragment StoreEntitySet="SendMailCalendarModel">
+                <ScalarProperty Name="IsOpened" ColumnName="IsOpened" />
+                <ScalarProperty Name="IsBounce" ColumnName="IsBounce" />
+                <ScalarProperty Name="Param" ColumnName="Param" />
+                <ScalarProperty Name="IsSend" ColumnName="IsSend" />
+                <ScalarProperty Name="ToEmail" ColumnName="ToEmail" />
+                <ScalarProperty Name="ToProfileId" ColumnName="ToProfileId" />
+                <ScalarProperty Name="CampaignId" ColumnName="CampaignId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TargetGroupModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.TargetGroupModel">
+              <MappingFragment StoreEntitySet="TargetGroupModel">
+                <ScalarProperty Name="LastEditTime" ColumnName="LastEditTime" />
+                <ScalarProperty Name="Actived" ColumnName="Actived" />
+                <ScalarProperty Name="LastEditBy" ColumnName="LastEditBy" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="TargetGroupName" ColumnName="TargetGroupName" />
+                <ScalarProperty Name="TargetGroupCode" ColumnName="TargetGroupCode" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CatalogModels">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.CatalogModel">
+              <MappingFragment StoreEntitySet="CatalogModel">
+                <ScalarProperty Name="Actived" ColumnName="Actived" />
+                <ScalarProperty Name="OrderIndex" ColumnName="OrderIndex" />
+                <ScalarProperty Name="CatalogText_vi" ColumnName="CatalogText_vi" />
+                <ScalarProperty Name="CatalogText_en" ColumnName="CatalogText_en" />
+                <ScalarProperty Name="CatalogCode" ColumnName="CatalogCode" />
+                <ScalarProperty Name="CatalogTypeCode" ColumnName="CatalogTypeCode" />
+                <ScalarProperty Name="CatalogId" ColumnName="CatalogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Unfollows">
+            <EntityTypeMapping TypeName="SendMailCalendarEntities1.Unfollow">
+              <MappingFragment StoreEntitySet="Unfollow">
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

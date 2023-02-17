@@ -1,0 +1,44 @@
+﻿@model ProfileViewModel
+<div class="modal fade" id="divContactPopup" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">THÔNG TIN LIÊN HỆ</h4>
+            </div>
+
+            <div class="form-horizontal">
+                <div class="modal-body">
+                    <div class="content">
+                        <div class="form-horizontal">
+                            <div class="panel-group">
+                                <div class="panel panel-default">
+                                    <div class="panel-body" style="overflow-x:scroll;">
+                                        <table class="table table-bordered table-striped table-hover no-footer">
+                                            <thead class="isd-table-header">
+                                                <tr>
+                                                    <th class="text-center isd-table-th-stt contentProfileContact-hidden">@LanguageResource.NumberIndex</th>
+                                                    <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                                                    <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.DayOfBirth)</th>
+                                                    <th>@Html.DisplayNameFor(p => p.Phone)</th>
+                                                    <th>@Html.DisplayNameFor(p => p.Email)</th>
+                                                    <th>@Html.DisplayNameFor(p => p.ProfileContactPosition)</th>
+                                                    <th>@Html.DisplayNameFor(p => p.DepartmentCode)</th>
+                                                    <th class="contentProfileContact-hidden">@LanguageResource.PersonInCharge</th>
+                                                    <th class="text-center contentProfileContact-hidden">@Html.DisplayNameFor(p => p.IsMain)</th>
+                                                    <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.Actived)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="contact-information"></tbody>
+                                            <tfoot></tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

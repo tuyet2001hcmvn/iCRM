@@ -1,0 +1,114 @@
+﻿@model FaceCheckInOutSearchViewModel
+@{
+    ViewBag.Title = LanguageResource.FaceCheckInOut;
+    string CurrentController = ConstController.FaceCheckInOut;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+        @HtmlExtensions.ExportButton(CurrentArea, CurrentController)
+        @HtmlExtensions.ImportButton(CurrentArea, CurrentController)
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.FromDate)
+                                    </div>
+                                    <div class="col-md-8 pl-0">
+                                        @Html.RequiredTextboxFor(p => p.FromDate, "{0:yyyy-MM-dd}", new { type = "date", @Value = ViewBag.FromDate.ToString("yyyy-MM-dd") })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ToDate)
+                                    </div>
+                                    <div class="col-md-8 pl-0">
+                                        @Html.RequiredTextboxFor(p => p.ToDate, "{0:yyyy-MM-dd}", new { type = "date", @Value = ViewBag.ToDate.ToString("yyyy-MM-dd") })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.FaceType)
+                                    </div>
+                                    <div class="col-md-8 pl-0">
+                                        @{
+                                            var listType = new List<SelectListItem>()
+                                                                                                    {
+                                                new SelectListItem(){Text= LanguageResource.Face_All,
+                                                                      Value="0,1,2"  },
+                                                new SelectListItem(){ Text = LanguageResource.Face_Employee,
+                                                                       Value ="0"},
+                                                new SelectListItem(){ Text = LanguageResource.Face_Stranger,
+                                                                       Value ="2"}
+                                            };
+                                        }
+                                        @Html.DropDownList("FaceType", new SelectList(listType, "Value", "Text", ""), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section scripts {
+    <script>
+
+        //load default and set event
+        $(document).ready(function () {
+            ISD.SearchInitial("@CurrentUrl");
+            ISD.ShowMessage(window.location.href);
+        });
+
+         // event lưu ảnh
+        $('body').on("click", '#btn-SaveImg', function () {
+            //var btn = $(this);
+            //window.location.href = '';
+
+            //var a = document.createElement('a');
+            //a.href = "https://static.hanet.ai/face/upload/C21025B071/2021/04/13/18ad03ff-40ef-4788-a8b7-32293b7f47f0.jpg";
+            //a.download = "favicon.png";
+
+        })
+    </script>
+}

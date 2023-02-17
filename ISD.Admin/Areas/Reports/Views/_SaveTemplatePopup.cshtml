@@ -1,0 +1,53 @@
+﻿<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header bg-primary">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">×</span></button>
+            <h4 class="modal-title">Lưu mẫu báo cáo</h4>
+        </div>
+        <div class="form-horizontal">
+            <div class="modal-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+                {
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="label-wrapper"><label class="control-label" for="TemplateName">Tên mẫu báo cáo</label></div>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextBox("TemplateName", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                    if (ViewBag.OrderBy != null)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label" for="IsDefault">Sắp xếp theo</label></div>
+                            </div>
+                            <div class="col-md-5">
+                                @Html.DropDownList("OrderBy", null, LanguageResource.Dropdownlist_Choose, new { @class = "font-control with-search" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownList("TypeSort", new List<SelectListItem>()
+                                {
+                                new SelectListItem(){Text = "Tăng dần", Value = "ASC"},
+                                new SelectListItem(){Text = "Giảm dần", Value = "DESC"}
+                                }, new { @class = "font-control with-search" })
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <div class="label-wrapper"><label class="control-label" for="IsDefault">Mặc định</label></div>
+                        </div>
+                        <div class="col-md-8">
+                            @Html.CheckBox("IsDefault", new { value = "false", style = "width:20px; height:20px;" })
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+                <button type="button" id="btn-popup-save" class="btn btn-primary">@LanguageResource.Btn_Save</button>
+            </div>
+        </div>
+    </div>
+</div>

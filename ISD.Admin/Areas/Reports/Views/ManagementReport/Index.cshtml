@@ -1,0 +1,15 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_ManagementReport;
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left"> @ViewBag.Title</h1>
+</div>
+
+<div class="content">
+    <div id="divReport">
+        @Html.Action("DocumentViewerPartial",new { ProfileCode = (int)ViewBag.ProfileCode })
+    </div>
+</div>

@@ -1,0 +1,178 @@
+﻿
+@using Newtonsoft.Json;
+@model IEnumerable<ProfileGroupReportViewModel>
+@{
+    var pivotSetting = (List<FieldSettingModel>)ViewBag.PivotSetting;
+    var search = (ProfileGroupSearchModel)ViewBag.Search;
+    var layoutConfigs = (string)ViewBag.LayoutConfigs;
+}
+@Html.DevExpress().PivotGrid(settings =>
+{
+    settings.Name = "ProfileGroupPivotGrid";
+    settings.CallbackRouteValues = new { Controller = "ProfileGroupReport", Action = "ProfileGroupPivotGridPartial", jsonReq = JsonConvert.SerializeObject(search) };
+    settings.Width = Unit.Percentage(100);
+    settings.OptionsPager.RowsPerPage = 20;
+    settings.OptionsPager.PageSizeItemSettings.Visible = true;
+    settings.OptionsCustomization.AllowDrag = true;
+    settings.OptionsCustomization.AllowDragInCustomizationForm = true;
+    settings.OptionsCustomization.AllowSort = true;
+    settings.CustomizationFieldsLeft = 600;
+    settings.CustomizationFieldsTop = 400;
+
+
+    if (string.IsNullOrEmpty(layoutConfigs))
+    {
+        settings.AfterPerformCallback = (sender, e) =>
+        {
+            List<FieldSettingModel> fieldSettingList = new List<FieldSettingModel>();
+            ASPxPivotGrid PivotGrid = sender as ASPxPivotGrid;
+            var listField = PivotGrid.Fields;
+            foreach (PivotGridField field in listField)
+            {
+                FieldSettingModel fieldSetting = new FieldSettingModel();
+                fieldSetting.Caption = field.Caption;
+                fieldSetting.AreaIndex = field.AreaIndex;
+                fieldSetting.FieldName = field.FieldName;
+                if (field.Area == PivotArea.RowArea)
+                {
+                    fieldSetting.PivotArea = 0;
+
+                }
+                else
+                {
+                    if (field.Area == PivotArea.ColumnArea)
+                    {
+                        fieldSetting.PivotArea = 1;
+                    }
+                    else
+                    {
+                        if (field.Area == PivotArea.FilterArea)
+                        {
+                            fieldSetting.PivotArea = 2;
+                        }
+                        else
+                        {
+                            fieldSetting.PivotArea = 3;
+                        }
+                    }
+                }
+                if (field.ValueFormat.FormatType == FormatType.Numeric || field.ValueFormat.FormatType == FormatType.DateTime)
+                {
+                    fieldSetting.CellFormat_FormatString = field.ValueFormat.FormatString;
+                    fieldSetting.CellFormat_FormatType = field.ValueFormat.FormatType.ToString();
+                }
+                fieldSetting.Visible = field.Visible;
+                fieldSettingList.Add(fieldSetting);
+            }
+            Session[CurrentUser.AccountId + "Layout"] = fieldSettingList;
+            Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+        };
+    }
+    else
+    {
+        settings.PreRender = (sender, e) =>
+        {
+            MVCxPivotGrid PivotGrid = sender as MVCxPivotGrid;
+            //PivotGrid.LoadLayoutFromString(layoutConfigs);
+            Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+        };
+    }
+
+    if (pivotSetting != null && pivotSetting.Count > 0)
+    {
+        foreach (var fieldSetting in pivotSetting)
+        {
+            settings.Fields.Add(field =>
+            {
+                if (fieldSetting.PivotArea == 0)
+                {
+                    field.Area = PivotArea.RowArea;
+                }
+                if (fieldSetting.PivotArea == 1)
+                {
+                    field.Area = PivotArea.ColumnArea;
+                }
+                if (fieldSetting.PivotArea == 2)
+                {
+                    if (fieldSetting.AreaIndex > 10)
+                    {
+                        field.Visible = false;
+                    }
+                    field.Area = PivotArea.FilterArea;
+                }
+                if (fieldSetting.PivotArea == 3)
+                {
+                    field.Area = PivotArea.DataArea;
+                }
+                field.FieldName = fieldSetting.FieldName;
+                field.Caption = fieldSetting.Caption;
+                field.AreaIndex = fieldSetting.AreaIndex.Value;
+                if (fieldSetting.CellFormat_FormatType == "DateTime")
+                {
+                    field.ValueFormat.FormatType = FormatType.DateTime;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.DateTime;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                }
+                if (fieldSetting.CellFormat_FormatType == "Numeric")
+                {
+                    field.ValueFormat.FormatType = FormatType.Numeric;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.Numeric;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+                    field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                }
+                field.Visible = fieldSetting.Visible.Value;
+                field.SortOrder = PivotSortOrder.Descending;
+
+            });
+        }
+        settings.Fields["Nhóm khách hàng"].SortBySummaryInfo.Field = settings.Fields["Số lượng khách hàng"];
+    }
+    else // default
+    {
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "NumberOfProfiles";
+            field.Caption = "Số lượng khách hàng";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n0}";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n0}";
+            field.AreaIndex = 0;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.AreaIndex = 0;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ProfileGroupName";
+            field.Caption = "Nhóm khách hàng";
+            field.AreaIndex = 0;
+            field.SortByAttribute = "NumberOfProfiles";
+            field.SortOrder = PivotSortOrder.Descending;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.DataArea;
+            field.FieldName = "PercentOfProfiles";
+            field.Caption = "Tỉ lệ (%)";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:n2}";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:n2}";
+            field.AreaIndex = 0;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.AreaIndex = 1;
+        });
+        settings.Fields["Nhóm khách hàng"].SortBySummaryInfo.Field = settings.Fields["Số lượng khách hàng"];
+    }
+
+}).Bind(Model).GetHtml()
+
+
+

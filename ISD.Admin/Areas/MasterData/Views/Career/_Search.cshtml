@@ -1,0 +1,35 @@
+﻿@model IEnumerable<CareerModel>
+@{
+    string CurrentController = ConstController.Career;
+
+    string CurrentArea = ConstArea.MasterData;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(c => c.CareerCode)</th>
+            <th>@Html.DisplayNameFor(c => c.CareerName)</th>
+            <th class="text-center">@Html.DisplayNameFor(c => c.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(c => item.CareerCode)</td>
+                <td>@Html.DisplayFor(c => item.CareerName)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.CareerId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ProductViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="specificationsList[@k].STT" value="@i">
+        <input type="hidden" name="specificationsList[@k].SpecificationsId" value="@item.SpecificationsId" />
+        <input type="hidden" name="specificationsList[@k].SpecificationsName" value="@item.SpecificationsName" />
+        <input type="hidden" name="specificationsList[@k].SpecificationsDescription" value="@item.SpecificationsDescription" />
+
+        <input type="hidden" name="specificationsList[@k].ProductCode" value="@item.ProductCode" />
+        <input type="hidden" name="specificationsList[@k].ProductName" value="@item.ProductName" />
+        <input type="hidden" name="specificationsList[@k].ERPProductCode" value="@item.ERPProductCode" />
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @item.SpecificationsName
+            </td>
+            <td>
+                @item.SpecificationsDescription
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-product" data-id="@i" data-row="2">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

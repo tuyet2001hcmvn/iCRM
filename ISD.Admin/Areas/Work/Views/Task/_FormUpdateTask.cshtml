@@ -1,0 +1,39 @@
+﻿@model TaskViewModel
+
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">
+        @Html.Raw(ViewBag.CommentTitle)
+    </h4>
+</div>
+<div class="modal-body">
+    <div id="divAlertWarningTask" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+        <div class="alert-message">
+        </div>
+    </div>
+    <div class="content">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmUpdateTask" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.Hidden("Type", (string)ViewBag.Type)
+            @Html.Hidden("NextColumnName", (string)ViewBag.NextColumnName)
+            @Html.Hidden("isInPopup", true)
+
+            @Html.Partial("_Edit", Model)
+        }
+        <div class="text-right">
+            <div><i>@string.Format("Được tạo bởi {0} lúc {1: dd/MM/yyyy HH:mm}", Model.CreateByFullName, Model.CreateTime)</i></div>
+            @if (!string.IsNullOrEmpty(Model.LastEditByFullName) && Model.LastEditTime != null)
+            {
+                <div><i>@string.Format("Được cập nhật bởi {0} lúc {1: dd/MM/yyyy HH:mm}", Model.LastEditByFullName, Model.LastEditTime)</i></div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary btn-save-task">@LanguageResource.Btn_Save</button>
+</div>
+

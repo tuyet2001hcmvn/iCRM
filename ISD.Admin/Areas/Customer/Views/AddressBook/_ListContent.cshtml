@@ -1,0 +1,39 @@
+﻿@model IEnumerable<AddressBookViewModel>
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.AddressBook;
+
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.AddressTypeName)</td>
+            <td>@Html.DisplayFor(p => item.CountryName)</td>
+            <td>@item.Address@item.WardName@item.DistrictName@item.ProvinceName</td>
+            <td>@Html.DisplayFor(p => item.Note)</td>
+            <td class="text-center">
+                @HtmlExtensions.ActivedIcon(item.isMain, true)
+            </td>
+            <td>@Html.DisplayFor(p => item.CreateUser)</td>
+            <td>@Html.DisplayFor(p => item.CreateTime)</td>
+            <td class="text-center">
+                @if (item.isMain != true)
+                {
+                    <a class="btn btn-default btn-edit" data-id="@item.AddressBookId"><i class="fa fa-pencil"></i> Sửa</a>
+                    <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.AddressBookId" data-item-name="@item.Address" data-delete-success-call-back="ReloadAddressBookList"><i class="fa fa-trash-o"></i> Xóa</a>
+                }
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="9" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ContactDetailViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="detailList[@k].ContactDetailId" value="@item.ContactDetailId" />
+        <input type="hidden" name="detailList[@k].Title" value="@item.Title" />
+        <input type="hidden" name="detailList[@k].DisplayContent" value="@item.DisplayPhone" />
+        <input type="hidden" name="detailList[@k].Content" value="@item.Phone" />
+        <input type="hidden" name="detailList[@k].OrderIndex" value="@item.OrderIndex" />
+
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @item.Title
+            </td>
+            <td>
+                @item.Phone
+            </td>
+            <td>
+                @item.DisplayPhone
+            </td>
+            <td>
+                @item.OrderIndex
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-detail" data-id="@item.ContactDetailId">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

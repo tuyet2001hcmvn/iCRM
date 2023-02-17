@@ -1,0 +1,69 @@
+﻿@model IEnumerable<StockReceivingViewModel>
+@{
+    string CurrentController = ConstController.StockReceiving;
+
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    bool isHasPermission = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Delete);
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.StockReceivingCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileId)</th>
+            <th>@Html.DisplayNameFor(p => p.StoreId)</th>
+            <th>@Html.DisplayNameFor(p => p.CompanyId)</th>
+            <th>@Html.DisplayNameFor(p => p.DocumentDate)</th>
+            <th>@Html.DisplayNameFor(p => p.SalesEmployeeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.Note)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center isd-table-th-stt">@i</td>
+                <td class="text-center">
+                    <a href="~/@CurrentUrl/View/@item.StockReceivingId"> @Html.DisplayFor(p => item.StockReceivingCode)</a>
+                </td>
+                <td><a href="~/@CurrentUrl/View/@item.StockReceivingId">@Html.DisplayFor(p => item.ProfileName)</a></td>
+                <td>@Html.DisplayFor(p => item.StoreName)</td>
+                <td>@Html.DisplayFor(p => item.CompanyName)</td>
+                <td class="text-center">
+                    @if (item.DocumentDate != null)
+                    {
+                        <span>@item.DocumentDate.Value.ToString("dd/MM/yyyy")</span>
+                    }
+                </td>
+                <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                <td>@Html.DisplayFor(p => item.Note)</td>
+                <td class="text-center">
+                    @if (item.CreateTime != null)
+                    {
+                        <span>@item.CreateTime.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                    }
+                </td>
+                <td class="text-center">
+                    @HtmlExtensions.ViewButton(CurrentArea, CurrentController, item.StockReceivingId)
+                    @*@if (isHasPermission && item.isDeleted != true)
+                    {
+                        <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.StockReceivingId" data-item-name="Mã phiếu nhập @item.StockReceivingCode" onclick="$(this).button('loading')">
+                            <i class="fa fa-trash-o"></i> @LanguageResource.Btn_Cancel
+                        </a>
+                    }*@
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+

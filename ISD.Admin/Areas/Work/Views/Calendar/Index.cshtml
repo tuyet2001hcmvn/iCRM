@@ -1,0 +1,482 @@
+﻿@model TaskSearchViewModel
+@{
+    ViewBag.Title = LanguageResource.MyCalendar;
+    var TicketList = (List<WorkFlowViewModel>)ViewBag.TicketList;
+    //var ActivitiesList = (List<WorkFlowViewModel>)ViewBag.ActivitiesList;
+    var MissionList = (List<WorkFlowViewModel>)ViewBag.MissionList;
+    var BookingVisitList = (List<WorkFlowViewModel>)ViewBag.BookingVisitList;
+    var THKHList = (List<WorkFlowViewModel>)ViewBag.THKHList;
+    var GTBList = (List<WorkFlowViewModel>)ViewBag.GTBList;
+    var processLst = (List<TaskStatusDropdownList>)ViewBag.TaskProcessCode;
+}
+
+@section head {
+    <link href="~/Content/Calendar/fullcalendar.min.css" rel="stylesheet" />
+    <link href="~/Content/Calendar/fullcalendar.print.min.css" rel="stylesheet" media="print" />
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script src="~/ckfinder/ckfinder.js"></script>
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <a class="btn btn-primary btn-search-calendar dropdown-toggle" data-toggle="dropdown">
+            <i class="fa fa-filter"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-filter dropdown-menu-right mr-15">
+            @if (MissionList != null && MissionList.Count > 0)
+            {
+                <li class="display-inline">
+                    <h5>@ViewBag.MissionTitle</h5>
+                    <span class="checkbox-all">
+                        <input type="checkbox" class="type-mission-all" checked />
+                    </span>
+                </li>
+                foreach (var item in MissionList)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" class="type-mission" name="type-checkbox" data-id="@item.WorkFlowId" checked />
+                            <span class="typeName-checkbox">@item.WorkFlowName</span>
+                        </label>
+                    </li>
+                }
+            }
+            @if (BookingVisitList != null && BookingVisitList.Count > 0)
+            {
+                <li class="display-inline">
+                    <h5>@ViewBag.BookingVisitTitle</h5>
+                    <span class="checkbox-all">
+                        <input type="checkbox" class="type-booking-visit-all" checked />
+                    </span>
+                </li>
+                foreach (var item in BookingVisitList)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" class="type-booking-visit" name="type-checkbox" data-id="@item.WorkFlowId" checked />
+                            <span class="typeName-checkbox">@item.WorkFlowName</span>
+                        </label>
+                    </li>
+                }
+            }
+            @if (THKHList != null && THKHList.Count > 0)
+            {
+                <li class="divider"></li>
+                <li class="display-inline">
+                    <h5>@ViewBag.ActivitiesTitle</h5>
+                    <span class="checkbox-all">
+                        <input type="checkbox" class="type-THKH-all" checked />
+                    </span>
+                </li>
+                foreach (var item in THKHList)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" class="type-THKH" name="type-checkbox" data-id="@item.WorkFlowId" checked />
+                            <span class="typeName-checkbox">@item.WorkFlowName</span>
+                        </label>
+                    </li>
+                }
+            }
+            @if (TicketList != null && TicketList.Count > 0)
+            {
+                <li class="divider"></li>
+                <li class="display-inline">
+                    <h5>@ViewBag.TicketTitle</h5>
+                    <span class="checkbox-all">
+                        <input type="checkbox" class="type-ticket-all" checked />
+                    </span>
+                </li>
+                foreach (var item in TicketList)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" class="type-ticket" name="type-checkbox" data-id="@item.WorkFlowId" checked />
+                            <span class="typeName-checkbox">@item.WorkFlowName</span>
+                        </label>
+                    </li>
+                }
+            }
+            @if (GTBList != null && GTBList.Count > 0)
+            {
+                <li class="divider"></li>
+                <li class="display-inline">
+                    <h5>@ViewBag.GTBTitle</h5>
+                    <span class="checkbox-all">
+                        <input type="checkbox" class="type-GTB-all" checked />
+                    </span>
+                </li>
+                foreach (var item in GTBList)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" class="type-GTB" name="type-checkbox" data-id="@item.WorkFlowId" checked />
+                            <span class="typeName-checkbox">@item.WorkFlowName</span>
+                        </label>
+                    </li>
+                }
+            }
+            @if (processLst != null && processLst.Count > 0)
+            {
+                <li class="divider"></li>
+                foreach (var item in processLst)
+                {
+                    <li>
+                        <label>
+                            <input type="checkbox" class="statusCode" data-code="@item.StatusCode" checked />
+                            <span class="color-dropdown-filter" style="background-color: @item.StatusColor"></span>
+                            <span class="statusName-checkbox">@item.StatusName</span>
+                        </label>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+</div>
+
+<div class="content">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-calendar" data-toggle="tab" id="toggle-tab-calendar">@LanguageResource.MyCalendar</a>
+                    </li>
+                    <li>
+                        <a href="#tab-calendarGTB" data-toggle="tab" id="toggle-tab-calendarGTB">@ViewBag.EstimatedTitle</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="tab-calendar">
+                        @Html.Hidden("Type", (string)ViewBag.Type)
+                        @Html.Hidden("KanbanId", (Guid)ViewBag.KanbanId)
+                        <div id="calendar_MyWork"></div>
+                    </div>
+                    <div class="tab-pane" id="tab-calendarGTB">
+                        <div class="form-horizontal">
+                            <div class="panel-group">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        @Html.Hidden("Type_GTB", (string)ViewBag.TypeGTB)
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <div class="label-wrapper">
+                                                        <label class="control-label">@LanguageResource.CompanyId</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownList("CompanyId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    <div class="label-wrapper">
+                                                        <label class="control-label">Phòng ban</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownList("RolesCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    @Html.TooltipLabelFor(p => p.Reporter)
+                                                </div>
+                                                <div class="col-md-8 width-fixed position-relative dropdown-absolute">
+                                                    @Html.RequiredDropDownListFor(p => p.Reporter, (IEnumerable<SelectListItem>)ViewBag.ReporterList, LanguageResource.Dropdownlist_All)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-5">
+                                            <div class="form-group">
+                                                <div class="col-md-4">
+                                                    @Html.TooltipLabelFor(p => p.Assignee)
+                                                </div>
+                                                <div class="col-md-8 width-fixed position-relative dropdown-absolute">
+                                                    @Html.RequiredDropDownListFor(p => p.Assignee, (IEnumerable<SelectListItem>)ViewBag.AssigneeList, LanguageResource.Dropdownlist_All)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <div class="col-md-8 col-md-offset-5">
+                                                    <a class="btn btn-primary btn-search-calendarGTB" id="btn-calendarGTB">
+                                                        <i class="fa fa-search"></i> @LanguageResource.Btn_Search
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="calendarGTB"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="loading-modal"></div>
+
+@section components {
+    <div class="modal fade" id="popupTaskKanban" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+
+    <!--Popup ghi chú ngắn-->
+    <div class="modal fade" id="popupTaskShortNote" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title">
+                       <span id="popup-title"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="divAlertWarningTaskShortNote" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+                        <div class="alert-message">
+                        </div>
+                    </div>
+                    <div class="content">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmUpdateTaskShortNote" }))
+                        {
+                            <div class="box-body">
+                                <div>
+                                    <input id="ShortNoteTaskId" name="ShortNoteTaskId" type="hidden" value="">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!--Ghi chú ngắn-->
+                                            <div class="form-group">
+                                                <div>
+                                                    <div class="label-wrapper"><label class="control-label" for="Description">Ghi chú ngắn</label></div>
+                                                </div>
+                                                <div>
+                                                    <textarea class="form-control" cols="20" id="ShortNote" name="ShortNote" rows="4"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-save-short-note">Lưu</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--Popup tạo task theo lịch-->
+    <div class="modal fade" id="popupCreateNewTask" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal">×</button>
+                    <h4 class="modal-title">
+                        <span id="popup-title"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div id="divAlertWarningTaskShortNote" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+                        <div class="alert-message">
+                        </div>
+                    </div>
+                    <div class="content">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreateNewTask" }))
+                        {
+                            <div class="box-body">
+                                <div>
+                                    <input id="StartDate" name="StartDate" type="hidden" value="">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!--Loại task-->
+                                            <div class="form-group">
+                                                <div>
+                                                    <div class="label-wrapper"><label class="control-label" for="TaskType">Loại</label></div>
+                                                </div>
+                                                <div>
+                                                    <select class="form-control with-search" id="TaskType" name="TaskType"></select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="btn-create-new-task">Thêm mới</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <!--Calendar-->
+    <script src="~/Scripts/Calendar/moment.js"></script>
+    <script src="~/Scripts/Calendar/fullcalendar.min.js"></script>
+    <script src="~/Scripts/Calendar/Shared.js"></script>
+    <script src="~/Areas/Work/Scripts/ISD.Kanban.js"></script>
+    <script>
+        $(document).ready(function () {
+            GetListSearchCalendar();
+            GetListSearchCalendar_GTB();
+            ISD.DateTimeInitial();
+        });
+
+        $('#popupTaskKanban').on('hidden.bs.modal', function () {
+            GetListSearchCalendar();
+            GetListSearchCalendar_GTB();
+        });
+
+        $(document).on("click", ".dropdown-menu li", function (e) {
+            e.stopPropagation();
+        });
+
+        $(document).on("click", ".type-THKH-all", function () {
+            var checked = $(this).prop("checked");
+            if (checked == true) {
+                $(".type-THKH").prop("checked", true);
+            }
+            else {
+                $(".type-THKH").prop("checked", false);
+            }
+            GetListSearchCalendar();
+        });
+
+        $(document).on("click", ".type-mission-all", function () {
+            var checked = $(this).prop("checked");
+            if (checked == true) {
+                $(".type-mission").prop("checked", true);
+            }
+            else {
+                $(".type-mission").prop("checked", false);
+            }
+            GetListSearchCalendar();
+        });
+
+        $(document).on("click", ".type-booking-visit-all", function () {
+            var checked = $(this).prop("checked");
+            if (checked == true) {
+                $(".type-booking-visit").prop("checked", true);
+            }
+            else {
+                $(".type-booking-visit").prop("checked", false);
+            }
+            GetListSearchCalendar();
+        });
+
+        $(document).on("click", ".type-ticket-all", function () {
+            var checked = $(this).prop("checked");
+            if (checked == true) {
+                $(".type-ticket").prop("checked", true);
+            }
+            else {
+                $(".type-ticket").prop("checked", false);
+            }
+            GetListSearchCalendar();
+        });
+
+        $(document).on("click", ".type-GTB-all", function () {
+            var checked = $(this).prop("checked");
+            if (checked == true) {
+                $(".type-GTB").prop("checked", true);
+            }
+            else {
+                $(".type-GTB").prop("checked", false);
+            }
+            GetListSearchCalendar();
+        });
+
+        $(document).on("click", "input[name='type-checkbox']", function () {
+            GetListSearchCalendar();
+        });
+
+        $(document).on("click", ".statusCode", function () {
+            GetListSearchCalendar();
+        });
+
+        function GetListSearchCalendar() {
+            loading2();
+            var workflowList = [];
+            $.each($("input[name='type-checkbox']:checked"), function (index, item) {
+                var value = $(this).data("id");
+                workflowList.push(value);
+            });
+
+            var processCodeList = [];
+            $.each($("input[class='statusCode']:checked"), function (index, item) {
+                var value = $(this).data("code");
+                processCodeList.push(value);
+            });
+
+            $('#calendar_MyWork').fullCalendar("destroy");
+            calendarFunction_Calendar("@ViewBag.Type", "@ViewBag.KanbanId", workflowList, processCodeList);
+        }
+
+        function GetListSearchCalendar_GTB() {
+            $('#calendarGTB').fullCalendar("destroy");
+            calendarFunction_CalendarGTB();
+        }
+
+        $(document).on("click", "#toggle-tab-calendarGTB", function () {
+            GetListSearchCalendar();
+            $("#calendarGTB .fc-today-button").trigger("click");
+            $(".btn-search-calendar").addClass("hidden");
+        });
+
+        $(document).on("click", "#toggle-tab-calendar", function () {
+            GetListSearchCalendar_GTB();
+            $("#calendar_MyWork .fc-today-button").trigger("click");
+            $(".btn-search-calendar").removeClass("hidden");
+        });
+
+        $(document).on("click", "#btn-calendarGTB", function () {
+            GetListSearchCalendar_GTB();
+        });
+
+        //$(document).on("click", ".fc-next-button", function () {
+        //    loading2();
+        //});
+
+        //$(document).on("click", ".fc-prev-button", function () {
+        //    loading2();
+        //});
+    </script>
+}

@@ -1,0 +1,131 @@
+﻿@model TransferViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.TransferMaterial.ToLower();
+    string CurrentController = ConstController.StockTransfer;
+    string CurrentArea = ConstArea.Warehouse;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    //var StockRecevingDetailList = (List<StockRecevingDetailViewModel>)ViewBag.ListStockRecevingDetail;
+}
+<div class="content" style="padding-top: 0px">
+    <div class="content-header clearfix" style="padding-left: 0px">
+        @{var title = LanguageResource.Create + " " + LanguageResource.Transfer_Bill.ToLower();}
+        <h1 class="pull-left">
+            @title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right" style="margin-right: -15px">
+            @HtmlExtensions.SaveButton("btn-save-view", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.Hidden("Action", (string)ViewBag.Action)
+        <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+        <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+        <div class="panel-group" style="margin-top: 15px">
+            <div class="panel panel-body">
+                <div class="form-horizontal">
+                    @{ var stockReciveVM = new StockReceivingMasterViewModel
+                        {
+                            DocumentDate = DateTime.Now
+                        };
+                        var senderInfo = new DeliveryViewModel();
+                        if (Model != null && Model.transferSender != null)
+                        {
+                            senderInfo = Model.transferSender;
+                        }
+
+                        var transferDetail = new List<TransferDetailViewModel>();
+                        if (Model != null && Model.transferSender != null)
+                        {
+                            transferDetail = Model.transferDetail;
+                        }
+                        }
+                    @Html.Partial("~/Areas/Warehouse/Views/StockReceiving/_StockReceivingMaster.cshtml", stockReciveVM)
+                    <div class="form-group panel">
+                        @Html.Partial("~/Areas/Warehouse/Views/StockDelivery/_CatalogInfo.cshtml", senderInfo)
+                    </div>
+                    @Html.Partial("_TransferDetail", transferDetail)
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+            if ($("#Action").val() === "Copy") {
+
+            }
+            else {
+                $("select[name='CompanyId']").trigger("change");
+            }
+            
+            SearchText_ProductCode();
+            SearchText_FromStockCode();
+            SearchText_ToStockCode();
+        });
+        
+        $(document).on("change", "select[name='CompanyId']", function () {
+            var CompanyId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetStoreByCompany",
+                data: {
+                   CompanyId: CompanyId
+                },
+                success: function (jsonData) {
+                    $("#StoreId").html("");
+                    $.each(jsonData, function (index, value) {
+                        $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    $("select[name='StoreId']").trigger("change");
+                }
+            });
+        });
+
+        $(document).on("change", "select[name='StoreId']", function () {
+            var StoreId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Warehouse/Stock/GetMainStockByStore",
+                data: {
+                    StoreId: StoreId
+                },
+                success: function (jsonData) {
+                    $("input[name='FromStockId']").val(jsonData.StockId);
+                    $("input[name='FromStockCode']").val(jsonData.StockCode);
+                    $("input[name='FromStockName']").val(jsonData.StockName);
+                }
+            });
+            //Đổi chi nhánh => clear DATA đang nhập
+            $("#transferDetailList").html("<tr><td class=\"text-center\" colspan=\"7\">Vui lòng thêm sản phẩm!</td></tr>");
+        });
+
+        //chỉ cho phép nhập số
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31
+                && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+    </script>
+    <script src="~/Areas/Warehouse/Scripts/StockTransferCreate.js"></script>
+}

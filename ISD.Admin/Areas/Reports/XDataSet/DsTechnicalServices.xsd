@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DsTechnicalServices" targetNamespace="http://tempuri.org/DsTechnicalServices.xsd" xmlns:mstns="http://tempuri.org/DsTechnicalServices.xsd" xmlns="http://tempuri.org/DsTechnicalServices.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DsTechnicalServices" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="DsTechnicalServices" msprop:Generator_UserDSName="DsTechnicalServices">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Master" msprop:Generator_TableClassName="MasterDataTable" msprop:Generator_TableVarName="tableMaster" msprop:Generator_TablePropName="Master" msprop:Generator_RowDeletingName="MasterRowDeleting" msprop:Generator_RowChangingName="MasterRowChanging" msprop:Generator_RowEvHandlerName="MasterRowChangeEventHandler" msprop:Generator_RowDeletedName="MasterRowDeleted" msprop:Generator_UserTableName="Master" msprop:Generator_RowChangedName="MasterRowChanged" msprop:Generator_RowEvArgName="MasterRowChangeEvent" msprop:Generator_RowClassName="MasterRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="TaskStatus" msprop:Generator_ColumnVarNameInTable="columnTaskStatus" msprop:Generator_ColumnPropNameInRow="TaskStatus" msprop:Generator_ColumnPropNameInTable="TaskStatusColumn" msprop:Generator_UserColumnName="TaskStatus" type="xs:string" minOccurs="0" />
+              <xs:element name="RolesName" msprop:Generator_ColumnVarNameInTable="columnRolesName" msprop:Generator_ColumnPropNameInRow="RolesName" msprop:Generator_ColumnPropNameInTable="RolesNameColumn" msprop:Generator_UserColumnName="RolesName" type="xs:string" minOccurs="0" />
+              <xs:element name="ServiceTechnicalTeam" msprop:Generator_ColumnVarNameInTable="columnServiceTechnicalTeam" msprop:Generator_ColumnPropNameInRow="ServiceTechnicalTeam" msprop:Generator_ColumnPropNameInTable="ServiceTechnicalTeamColumn" msprop:Generator_UserColumnName="ServiceTechnicalTeam" type="xs:string" minOccurs="0" />
+              <xs:element name="WorkFlowName" msprop:Generator_ColumnVarNameInTable="columnWorkFlowName" msprop:Generator_ColumnPropNameInRow="WorkFlowName" msprop:Generator_ColumnPropNameInTable="WorkFlowNameColumn" msprop:Generator_UserColumnName="WorkFlowName" type="xs:string" minOccurs="0" />
+              <xs:element name="FromDate" msprop:Generator_ColumnVarNameInTable="columnFromDate" msprop:Generator_ColumnPropNameInRow="FromDate" msprop:Generator_ColumnPropNameInTable="FromDateColumn" msprop:Generator_UserColumnName="FromDate" type="xs:string" minOccurs="0" />
+              <xs:element name="ToDate" msprop:Generator_ColumnVarNameInTable="columnToDate" msprop:Generator_ColumnPropNameInRow="ToDate" msprop:Generator_ColumnPropNameInTable="ToDateColumn" msprop:Generator_UserColumnName="ToDate" type="xs:string" minOccurs="0" />
+              <xs:element name="CurrentMonthHeader" msprop:Generator_ColumnVarNameInTable="columnCurrentMonthHeader" msprop:Generator_ColumnPropNameInRow="CurrentMonthHeader" msprop:Generator_ColumnPropNameInTable="CurrentMonthHeaderColumn" msprop:Generator_UserColumnName="CurrentMonthHeader" type="xs:string" minOccurs="0" />
+              <xs:element name="LastMonthHeader" msprop:Generator_ColumnVarNameInTable="columnLastMonthHeader" msprop:Generator_ColumnPropNameInRow="LastMonthHeader" msprop:Generator_ColumnPropNameInTable="LastMonthHeaderColumn" msprop:Generator_UserColumnName="LastMonthHeader" type="xs:string" minOccurs="0" />
+              <xs:element name="LastYearHeader" msprop:Generator_ColumnVarNameInTable="columnLastYearHeader" msprop:Generator_ColumnPropNameInRow="LastYearHeader" msprop:Generator_ColumnPropNameInTable="LastYearHeaderColumn" msprop:Generator_UserColumnName="LastYearHeader" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Detail" msprop:Generator_TableClassName="DetailDataTable" msprop:Generator_TableVarName="tableDetail" msprop:Generator_TablePropName="Detail" msprop:Generator_RowDeletingName="DetailRowDeleting" msprop:Generator_RowChangingName="DetailRowChanging" msprop:Generator_RowEvHandlerName="DetailRowChangeEventHandler" msprop:Generator_RowDeletedName="DetailRowDeleted" msprop:Generator_UserTableName="Detail" msprop:Generator_RowChangedName="DetailRowChanged" msprop:Generator_RowEvArgName="DetailRowChangeEvent" msprop:Generator_RowClassName="DetailRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="WorkFlowName" msprop:Generator_ColumnVarNameInTable="columnWorkFlowName" msprop:Generator_ColumnPropNameInRow="WorkFlowName" msprop:Generator_ColumnPropNameInTable="WorkFlowNameColumn" msprop:Generator_UserColumnName="WorkFlowName" type="xs:string" minOccurs="0" />
+              <xs:element name="CurrentMonth" msprop:Generator_ColumnVarNameInTable="columnCurrentMonth" msprop:Generator_ColumnPropNameInRow="CurrentMonth" msprop:Generator_ColumnPropNameInTable="CurrentMonthColumn" msprop:Generator_UserColumnName="CurrentMonth" type="xs:string" minOccurs="0" />
+              <xs:element name="LastMonth" msprop:Generator_ColumnVarNameInTable="columnLastMonth" msprop:Generator_ColumnPropNameInRow="LastMonth" msprop:Generator_ColumnPropNameInTable="LastMonthColumn" msprop:Generator_UserColumnName="LastMonth" type="xs:string" minOccurs="0" />
+              <xs:element name="LastYear" msprop:Generator_ColumnVarNameInTable="columnLastYear" msprop:Generator_ColumnPropNameInRow="LastYear" msprop:Generator_ColumnPropNameInTable="LastYearColumn" msprop:Generator_UserColumnName="LastYear" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

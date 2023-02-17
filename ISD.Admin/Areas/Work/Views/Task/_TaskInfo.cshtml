@@ -1,0 +1,898 @@
+﻿@model TaskViewModel
+@using ISD.Core
+
+@{
+    var taskAssignList = Model.taskAssignList;
+    var contactList = (List<TaskContactViewModel>)Model.taskContactList;
+    var SalesEmployeeList = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList;
+    var RolesList = (List<CatalogViewModel>)ViewBag.RoleList;
+    var mt_300 = "";
+
+    //Cấu hình thuộc tính
+    var configList = (List<WorkFlowConfigModel>)ViewBag.WorkFlowConfig;
+    var fieldCodeList = (List<string>)ViewBag.WorkFlowConfigCode;
+}
+
+<!--Thông tin chung-->
+<div class="box box-info">
+    <div class="box-body">
+        <div class="row">
+            @if (Model.WorkFlowCode != ConstWorkFlow.GT)
+            {
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.WorkFlowId)
+                        </div>
+                        <div>
+                            @Html.RequiredDropDownListFor(p => p.WorkFlowId, (IEnumerable<SelectListItem>)ViewBag.WorkFlowIdList, null, new { @class = "form-control", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (Model.WorkFlowCode == ConstWorkFlow.GT)
+            {
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.ShowroomCode)
+                        </div>
+                        <div>
+                            @Html.DropDownList("ShowroomCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.StoreId)
+                    </div>
+                    <div class="width-fixed position-relative dropdown-absolute">
+                        @Html.RequiredDropDownListFor(p => p.StoreId, (IEnumerable<SelectListItem>)ViewBag.StoreIdList, LanguageResource.Dropdownlist_Choose)
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.PriorityCode)
+                    </div>
+                    <div>
+                        @Html.DropDownList("PriorityCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.TaskStatusId)
+                    </div>
+                    <div>
+                        @Html.DropDownList("TaskStatusIdList", null, null, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        @if (Model.WorkFlowCode == ConstWorkFlow.GT)
+        {
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.VisitDate)
+                        </div>
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.VisitDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.ChannelCode)
+                        </div>
+                        <div>
+                            @Html.DropDownList("ChannelCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.SaleEmployeeCode)
+                        </div>
+                        <div>
+                            @Html.DropDownList("SaleEmployeeCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.Summary)
+                    </div>
+                    <div class="input-group-required input-group-select-required">
+                        @Html.TextArea("Summary", new { @class = "form-control", @rows = "4" })
+                        <div class="required-icon" data-original-title="" title="" aria-describedby="tooltip175529"><span class="text">*</span></div>
+                    </div>
+                </div>
+
+                @if ((bool?)ViewBag.isCreatePrivateTask == true)
+                {
+                    <div class="form-group">
+                        <div class="div-radio">
+                            @{
+                                string checkTrue = string.Empty;
+                                string checkFalse = string.Empty;
+                                if (Model.isPrivate == true)
+                                {
+                                    checkTrue = "checked";
+                                }
+                                else
+                                {
+                                    checkFalse = "checked";
+                                }
+                            }
+                            <label class="label-radio">
+                                <input id="isPrivate_false" name="isPrivate" type="radio" value="False" @checkFalse>
+                                <span class="ico-help" title="Xem theo phân quyền"><i class="fa fa-question-circle"></i></span>
+                                @LanguageResource.Task_Public
+                            </label>
+
+                            <label class="label-radio">
+                                <input id="isPrivate_true" name="isPrivate" type="radio" value="True" @checkTrue>
+                                <span class="ico-help" title="Chỉ những người giám sát và được phân công xem"><i class="fa fa-question-circle"></i></span>
+                                @LanguageResource.Task_Private
+                            </label>
+
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.Reporter)
+                    </div>
+                    <div>
+                        @Html.RequiredDropDownListFor(p => p.Reporter, (IEnumerable<SelectListItem>)ViewBag.ReporterList, "- Vui lòng chọn -")
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div>
+                        <div class="label-wrapper">
+                            <label class="control-label" for="SalesEmployeeCode">@LanguageResource.Assignee</label>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="personControls">
+                            @if (Model.taskAssignList != null && Model.taskAssignList.Count > 0)
+                            {
+                                int indexAssign = 0;
+                                foreach (var item in Model.taskAssignList)
+                                {
+                                    <div class="person">
+                                        <div class="col-md-5 no-padding width-fixed position-relative dropdown-absolute">
+                                            @Html.DropDownListFor(p => taskAssignList[indexAssign].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode" })
+                                        </div>
+                                        <div>
+                                            <div class="col-md-2 padding-employee-task">
+                                                @Html.TooltipLabelFor(p => taskAssignList[indexAssign].TaskAssignTypeCode)
+                                            </div>
+                                            <div class="input-group col-md-5">
+                                                @Html.DropDownListFor(p => taskAssignList[indexAssign].TaskAssignTypeCode, new SelectList(RolesList, "CatalogCode", "CatalogText_vi", item.TaskAssignTypeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search typeCode" })
+                                                <span class="input-group-btn">
+                                                    @if (indexAssign == 0)
+                                                    {
+                                                        <button class="btn btn-default btn-addPerson" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-default btn-removePerson btn-danger" type="button">
+                                                            <span class="glyphicon glyphicon-minus"></span>
+                                                        </button>
+                                                    }
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    indexAssign++;
+                                }
+                            }
+                            else
+                            {
+                                <div class="person">
+                                    <div class="col-md-5 no-padding width-fixed position-relative dropdown-absolute">
+                                        @Html.DropDownListFor(p => taskAssignList[0].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode" })
+                                    </div>
+                                    <div class="col-md-2 padding-employee-task">
+                                        @Html.TooltipLabelFor(p => taskAssignList[0].TaskAssignTypeCode)
+                                    </div>
+                                    <div class="input-group col-md-5">
+                                        @Html.DropDownListFor(p => taskAssignList[0].TaskAssignTypeCode, new SelectList(RolesList, "CatalogCode", "CatalogText_vi"), LanguageResource.Dropdownlist_Choose, new { @Class = "form-control with-search typeCode" })
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-addPerson" type="button">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if ((ViewBag.Type == ConstWorkFlowCategory.ACTIVITIES || ViewBag.Type == ConstWorkFlowCategory.GTB) && Model.WorkFlowCode != ConstWorkFlow.GT)
+        {
+            <div class="row">
+                <div class="form-group col-md-6">
+
+                    @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+                    {
+                        //Vị trí lắp đặt
+                        @Html.Label("VisitAddress", LanguageResource.GTB_Location)
+                    }
+                    else
+                    {
+                        //Địa điểm ghé thăm
+                        <div>
+                            @Html.TooltipLabelFor(p => p.VisitAddress)
+                        </div>
+                    }
+
+                    <div>
+                        @Html.RequiredExTextboxFor(p => p.VisitAddress, ConstCommon.Required, true, new { @placeholder = LanguageResource.PleaseInputLocation })
+                        @Html.HiddenFor(p => p.lat)
+                        @Html.HiddenFor(p => p.lng)
+                    </div>
+                </div>
+                @*Chỉ hiện: ACTIVITIES và khác GT*@
+                @if (ViewBag.Type == ConstWorkFlowCategory.ACTIVITIES)
+                {
+                    <div class="form-group col-md-6 display-inline" style="margin-top: 22px">
+                        <div style="margin-top: 7px">
+                            @Html.TooltipLabelFor(p => p.isRequiredCheckin)
+                        </div>
+                        <div class="div-radio" style="margin-left: 10px;">
+                            @{
+                                string checkTrue = string.Empty;
+                                string checkFalse = string.Empty;
+                                if (Model.isRequiredCheckin == true)
+                                {
+                                    checkTrue = "checked";
+                                }
+                                else
+                                {
+                                    checkFalse = "checked";
+                                }
+                            }
+                            <label class="label-radio">
+                                <input id="isRequiredCheckin_true" name="isRequiredCheckin" type="radio" value="True" @checkTrue> Có
+                            </label>
+                            <label class="label-radio">
+                                <input id="isRequiredCheckin_false" name="isRequiredCheckin" type="radio" value="False" @checkFalse> Không
+                            </label>
+                        </div>
+                    </div>
+                }
+                <div class="clearfix"></div>
+                <div class="form-group col-md-3">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.lat)
+                    </div>
+                    <div>
+                        @Html.RequiredTextboxFor(p => p.lat, new { @id = "lat_display", @disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="form-group col-md-3">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.lng)
+                    </div>
+                    <div>
+                        @Html.RequiredTextboxFor(p => p.lng, new { @id = "lng_display", @disabled = "disabled" })
+                    </div>
+                </div>
+                @*Chỉ hiện: ACTIVITIES và khác GT*@
+                @if (ViewBag.Type == ConstWorkFlowCategory.ACTIVITIES)
+                {
+                    <div class="form-group col-md-6">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.VisitTypeCode)
+                        </div>
+                        <div>
+                            @Html.RequiredIfDropDownListFor(p => p.VisitTypeCode, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!--Thông tin thời gian task-->
+<div class="col-md-6 pl-md-0">
+
+    <div class="box box-info">
+        <div class="box-body">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div>
+                        @Html.TooltipLabelFor(p => p.ReceiveDate)
+                    </div>
+                    <div class="form-inline">
+                        @Html.DateTimeTextBoxFor(p => p.ReceiveDate, isNullValueForTime: true)
+                        @Html.Hidden("DisplayReceiveDate", Model.ReceiveDate)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div>
+                        @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+                        {
+                            //Ngày lắp đặt
+                            @Html.Label("VisitAddress", LanguageResource.GTB_StartDate)
+
+                        }
+                        else
+                        {
+                            @Html.TooltipLabelFor(p => p.StartDate)
+                        }
+                    </div>
+                    <div class="form-inline">
+                        @Html.DateTimeTextBoxFor(p => p.StartDate)
+                        @Html.Hidden("DisplayStartDate", Model.StartDate)
+                    </div>
+                </div>
+            </div>
+            @*Không hiển thị nếu là loại góc trưng bày*@
+            @if (ViewBag.Type != ConstWorkFlowCategory.GTB)
+            {
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.EstimateEndDate)
+                        </div>
+                        <div class="form-inline">
+                            @Html.DateTimeTextBoxFor(p => p.EstimateEndDate)
+                            @Html.Hidden("DisplayEstimateEndDate", Model.EstimateEndDate)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.EndDate)
+                        </div>
+                        <div class="form-inline">
+                            @Html.DateTimeTextBoxFor(p => p.EndDate)
+                            @Html.Hidden("DisplayEndDate", Model.EndDate)
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.CreateByName)
+                        </div>
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.CreateByName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.CreateTime)
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(p => p.CreateTime, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = " form-control text-box single-line", @readonly = "readonly", @type = "datetime-local" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @*@if (!string.IsNullOrEmpty(Model.LastEditByName))
+                    {*@
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.LastEditByName)
+                        </div>
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.LastEditByName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                @*}
+                    @if (Model.LastEditTime != null)
+                    {*@
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.LastEditTime)
+                        </div>
+                        <div>
+                            @Html.TextBoxFor(p => p.LastEditTime, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = " form-control text-box single-line", @readonly = "readonly", @type = "datetime-local" })
+                        </div>
+                    </div>
+                </div>
+                @*}*@
+            </div>
+        </div>
+    </div>
+
+
+    @if (Model.WorkFlowCode == ConstWorkFlow.GT)
+    {
+        <!--Thông tin thời gian tạo ghé thăm-->
+        <div class="div-list-comment">
+            @Html.Partial("_ListComment", Model)
+        </div>
+    }
+</div>
+
+<!--Thông tin khách hàng-->
+<div class="col-md-6 pl-md-0">
+    <div class="box box-info">
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.ProfileId)
+                        </div>
+                        <div>
+                            @Html.HiddenFor(p => p.ProfileId)
+                            <div class="input-group">
+                                @Html.RequiredTextboxFor(p => p.ProfileName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                <a class="input-group-addon btn btn-default" data-toggle="modal" data-target="#divProfileSearch">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div>
+                            <div class="label-wrapper">
+                                <label class="control-label">@LanguageResource.Profile_Contact</label>
+                            </div>
+                        </div>
+                        <div>
+                            @*<div class="contactControls">
+                                    @if (Model.taskContactList != null && Model.taskContactList.Count > 0)
+                                    {
+                                        int index = 0;
+                                        foreach (var item in Model.taskContactList)
+                                        {
+                                            <div class="input-group contact">
+                                                @Html.DropDownListFor(p => contactList[index].ContactId, new SelectList(contactFromProfileList, "ProfileContactId", "ProfileContactName", item.ContactId), LanguageResource.Dropdownlist_Choose, new { @class = "form-control contactIdByProfile" })
+                                                <span class="input-group-btn">
+                                                    @if (index == 0)
+                                                    {
+                                                        <button class="btn btn-default btn-addContact" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-default btn-removeContact btn-danger" type="button">
+                                                            <span class="glyphicon glyphicon-minus"></span>
+                                                        </button>
+                                                    }
+                                                </span>
+                                            </div>
+                                            index++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group contact">
+                                            <select name="contactList[0].ContactId" class="form-control with-search contactIdByProfile">
+                                                <option value="">@LanguageResource.Dropdownlist_Choose</option>
+                                            </select>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default btn-addContact" type="button">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    }
+                                </div>*@
+                            @if (!string.IsNullOrEmpty(Model.ContactName))
+                            {
+                                @Html.RequiredTextboxFor(p => p.ContactName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.DropDownList("ContactId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search contactIdByProfile" })
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.ProfileAddress)
+                        </div>
+                        <div>
+                            <div class="input-group">
+                                @Html.RequiredTextboxFor(p => p.ProfileAddress, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                <span class="input-group-btn group-tooltip-icon">
+                                    <button class="btn btn-info btn-copy tooltip-icon" type="button" title="Sử dụng làm địa chỉ checkin (nếu có)">
+                                        <i class="fa fa-copy"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.Phone)
+                        </div>
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.Phone, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.Email)
+                        </div>
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.Email, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if (Model.WorkFlowCode == ConstWorkFlow.GT)
+            {
+                <!--Phân loại khách hàng-->
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div>
+                                @Html.TooltipLabelFor(p => p.CustomerClassCode)
+                            </div>
+                            <div>
+                                @Html.RequiredIfDropDownListFor(p => p.CustomerClassCode, null, LanguageResource.Dropdownlist_Choose)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@if (Model.WorkFlowCode != ConstWorkFlow.GT)
+{
+    <div style="clear: both"></div>
+    <!--Ghi chú, Lỗi thường gặp-->
+    <div class="col-md-6 pl-md-0">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="row">
+                    <div>
+                        @if (ViewBag.Type == ConstWorkFlowCategory.TICKET)
+                        {
+                            <div class="form-group col-md-12">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.ServiceTechnicalTeamCode)
+                                </div>
+                                <div>
+                                    @Html.DropDownList("ServiceTechnicalTeamCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        }
+                        @if ((ViewBag.Type == ConstWorkFlowCategory.ACTIVITIES) && Model.WorkFlowCode != ConstWorkFlow.GT)
+                        {
+                            <!--Check in-->
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckInByName)
+                                </div>
+                                <div>
+                                    @Html.RequiredTextboxFor(p => p.CheckInByName, new { @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckInTime)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.CheckInTime, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = " form-control text-box single-line", @readonly = "readonly", @type = "datetime-local" })
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckInLat)
+                                </div>
+                                <div>
+                                    @Html.RequiredTextboxFor(p => p.CheckInLat, new { @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckInLng)
+                                </div>
+                                <div>
+                                    @Html.RequiredTextboxFor(p => p.CheckInLng, new { @disabled = "disabled" })
+                                </div>
+                            </div>
+
+                            <!--Check out-->
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckOutByName)
+                                </div>
+                                <div>
+                                    @Html.RequiredTextboxFor(p => p.CheckOutByName, new { @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckOutTime)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.CheckOutTime, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = " form-control text-box single-line", @readonly = "readonly", @type = "datetime-local" })
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckOutLat)
+                                </div>
+                                <div>
+                                    @Html.RequiredTextboxFor(p => p.CheckOutLat, new { @disabled = "disabled" })
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.CheckOutLng)
+                                </div>
+                                <div>
+                                    @Html.RequiredTextboxFor(p => p.CheckOutLng, new { @disabled = "disabled" })
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group col-md-12">
+                            <div>
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div>
+                                @Html.TextAreaFor(p => p.Description, new { @class = "form-control ckeditor", id = "Description" })
+                                <script type="text/javascript">
+                                    var editor = CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+                                        filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+                                        filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+                                        filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+                                        filebrowserWindowWidth: '1000',
+                                        filebrowserWindowHeight: '700'
+                                    });
+                                    CKFinder.setupCKEditor(editor, '/ckfinder/');
+                                    CKEDITOR.instances['Description'].on('change',
+                                        function () { CKEDITOR.instances['Description'].updateElement() });
+                                </script>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-12">
+                            <div>
+                                @Html.TooltipLabelFor(p => p.FileUrl)
+                            </div>
+                            <div>
+                                <input name="FileUrl" type="file" />
+                                @if (Model.FileUrl != null)
+                                {
+                                    <span>Nhấn vào <a href="/Upload/Document/@Model.FileUrl">đây</a> để tải file</span>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Comment-->
+        <div class="div-list-comment">
+            @Html.Partial("_ListComment", Model)
+        </div>
+    </div>
+
+    <!--Thông tin phiếu bảo hành-->
+    if (Model.WorkFlowCode == ConstWorkFlow.BaoHanh)
+    {
+        <div class="col-md-6 pl-md-0">
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.ProductWarrantyCode)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.ProductWarrantyCode, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.ProductName)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.ProductName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.ProductWarrantyNo)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.ProductWarrantyNo, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.SerriNo)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.SerriNo, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.WarrantyName)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.WarrantyName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.FromDate)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.FromDate, "{0:yyyy-MM-dd}", new { @class = " form-control text-box single-line", @readonly = "readonly", @type = "date" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div>
+                                    @Html.TooltipLabelFor(p => p.productWarranty.ToDate)
+                                </div>
+                                <div>
+                                    @Html.TextBoxFor(p => p.productWarranty.ToDate, "{0:yyyy-MM-dd}", new { @class = " form-control text-box single-line", @readonly = "readonly", @type = "date" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+
+    <!--Ý kiến khách hàng-->
+    if ((ViewBag.Type == ConstWorkFlowCategory.ACTIVITIES) && Model.WorkFlowCode != ConstWorkFlow.GT)
+    {
+        <div class="col-md-6 pl-md-0" @mt_300>
+            <div class="box box-info">
+                <div class="box-body">
+                    <div class="form-group col-md-12">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.CustomerReviews)
+                        </div>
+                        <div>
+                            @Html.TextAreaFor(p => p.CustomerReviews, new { @class = "form-control ckeditor", id = "CustomerReviews" })
+                            <script type="text/javascript">
+                                var editor = CKEDITOR.replace("CustomerReviews", {
+                                    height: 250,
+                                    filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+                                    filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+                                    filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+                                    filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+                                    filebrowserWindowWidth: '1000',
+                                    filebrowserWindowHeight: '700'
+                                });
+                                CKFinder.setupCKEditor(editor, '/ckfinder/');
+                                CKEDITOR.instances['CustomerReviews'].on('change',
+                                    function () { CKEDITOR.instances['CustomerReviews'].updateElement() });
+                            </script>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    }
+
+
+}
+else if (Model.WorkFlowCode == ConstWorkFlow.GT)
+{
+    <div class="col-md-6 pl-md-0"></div>
+    <!--Thông tin thời gian ghé thăm-->
+    <div class="col-md-6 pl-md-0">
+        <div class="box box-info">
+            <div class="box-body">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <div>
+                            @Html.TooltipLabelFor(p => p.Description)
+                        </div>
+                        <div>
+                            @Html.TextAreaFor(p => p.Description, new { @class = "form-control", id = "txtCkeditor" })
+                            <script type="text/javascript">
+                                var editor = CKEDITOR.replace("txtCkeditor", {
+                                    height: 250,
+                                    filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+                                    filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+                                    filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+                                    filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+                                    filebrowserWindowWidth: '1000',
+                                    filebrowserWindowHeight: '700'
+                                });
+                                CKFinder.setupCKEditor(editor, '/ckfinder/');
+                                CKEDITOR.instances['txtCkeditor'].on('change',
+                                    function () { CKEDITOR.instances['txtCkeditor'].updateElement() });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

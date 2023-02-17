@@ -1,0 +1,59 @@
+﻿@model IEnumerable<SalesEmployeeViewModel>
+@{
+    //string CurrentController = ConstController.SalesEmployee;
+
+    //string CurrentArea = ConstArea.MasterData;
+
+    var accountInGroup = (List<string>)ViewBag.accountInGroup;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer" id="tbl-employee">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.SalesEmployeeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.SalesEmployeeName)</th>
+            <th>@Html.DisplayNameFor(p => p.DepartmentName)</th>
+            @*<th class="text-center" data-orderable="false">@Html.DisplayNameFor(p => p.Actived)</th>*@
+            <th class="text-center" data-orderable="false">
+                <input type="checkbox" id="CheckAll" name="CheckAll" value="False">
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0;
+            int k = -1;}
+        @foreach (var item in Model)
+        {
+            i++;
+            k++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                <td>@Html.DisplayFor(p => item.DepartmentName)</td>
+                @*<td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>*@
+                <td class="text-center">
+                   @{ 
+                       var check = string.Empty;
+                       var disabled = string.Empty;
+                   }
+                    @if (accountInGroup != null && accountInGroup.Count > 0)
+                    {
+                        if (accountInGroup.Contains(item.SalesEmployeeCode))
+                        {
+                            check = "checked";
+                            disabled = "disabled";
+                        }
+                    }
+                    <input type="checkbox" id="salesEmployeeList-@k-SalesEmployeeCode" name="salesEmployeeList[@k].SalesEmployeeCode" value="@item.SalesEmployeeCode" data-name="@item.SalesEmployeeName" data-department="@item.DepartmentName" class="salesEmployeeList" @check @disabled>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+
+

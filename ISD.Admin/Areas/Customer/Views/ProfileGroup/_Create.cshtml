@@ -1,0 +1,55 @@
+﻿@model ProfileGroupViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">@LanguageResource.Profile_ProfileGroup.ToLower()</h4>
+
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreateProfileGroup" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.ProfileId)
+        <div id="divAlertWarning" class="alert alert-warning alert-dismissable" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel-body">
+                    @{
+                        var profileList = (SelectList)ViewBag.ProfileGroupCode;
+                        var IsHasData = (bool?)ViewBag.IsHasData;
+                    }
+                    @if (IsHasData == true)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProfileGroupName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredDropDownListFor(p => p.ProfileGroupCode, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control" })
+                            </div>
+                        </div>
+                    }
+                    else if (IsHasData == false)
+                    {
+                        <div class="text-center">
+                            <i>Khách hàng đã được thêm vào tất cả các nhóm!</i>
+                        </div>
+                    }
+                    else
+                    {
+                        <i class="text-center">Chưa thiết lập dữ liệu nền "Nhóm khách hàng"</i>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-profileGroup" data-add-success-call-back="ReloadProfileGroupList">@LanguageResource.Btn_Save</button>
+</div>

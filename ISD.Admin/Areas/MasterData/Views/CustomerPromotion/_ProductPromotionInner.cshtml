@@ -1,0 +1,38 @@
+﻿@model IEnumerable<PromotionViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="productList[@k].STT" value="@i">
+        <input type="hidden" name="productList[@k].ProductId" value="@item.ProductId" />
+        <input type="hidden" name="productList[@k].PromotionCode" value="@item.PromotionCode" />
+        <input type="hidden" name="productList[@k].PromotionName" value="@item.PromotionName" />
+        <input type="hidden" name="productList[@k].ERPProductCode" value="@item.ERPProductCode" />
+        <input type="hidden" name="productList[@k].ProductName" value="@item.ProductName" />
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @item.ERPProductCode
+            </td>
+            <td>
+                @item.ProductName
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-product" data-id="@i">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

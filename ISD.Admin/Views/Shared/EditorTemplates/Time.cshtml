@@ -1,0 +1,12 @@
+﻿@model DateTime?
+
+@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, "{0:HH:mm}",
+        new {
+            @class = "form-control text-box single-line",
+            @type = "time",
+            @ng_model = ViewData.TemplateInfo.HtmlFieldPrefix /*apply AngularJS vào*/
+
+        })
+<span class="validation-text field-validation-error">
+    @Html.ValidationMessageFor(v => v)
+</span>

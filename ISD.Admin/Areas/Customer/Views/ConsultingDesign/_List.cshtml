@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ProfileViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.TabConsultingDesign
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-design"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentDesign">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th class="contentProfileContact-hidden">@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                <th>Tư vấn - Thiết kế</th>
+                <th>Địa chỉ</th>
+                <th>@Html.DisplayNameFor(p => p.CreateUser)</th>
+                <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+                <th>Tư vấn-Thiết kế chính</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
+
+

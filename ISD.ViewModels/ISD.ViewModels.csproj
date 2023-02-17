@@ -1,0 +1,458 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9E6D4C80-C34C-462A-82B9-5837D81D996B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ISD.ViewModels</RootNamespace>
+    <AssemblyName>ISD.ViewModels</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>..\ISD.Admin\Bin\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="API\ApiResponse.cs" />
+    <Compile Include="API\BarcodeMaterialDocumentViewModel.cs" />
+    <Compile Include="API\BarcodeOutboundDeliveryViewModel.cs" />
+    <Compile Include="API\BarcodePONumberViewModel.cs" />
+    <Compile Include="API\BarcodeReservationViewModel.cs" />
+    <Compile Include="API\CreditAuthenticateViewModel.cs" />
+    <Compile Include="API\CreditLimitSearchViewModel.cs" />
+    <Compile Include="API\GH_BCTonKhoViewModel.cs" />
+    <Compile Include="API\KiemKeViewModel.cs" />
+    <Compile Include="API\MobileAddressBookViewModel.cs" />
+    <Compile Include="API\MobileProfileContactViewModel.cs" />
+    <Compile Include="API\MobileWorkFlowConfigViewModel.cs" />
+    <Compile Include="API\Mobile\LoginMobileResultViewModel.cs" />
+    <Compile Include="API\Mobile\MobileProfileSearchResultViewModel.cs" />
+    <Compile Include="API\Mobile\MobileProfileSearchViewModel.cs" />
+    <Compile Include="API\NhapChuyenKhoViewModel.cs" />
+    <Compile Include="API\NhapKhoMuaHangViewModel.cs" />
+    <Compile Include="API\ReviewResultViewModel.cs" />
+    <Compile Include="API\XuatChuyenKhoViewModel.cs" />
+    <Compile Include="API\XuatKhoBanHangViewModel.cs" />
+    <Compile Include="BaseClassViewModel.cs" />
+    <Compile Include="Common\ExportExcelInputModel.cs" />
+    <Compile Include="Customer\AddressBookViewModel.cs" />
+    <Compile Include="Customer\AppointmentReportViewModel.cs" />
+    <Compile Include="Customer\AppointmentSearchViewModel.cs" />
+    <Compile Include="Customer\AppointmentViewModel.cs" />
+    <Compile Include="Customer\CatalogueViewModel.cs" />
+    <Compile Include="Customer\SponsViewModel.cs" />
+    <Compile Include="Customer\OverviewCompanyViewModel.cs" />
+    <Compile Include="Customer\LeadExportExcelViewModel.cs" />
+    <Compile Include="Customer\CompetitorExportExcelViewModel.cs" />
+    <Compile Include="Customer\ConstructionViewModel.cs" />
+    <Compile Include="Customer\CustomerSaleOrderViewModel.cs" />
+    <Compile Include="Customer\CustomerTasteSearchViewModel.cs" />
+    <Compile Include="Customer\CustomerTasteViewModel.cs" />
+    <Compile Include="Customer\OpportunityPartnerViewModel.cs" />
+    <Compile Include="Customer\EmailViewModel.cs" />
+    <Compile Include="Customer\ProfileConfigViewModel.cs" />
+    <Compile Include="Customer\ProfileContactViewModel.cs" />
+    <Compile Include="Customer\CertificateACViewModel.cs" />
+    <Compile Include="Customer\FileAttachmentViewModel.cs" />
+    <Compile Include="Customer\PartnerViewModel.cs" />
+    <Compile Include="Customer\PersonInChargeViewModel.cs" />
+    <Compile Include="Customer\ProfileBSearchViewModel.cs" />
+    <Compile Include="Customer\ProfileCAttributeViewModel.cs" />
+    <Compile Include="Customer\ProfileDetailViewModel.cs" />
+    <Compile Include="Customer\ProfileExportExcelModel.cs" />
+    <Compile Include="Customer\ProfileGroupViewModel.cs" />
+    <Compile Include="Customer\ProfileExcelViewModel.cs" />
+    <Compile Include="Customer\ProfileOverviewModel.cs" />
+    <Compile Include="Customer\Profile_Catalog_MappingViewModel.cs" />
+    <Compile Include="Customer\ProjectActivitiesViewModel.cs" />
+    <Compile Include="Customer\RequirementReportViewModel.cs" />
+    <Compile Include="Customer\TaskTransitionLogViewModel.cs" />
+    <Compile Include="Marketing\CampaignCreateViewModel.cs" />
+    <Compile Include="Marketing\CampaignEditViewModel.cs" />
+    <Compile Include="Marketing\CampaignReportViewModel.cs" />
+    <Compile Include="Marketing\MemberOfTargetGroupInCampaignViewModel - Copy.cs" />
+    <Compile Include="Marketing\ProductPromotionUpdateViewModel.cs" />
+    <Compile Include="Marketing\ProfileContactProductPromotionViewModel.cs" />
+    <Compile Include="Marketing\ProfileAddressProductPromotionViewModel.cs" />
+    <Compile Include="Marketing\ProductPromotionDetailViewModel.cs" />
+    <Compile Include="Marketing\ProductPromotionViewModel.cs" />
+    <Compile Include="Marketing\ProductPromotionSearchViewModel.cs" />
+    <Compile Include="Marketing\CampaignSearchViewModel.cs" />
+    <Compile Include="Marketing\CheckInViewModel.cs" />
+    <Compile Include="Marketing\ContentCreateViewModel.cs" />
+    <Compile Include="Marketing\ContentEditViewModel.cs" />
+    <Compile Include="Marketing\ContentSearchViewModel.cs" />
+    <Compile Include="Marketing\MemberOfTargetGroupExcelModel.cs" />
+    <Compile Include="Marketing\MemberOfTargetGroupInCampaignExcelModel.cs" />
+    <Compile Include="Marketing\MemberOfTargetGroupInProductPromotionViewModel.cs" />
+    <Compile Include="Marketing\MemberOfTargetGroupViewModel.cs" />
+    <Compile Include="Marketing\ProfileEmailViewModel.cs" />
+    <Compile Include="Marketing\SendMailSearchViewModel.cs" />
+    <Compile Include="Marketing\TargetGroupAndMemberViewModel.cs" />
+    <Compile Include="Marketing\TargetGroupCreateViewModel.cs" />
+    <Compile Include="Marketing\TargetGroupEditViewModel.cs" />
+    <Compile Include="Marketing\TargetGroupSearchModel.cs" />
+    <Compile Include="Marketing\TargetGroupViewModel.cs" />
+    <Compile Include="Marketing\ProfileTargetGroupViewModel.cs" />
+    <Compile Include="Marketing\TemplateAndGiftCampaignEditModel.cs" />
+    <Compile Include="Marketing\TemplateAndGiftCampaignSearchModel.cs" />
+    <Compile Include="Marketing\TemplateAndGiftCampignCreateModel.cs" />
+    <Compile Include="Marketing\TemplateAndGiftMemberAddressViewModel.cs" />
+    <Compile Include="Marketing\TemplateAndGiftMemberViewModel.cs" />
+    <Compile Include="Marketing\UnfollowCreateViewModel.cs" />
+    <Compile Include="Marketing\UnfollowViewModel.cs" />
+    <Compile Include="MasterData\CompanyViewModel.cs" />
+    <Compile Include="MasterData\DepartmentExcelViewModel.cs" />
+    <Compile Include="MasterData\EmailTemplateConfigViewModel.cs" />
+    <Compile Include="MasterData\ExternalCustomerExportModel.cs" />
+    <Compile Include="MasterData\ExternalCustomerSearchModel.cs" />
+    <Compile Include="MasterData\FaceCheckInOutCreateViewModel.cs" />
+    <Compile Include="MasterData\FaceCheckInOutSearchViewModel.cs" />
+    <Compile Include="MasterData\FaceCheckInOutViewModel.cs" />
+    <Compile Include="MasterData\FavoriteReportSearchViewModel.cs" />
+    <Compile Include="MasterData\EmailTemplateConfigSearchViewModel.cs" />
+    <Compile Include="MasterData\QuestionCreateViewModel.cs" />
+    <Compile Include="MasterData\QuestionEditViewModel.cs" />
+    <Compile Include="MasterData\QuestionImportViewModel.cs" />
+    <Compile Include="MasterData\QuestionExportViewModel.cs" />
+    <Compile Include="MasterData\QuestionSearchViewModel.cs" />
+    <Compile Include="Reports\RDCatalogueDetailViewModel.cs" />
+    <Compile Include="Reports\CostOfUsingCatalogueComparedToApprovalViewModel.cs" />
+    <Compile Include="Reports\CustomerCertificateACReportViewModel.cs" />
+    <Compile Include="Reports\TechnicalServicesReportSearchViewModel.cs" />
+    <Compile Include="Reports\NumberOfCustomerBySaleGrowthReportViewModel.cs" />
+    <Compile Include="Reports\NumberOfCustomersBySalesReportViewModel.cs" />
+    <Compile Include="Reports\ActivitiesBySalesEmployeeSearchModel.cs" />
+    <Compile Include="Reports\AppointmentWithPersonInChargeReportViewModel.cs" />
+    <Compile Include="Reports\ProductPromotionReportViewModel.cs" />
+    <Compile Include="Reports\ProductPromotionDetailReportViewModel.cs" />
+    <Compile Include="Reports\SAPGetDataReportViewModel.cs" />
+    <Compile Include="Reports\CustomerAmountByCRMViewModel.cs" />
+    <Compile Include="Reports\CustomerCareActivitiesViewModel.cs" />
+    <Compile Include="Reports\CustomerHierarchyDetailReportSearchViewModel.cs" />
+    <Compile Include="Reports\CustomerDataReportExcelModel.cs" />
+    <Compile Include="Reports\CustomerDataReportSearchModel.cs" />
+    <Compile Include="Reports\CustomerDemandViewModel.cs" />
+    <Compile Include="Reports\CustomerReviewsReportModel.cs" />
+    <Compile Include="Reports\CustomerReviewsSearchModel.cs" />
+    <Compile Include="Reports\FieldSettingModel.cs" />
+    <Compile Include="Reports\MaterialExportedDetailReportSearchViewModel.cs" />
+    <Compile Include="Reports\MaterialExportedViewModel.cs" />
+    <Compile Include="Reports\OpportunityReportSearchViewModel.cs" />
+    <Compile Include="Reports\OpportunityReportViewModel.cs" />
+    <Compile Include="Reports\PivotTemplateViewModel.cs" />
+    <Compile Include="Reports\ProductAccessoryReportExcelModel.cs" />
+    <Compile Include="Reports\ProductAccessoryReportSearchModel.cs" />
+    <Compile Include="Reports\ProfileGroupSearchModel.cs" />
+    <Compile Include="Reports\RateOfAppointmentWithShowRoomReportViewModel.cs" />
+    <Compile Include="Reports\SearchDisplayModel.cs" />
+    <Compile Include="Reports\ShowroomReportViewModel.cs" />
+    <Compile Include="Reports\ActivitiesBySalesEmployeeReportViewModel.cs" />
+    <Compile Include="Reports\CustomerTastesSummaryReportViewModel.cs" />
+    <Compile Include="Reports\ProfileGroupReportViewModel.cs" />
+    <Compile Include="Reports\ProfileReportViewModel.cs" />
+    <Compile Include="Customer\RevenueViewModel.cs" />
+    <Compile Include="Customer\ProfileSearchViewModel.cs" />
+    <Compile Include="Customer\ProfileLevelViewModel.cs" />
+    <Compile Include="Customer\RoleInChargeViewModel.cs" />
+    <Compile Include="Customer\SalesSupervisorViewModel.cs" />
+    <Compile Include="Customer\SendSMSViewModel.cs" />
+    <Compile Include="Maintenance\ProductRegWarrantyViewModel.cs" />
+    <Compile Include="Maintenance\ProductWarrantyViewModel.cs" />
+    <Compile Include="Maintenance\OrderDetailViewModel.cs" />
+    <Compile Include="Maintenance\SerialViewModel.cs" />
+    <Compile Include="MasterData\AccountExcelViewModel.cs" />
+    <Compile Include="MasterData\CareerSearchViewModel.cs" />
+    <Compile Include="MasterData\CareerViewModel.cs" />
+    <Compile Include="MasterData\CatalogViewModel.cs" />
+    <Compile Include="MasterData\CustomerViewModel.cs" />
+    <Compile Include="MasterData\DepartmentViewModel.cs" />
+    <Compile Include="MasterData\GH_NotificationViewModel.cs" />
+    <Compile Include="MasterData\NewsCategoryViewModel.cs" />
+    <Compile Include="MasterData\NewsHomeViewModel.cs" />
+    <Compile Include="MasterData\NewsMobileViewModel.cs" />
+    <Compile Include="MasterData\NewsViewModel.cs" />
+    <Compile Include="MasterData\ProductSearchViewModel.cs" />
+    <Compile Include="MasterData\ProductViewModel.cs" />
+    <Compile Include="MasterData\SalesEmployeeExcelViewModel.cs" />
+    <Compile Include="MasterData\SalesEmployeeSearchViewModel.cs" />
+    <Compile Include="MasterData\SalesEmployeeViewModel.cs" />
+    <Compile Include="MasterData\KanbanViewModel.cs" />
+    <Compile Include="MasterData\WardViewModel.cs" />
+    <Compile Include="MobileReportItemViewModel.cs" />
+    <Compile Include="MobileReportMasterViewModel.cs" />
+    <Compile Include="Permission\ModuleViewModel.cs" />
+    <Compile Include="ReportDataViewModel.cs" />
+    <Compile Include="API\AccessoriesEstimatesViewModel.cs" />
+    <Compile Include="API\AccessoryListViewModel.cs" />
+    <Compile Include="API\AccountInfomationViewModel.cs" />
+    <Compile Include="API\BookingListViewModel.cs" />
+    <Compile Include="API\CheckingTimesNotificationViewModel.cs" />
+    <Compile Include="API\CustomerGiftAPIViewModel.cs" />
+    <Compile Include="API\ImageListViewModel.cs" />
+    <Compile Include="API\MobileBooking\BookedResultViewModel.cs" />
+    <Compile Include="API\MobileBooking\BookingTimeViewModel.cs" />
+    <Compile Include="API\MobileBooking\PerformBookingViewModel.cs" />
+    <Compile Include="API\MobileRegisterViewModel.cs" />
+    <Compile Include="API\PlateMobileViewModel.cs" />
+    <Compile Include="API\PlateOfCustomerViewModel.cs" />
+    <Compile Include="API\PriceListViewModel.cs" />
+    <Compile Include="API\PromotionViewModel.cs" />
+    <Compile Include="API\SameCategoryViewModel.cs" />
+    <Compile Include="API\ServiceOrderUpdateDetailViewModel.cs" />
+    <Compile Include="API\SaleOrderUpdateDetailViewModel.cs" />
+    <Compile Include="API\ServiceOrderUpdateViewModel.cs" />
+    <Compile Include="API\SaleOrderUpdateViewModel.cs" />
+    <Compile Include="API\CheckingTimesViewModel.cs" />
+    <Compile Include="API\SearchSaleOrderDetailViewModel.cs" />
+    <Compile Include="API\SearchSaleOrderHeaderViewModel.cs" />
+    <Compile Include="API\SaleOrderViewModel.cs" />
+    <Compile Include="API\ProspectCustomerViewModel.cs" />
+    <Compile Include="API\SearchCustomerViewModel.cs" />
+    <Compile Include="API\ISDSelectItem.cs" />
+    <Compile Include="API\AboutMobileViewModel.cs" />
+    <Compile Include="API\BannerMobileViewModel.cs" />
+    <Compile Include="API\CategoryMobileViewModel.cs" />
+    <Compile Include="API\SpecificationsListViewModel.cs" />
+    <Compile Include="API\StockDetailViewModel.cs" />
+    <Compile Include="API\StoreListViewModel.cs" />
+    <Compile Include="Extension\ExcelSheetTemplate.cs" />
+    <Compile Include="API\CustomerMobileViewModel.cs" />
+    <Compile Include="MasterData\CustomerSearchViewModel.cs" />
+    <Compile Include="MasterData\Detail_CustomerGiftViewModel.cs" />
+    <Compile Include="MasterData\CustomerPromotionViewModel.cs" />
+    <Compile Include="API\ProductMobileViewModel.cs" />
+    <Compile Include="MasterData\CustomerGiftViewModel.cs" />
+    <Compile Include="API\ProvinceMobileViewModel.cs" />
+    <Compile Include="MasterData\DistrictExcelViewModel.cs" />
+    <Compile Include="MasterData\DistrictSearchViewModel.cs" />
+    <Compile Include="MasterData\DistrictViewModel.cs" />
+    <Compile Include="MasterData\ProvinceViewModel.cs" />
+    <Compile Include="MasterData\ProvinceExcelViewModel.cs" />
+    <Compile Include="MasterData\ProvinceSearchViewModel.cs" />
+    <Compile Include="Permission\AccountResultViewModel.cs" />
+    <Compile Include="Permission\MobileScreenPermissionViewModel.cs" />
+    <Compile Include="Permission\MobileScreenViewModel.cs" />
+    <Compile Include="Permission\ScreenFunctionViewModel.cs" />
+    <Compile Include="Customer\ProfileBAttributeViewModel.cs" />
+    <Compile Include="Customer\ProfileViewModel.cs" />
+    <Compile Include="Reports\CatalogueReportViewModel.cs" />
+    <Compile Include="Reports\CustomerCatalogueReportViewModel.cs" />
+    <Compile Include="Reports\CustomerGroupReportViewModel.cs" />
+    <Compile Include="Reports\CustomerQuantityReportViewModel.cs" />
+    <Compile Include="Reports\CustomerTastesReportViewModel.cs" />
+    <Compile Include="Reports\CustomerTastesSearchViewModel.cs" />
+    <Compile Include="Reports\CustomerTypeReportViewModel.cs" />
+    <Compile Include="Reports\ProfileQuantityAppointmentWithShowRoomReportViewModel.cs" />
+    <Compile Include="Reports\ProfileReportResultViewModel.cs" />
+    <Compile Include="Reports\ProfileReportSearchViewModel.cs" />
+    <Compile Include="Reports\ProfileWithPersonInChargeReportViewModel.cs" />
+    <Compile Include="Reports\RegisterReceiveNewsViewModel.cs" />
+    <Compile Include="Reports\CustomerReportViewModel.cs" />
+    <Compile Include="API\LoginMobileViewModel.cs" />
+    <Compile Include="Reports\StatisticLikeViewProductViewModel.cs" />
+    <Compile Include="Reports\StockAllocationReportViewModel.cs" />
+    <Compile Include="Reports\StockDeliveryReportViewModel.cs" />
+    <Compile Include="Reports\StockOnHandReportSearchModel.cs" />
+    <Compile Include="Reports\StockOnHandReportViewModel.cs" />
+    <Compile Include="Reports\StockReceivingReportViewModel.cs" />
+    <Compile Include="Reports\StockTransferReportViewModel.cs" />
+    <Compile Include="Reports\TaskAccessoryWarrantyExportExcelModel.cs" />
+    <Compile Include="Reports\TaskAccessoryWarrantyReportSearchModel.cs" />
+    <Compile Include="Reports\TaskAnalysisDVKTExcelModel.cs" />
+    <Compile Include="Reports\TaskAnalysisDVKTSearchModel.cs" />
+    <Compile Include="Reports\TaskExcelViewModel.cs" />
+    <Compile Include="Reports\TaskGroupReportSerchViewModel.cs" />
+    <Compile Include="Reports\TaskGTBQuantityReportViewModel.cs" />
+    <Compile Include="Reports\ProductWarrantyReportExcelModel.cs" />
+    <Compile Include="Reports\TaskProductWarrantyReportExcelModel.cs" />
+    <Compile Include="Reports\ProductWarrantyReportSearchModel.cs" />
+    <Compile Include="Reports\TaskProductWarrantyReportSearchModel.cs" />
+    <Compile Include="Reports\TaskTicketMLCReportExcelModel.cs" />
+    <Compile Include="Reports\TaskTicketMLCReportSearchModel.cs" />
+    <Compile Include="Reports\TaskWarrantyNVKTReportExcelModel.cs" />
+    <Compile Include="Reports\TaskWarrantyNVKTSearchModel.cs" />
+    <Compile Include="Reports\TicketUsualErrorViewModel.cs" />
+    <Compile Include="Reports\TotalRDCatalogueReportSearchViewModel.cs" />
+    <Compile Include="RequiredIfAttribute.cs" />
+    <Compile Include="Sale\AccessoryCategoryViewModel.cs" />
+    <Compile Include="Sale\BrandExcelViewModel.cs" />
+    <Compile Include="Sale\BrandViewModel.cs" />
+    <Compile Include="Sale\CategoryExcelViewModel.cs" />
+    <Compile Include="Sale\CategoryViewModel.cs" />
+    <Compile Include="Sale\ColorExcelViewModel.cs" />
+    <Compile Include="Sale\ColorSearchViewModel.cs" />
+    <Compile Include="Sale\ConfigurationExcelViewModel.cs" />
+    <Compile Include="Sale\Detail_PeriodicallyCheckingViewModel.cs" />
+    <Compile Include="Sale\PeriodicallyCheckingViewModel.cs" />
+    <Compile Include="Sale\PlateFeeDetailViewModel.cs" />
+    <Compile Include="Sale\PlateFeeViewModel.cs" />
+    <Compile Include="Sale\PriceProductViewModel.cs" />
+    <Compile Include="Sale\ProductAutocompleViewModel.cs" />
+    <Compile Include="Sale\ProductExcelViewModel.cs" />
+    <Compile Include="Sale\ProductSearchViewModel.cs" />
+    <Compile Include="Sale\ProductViewModel.cs" />
+    <Compile Include="Sale\PropertiesViewModel.cs" />
+    <Compile Include="Sale\SaleOrderView_ViewModel.cs" />
+    <Compile Include="Sale\Search_PeriodicallyCheckingViewModel.cs" />
+    <Compile Include="Sale\Search_PlateFeeViewModel.cs" />
+    <Compile Include="Sale\StyleExcelViewModel.cs" />
+    <Compile Include="Sale\UploadMultipleImagesViewModel.cs" />
+    <Compile Include="Sale\WarehouseProductViewModel.cs" />
+    <Compile Include="Sale\WarehouseViewModel.cs" />
+    <Compile Include="Utilities\ContactDetailViewModel.cs" />
+    <Compile Include="Utilities\ConfigurationViewModel.cs" />
+    <Compile Include="MasterData\PromotionViewModel.cs" />
+    <Compile Include="Permission\AccessoryViewModel.cs" />
+    <Compile Include="Permission\ChangePasswordAccountViewModel.cs" />
+    <Compile Include="Permission\ChangePasswordViewModel.cs" />
+    <Compile Include="Common\CommonViewModel.cs" />
+    <Compile Include="MasterData\StoreViewModel.cs" />
+    <Compile Include="Common\ExcelTemplate.cs" />
+    <Compile Include="Permission\FunctionViewModel.cs" />
+    <Compile Include="Permission\AccountLoginViewModel.cs" />
+    <Compile Include="Permission\AccountViewModel.cs" />
+    <Compile Include="Permission\AppUserPrincipal.cs" />
+    <Compile Include="Permission\Material3DFileViewModel.cs" />
+    <Compile Include="Permission\MaterialViewModel.cs" />
+    <Compile Include="Permission\MenuViewModel.cs" />
+    <Compile Include="Permission\PageFunctionViewModel.cs" />
+    <Compile Include="Permission\PagePermissionViewModel.cs" />
+    <Compile Include="Permission\PageViewModel.cs" />
+    <Compile Include="Permission\PermissionViewModel.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Common\ResourceViewModel.cs" />
+    <Compile Include="Permission\RolesViewModel.cs" />
+    <Compile Include="Utilities\DatatableViewModel.cs" />
+    <Compile Include="Utilities\ChangeDataLogViewModel.cs" />
+    <Compile Include="Utilities\LogChangeViewModel.cs" />
+    <Compile Include="Warehouse\DeliveryDetailViewModel.cs" />
+    <Compile Include="Warehouse\DeliverySearchViewModel.cs" />
+    <Compile Include="Warehouse\DeliveryViewModel.cs" />
+    <Compile Include="Warehouse\InventoryExcelViewModel.cs" />
+    <Compile Include="Warehouse\InventorySearchModel.cs" />
+    <Compile Include="Warehouse\InventoryViewModel.cs" />
+    <Compile Include="Warehouse\StockAllocationSearchViewModel.cs" />
+    <Compile Include="Warehouse\StockAutocompleViewModel.cs" />
+    <Compile Include="Warehouse\StockInStoreViewModel.cs" />
+    <Compile Include="Warehouse\StockOnHandViewModel.cs" />
+    <Compile Include="Warehouse\StockTransferByRequestViewModel.cs" />
+    <Compile Include="Warehouse\StockReceivingMasterViewModel.cs" />
+    <Compile Include="Warehouse\StockReceivingSearchViewModel.cs" />
+    <Compile Include="Warehouse\StockReceivingViewModel.cs" />
+    <Compile Include="Warehouse\StockReceivingDetailViewModel.cs" />
+    <Compile Include="Warehouse\StockTransferRequestCreateViewModel.cs" />
+    <Compile Include="Warehouse\StockTransferRequestSearchViewModel.cs" />
+    <Compile Include="Warehouse\StockViewModel.cs" />
+    <Compile Include="Warehouse\TransferDetailViewModel.cs" />
+    <Compile Include="Warehouse\TransferSearchViewModel.cs" />
+    <Compile Include="Warehouse\TransferViewModel.cs" />
+    <Compile Include="Work\AssignedGroupCreateModel.cs" />
+    <Compile Include="Work\AssignedGroupSearchModel.cs" />
+    <Compile Include="Work\AssignedGroupViewModel.cs" />
+    <Compile Include="Work\AssigneeNotificationMessageViewModel.cs" />
+    <Compile Include="Work\CheckMobileLocationViewModel.cs" />
+    <Compile Include="Work\AutoConditionViewModel.cs" />
+    <Compile Include="Work\KanbanMenuViewModel.cs" />
+    <Compile Include="Work\KanbanTaskViewModel.cs" />
+    <Compile Include="Work\NotificationMobileViewModel.cs" />
+    <Compile Include="Work\StatusTransitionViewModel.cs" />
+    <Compile Include="Work\StepButtonViewModel.cs" />
+    <Compile Include="Work\TaskGroupViewModel.cs" />
+    <Compile Include="Work\TaskProcessingViewModel.cs" />
+    <Compile Include="Work\TaskProductViewModel.cs" />
+    <Compile Include="Work\TaskAssignViewModel.cs" />
+    <Compile Include="Work\TaskCommentViewModel.cs" />
+    <Compile Include="Work\TaskProductWarrantyViewModel.cs" />
+    <Compile Include="Work\TaskReporterViewModel.cs" />
+    <Compile Include="Work\TaskSearchViewModel.cs" />
+    <Compile Include="Work\TaskStatusViewModel.cs" />
+    <Compile Include="Work\SurveyViewModel.cs" />
+    <Compile Include="Work\TaskExportVisitViewModel.cs" />
+    <Compile Include="Work\TaskViewModel.cs" />
+    <Compile Include="Work\WorkFlowFieldViewModel.cs" />
+    <Compile Include="Work\WorkFlowSearchViewModel.cs" />
+    <Compile Include="Work\WorkFlowViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MasterData\GiaHoa\" />
+    <Folder Include="Service\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ISD.Constant\ISD.Constant.csproj">
+      <Project>{5101294b-3f78-48cb-aa08-f9f8e5d64583}</Project>
+      <Name>ISD.Constant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISD.EntityModels\ISD.EntityModels.csproj">
+      <Project>{1ed555ed-4142-4359-ba1f-83f81fb65b5a}</Project>
+      <Name>ISD.EntityModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISD.Resources\ISD.Resources.csproj">
+      <Project>{86cb4271-113b-440e-970b-ca14c3131d08}</Project>
+      <Name>ISD.Resources</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

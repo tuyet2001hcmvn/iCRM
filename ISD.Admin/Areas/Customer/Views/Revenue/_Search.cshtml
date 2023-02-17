@@ -1,0 +1,50 @@
+﻿@model IEnumerable<RevenueViewModel>
+@using ISD.Core
+
+<table id="revenueTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.KUNNR)</th>
+            <th>@Html.DisplayNameFor(p => p.CUSTNAME)</th>
+            <th>@Html.DisplayNameFor(p => p.CUSTPHONE)</th>
+            <th>@Html.DisplayNameFor(p => p.CUSTADDR)</th>
+            <th>@Html.DisplayNameFor(p => p.STCEG)</th>
+            <th>@Html.DisplayNameFor(p => p.DOANHSO)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLevel)</th>
+            <th>@Html.DisplayNameFor(p => p.CurrentLimit)</th>
+            <th>@Html.DisplayNameFor(p => p.ExchangeValue)</th>
+            <th>@Html.DisplayNameFor(p => p.Point)</th>
+            <th>@Html.DisplayNameFor(p => p.MissingValue)</th>
+            <th>@Html.DisplayNameFor(p => p.NextLimit)</th>
+            <th>@Html.DisplayNameFor(p => p.CUSTGROUP)</th>
+            <th>@Html.DisplayNameFor(p => p.SALEDISTRICT)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.KUNNR)</td>
+                <td>@Html.DisplayFor(p => item.CUSTNAME)</td>
+                <td>@Html.DisplayFor(p => item.CUSTPHONE)</td>
+                <td>@Html.DisplayFor(p => item.CUSTADDR)</td>
+                <td>@Html.DisplayFor(p => item.STCEG)</td>
+                <td class="text-right">@FormatHelper.FormatCurrency(item.DOANHSO)</td>
+                <td>@Html.DisplayFor(p => item.CustomerLevel)</td>
+                <td class="text-right">@FormatHelper.FormatCurrency(item.CurrentLimit)</td>
+                <td class="text-right">@FormatHelper.FormatCurrency(item.ExchangeValue)</td>
+                <td class="text-right">@FormatHelper.FormatCurrency(item.Point)</td>
+                <td class="text-right">@FormatHelper.FormatCurrency(item.MissingValue)</td>
+                <td class="text-right">@FormatHelper.FormatCurrency(item.NextLimit)</td>
+                <td>@Html.DisplayFor(p => item.CUSTGROUP)</td>
+                <td>@Html.DisplayFor(p => item.SALEDISTRICT)</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

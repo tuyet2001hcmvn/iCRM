@@ -1,0 +1,114 @@
+﻿@model  TaskStatusViewModel
+@{
+    var isReadonly = false;
+}
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.TaskStatusId == null)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @LanguageResource.TaskStatus.ToLower()</h4>
+    }
+    else
+    {
+        isReadonly = true;
+        <h4 class="modal-title">@LanguageResource.Update @LanguageResource.TaskStatus.ToLower()</h4>
+    }
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmUpdateTaskStatus" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(p => p.TaskStatusId)
+        <input id="WorkFlowId" name="WorkFlowId" type="hidden" value="@Model.WorkFlowId">
+        @Html.HiddenFor(p => p.CreateBy)
+        @Html.HiddenFor(p => p.CreateTime)
+        @Html.HiddenFor(p => p.LastEditBy)
+        @Html.HiddenFor(p => p.LastEditTime)
+        @Html.HiddenFor(p => p.Actived)
+        @Html.Hidden("PositionLeft", Model.PositionLef)
+        @Html.HiddenFor(p => p.PositionRight)
+
+        <div id="divAlertWarning" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.TaskStatusCode)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.TaskStatusCode, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.TaskStatusName)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.TaskStatusName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.OrderIndex)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.OrderIndex, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.Category)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(p => p.Category, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.ProcessCode)
+                    </div>
+                    <div class="col-md-8">
+
+                        @Html.DropDownListFor(p => p.ProcessCode, null, null, new { @class = "form-control" })
+                        @*@Html.HiddenFor(p => p.FromStatusId)*@
+                    </div>
+                </div>
+                @*Tụ động cập nhật ngày kết thúc = ngày hiện tại khi chuyển trạng thái*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.AutoUpdateEndDate)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.DropDownList("AutoUpdateEndDate", new List<SelectListItem>()
+                                    {
+                                        new SelectListItem(){Text = LanguageResource.No, Value = "false"},
+                                        new SelectListItem(){Text = LanguageResource.Yes, Value = "true"},
+                                    }, new { @class = "font-control with-search" })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    }
+</div>
+<div class="modal-footer">
+    @if (Model.TaskStatusId == null)
+    {
+
+        <button type="button" class="btn btn-default btnFormStatusTransition" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    }
+    else
+    {
+        <button style="float:left" type="button" class="btn btn-danger btn-delete" id="btn-delete-TaskStatus" data-dismiss="modal">@LanguageResource.Btn_Delete</button>
+        <button type="button" class="btn btn-default btnFormStatusTransition" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    }
+
+    <button type="button" class="btn btn-primary" id="btn-save-UpdateTaskStatus" data-add-success-call-back="ReloadTaskStatusList">@LanguageResource.Btn_Save</button>
+</div>

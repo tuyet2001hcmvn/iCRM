@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Detail_CustomerGiftViewModel>
+
+<table id="customerSearchTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerCode)</th>
+            <th>@Html.DisplayNameFor(p => p.FullName)</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLoyaltyCard)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLevelName)</th>
+            <th>@Html.DisplayNameFor(p => p.CumulativePoint)</th>
+            <th class="text-center">
+                <input id="choose-all" type="checkbox" />
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.CustomerCode)</td>
+                <td>@Html.DisplayFor(p => item.FullName)</td>
+                <td>@Html.DisplayFor(p => item.Phone)</td>
+                <td>@Html.DisplayFor(p => item.CustomerLoyaltyCard)</td>
+                <td>@Html.DisplayFor(p => item.CustomerLevelName)</td>
+                <td>@Html.DisplayFor(p => item.CumulativePoint)</td>
+                <td class="text-center">
+                    <input class="choose-customer" type="checkbox" value="@item.CustomerId" />
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

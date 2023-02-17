@@ -1,0 +1,22 @@
+﻿[
+  {
+    "outputFile": "Scripts/AdminLTE-2.4.3/build/less/AdminLTE.css",
+    "inputFile": "Scripts/AdminLTE-2.4.3/build/less/AdminLTE.less"
+  },
+  {
+    "outputFile": "Scripts/AdminLTE-2.4.3/build/less/skins/_all-skins.css",
+    "inputFile": "Scripts/AdminLTE-2.4.3/build/less/skins/_all-skins.less"
+  },
+  {
+    "outputFile": "Scripts/AdminLTE-2.4.3/build/bootstrap-less/bootstrap.css",
+    "inputFile": "Scripts/AdminLTE-2.4.3/build/bootstrap-less/bootstrap.less"
+  },
+  {
+    "outputFile": "Content/site-component.css",
+    "inputFile": "Content/site-component.less"
+  },
+  {
+    "outputFile": "Content/NhatKyReport.css",
+    "inputFile": "Content/NhatKyReport.less"
+  }
+]

@@ -1,0 +1,56 @@
+﻿@model List<MemberOfTargetGroupInCampaignViewModel>
+@{
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.SendMailReport;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().CampaignId)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().Type)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().ProfileCode)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().ProfileName)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().Email)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().IsSend)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().SendTime)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().IsBounce)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().IsOpened)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().LastOpenedTime)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().isConfirm)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().ConfirmTime)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().isCheckin)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().CheckinTime)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstOrDefault().NumberOfParticipant)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.CampainName)</td>
+                <td>@Html.DisplayFor(p => item.Type)</td>
+                <td>@Html.DisplayFor(p => item.ProfileCode)</td>
+                <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                <td>@Html.DisplayFor(p => item.Phone)</td>
+                <td>@Html.DisplayFor(p => item.Email)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.IsSend)</td>
+                <td class="text-center">@Html.DisplayFor(p => item.SendTime)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(!item.IsBounce)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.IsOpened)</td>
+                <td class="text-center">@Html.DisplayFor(p => item.LastOpenedTime)</td>
+                <td class="text-center">@(!item.isConfirm == null ? null :HtmlExtensions.ActivedIcon(item.isConfirm))</td>
+                <td class="text-center">@Html.DisplayFor(p => item.ConfirmTime)</td>
+                <td class="text-center">@(!item.isCheckin == null ? null : HtmlExtensions.ActivedIcon(item.isCheckin))</td>
+                <td class="text-center">@Html.DisplayFor(p => item.CheckinTime)</td>
+                <td class="text-center">@Html.DisplayFor(p => item.NumberOfParticipant)</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

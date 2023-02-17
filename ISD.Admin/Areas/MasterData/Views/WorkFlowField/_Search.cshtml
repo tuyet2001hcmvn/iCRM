@@ -1,0 +1,40 @@
+﻿@model IEnumerable<WorkFlowConfigModel>
+@{
+    string CurrentController = ConstController.WorkFlowConfig;
+
+    string CurrentArea = ConstArea.MasterData;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.WFConfigCode)</th>
+            <th>@Html.DisplayNameFor(p => p.WFConfigName)</th>
+            <th>@Html.DisplayNameFor(p => p.WFDescription)</th>
+            <th>@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.WFConfigCode)</td>
+                <td>@Html.DisplayFor(p => item.WFConfigName)</td>
+                <td>@Html.DisplayFor(p => item.WFDescription)</td>
+                <td>@Html.DisplayFor(p => item.OrderIndex)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.WFConfigId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.WFConfigName, item.WFConfigId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

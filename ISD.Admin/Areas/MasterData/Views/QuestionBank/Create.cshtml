@@ -1,0 +1,141 @@
+﻿@using ISD.ViewModels.MasterData
+@model QuestionCreateViewModel
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.Question.ToLower();
+    string CurrentController = ConstController.QuestionBank;
+    string CurrentArea = ConstArea.MasterData;
+    string BaseAddress = Net5ApiDomain;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    string ApiUrl = BaseAddress + "api/" + CurrentUrl + "s";
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    @Html.ValidationSummary(true)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.DepartmentId)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(p => p.DepartmentId, Enumerable.Empty<SelectListItem>(), LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.QuestionCategoryId)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(p => p.QuestionCategoryId, Enumerable.Empty<SelectListItem>(), LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Question)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Question)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Answer)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.Answer)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.AnswerC)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.AnswerC)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.AnswerB)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.AnswerB)
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script>
+
+        CKEDITOR.replace('Answer', {
+            height: 150,
+            removePlugins: 'elementspath',
+            toolbar: [],
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKEDITOR.instances.Answer.on('change', function () {
+            var data = CKEDITOR.instances.Answer.getData();
+            $('#Answer').val(data);
+        });
+        CKEDITOR.replace('AnswerC', {
+            height: 150,
+            removePlugins: 'elementspath',
+            toolbar: [],
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKEDITOR.instances.AnswerC.on('change', function () {
+            var data = CKEDITOR.instances.AnswerC.getData();
+            $('#AnswerC').val(data);
+        });
+        CKEDITOR.replace('AnswerB', {
+            height: 150,
+            removePlugins: 'elementspath',
+            toolbar: [],
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKEDITOR.instances.AnswerB.on('change', function () {
+            var data = CKEDITOR.instances.AnswerB.getData();
+            $('#AnswerB').val(data);
+        });
+         var currentUser = "@CurrentUser.AccountId";
+            $(document).ready(function () {
+                ISDNET5.LoadQuestionCategory();
+                ISDNET5.LoadDepartment();
+                ISDNET5.CreateInitial("@CurrentUrl");
+            });
+    </script>
+}

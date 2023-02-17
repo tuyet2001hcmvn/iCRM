@@ -1,0 +1,84 @@
+﻿<!--Confirm Delete Comment-->
+<div id="divDeleteCommentPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.Btn_Delete @LanguageResource.Comment</h4>
+            </div>
+            <form id="frmConfirmDeleteComment">
+                <input type="hidden" name="TaskCommentId" />
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="row text-center alert-message">
+                            @string.Format(LanguageResource.Confirm_ConfirmDelete, LanguageResource.Comment.ToLower())
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Confirm_No</span>
+                        <a class="btn btn-primary pull-right" id="btn-confirm-del-cmt" data-tab="">
+                            @LanguageResource.Confirm_Yes
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Confirm Delete File-->
+<div id="divDeleteFilePopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.Btn_Delete @LanguageResource.Task_FileUrl</h4>
+            </div>
+            <form id="frmConfirmDeleteFile">
+                <input type="hidden" name="FileAttachmentId" />
+                <input type="hidden" name="isOnTab" />
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="row text-center alert-message">
+                            @string.Format(LanguageResource.Confirm_ConfirmDelete, LanguageResource.Task_FileUrl.ToLower())
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Confirm_No</span>
+                        <a class="btn btn-primary pull-right" id="btn-confirm-del-file" data-tab="">
+                            @LanguageResource.Confirm_Yes
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!--Confirm Delete Product-->
+<div id="divDeleteProductPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.Btn_Delete @LanguageResource.Product</h4>
+            </div>
+            <form id="frmConfirmDeleteProduct">
+                <input type="hidden" name="TaskProductId" />
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="row text-center alert-message">
+                            @string.Format(LanguageResource.Confirm_ConfirmDelete, LanguageResource.Product.ToLower())
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Confirm_No</span>
+                        <a class="btn btn-primary pull-right" id="btn-confirm-del-product" data-tab="">
+                            @LanguageResource.Confirm_Yes
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

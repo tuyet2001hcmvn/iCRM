@@ -1,0 +1,189 @@
+﻿@model CampaignCreateViewModel
+@{
+    ViewBag.Title = LanguageResource.Create + " " + ViewBag.Title;
+    string CurrentArea = ConstArea.Marketing;
+
+    string CurrentController = ConstController.Campaign;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    string BackCurrentController = string.Format("{0}?Type={1}", CurrentController, ViewBag.Type);
+    string BackCurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, BackCurrentController);
+
+    string BaseAddress = Net5ApiDomain;
+
+    string ApiUrl = BaseAddress + "api/" + CurrentUrl + "s";
+    var CurentSaleOrg = CurrentUser.SaleOrg + " | " + CurrentUser.SaleOrgName;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, BackCurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    //@Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    @*@Html.HiddenFor(p => p.ContentId)
+            @Html.HiddenFor(p => p.TargetGroupId)*@
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.CampaignName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.CampaignName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Description)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.Description, new { style = "width:100%; height:80PX;" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.SaleOrg)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(s => s.SaleOrg, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ContentName)
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                @Html.RequiredDropDownListFor(s => s.ContentId, new SelectList(Enumerable.Empty<SelectListItem>()), LanguageResource.Dropdownlist_Choose)
+                                <a id="content-info" class="input-group-addon btn btn-info">
+                                    <i class="fa fa-arrow-circle-o-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupName)
+                        </div>
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                @Html.RequiredDropDownListFor(s => s.TargetGroupId, new SelectList(Enumerable.Empty<SelectListItem>()), LanguageResource.Dropdownlist_Choose)
+                                <a id="target-group-info" class="input-group-addon btn btn-info">
+                                    <i class="fa fa-arrow-circle-o-right"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                <div class="col-md-3">
+                    @Html.TooltipLabelFor(p => p.Status)
+                </div>
+                <div class="col-md-8">
+                    <select id="Status" name="Status">
+                    </select>
+                </div>
+            </div>*@
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.IsImmediately)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.CheckBoxFor(p => p.IsImmediately, new { value = "false", style = "width:20px; height:20px;" })
+                        </div>
+                    </div>
+                    <div id="divStart" class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ScheduledToStart)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.ScheduledToStart, new { type = "datetime-local" })
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        $(document).ready(function () {
+            ISDNET5.LoadContent();
+            ISDNET5.LoadTargetGroup();
+            @*ISDNET5.LoadSaleOrg(@Html.Raw(Json.Encode(CurentSaleOrg)));*@
+            ISDNET5.LoadCampaignStatus();
+            //$("#ContentName").change(function () {
+            //    var contentName = $('#ContentName').val()
+            //    var contentId = $('#contents option').filter(function () {
+            //        return this.value == contentName;
+            //    }).data('id');
+            //    $("#ContentId").val(contentId);
+            //})
+            //$("#TargetGroupName").change(function () {
+            //    var targetGroupName = $('#TargetGroupName').val()
+            //    var targetGroupId = $('#targetGroups option').filter(function () {
+            //        return this.value == targetGroupName;
+            //    }).data('id');
+            //    $("#TargetGroupId").val(targetGroupId);
+            //})
+            $("#IsImmediately").change(function () {
+                var isImmediately = ('true' === $('#IsImmediately').val());
+                if (isImmediately) {
+                    //  $("#IsImmediately").val(false);
+                    $("#divStart").show();
+                    $("input[name=IsImmediately]").val(false);
+                    $('#ScheduledToStart').prop('disabled', false);
+                }
+                else {
+                    $("#divStart").hide();
+                    $("input[name=IsImmediately]").val(true);
+                    $('#ScheduledToStart').prop('disabled', true);
+                }
+            })
+            ISDNET5.CreateInitial("@CurrentUrl");
+            //ISDNET5.InitCkeditorForEmailContent();
+        });
+        $(document).on("change", "#ContentId", function () {
+            var contentId = $(this).val();
+            if (contentId != null && contentId != undefined && contentId !="") {
+                $("#content-info").attr("href", "/Marketing/Content/Edit/" + contentId);
+                $("#content-info").attr("target", "_blank");
+            }
+            else {
+                $("#content-info").removeAttr("href");
+                $("#content-info").removeAttr("target");
+            }
+        });
+        $(document).on("change", "#TargetGroupId", function () {
+            var targetGroupId = $(this).val();
+            if (targetGroupId != null && targetGroupId != undefined && targetGroupId != "") {
+                $("#target-group-info").attr("href", "/Marketing/TargetGroup/Edit/" + targetGroupId);
+                $("#target-group-info").attr("target", "_blank");
+            }
+            else {
+                $("#target-group-info").removeAttr("href");
+                $("#target-group-info").removeAttr("target");
+            }
+        });
+        //$(document).on("click", "#content-info", function () {
+        //    var contentId = $(this).data("content");
+        //    if (contentId != null && contentId != undefined) {
+        //        $("#content-info").attr("data-content", contentId);
+        //    }
+        //});
+    </script>
+}

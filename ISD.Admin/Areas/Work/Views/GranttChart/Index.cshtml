@@ -1,0 +1,571 @@
+﻿@model TaskSearchViewModel
+
+<div class="content">
+    <div class="panel-group">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default panel-search">
+                    @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                    {
+                        @Html.Hidden("KanbanId", (Guid?)ViewBag.KanbanId)
+                        @Html.Hidden("CustomerTypeCode", ConstProfileType.Account)
+                        @Html.Hidden("Type", (string)ViewBag.Type)
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-12 select-filter multi input-group">
+                                            <span class="input-group-addon"><i class="fa fa-play" aria-hidden="true"></i></span>
+                                            <select class="Filters" name="Filters" multiple="multiple">
+                                                @foreach (var item in (List<DropdownlistFilter>)ViewBag.Filters)
+                                                {
+                                                    <option value="@item.FilterCode">@item.FilterName</option>
+                                                }
+                                            </select>
+                                            <label class="input-group-addon filter-hidden">
+                                                <input type="checkbox" name="CheckAll" id="CheckAll" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ServiceTechnicalTeamCode)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("ServiceTechnicalTeamCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label" for="TaskCode">@LanguageResource.ID</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(p => p.TaskCode, new { @class = "form-control text-box single-line" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.Summary)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(p => p.Summary, new { @class = "form-control text-box single-line" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ProfileId)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.HiddenFor(p => p.ProfileId)
+                                            <div class="input-group">
+                                                @Html.RequiredTextboxFor(p => p.ProfileName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                                <a class="input-group-addon btn btn-danger btn-del-profile">
+                                                    <i class="fa fa-close"></i>
+                                                </a>
+                                                <a class="input-group-addon btn btn-default btn-get-profile" data-toggle="modal">
+                                                    <i class="fa fa-ellipsis-h"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                @if (ViewBag.Type == ConstWorkFlowCategory.GTB)
+                                {
+                                }
+                                else
+                                {
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                @Html.TooltipLabelFor(p => p.TaskProcessCode)
+                                            </div>
+                                            <div class="col-md-8 position-relative dropdown-absolute">
+                                                @Html.DropDownList("TaskProcessCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (ViewBag.isShowTaskStatusCode == true)
+                                {
+                                    <div class="col-md-5">
+                                        <div class="form-group">
+                                            <div class="col-md-4">
+                                                @Html.TooltipLabelFor(p => p.TaskStatusCode)
+                                            </div>
+                                            <div class="col-md-8 position-relative dropdown-absolute">
+                                                @Html.DropDownList("TaskStatusCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.Reporter)
+                                        </div>
+                                        <div class="col-md-8 width-fixed position-relative dropdown-absolute">
+                                            @Html.RequiredDropDownListFor(p => p.Reporter, (IEnumerable<SelectListItem>)ViewBag.ReporterList, LanguageResource.Dropdownlist_All)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.Assignee)
+                                        </div>
+                                        <div class="col-md-8 width-fixed position-relative dropdown-absolute">
+                                            @Html.RequiredDropDownListFor(p => p.Assignee, (IEnumerable<SelectListItem>)ViewBag.AssigneeList, LanguageResource.Dropdownlist_All)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_WorkFlowId">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.WorkFlowId)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                                            {
+                                                @Html.RequiredDropDownListFor(p => p.WorkFlowIdList, (IEnumerable<SelectListItem>)ViewBag.WorkFlowIdList, LanguageResource.Dropdownlist_All, new { multiple = "multiple" })
+                                            }
+                                            else
+                                            {
+                                                @Html.RequiredDropDownListFor(p => p.WorkFlowId, (IEnumerable<SelectListItem>)ViewBag.WorkFlowIdList, LanguageResource.Dropdownlist_All)
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 hidden hidden_ContactId">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CompanyId)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.HiddenFor(p => p.CompanyId)
+                                            <div class="input-group">
+                                                @Html.RequiredTextboxFor(p => p.CompanyName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                                <a class="input-group-addon btn btn-danger btn-del-contact">
+                                                    <i class="fa fa-close"></i>
+                                                </a>
+                                                <a class="input-group-addon btn btn-default btn-get-contact" data-toggle="modal">
+                                                    <i class="fa fa-ellipsis-h"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_CreateBy">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CreateBy)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("CreateBy", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 hidden hidden_PriorityCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.PriorityCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("PriorityCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row hidden hidden_CreateDate">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.CreatedDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Created", @id = "create-date", @Name = "CreatedCommonDate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden hidden_CreateDate Created">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CreatedFromDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.CreatedFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CreatedToDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.CreatedToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row hidden hidden_ReceiveDate">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.Task_ReceiveDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Receive", @id = "receive-date", Name = "ReceiveCommonDate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden hidden_ReceiveDate Receive">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ReceiveFromDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.ReceiveFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ReceiveToDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.ReceiveToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.Task_StartDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CommonDate2", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Start", @id = "start-date", Name = "StartCommonDate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row Start">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.StartFromDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.StartFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.StartToDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.StartToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row hidden hidden_EstimateEndDate">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.Task_Search_EstimateEndDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CommonDate2", null, new { @class = "form-control with-search ddl-common-date", @data_id = "EstimateEnd", @id = "estimate-end-date", Name = "EstimateEndCommonDate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden hidden_EstimateEndDate EstimateEnd">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.EstimateEndFromDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.EstimateEndFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.EstimateEndToDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.EstimateEndToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row hidden hidden_EndDate">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            <div class="label-wrapper">
+                                                <label class="control-label">@LanguageResource.Task_Search_EndDate</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CommonDate2", null, new { @class = "form-control with-search ddl-common-date", @data_id = "End", @id = "end-date", Name = "EndCommonDate" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row hidden hidden_EndDate End">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.EndFromDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.EndFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.EndToDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.EndToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 hidden hidden_ConstructionUnit">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ConstructionUnit)
+                                    </div>
+                                    <div class="col-md-8 position-relative dropdown-absolute">
+                                        @Html.HiddenFor(p => p.ConstructionUnit)
+                                        <div class="input-group">
+                                            @Html.RequiredTextboxFor(p => p.ConstructionUnitName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                            <a class="input-group-addon btn btn-danger btn-del-construction">
+                                                <i class="fa fa-close"></i>
+                                            </a>
+                                            <a class="input-group-addon btn btn-default btn-get-construction" data-toggle="modal">
+                                                <i class="fa fa-ellipsis-h"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_ErrorTypeCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ErrorTypeCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("ErrorTypeCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 hidden hidden_ErrorCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ErrorCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("ErrorCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_ProductCategoryCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ProductCategoryCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("ProductCategoryCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 hidden hidden_UsualErrorCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.UsualErrorCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("UsualErrorCode", null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_ProductColorCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ProductColorCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("ProductColorCode", null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-5 hidden hidden_CustomerGroupCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CustomerGroupCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("ProfileGroupCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_SalesSupervisorCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.SalesSupervisorCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("SalesSupervisorCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 hidden hidden_DepartmentCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.DepartmentCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("DepartmentCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_Actived">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.Actived)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("Actived", null, null, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5 hidden hidden_ServiceTechnicalTeamCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ServiceTechnicalTeamCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("ServiceTechnicalTeamCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-5 hidden hidden_VisitTypeCode">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.VisitTypeCode)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("VisitTypeCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-5 hidden hidden_CompletedEmployee">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CompletedEmployee)
+                                        </div>
+                                        <div class="col-md-8 position-relative dropdown-absolute">
+                                            @Html.DropDownList("CompletedEmployee", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-md-3 col-md-offset-4 input-group">
+                                        <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                            <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                        </select>
+                                        <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                            <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                            <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                        </span>
+                                        @HtmlExtensions.SearchButton()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+       
+    </div>
+</div>
+

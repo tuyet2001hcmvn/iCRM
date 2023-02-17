@@ -1,0 +1,27 @@
+﻿@model  SalesEmployeeViewModel
+@{
+    //string CurrentController = ConstController.SalesEmployee;
+
+    //string CurrentArea = ConstArea.MasterData;
+
+    var accountInGroup = (List<string>)ViewBag.accountInGroup;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer" id="tbl-member">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.SalesEmployeeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.SalesEmployeeName)</th>
+            <th>@Html.DisplayNameFor(p => p.DepartmentName)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="empTbl">
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+
+

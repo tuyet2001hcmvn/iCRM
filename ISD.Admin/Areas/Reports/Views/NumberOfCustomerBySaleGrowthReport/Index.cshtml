@@ -1,0 +1,552 @@
+﻿@model NumberOfCustomerBySaleGrowthSearchViewModel
+@{
+    /**/
+
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_NumberOfCustomersBySalesGrow;
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.NumberOfCustomerBySaleGrowthReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+
+    var pivotSetting = (List<FieldSettingModel>)ViewBag.PivotSetting;
+
+    var profileForeignCodeList = (List<ISDSelectItem2>)ViewBag.ProfileForeignCodeList;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <a id="btn-export-pivot" class="btn btn-success btn-export" href="#"><i class="fa fa-download"></i> Export</a>
+        <a class="btn btn-info" id="btn-export-pdf"><i class="fa fa-print"></i> In báo cáo</a>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search", }))
+                                        {
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">@LanguageResource.Company</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                <select id="CompanyCode" name="CompanyCode" class="form-control">
+                                                                    <option value="%">1000,4000</option>
+                                                                    <option value="1000">1000</option>
+                                                                    <option value="2000">2000</option>
+                                                                    <option value="3000">3000</option>
+                                                                    <option value="4000">4000</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.ProfileForeignCode)
+                                                                </div>
+                                                                <div class="col-md-8 multi pl-0">
+                                                                    <select id="ProfileForeignCode" name="ProfileForeignCode" class="form-control SalesEmployeeCode" multiple>
+                                                                        @if (profileForeignCodeList != null && profileForeignCodeList.Count > 0)
+                                                                        {
+                                                                            foreach (var item in profileForeignCodeList)
+                                                                            {
+                                                                                <option value="@item.value">@item.text</option>
+                                                                            }
+                                                                        }
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>*@
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">Phòng ban</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                <select id="RolesCode" name="RolesCode" class="form-control">
+                                                                    @if (string.IsNullOrEmpty((string)ViewBag.RolesCode))
+                                                                    {
+                                                                        /*Giá trị mặc định ban đầu*/
+                                                                        <option value="">@LanguageResource.Dropdownlist_All</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        /*Giá trị được chọn sau khi filter*/
+                                                                        <option value="@ViewBag.RolesCode">@ViewBag.RolesName</option>
+                                                                    }
+                                                                </select>
+                                                                @*@Html.DropDownList("RolesCode", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                <div class="label-wrapper"><label class="control-label">NV kinh doanh</label></div>
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                <select id="SalesEmployeeCode" name="SalesEmployeeCode" class="form-control">
+                                                                    @if (string.IsNullOrEmpty((string)ViewBag.SalesEmployeeCode))
+                                                                    {
+                                                                        /*Giá trị mặc định ban đầu*/
+                                                                        <option value="">@LanguageResource.Dropdownlist_All</option>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        /*Giá trị được chọn sau khi filter*/
+                                                                        <option value="@ViewBag.SalesEmployeeCode">@ViewBag.SalesEmployeeName</option>
+                                                                    }
+                                                                </select>
+                                                                @*@Html.DropDownList("SalesEmployeeCode", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CurrentDate)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Current", @id = "current-date", Name = "CurrentDate" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row Current">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CurrentFromDate)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.TextBoxFor(p => p.CurrentFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.CurrentToDate)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.TextBoxFor(p => p.CurrentToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.PreviousDate)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Previous", @id = "previous-date", Name = "PreviousDate" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row Previous">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.PreviousFromDate)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.TextBoxFor(p => p.PreviousFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.PreviousToDate)
+                                                            </div>
+                                                            <div class="col-md-8 pl-0">
+                                                                @Html.TextBoxFor(p => p.PreviousToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="frm-button" class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-md-offset-3 input-group">
+                                                            <select id="SearchTemplateId" name="SearchTemplateId">
+                                                                <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                            </select>
+                                                            <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                                <a href="#" class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                                <a href="#" class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                            </span>
+                                                            <a href="#" id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body" style="overflow-x:scroll;">
+                    @Html.Action("NumberOfCustomerBySaleGrowthPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section components {
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+    <div class="divProfilePopup"></div>
+}
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script src="~/Scripts/Common/ISD.CacheInputData.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+           var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl", "@CurrentController");
+            $("select[name='CompanyCode']").trigger("change");
+
+            //$("#CurrentFromDate").val($("#CurrentFromDate").prop("defaultValue"))
+            //$("#CurrentToDate").val($("#CurrentToDate").prop("defaultValue"))
+            //$("#PreviousFromDate").val($("#PreviousFromDate").prop("defaultValue"))
+            //$("#PreviousToDate").val($("#PreviousToDate").prop("defaultValue"))
+        });
+        ISDCacheInput.Init(currentPageId);
+
+
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+            //Khách hàng
+            var profileForeignCodeList = $('#ProfileForeignCode').val();
+            if (profileForeignCodeList != null && profileForeignCodeList.length > 0) {
+                var profileForeignCode = {};
+                profileForeignCode['ProfileForeignCode'] = profileForeignCodeList;
+                $.extend(true, arr, profileForeignCode);
+            }
+
+            if ($("#CurrentFromDate").val() == '' || $("#CurrentToDate").val() == '') {
+                alertPopup(false,"Vui lòng chọn thời gian kì này!")
+            } else {
+                if ($("#PreviousFromDate").val() == '' || $("#PreviousToDate").val() == '') {
+                    alertPopup(false, "Vui lòng chọn thời gian kì trước!")
+                } else {
+                     //Save localStorage
+                    localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+                    // ExportPivotGrid(arr);
+                    ISD.Download("/@CurrentUrl/ExportPivot", arr);
+                }
+            }
+            $btn.button("reset");
+        });
+        @*$(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });*@
+        //common date
+
+        $(document).on("change", ".ddl-common-date", function () {
+            var cssClass = $(this).data('id');
+            var commonDate = $(this).val();
+            var modeSearch = "@modeSearch";
+
+            if (commonDate == 'Custom') {
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch != null && recentSearch != undefined && recentSearch != "" && modeSearch == "Recently") {
+                    $("." + cssClass + " input[name='" + cssClass + "FromDate']").val(recentSearch[cssClass + "FromDate"]);
+                    $("." + cssClass + " input[name='" + cssClass + "ToDate']").val(recentSearch[cssClass + "ToDate"]);
+                    $("#frmSearch input[name='" + cssClass + "FromDate']").prop("readonly", false);
+                    $("#frmSearch input[name='" + cssClass + "ToDate']").prop("readonly", false);
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "/Utilities/CommonDate/Get",
+                        data: {
+                            CommonDate: commonDate
+                        },
+                        success: function (jsonData) {
+                            $("." + cssClass + " input[name='" + cssClass + "FromDate']").val(jsonData.FromDate);
+                            $("." + cssClass + " input[name='" + cssClass + "ToDate']").val(jsonData.ToDate);
+                            if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                                $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("readonly", true);
+                                $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("readonly", true);
+                            } else {
+                                $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("readonly", false);
+                                $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("readonly", false);
+                            }
+
+                        }
+                    });
+                }
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Utilities/CommonDate/Get",
+                    data: {
+                        CommonDate: commonDate
+                    },
+                    success: function (jsonData) {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").val(jsonData.FromDate);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").val(jsonData.ToDate);
+                        if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                            $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("readonly", true);
+                            $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("readonly", true);
+                        } else {
+                            $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("readonly", false);
+                            $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("readonly", false);
+                        }
+
+                    }
+                });
+            }
+        });
+
+         $(document).on("click", "#btn-view", function () {
+             var $btn = $(this);
+             $btn.button("loading")
+             var arr = {};
+             var data = $("#frmSearch").serializeArray();
+
+             var obj = {};
+             $.each(data, function (index, val) {
+                 obj[val.name] = val.value;
+                 $.extend(true, arr, obj)
+             });
+             obj["IsView"] = true;
+             $.extend(true, arr, obj);
+             obj["pivotTemplate"] = $('#TemplateId').val();
+             obj["modeSearch"] = "Recently";
+             $.extend(true, arr, obj);
+
+             //Khách hàng
+             var profileForeignCodeList = $('#ProfileForeignCode').val();
+             if (profileForeignCodeList != null && profileForeignCodeList.length > 0) {
+                 var profileForeignCode = {};
+                 profileForeignCode['ProfileForeignCode'] = profileForeignCodeList;
+                 $.extend(true, arr, profileForeignCode);
+             }
+
+             @*localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);*@
+
+             if ($("#CurrentFromDate").val() == '' || $("#CurrentToDate").val() == '') {
+                alertPopup(false,"Vui lòng chọn thời gian kì này!")
+             }
+             else {
+                if ($("#PreviousFromDate").val() == '' || $("#PreviousToDate").val() == '') {
+                    alertPopup(false, "Vui lòng chọn thời gian kì trước!")
+                } else {
+                    //Save localStorage
+                    localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+                    ISD.Download("/@CurrentUrl/ViewDetail", arr);
+
+                    //$("#CurrentFromDate").val($("#CurrentFromDate").prop("defaultValue"))
+                    //$("#CurrentToDate").val($("#CurrentToDate").prop("defaultValue"))
+                    //$("#PreviousFromDate").val($("#PreviousFromDate").prop("defaultValue"))
+                    //$("#PreviousToDate").val($("#PreviousToDate").prop("defaultValue"))
+                }
+            }
+             $btn.button("reset");
+        });
+        $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+            var $btn = $(this);
+             var arr = {};
+             var data = $("#frmSearch").serializeArray();
+
+             var obj = {};
+             $.each(data, function (index, val) {
+                 obj[val.name] = val.value;
+                 $.extend(true, arr, obj)
+             });
+            obj["IsView"] = true;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            var templateId = $(this).data('id');
+            obj["pivotTemplate"] = templateId;
+            $.extend(true, arr, obj);
+
+            //Khách hàng
+            var profileForeignCodeList = $('#ProfileForeignCode').val();
+            if (profileForeignCodeList != null && profileForeignCodeList.length > 0) {
+                var profileForeignCode = {};
+                profileForeignCode['ProfileForeignCode'] = profileForeignCodeList;
+                $.extend(true, arr, profileForeignCode);
+            }
+
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+        $(document).on("change", "select[name='CompanyCode']", function () {
+            var companyCode = $(this).val();
+            Select2_CustomFor_CRM("/Reports/NumberOfCustomersBySalesReport/GetSalesEmployeeCodeSAP", "#SalesEmployeeCode", companyCode)
+            Select2_CustomFor_CRM("/Reports/NumberOfCustomersBySalesReport/GetRolesCodeSAP", "#RolesCode", companyCode)
+            Select2_CustomFor_CRM("/Reports/CustomerHierarchyDetailReport/GetProfileForeignCodeSAP", "#ProfileForeignCode")
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInputSpecial(recentSearch) {
+            if (recentSearch.SearchProfileId != "") {
+                $("#SearchProfileCode").val(recentSearch.SearchProfileCodeRecent);
+                $("#SearchProfileName").val(recentSearch.SearchProfileNameRecent);
+                $("#SearchProfileCode").prop("disabled", true);
+            }
+            if (recentSearch.SearchProductId != "") {
+                $("#ProductCode").val(recentSearch.SearchProductCodeRecent);
+                $("#ProductName").val(recentSearch.SearchProductNameRecent);
+                $("#ProductCode").prop("disabled", true);
+            }
+        }
+    </script>
+    <script>
+        $(document).on("click", "#btn-export-pdf", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+
+            ExportPDF();
+
+            setTimeout(function () {
+                $btn.button("reset");
+            }, 3000);
+        });
+        function ExportPDF() {
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+            ////Save localStorage
+            //localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            // ExportPivotGrid(arr);
+
+            ISD.Download("/@CurrentUrl/Print", arr, true);
+        }
+    </script>
+}

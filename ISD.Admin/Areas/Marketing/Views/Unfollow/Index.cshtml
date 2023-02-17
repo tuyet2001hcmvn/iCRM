@@ -1,0 +1,146 @@
+﻿@model UnfollowViewModel
+@{
+    ViewBag.Title = LanguageResource.Unfollow;
+    string CurrentController = ConstController.Unfollow;
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    string baseAddress = Net5ApiDomain;
+    string searchApi = Net5ApiDomain + "api/" + CurrentUrl + "s/";
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <div class="pull-right">
+            <div class="pull-right">
+                @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.Email)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.Email, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.CompanyCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(s => s.CompanyCode, null, LanguageResource.Dropdownlist_All)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton(new { data_searchType = CurrentController, data_controller = CurrentUrl })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div style="display: flex;" class="col-md-1">
+                            <label style=" padding-right: 5px; padding-top: 5px;">Xem </label>
+                            <select id="changeViewRow" style="display: block; width: 100%; min-height: 30px;margin-bottom:5px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style=" padding-left: 5px; padding-top: 5px;">mục </label>
+                        </div>
+                        <div class="pull-right">
+
+                            <div id="pagination" class="pagination">
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover dataTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th>@Html.DisplayNameFor(p => p.Email)</th>
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblData">
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                        <p id="tblCount"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script id="data-template" type="x-tmpl-mustache">
+      <tr>
+         <td class="text-center">{{i}}</td>
+        <td><a>{{Email}}</a></td>
+        <td class="text-center">
+         <a class="btn btn-danger btn-delete" data-item-name="{{Email}}" data-id="{{Id}}""><i class="fa fa-trash-o"></i> Xóa</a>
+        </td>
+      </tr>
+</script>
+<div class="delete-confirm"></div>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/jquery.twbsPagination.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/mustache.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script>
+        $(document).ready(function () {
+            ISDNET5.init();
+            ISDNET5.initSearch("@CurrentUrl", "@CurrentController", false);
+            $(document).on('click', '.btn-delete', function () {
+                var itemName = $(this).data("item-name");
+                var btn = $(this);
+                $("#divDeletePopup").modal("show");
+                //set title
+                $("#divDeletePopup .modal-title .item-name").html(itemName);
+                //set text
+                var text = $("#divDeletePopup .alert-message").html();
+                //Replace new text
+                text = text.replace(/"([^"]*)"/g, '"' + itemName + '"');
+                text = String.format(text, itemName);
+                //Show new text
+                $("#divDeletePopup .alert-message").html(text);
+                $(document).on("click", "#btn-confirm-delete", function () {
+                    ISDNET5.Delete("Marketing/Unfollow", btn.data("id"));
+                    $("#divDeletePopup").modal("hide");
+                });
+            });
+           
+        });
+    </script>
+}
+

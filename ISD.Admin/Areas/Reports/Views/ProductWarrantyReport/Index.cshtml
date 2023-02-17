@@ -1,0 +1,775 @@
+﻿@model ProductWarrantyReportSearchModel
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.ProductWarrantyReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    ViewBag.Title = "Báo cáo đăng ký bảo hành";
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+
+    var ERPProductCodeList = (List<string>)ViewBag.ERPProductCodeList;
+    var SerialNumberList = (List<string>)ViewBag.SerialNumberList;
+    var SaleOrderList = (List<string>)ViewBag.SaleOrderList;
+    var OrderDeliveryList = (List<string>)ViewBag.OrderDeliveryList;
+    var ProfileCodeList = (List<string>)ViewBag.ProfileCodeList;
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <div class="btn-group">
+            <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+            <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+            <ul class="dropdown-menu" role="menu">
+                @*<li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>*@
+                <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+
+                                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                                        {
+
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.CompanyId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownList("CompanyId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.ProfileCode)
+                                                        </div>
+                                                        <div class="col-md-8 multi product">
+                                                            <select name="ProfileCode" id="ProfileCode" class="form-control search-profile-code" multiple>
+                                                                @if (ProfileCodeList != null && ProfileCodeList.Count > 0)
+                                                                {
+                                                                    foreach (var item in ProfileCodeList)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.ProfileName)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(p => p.ProfileName, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.Address)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(p => p.Address, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.Phone)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(p => p.Phone, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.ProvinceId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownList("ProvinceId", null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.DistrictId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownList("DistrictId", null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.WardId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownList("WardId", null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.ERPProductCode)
+                                                        </div>
+                                                        <div class="col-md-8 multi product">
+                                                            <select name="ERPProductCode" id="ERPProductCode" class="form-control search-erpproduct-code" multiple>
+                                                                @if (ERPProductCodeList != null && ERPProductCodeList.Count > 0)
+                                                                {
+                                                                    foreach (var item in ERPProductCodeList)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.ProductName)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(p => p.ProductName, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SerialNumber)
+                                                        </div>
+                                                        <div class="col-md-8 multi product">
+                                                            <select name="SerialNumber" id="SerialNumber" class="form-control search-serialnumber" multiple>
+                                                                @if (SerialNumberList != null && SerialNumberList.Count > 0)
+                                                                {
+                                                                    foreach (var item in SerialNumberList)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SaleOrder)
+                                                        </div>
+                                                        <div class="col-md-8 multi product">
+                                                            <select name="SaleOrder" id="SaleOrder" class="form-control search-saleorder" multiple>
+                                                                @if (SaleOrderList != null && SaleOrderList.Count > 0)
+                                                                {
+                                                                    foreach (var item in SaleOrderList)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.OrderDelivery)
+                                                        </div>
+                                                        <div class="col-md-8 multi product">
+                                                            <select name="OrderDelivery" id="OrderDelivery" class="form-control search-orderdelivery" multiple>
+                                                                @if (OrderDeliveryList != null && OrderDeliveryList.Count > 0)
+                                                                {
+                                                                    foreach (var item in OrderDeliveryList)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.WarrantyCode)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownList("WarrantyCode", null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row ">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            <div class="label-wrapper">
+                                                                <label class="control-label">@LanguageResource.ProWarranty_FormDate</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownList("FromCommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "From", @id = "from-date", Name = "FromCommonDate" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row From">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.StartFromDate)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.RequiredTextboxFor(p => p.StartFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.EndFromDate)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.RequiredTextboxFor(p => p.EndFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row ">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            <div class="label-wrapper">
+                                                                <label class="control-label">@LanguageResource.ProWarranty_ToDate</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownList("ToCommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "To", @id = "to-date", Name = "ToCommonDate" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row To">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.StartToDate)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.RequiredTextboxFor(p => p.StartToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.EndToDate)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.RequiredTextboxFor(p => p.EndToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <div class="col-md-6 col-md-offset-4 input-group">
+                                                        <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                                            <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                        </select>
+                                                        <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                            <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                            <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                        </span>
+                                                        <a href="#" id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body" style="overflow-x:scroll;">
+                    @Html.Action("ProductWarrantyPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+@section components {
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+}
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl", "@CurrentController");
+
+            $(".ddl-common-date").trigger("change");
+
+            Select2_CustomFor_CRM_NotAll("/Customer/Profile/SearchProfileByCode", "#ProfileCode");
+            Select2_CustomFor_CRM_NotAll("/Sale/Product/SearchERPProductForAutocomple", "#ERPProductCode");
+            Select2_CustomFor_CRM_NotAll("/Maintenance/ProductWarranty/SearchSerialNumberForAutocomple", "#SerialNumber");
+            Select2_CustomFor_CRM_NotAll("/Maintenance/ProductWarranty/SearchSaleOrderForAutocomple", "#SaleOrder");
+            Select2_CustomFor_CRM_NotAll("/Maintenance/ProductWarranty/SearchOrderDeliveryForAutocomple", "#OrderDelivery");
+
+        });
+
+        //common date
+        $(document).on("change", ".ddl-common-date", function () {
+            var cssClass = $(this).data('id');
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("." + cssClass + " input[name='Start" + cssClass + "Date']").val(jsonData.FromDate);
+                    $("." + cssClass + " input[name='End" + cssClass + "Date']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("." + cssClass + " input[name='Start" + cssClass + "Date']").prop("readonly", true);
+                        $("." + cssClass + " input[name='End" + cssClass + "Date']").prop("readonly", true);
+                    } else {
+                        $("." + cssClass + " input[name='Start" + cssClass + "Date']").prop("readonly", false);
+                        $("." + cssClass + " input[name='End" + cssClass + "Date']").prop("readonly", false);
+                    }
+
+                }
+            });
+        });
+
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button("loading")
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+            //ProvinceId
+            var provinceIdList = $('#ProvinceId').val();
+            if (provinceIdList != null && provinceIdList.length > 0) {
+                var provinceId = {};
+                provinceId['ProvinceId'] = provinceIdList;
+                $.extend(true, arr, provinceId);
+            }
+            //DistrictId
+            var districtIdList = $('#DistrictId').val();
+            if (districtIdList != null && districtIdList.length > 0) {
+                var districtId = {};
+                districtId['DistrictId'] = districtIdList;
+                $.extend(true, arr, districtId);
+            }
+            //WardId
+            var wardIdList = $('#WardId').val();
+            if (wardIdList != null && wardIdList.length > 0) {
+                var wardId = {};
+                wardId['WardId'] = wardIdList;
+                $.extend(true, arr, wardId);
+            }
+            //ERPProductCode
+            var eRPProductCodeList = $('#ERPProductCode').val();
+            if (eRPProductCodeList != null && eRPProductCodeList.length > 0) {
+                var eRPProductCode = {};
+                eRPProductCode['ERPProductCode'] = eRPProductCodeList;
+                $.extend(true, arr, eRPProductCode);
+            }
+            //SerialNumber
+            var serialNumberList = $('#SerialNumber').val();
+            if (serialNumberList != null && serialNumberList.length > 0) {
+                var serialNumber = {};
+                serialNumber['SerialNumber'] = serialNumberList;
+                $.extend(true, arr, serialNumber);
+            }
+            //SaleOrder
+            var saleOrderList = $('#SaleOrder').val();
+            if (saleOrderList != null && saleOrderList.length > 0) {
+                var saleOrder = {};
+                saleOrder['SaleOrder'] = saleOrderList;
+                $.extend(true, arr, saleOrder);
+            }
+            //OrderDelivery
+            var orderDeliveryList = $('#OrderDelivery').val();
+            if (orderDeliveryList != null && orderDeliveryList.length > 0) {
+                var orderDelivery = {};
+                orderDelivery['OrderDelivery'] = orderDeliveryList;
+                $.extend(true, arr, orderDelivery);
+            }
+            //WarrantyCode
+            var warrantyCodeList = $('#WarrantyCode').val();
+            if (warrantyCodeList != null && warrantyCodeList.length > 0) {
+                var warrantyCode = {};
+                warrantyCode['WarrantyCode'] = warrantyCodeList;
+                $.extend(true, arr, warrantyCode);
+            }
+            //ProfileCode
+            var profileCodeList = $('#ProfileCode').val();
+            if (profileCodeList != null && profileCodeList.length > 0) {
+                var profileCode = {};
+                profileCode['ProfileCode'] = profileCodeList;
+                $.extend(true, arr, profileCode);
+            }
+
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button("loading")
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+             obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //ProvinceId
+            var provinceIdList = $('#ProvinceId').val();
+            if (provinceIdList != null && provinceIdList.length > 0) {
+                var provinceId = {};
+                provinceId['ProvinceId'] = provinceIdList;
+                $.extend(true, arr, provinceId);
+            }
+            //DistrictId
+            var districtIdList = $('#DistrictId').val();
+            if (districtIdList != null && districtIdList.length > 0) {
+                var districtId = {};
+                districtId['DistrictId'] = districtIdList;
+                $.extend(true, arr, districtId);
+            }
+            //WardId
+            var wardIdList = $('#WardId').val();
+            if (wardIdList != null && wardIdList.length > 0) {
+                var wardId = {};
+                wardId['WardId'] = wardIdList;
+                $.extend(true, arr, wardId);
+            }
+            //ERPProductCode
+            var eRPProductCodeList = $('#ERPProductCode').val();
+            if (eRPProductCodeList != null && eRPProductCodeList.length > 0) {
+                var eRPProductCode = {};
+                eRPProductCode['ERPProductCode'] = eRPProductCodeList;
+                $.extend(true, arr, eRPProductCode);
+            }
+            //SerialNumber
+            var serialNumberList = $('#SerialNumber').val();
+            if (serialNumberList != null && serialNumberList.length > 0) {
+                var serialNumber = {};
+                serialNumber['SerialNumber'] = serialNumberList;
+                $.extend(true, arr, serialNumber);
+            }
+            //SaleOrder
+            var saleOrderList = $('#SaleOrder').val();
+            if (saleOrderList != null && saleOrderList.length > 0) {
+                var saleOrder = {};
+                saleOrder['SaleOrder'] = saleOrderList;
+                $.extend(true, arr, saleOrder);
+            }
+            //OrderDelivery
+            var orderDeliveryList = $('#OrderDelivery').val();
+            if (orderDeliveryList != null && orderDeliveryList.length > 0) {
+                var orderDelivery = {};
+                orderDelivery['OrderDelivery'] = orderDeliveryList;
+                $.extend(true, arr, orderDelivery);
+            }
+            //WarrantyCode
+            var warrantyCodeList = $('#WarrantyCode').val();
+            if (warrantyCodeList != null && warrantyCodeList.length > 0) {
+                var warrantyCode = {};
+                warrantyCode['WarrantyCode'] = warrantyCodeList;
+                $.extend(true, arr, warrantyCode);
+            }
+            //ProfileCode
+            var profileCodeList = $('#ProfileCode').val();
+            if (profileCodeList != null && profileCodeList.length > 0) {
+                var profileCode = {};
+                profileCode['ProfileCode'] = profileCodeList;
+                $.extend(true, arr, profileCode);
+            }
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-view", function () {
+             var $btn = $(this);
+             $btn.button("loading")
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+             obj["IsView"] = true;
+             $.extend(true, arr, obj);
+             obj["pivotTemplate"] = $('#TemplateId').val();
+             obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            //ProvinceId
+            var provinceIdList = $('#ProvinceId').val();
+            if (provinceIdList != null && provinceIdList.length > 0) {
+                var provinceId = {};
+                provinceId['ProvinceId'] = provinceIdList;
+                $.extend(true, arr, provinceId);
+            }
+            //DistrictId
+            var districtIdList = $('#DistrictId').val();
+            if (districtIdList != null && districtIdList.length > 0) {
+                var districtId = {};
+                districtId['DistrictId'] = districtIdList;
+                $.extend(true, arr, districtId);
+            }
+            //WardId
+            var wardIdList = $('#WardId').val();
+            if (wardIdList != null && wardIdList.length > 0) {
+                var wardId = {};
+                wardId['WardId'] = wardIdList;
+                $.extend(true, arr, wardId);
+            }
+            //ERPProductCode
+            var eRPProductCodeList = $('#ERPProductCode').val();
+            if (eRPProductCodeList != null && eRPProductCodeList.length > 0) {
+                var eRPProductCode = {};
+                eRPProductCode['ERPProductCode'] = eRPProductCodeList;
+                $.extend(true, arr, eRPProductCode);
+            }
+            //SerialNumber
+            var serialNumberList = $('#SerialNumber').val();
+            if (serialNumberList != null && serialNumberList.length > 0) {
+                var serialNumber = {};
+                serialNumber['SerialNumber'] = serialNumberList;
+                $.extend(true, arr, serialNumber);
+            }
+            //SaleOrder
+            var saleOrderList = $('#SaleOrder').val();
+            if (saleOrderList != null && saleOrderList.length > 0) {
+                var saleOrder = {};
+                saleOrder['SaleOrder'] = saleOrderList;
+                $.extend(true, arr, saleOrder);
+            }
+            //OrderDelivery
+            var orderDeliveryList = $('#OrderDelivery').val();
+            if (orderDeliveryList != null && orderDeliveryList.length > 0) {
+                var orderDelivery = {};
+                orderDelivery['OrderDelivery'] = orderDeliveryList;
+                $.extend(true, arr, orderDelivery);
+            }
+            //WarrantyCode
+            var warrantyCodeList = $('#WarrantyCode').val();
+            if (warrantyCodeList != null && warrantyCodeList.length > 0) {
+                var warrantyCode = {};
+                warrantyCode['WarrantyCode'] = warrantyCodeList;
+                $.extend(true, arr, warrantyCode);
+            }
+            //ProfileCode
+            var profileCodeList = $('#ProfileCode').val();
+            if (profileCodeList != null && profileCodeList.length > 0) {
+                var profileCode = {};
+                profileCode['ProfileCode'] = profileCodeList;
+                $.extend(true, arr, profileCode);
+            }
+             //Save localStorage
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);
+        });
+        $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+            var $btn = $(this);
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["IsView"] = true;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            var templateId = $(this).data('id');
+            obj["pivotTemplate"] = templateId;
+            $.extend(true, arr, obj);
+            //ProvinceId
+            var provinceIdList = $('#ProvinceId').val();
+            if (provinceIdList != null && provinceIdList.length > 0) {
+                var provinceId = {};
+                provinceId['ProvinceId'] = provinceIdList;
+                $.extend(true, arr, provinceId);
+            }
+            //DistrictId
+            var districtIdList = $('#DistrictId').val();
+            if (districtIdList != null && districtIdList.length > 0) {
+                var districtId = {};
+                districtId['DistrictId'] = districtIdList;
+                $.extend(true, arr, districtId);
+            }
+            //WardId
+            var wardIdList = $('#WardId').val();
+            if (wardIdList != null && wardIdList.length > 0) {
+                var wardId = {};
+                wardId['WardId'] = wardIdList;
+                $.extend(true, arr, wardId);
+            }
+            //ERPProductCode
+            var eRPProductCodeList = $('#ERPProductCode').val();
+            if (eRPProductCodeList != null && eRPProductCodeList.length > 0) {
+                var eRPProductCode = {};
+                eRPProductCode['ERPProductCode'] = eRPProductCodeList;
+                $.extend(true, arr, eRPProductCode);
+            }
+            //SerialNumber
+            var serialNumberList = $('#SerialNumber').val();
+            if (serialNumberList != null && serialNumberList.length > 0) {
+                var serialNumber = {};
+                serialNumber['SerialNumber'] = serialNumberList;
+                $.extend(true, arr, serialNumber);
+            }
+            //SaleOrder
+            var saleOrderList = $('#SaleOrder').val();
+            if (saleOrderList != null && saleOrderList.length > 0) {
+                var saleOrder = {};
+                saleOrder['SaleOrder'] = saleOrderList;
+                $.extend(true, arr, saleOrder);
+            }
+            //OrderDelivery
+            var orderDeliveryList = $('#OrderDelivery').val();
+            if (orderDeliveryList != null && orderDeliveryList.length > 0) {
+                var orderDelivery = {};
+                orderDelivery['OrderDelivery'] = orderDeliveryList;
+                $.extend(true, arr, orderDelivery);
+            }
+            //WarrantyCode
+            var warrantyCodeList = $('#WarrantyCode').val();
+            if (warrantyCodeList != null && warrantyCodeList.length > 0) {
+                var warrantyCode = {};
+                warrantyCode['WarrantyCode'] = warrantyCodeList;
+                $.extend(true, arr, warrantyCode);
+            }
+            //ProfileCode
+            var profileCodeList = $('#ProfileCode').val();
+            if (profileCodeList != null && profileCodeList.length > 0) {
+                var profileCode = {};
+                profileCode['ProfileCode'] = profileCodeList;
+                $.extend(true, arr, profileCode);
+            }
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+    </script>
+}

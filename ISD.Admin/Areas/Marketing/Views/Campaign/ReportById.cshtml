@@ -1,0 +1,49 @@
+﻿@model CampaignReportViewModel
+@{
+    var id = ViewBag.Id;
+    //bool isHasPermissionExport = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Import, "?Type=" + ViewBag.Type);
+}
+<div class="row text-center">
+
+    <div class="chart-container" style="height:400px; max-width:1300px; margin:auto;">
+        <canvas id="myChart"></canvas>
+    </div>
+
+</div>
+
+
+
+<div id="report-label" hidden>
+    @if ((string)ViewBag.TypeContent == ConstCatalogType.Email)
+    {
+        if ((string)ViewBag.Type == ConstMarketingType.Marketing)
+        {
+            <p>@Html.DisplayNameFor(p => p.TotalMember)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalMailSend)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalMailBounce)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalMailOpened)</p>
+        }
+        else if ((string)ViewBag.Type == ConstMarketingType.Event)
+        {
+
+            <p>@Html.DisplayNameFor(p => p.TotalMember)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalMailSend)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalMailBounce)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalMailOpened)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalConfirm)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalReject)</p>
+            <p>@Html.DisplayNameFor(p => p.TotalCheckin)</p>
+            <p>@Html.DisplayNameFor(p => p.NumberOfParticipant)</p>
+        }
+    }
+    else if ((string)ViewBag.TypeContent == ConstCatalogType.SMS)
+    {
+        <p>@Html.DisplayNameFor(p => p.TotalMember)</p>
+        <p>@Html.DisplayNameFor(p => p.TotalMailSend)</p>
+        <p>@Html.DisplayNameFor(p => p.TotalMailBounce)</p>
+    }
+
+</div>
+
+
+

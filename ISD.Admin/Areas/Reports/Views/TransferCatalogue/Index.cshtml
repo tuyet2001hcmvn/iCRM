@@ -1,0 +1,15 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = "Phiếu chuyển kho";
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left"> @ViewBag.Title</h1>
+</div>
+
+<div class="content">
+    <div id="divReport">
+        @Html.Action("DocumentViewerPartial", "TransferCatalogue", new { TransferCode = ViewBag.TransferCode })
+    </div>
+</div>

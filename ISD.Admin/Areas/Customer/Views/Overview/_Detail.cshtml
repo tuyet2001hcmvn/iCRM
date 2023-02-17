@@ -1,0 +1,1141 @@
+﻿@model ProfileOverviewModel
+@{
+    string cssfaTicket = string.Empty
+        , cssfaGtb = string.Empty
+        , cssfaCustomerTastes = string.Empty
+        , cssfaPersonInCharge = string.Empty
+        , cssfaProfileContact = string.Empty
+        , cssfaAppointment = string.Empty
+        , cssfaCatalogue = string.Empty
+        , cssfaCompany = string.Empty
+        , cssfaProductWarranty = string.Empty
+        , cssfaInvestor = string.Empty
+        , cssfaDesign = string.Empty
+        , cssfaContractor = string.Empty
+        , cssfaConstruction = string.Empty
+        , cssfaOppCompetitor = string.Empty
+        , cssfaConsulting = string.Empty;
+    string cssCollapsedTicket = string.Empty
+        , cssCollapsedGtb = string.Empty
+        , cssCollapsedCustomerTastes = string.Empty
+        , cssCollapsedPersonInCharge = string.Empty
+        , cssCollapsedProfileContact = string.Empty
+        , cssCollapsedAppointment = string.Empty
+        , cssCollapsedCatalogue = string.Empty
+        , cssCollapsedCompany = string.Empty
+        , cssCollapsedProductWarranty = string.Empty
+        , cssCollapsedInvestor = string.Empty
+        , cssCollapsedDesign = string.Empty
+        , cssCollapsedContractor = string.Empty
+        , cssCollapsedConstruction = string.Empty
+        , cssCollapsedOppCompetitor = string.Empty
+        , cssCollapsedConsulting = string.Empty;
+    string cssDisplayNoneTicket = string.Empty
+        , cssDisplayNoneGtb = string.Empty
+        , cssDisplayNoneCustomerTastes = string.Empty
+        , cssDisplayNonePersonInCharge = string.Empty
+        , cssDisplayNoneProfileContact = string.Empty
+        , cssDisplayNoneAppointment = string.Empty
+        , cssDisplayNoneCatalogue = string.Empty
+        , cssDisplayNoneCompany = string.Empty
+        , cssDisplayNoneProductWarranty = string.Empty
+        , cssDisplayNoneInvestor = string.Empty
+        , cssDisplayNoneDesign = string.Empty
+        , cssDisplayNoneContractor = string.Empty
+        , cssDisplayNoneConstruction = string.Empty
+        , cssDisplayNoneOppCompetitor = string.Empty
+        , cssDisplayNoneConsulting = string.Empty;
+
+    var profileGroupList = Model.profileGroupList;
+
+    var opportunityActivitiesList = (List<ProjectActivitiesViewModel>)ViewBag.OpportunityActivities;
+
+    var productWarrantyList = (List<ProductWarrantyViewModel>)ViewBag.ProductWarranty;
+    if (productWarrantyList == null || productWarrantyList.Count == 0)
+    {
+        cssfaProductWarranty = "fa fa-plus";
+        cssCollapsedProductWarranty = "collapsed-box";
+        cssDisplayNoneProductWarranty = "display: none;";
+    }
+    else
+    {
+        cssfaProductWarranty = "fa fa-minus";
+    }
+
+    var ticketList = (List<TaskViewModel>)ViewBag.Ticket;
+    if (ticketList == null || ticketList.Count == 0)
+    {
+        cssfaTicket = "fa fa-plus";
+        cssCollapsedTicket = "collapsed-box";
+        cssDisplayNoneTicket = "display: none;";
+    }
+    else
+    {
+        cssfaTicket = "fa fa-minus";
+    }
+    var gtbList = (List<TaskViewModel>)ViewBag.GTB;
+    if (gtbList == null || gtbList.Count == 0)
+    {
+        cssfaGtb = "fa fa-plus";
+        cssCollapsedGtb = "collapsed-box";
+        cssDisplayNoneGtb = "display: none;";
+    }
+    else
+    {
+        cssfaGtb = "fa fa-minus";
+    }
+    var catalogueList = (List<CatalogueViewModel>)ViewBag.Catalogue;
+    if (catalogueList == null || catalogueList.Count == 0)
+    {
+        cssfaCatalogue = "fa fa-plus";
+        cssCollapsedCatalogue = "collapsed-box";
+        cssDisplayNoneCatalogue = "display: none;";
+    }
+    else
+    {
+        cssfaCatalogue = "fa fa-minus";
+    }
+    var companyList = (List<OverviewCompanyViewModel>)ViewBag.OverviewCompany;
+    if (companyList == null || companyList.Count == 0)
+    {
+        cssfaCompany = "fa fa-plus";
+        cssCollapsedCompany = "collapsed-box";
+        cssDisplayNoneCompany = "display: none;";
+    }
+    else
+    {
+        cssfaCompany = "fa fa-minus";
+    }
+    var customerTastesList = (List<CustomerTastesReportViewModel>)ViewBag.CustomerTaste;
+    if (customerTastesList == null || customerTastesList.Count == 0)
+    {
+        cssfaCustomerTastes = "fa fa-plus";
+        cssCollapsedCustomerTastes = "collapsed-box";
+        cssDisplayNoneCustomerTastes = "display: none;";
+    }
+    else
+    {
+        cssfaCustomerTastes = "fa fa-minus";
+    }
+    var personInChargeList = (List<PersonInChargeViewModel>)ViewBag.PersonInCharge;
+    if (personInChargeList == null || personInChargeList.Count == 0)
+    {
+        cssfaPersonInCharge = "fa fa-plus";
+        cssCollapsedPersonInCharge = "collapsed-box";
+        cssDisplayNonePersonInCharge = "display: none;";
+    }
+    else
+    {
+        cssfaPersonInCharge = "fa fa-minus";
+    }
+    var personInCharge2List = (List<PersonInChargeViewModel>)ViewBag.PersonInCharge2;
+    var personInCharge3List = (List<PersonInChargeViewModel>)ViewBag.PersonInCharge3;
+    var roleInChargeList = (List<RoleInChargeViewModel>)ViewBag.RoleInCharge;
+    var profileContactList = (List<ProfileViewModel>)ViewBag.ProfileContact;
+    if (profileContactList == null || profileContactList.Count == 0)
+    {
+        cssfaProfileContact = "fa fa-plus";
+        cssCollapsedProfileContact = "collapsed-box";
+        cssDisplayNoneProfileContact = "display: none;";
+    }
+    else
+    {
+        cssfaProfileContact = "fa fa-minus";
+    }
+    var appointmentList = (List<AppointmentViewModel>)ViewBag.Appointment;
+    var activitiesList = (List<TaskViewModel>)ViewBag.Activities;
+    var missionList = (List<TaskViewModel>)ViewBag.Mission;
+
+    if ((appointmentList == null || appointmentList.Count == 0) && (activitiesList == null || activitiesList.Count == 0) && (missionList == null || missionList.Count == 0))
+    {
+        cssfaAppointment = "fa fa-plus";
+        cssCollapsedAppointment = "collapsed-box";
+        cssDisplayNoneAppointment = "display: none;";
+    }
+    else
+    {
+        cssfaAppointment = "fa fa-minus";
+    }
+}
+<div class="box box-primary box-solid">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.GeneralInformation</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.ProfileCode)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.ProfileCode)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.ProfileForeignCode)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.ProfileForeignCode)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.ProfileShortName)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.ProfileShortName)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.ProfileName)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.ProfileName)
+            </div>
+        </div>
+        <div class="row">
+            @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+            {
+                <div class="col-xs-4">
+                    @Html.TooltipLabelFor(p => p.TaxNo)
+                </div>
+                <div class="col-xs-7">
+                    @Html.DisplayFor(p => p.TaxNo)
+                </div>
+            }
+            else
+            {
+                <div class="col-xs-4">
+                    @Html.TooltipLabelFor(p => p.Age)
+                </div>
+                <div class="col-xs-7">
+                    @Html.DisplayFor(p => p.Age)
+                </div>
+            }
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.SaleOfficeCode)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.SaleOfficeName)
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.isForeignCustomer)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.isForeignName)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.Address)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.Address)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.Phone)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.Phone)
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.Email)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.Email)
+            </div>
+        </div>
+        @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+        {
+            <div class="row">
+
+                <div class="col-xs-4">
+                    @Html.TooltipLabelFor(p => p.Website)
+                </div>
+                <div class="col-xs-7">
+                    @Html.DisplayFor(p => p.Website)
+                </div>
+
+            </div>
+        }
+        <div class="row">
+            <div class="col-xs-4">
+                <div class="label-wrapper"><label class="control-label" for="Address">@LanguageResource.Profile_General_CustomerGroup</label></div>
+            </div>
+            <div class="col-xs-7">
+                @if (Model.profileGroupList != null && Model.profileGroupList.Count > 0)
+                {
+                    foreach (var item in Model.profileGroupList)
+                    {
+                        <span>@item.ProfileGroupName</span>
+                        <br />
+                    }
+                }
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.CustomerSourceCode)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.CustomerSourceName)
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.CustomerTypeCode)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.CustomerTypeName)
+            </div>
+        </div>
+        @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+        {
+            <div class="row">
+                <div class="col-xs-4">
+                    @Html.TooltipLabelFor(p => p.CustomerCareerCode)
+                </div>
+                <div class="col-xs-7">
+                    @Html.DisplayFor(p => p.CustomerCareerName)
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.VisitDate)
+            </div>
+            <div class="col-xs-7">
+                @(Model.VisitDate != null ? Model.VisitDate.Value.ToString("dd/MM/yyyy") : null)
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-4">
+                @Html.TooltipLabelFor(p => p.Note)
+            </div>
+            <div class="col-xs-7">
+                @Html.DisplayFor(p => p.Note)
+            </div>
+        </div>
+
+        @if (companyList != null && companyList.Count() > 0)
+        {
+            <div class="row col-md-6" style="@cssDisplayNoneCompany">
+                @*<div class="content-header clearfix">
+                        <h5 class="pull-left">
+                            @LanguageResource.OverviewCompany.ToUpper()
+                        </h5>
+                    </div>*@
+                <div class="overflow-x-scroll">
+                    <table class="table table-bordered table-striped table-hover no-footer">
+                        <thead class="isd-table-header">
+                            <tr>
+                                <th class="text-center">@LanguageResource.Company_CompanyCode</th>
+                                <th>@LanguageResource.Profile_CustomerTypeCode</th>
+                                <th>@LanguageResource.Profile_General_CustomerGroup</th>
+                                <th>@LanguageResource.PersonInCharge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in companyList)
+                            {
+                                <tr>
+                                    <td class="text-center">@Html.DisplayFor(p => item.CompanyCode)</td>
+                                    <td>@Html.DisplayFor(p => item.CustomerTypeName)</td>
+                                    <td>@Html.DisplayFor(p => item.CustomerGroup)</td>
+                                    <td>@Html.DisplayFor(p => item.PersonInCharge)</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<div class="box box-primary box-solid @cssCollapsedPersonInCharge">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.TabInCharge</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaPersonInCharge"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNonePersonInCharge">
+        <h4>@LanguageResource.MasterData_SalesEmployee</h4>
+        <div class="box-phutrach">
+            <table class="table table-bordered table-striped table-hover dataTable">
+                <thead>
+                    <tr>
+                        <th>@LanguageResource.NumberIndex</th>
+                        <th>@LanguageResource.Profile_General_EmployeeCode</th>
+                        <th>@LanguageResource.SalesEmployee_Name</th>
+                        <th>@LanguageResource.Profile_Department</th>
+                        <th>@LanguageResource.CompanyId</th>
+                        @*<th>@LanguageResource.CreateBy</th>
+                            <th>@LanguageResource.CreatedTime</th>*@
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (personInChargeList != null && personInChargeList.Count() > 0)
+                    {
+                        int i = 0;
+                        foreach (var item in personInChargeList)
+                        {
+                            i++;
+                            <tr>
+                                <td class="text-center">@i</td>
+                                <td>@Html.DisplayFor(p => item.SalesEmployeeCode)</td>
+                                <td>@Html.DisplayFor(p => item.SalesEmployeeName)</td>
+                                <td>@Html.DisplayFor(p => item.RoleName)</td>
+                                <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                                @*<td>@Html.DisplayFor(p => item.CreateUser)</td>
+                                    <td>@Html.DisplayFor(p => item.CreateTime)</td>*@
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6">@LanguageResource.Grid_NoRecord</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="box box-primary box-solid @cssCollapsedProfileContact">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.Profile_Contact (@(profileContactList != null ? profileContactList.Count() : 0))</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaProfileContact"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneProfileContact">
+        <div class="box-lien-he">
+            @if (profileContactList != null && profileContactList.Count() > 0)
+            {
+                var i = 0;
+                foreach (var item in profileContactList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.ProfileName</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    @Html.TooltipLabelFor(p => item.ProfileCode)
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ProfileCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    @Html.TooltipLabelFor(p => item.Phone)
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.Phone)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    @Html.TooltipLabelFor(p => item.Email)
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.Email)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Profile_Position">@LanguageResource.Profile_Position</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.PositionName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Profile_Department">@LanguageResource.Profile_Department</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.DepartmentName)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+<div class="box box-primary box-solid @cssCollapsedGtb">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.Showroom_GTB  (@(gtbList != null ? gtbList.Count() : 0))</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaGtb"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneGtb">
+        <div class="box-diem-trung-bay">
+
+            @if (gtbList != null && gtbList.Count > 0)
+            {
+                var i = 0;
+                foreach (var item in gtbList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.Summary</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskCode">@LanguageResource.TaskCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskStatus">@LanguageResource.TaskStatus</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskStatusName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Assignee">@LanguageResource.Assignee</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.AssigneeName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Task_StartDate">@LanguageResource.Task_StartDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @(item.StartDate != null ? item.StartDate.Value.ToString("dd/MM/yyyy") : null )
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Task_EndDate">@LanguageResource.Task_EndDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+
+                                    @(item.EndDate != null ? item.EndDate.Value.ToString("dd/MM/yyyy") : null)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+
+
+<div class="box box-primary  box-solid @cssCollapsedTicket">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.Task_Ticket_ShortName  (@(ticketList != null ? ticketList.Count() : 0))</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaTicket"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneTicket">
+        <div class="box-bao-hanh">
+            @if (ticketList != null && ticketList.Count > 0)
+            {
+                var i = 0;
+                foreach (var item in ticketList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.Summary</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskCode">@LanguageResource.TaskCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Type">@LanguageResource.Type</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.WorkFlowName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskStatus">@LanguageResource.TaskStatus</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskStatusName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Assignee">@LanguageResource.Reporter</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ReporterName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Assignee">@LanguageResource.Assignee</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.AssigneeName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Task_StartDate">@LanguageResource.Task_StartDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.StartDate != null)
+                                    {
+                                        @item.StartDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Task_EndDate">@LanguageResource.Task_EndDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.EndDate != null)
+                                    {
+                                        @item.EndDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<div class="box box-primary box-solid @cssCollapsedAppointment">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.Task_Activities_ShortName</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaAppointment"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneAppointment">
+        <div class="box-ghe-tham">
+
+            <!--Ghe tham-->
+            @if (appointmentList != null && appointmentList.Count() > 0)
+            {
+                <label>@LanguageResource.Appointment  (@(appointmentList != null ? appointmentList.Count() : 0))</label>
+                var i = 0;
+                foreach (var item in appointmentList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.Summary</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskCode">@LanguageResource.TaskCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_SaleEmployeeCode">@LanguageResource.Appointment_SaleEmployeeCode</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.SaleEmployeeName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Description">@LanguageResource.Description</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.Description)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Profile_General_CustomerSource">@LanguageResource.Profile_General_CustomerSource</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ShowroomName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="MasterData_Store">@LanguageResource.MasterData_Store</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.StoreName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Appointment_VisitDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.VisitDate != null)
+                                    {
+                                        @Html.DisplayFor(p => item.VisitDate)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+            <!--Tham hoi khach hang-->
+            @if (activitiesList != null && activitiesList.Count() > 0)
+            {
+
+                <label>@LanguageResource.Customer_Appointment  (@(activitiesList != null ? activitiesList.Count() : 0))</label>
+                var i = 0;
+                foreach (var item in activitiesList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.Summary</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskCode">@LanguageResource.TaskCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="WorkFlowName">@LanguageResource.Type</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.WorkFlowName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskStatusName">@LanguageResource.TaskStatus</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskStatusName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Description">@LanguageResource.Task_PriorityCode</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.Description)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Task_PriorityCode">@LanguageResource.Task_PriorityCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.PriorityText_vi)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="MasterData_Store">@LanguageResource.Reporter</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ReporterName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Assignee</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.AssigneeName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Task_StartDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.VisitDate != null)
+                                    {
+                                        @item.StartDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Task_EndDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.VisitDate != null)
+                                    {
+                                        @item.EndDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            <!--Nhiem vu-->
+            @if (missionList != null && missionList.Count() > 0)
+            {
+                <label>@LanguageResource.WorkFlow  (@(missionList != null ? missionList.Count() : 0))</label>
+
+                var i = 0;
+                foreach (var item in missionList)
+                {
+                    i++;
+
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.Summary</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskCode">@LanguageResource.TaskCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="WorkFlowName">@LanguageResource.Type</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.WorkFlowName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="TaskStatusName">@LanguageResource.TaskStatus</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.TaskStatusName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Description">@LanguageResource.Task_PriorityCode</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.Description)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Task_PriorityCode">@LanguageResource.Task_PriorityCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.PriorityText_vi)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="MasterData_Store">@LanguageResource.Reporter</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ReporterName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Assignee</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.AssigneeName)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Task_StartDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.StartDate != null)
+                                    {
+                                        @item.StartDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Task_EndDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.EndDate != null)
+                                    {
+                                        @item.EndDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="box box-primary  box-solid @cssCollapsedProductWarranty">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.Maintenance_ProWarranty  (@(productWarrantyList != null ? productWarrantyList.Count() : 0))</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaProductWarranty"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneProductWarranty">
+        <div class="box-bao-hanh">
+
+            @if (productWarrantyList != null && productWarrantyList.Count > 0)
+            {
+                var i = 0;
+                foreach (var item in productWarrantyList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.ProductName</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="ProWarrantyCode">@LanguageResource.ProWarrantyCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ProductWarrantyCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="ProWarranty_SerriNo">@LanguageResource.ProWarranty_SerriNo</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.SerriNo)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="WarrantyName">@LanguageResource.WarrantyName</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.WarrantyName)
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Task_StartDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.FromDate != null)
+                                    {
+                                        @item.FromDate.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">@LanguageResource.Task_EndDate</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.ToDate != null)
+                                    {
+                                        @item.ToDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="box box-primary box-solid @cssCollapsedCustomerTastes">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.CustomerTaste  (@(customerTastesList != null ? customerTastesList.Count() : 0))</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaCustomerTastes"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneCustomerTastes">
+        <div class="box-thi-hieu">
+            @if (customerTastesList != null && customerTastesList.Count() > 0)
+            {
+                int i = 0;
+                foreach (var item in customerTastesList)
+                {
+                    i++;
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.TenSP</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="MaSAP">@LanguageResource.Product_ERPProductCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.MaSAP)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="MaSP">@LanguageResource.ProductCode</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.MaSP)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="WarrantyName">Số lượt liked</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.SoLuotLiked)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+</div>
+<div class="box box-primary box-solid @cssCollapsedCatalogue">
+    <div class="box-header with-border">
+        <h3 class="box-title">@LanguageResource.Catalogue  (@(catalogueList != null ? catalogueList.Count() : 0))</h3>
+        <div class="box-tools pull-right">
+            <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="@cssfaCatalogue"></i></button>
+        </div>
+    </div>
+    <div class="box-body" style="@cssDisplayNoneCatalogue">
+        <div class="box-catalogue">
+
+            @if (catalogueList != null && catalogueList.Count() > 0)
+            {
+                int i = 0;
+                foreach (var item in catalogueList)
+                {
+                    i++;
+
+                    <div class="box box-success">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@(i). @item.ProductName</h3>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="ERPProductCode">@LanguageResource.Product_ERPProductCode</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ERPProductCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="ProductCode">Mã CTL</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.ProductCode)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Quantity">@LanguageResource.Catalogue_Quantity</label></div>
+
+                                </div>
+                                <div class="col-xs-8">
+                                    @Html.DisplayFor(p => item.Quantity)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <div class="label-wrapper"><label class="control-label" for="Appointment_VisitDate">Ngày xuất</label></div>
+                                </div>
+                                <div class="col-xs-8">
+                                    @if (item.CreatedDate != null)
+                                    {
+                                        @item.CreatedDate.Value.ToString("dd/MM/yyyy")
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+
+
+        </div>
+    </div>
+</div>

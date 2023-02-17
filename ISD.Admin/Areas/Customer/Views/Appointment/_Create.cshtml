@@ -1,0 +1,245 @@
+﻿@model AppointmentViewModel
+@{
+    var productList = Model.productList;
+    var productCodeList = (List<ProductViewModel>)ViewBag.ProductCode;
+}
+
+<div class="box-body">
+    @Html.HiddenFor(model => model.ProfileId)
+    <div class="form-horizontal">
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ShowroomCode)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredIfDropDownListFor(p => p.ShowroomCode, null, LanguageResource.Dropdownlist_Choose)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.StoreId)
+            </div>
+            <div class="col-md-8">
+                @*@Html.DropDownList("StoreId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })*@
+                @Html.RequiredIfDropDownListFor(p => p.StoreId, null, LanguageResource.Dropdownlist_Choose)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.TaskStatusId)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredIfDropDownListFor(p => p.TaskStatusId, null, null, new { @class = "form-control with-search" })
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Summary)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.Summary, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Requirement)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.Requirement, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ProfileId)
+            </div>
+            <div class="col-md-8 pt-7">
+                @Html.HiddenFor(p => p.ProfileId)
+                @Html.DisplayFor(p => p.ProfileName)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.PrimaryContactId)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownListFor(p => p.PrimaryContactId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Description)
+            </div>
+            <div class="col-md-8">
+                @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Reviews)
+            </div>
+            <div class="col-md-8">
+                @Html.TextAreaFor(p => p.Reviews, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.Ratings)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownListFor(p => p.Ratings, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.SaleEmployeeOffer)
+            </div>
+            <div class="col-md-8">
+                @Html.TextAreaFor(p => p.SaleEmployeeOffer, new { @class = "form-control" })
+            </div>
+        </div>
+
+
+
+        @*
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.PriorityCode)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredDropDownListFor(p => p.PriorityCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+            </div>
+        </div>*@
+        @Html.Hidden("PriorityCode", Model.PriorityCode)
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.CustomerClassCode)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredDropDownListFor(p => p.CustomerClassCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+        @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.CategoryCode)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredDropDownListFor(p => p.CategoryCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.SaleEmployeeCode)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredDropDownListFor(p => p.SaleEmployeeCode, null, LanguageResource.Dropdownlist_Choose)
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ChannelCode)
+            </div>
+            <div class="col-md-8">
+                @Html.DropDownList("ChannelCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.VisitDate)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.VisitDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.StartDate)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.StartDate, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = "form-control", type = "datetime-local" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.EndDate)
+            </div>
+            <div class="col-md-8">
+                @Html.RequiredTextboxFor(p => p.EndDate, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = "form-control", type = "datetime-local" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                <div class="label-wrapper">
+                    <label class="control-label">@LanguageResource.CustomerTaste</label>
+                    <span class="ico-help" title="@LanguageResource.ChooseSaleOrgBeforeTaste">
+                        <i class="fa fa-question-circle"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="productCodeControls">
+                    @if (Model.productList != null && Model.productList.Count > 0)
+                    {
+                        int index = 0;
+                        foreach (var item in Model.productList)
+                        {
+                            <div class="input-group productCode">
+                                @Html.DropDownListFor(p => productList[index], new SelectList(productCodeList, "ERPProductCode", "ProductName", item), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search productcode", @data_row = index })
+
+                                <span class="input-group-btn">
+                                    @if (index == 0)
+                                    {
+                                        <button class="btn btn-default btn-addProduct" type="button">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-default btn-removeProduct btn-danger" type="button">
+                                            <span class="glyphicon glyphicon-minus"></span>
+                                        </button>
+                                    }
+                                </span>
+                            </div>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <div class="input-group productCode">
+                            @Html.DropDownListFor(p => productList[0], new SelectList(productCodeList, "ERPProductCode", "ProductName"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search productcode", @data_row = 0 })
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-addProduct" type="button">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
+                            </span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.isVisitCabinetPro)
+            </div>
+            <div class="col-md-8">
+                @Html.ActivedRadioButtonIs(p => p.isVisitCabinetPro)
+            </div>
+        </div>
+
+        <div class="form-group visit-cabinet">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.VisitCabinetProRequest)
+            </div>
+            <div class="col-md-8">
+                @Html.TextAreaFor(p => p.VisitCabinetProRequest, new { @class = "form-control" })
+            </div>
+        </div>
+    </div>
+</div>

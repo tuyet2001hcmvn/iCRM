@@ -1,0 +1,25 @@
+﻿@model IEnumerable<CustomerSaleOrderViewModel>
+@{
+         
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.SONumber)</td>
+            <td>@Html.DisplayFor(p => item.OrderNumber)</td>
+            <td>@Html.DisplayFor(p => item.ProductCode)</td>
+            <td>@Html.DisplayFor(p => item.ProductName)</td>
+            <td class="text-right">@Html.DisplayFor(p => item.ProductQuantity)</td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="6" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

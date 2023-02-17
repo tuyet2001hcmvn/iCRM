@@ -1,0 +1,48 @@
+﻿@model TemplateAndGiftMemberViewModel
+<div class="panel-body">
+    <div class="row">       
+        <div style="display: flex;" class="col-md-1">
+            <label style=" padding-right: 5px; padding-top: 5px;">Xem </label>
+            <select id="changeViewRowMember" style="display: block; width: 100%; min-height: 30px;margin-bottom:5px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+            <label style=" padding-left: 5px; padding-top: 5px;">mục </label>
+        </div>
+        <div class="pull-right">
+
+            <div id="pagination" class="pagination">
+            </div>
+        </div>
+
+    </div>
+    <div id="divMembers">
+        <table class="table table-bordered table-striped table-hover dataTable no-footer">
+            <thead class="isd-table-header">
+                <tr>
+                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                    <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                    <th>@Html.DisplayNameFor(p => p.ProfileForeignCode)</th>
+                    <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                    <th>@Html.DisplayNameFor(p=>p.Address)</th>
+                </tr>
+            </thead>
+            <tbody id="tblData">
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+        <p id="tblCount"></p>
+    </div>
+</div>
+<script id="data-template" type="x-tmpl-mustache">
+      <tr>
+         <td class="text-center">{{i}}</td>
+         <td><a href="/Customer/Profile/Edit/{{ProfileId}}">{{ProfileCode}}</a></td>
+         <td>{{ProfileForeignCode}}</td>
+        <td><a href="/Customer/Profile/Edit/{{ProfileId}}">{{ProfileName}}</a></td>
+        <td>{{Address}}</td>
+      </tr>
+</script>
+

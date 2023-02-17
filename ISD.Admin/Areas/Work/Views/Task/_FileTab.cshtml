@@ -1,0 +1,79 @@
+﻿@model TaskViewModel
+
+<div class="form-group">
+    <div class="fileTab">
+        <input type="file" name="MainCommentFileUrl" id="MainCommentFileUrl" multiple />
+        <p class="help-block">Chọn file đính kèm.</p>
+        <div class="btn-save-hidden div-file">
+            <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+            <button type="button" class="btn btn-primary btn-save-file" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save @LanguageResource.Task_FileUrl.ToLower()</button>
+        </div>
+        @if (Model.taskFileList != null && Model.taskFileList.Count > 0)
+        {
+            <div class="mt-10">
+                @foreach (var item in Model.taskFileList)
+                {
+                    <div class="file-row">
+                        <a href="/Upload/Document/@item.FileUrl" download="@item.FileAttachmentName" target="_blank">
+                            @if (item.FileAttachmentCode == ConstFileAttachmentCode.Image)
+                            {
+                                <img class="img-modal-task" src="/Upload/FileType/file_image.png" />
+                            }
+                            else if (item.FileAttachmentCode == ConstFileAttachmentCode.Excel)
+                            {
+                                if (item.FileExtention == ".xls")
+                                {
+                                    <img class="img-modal-task" src="/Upload/FileType/file_xls.png" />
+                                }
+                                else
+                                {
+                                    <img class="img-modal-task" src="/Upload/FileType/file_xlsx.png" />
+                                }
+                            }
+                            else if (item.FileAttachmentCode == ConstFileAttachmentCode.Word)
+                            {
+                                if (item.FileExtention == ".doc")
+                                {
+                                    <img class="img-modal-task" src="/Upload/FileType/file_doc.png" />
+                                }
+                                else
+                                {
+                                    <img class="img-modal-task" src="/Upload/FileType/file_docx.png" />
+                                }
+                            }
+                            else if (item.FileAttachmentCode == ConstFileAttachmentCode.Pdf)
+                            {
+                                <img class="img-modal-task" src="/Upload/FileType/file_pdf.png" />
+                            }
+                            else if (item.FileAttachmentCode == ConstFileAttachmentCode.PowerPoint)
+                            {
+                                if (item.FileExtention == ".ppt")
+                                {
+                                    <img class="img-modal-task" src="/Upload/FileType/file_ppt.png" />
+                                }
+                                else
+                                {
+                                    <img class="img-modal-task" src="/Upload/FileType/file_pptx.png" />
+                                }
+                            }
+                            else
+                            {
+                                <img class="img-modal-task" src="/Upload/FileType/file_sound.png" />
+                            }
+                        </a>
+                        <span class="ml-10 mt-5 file-name-position">
+                            <a href="/Upload/Document/@item.FileUrl" download="@item.FileAttachmentName" target="_blank">
+                                @item.FileAttachmentName
+                            </a>
+                        </span>
+                        <span class="float-right">
+                            <a class="btn-del-file" data-id="@item.FileAttachmentId">
+                                <i class="fa fa-trash-o"></i>
+                            </a>
+                        </span>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,43 @@
+﻿@model IEnumerable<CustomerViewModel>
+@{
+    string CurrentController = ConstController.Customer;
+
+    string CurrentArea = ConstArea.MasterData;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerCode)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLoyaltyCard)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLevelId)</th>
+            <th>@Html.DisplayNameFor(p => p.FullName)</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.CumulativePoint)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.CustomerCode)</td>
+                <td>@Html.DisplayFor(p => item.CustomerLoyaltyCard)</td>
+                <td>@Html.DisplayFor(p => item.CustomerLevelName)</td>
+                <td>@Html.DisplayFor(p => item.FullName)</td>
+                <td class="text-right">@Html.DisplayFor(p => item.Phone)</td>
+                <td class="text-right">@Html.DisplayFor(p => item.CumulativePoint)</td>
+                <td class="text-center">
+                    @HtmlExtensions.ViewButton(CurrentArea, CurrentController, item.CustomerId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

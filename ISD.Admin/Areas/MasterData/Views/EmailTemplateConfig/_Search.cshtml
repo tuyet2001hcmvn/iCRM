@@ -1,0 +1,43 @@
+﻿@model IEnumerable<EmailTemplateConfigViewModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.EmailTemplateConfig;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@LanguageResource.Type</th>
+            <th>@Html.DisplayNameFor(p => p.FromEmail)</th>
+            <th>@Html.DisplayNameFor(p => p.ToEmail)</th>
+            <th>@Html.DisplayNameFor(p => p.Subject)</th>
+            <th>@Html.DisplayNameFor(p => p.EmailSender)</th>
+            <th>@Html.DisplayNameFor(p => p.EmailAccount)</th>
+            <th>@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.EmailTypeName)</td>
+                <td>@Html.DisplayFor(p => item.FromEmail)</td>
+                <td>@Html.DisplayFor(p => item.ToEmail)</td>
+                <td>@Html.DisplayFor(p => item.Subject)</td>
+                <td>@Html.DisplayFor(p => item.EmailSender)</td>
+                <td>@Html.DisplayFor(p => item.EmailAccount)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.EmailTemplateConfigId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, LanguageResource.EmailTemplateConfig, item.EmailTemplateConfigId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

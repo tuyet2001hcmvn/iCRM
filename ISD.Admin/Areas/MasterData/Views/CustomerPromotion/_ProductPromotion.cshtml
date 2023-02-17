@@ -1,0 +1,31 @@
+﻿@model IEnumerable<PromotionViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ERPProductCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="productList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @Html.Partial("_ProductPromotionInner", Model)
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td colspan="2">
+                @Html.DropDownList("ProductId", null, LanguageResource.Dropdownlist_All, new { @class = " form-control with-search" })
+            </td>
+            <td class="text-center">
+                <a class="btn btn-warning btn-add-row">
+                    @LanguageResource.Btn_AddRow
+                </a>
+            </td>
+        </tr>
+    </tfoot>
+</table>

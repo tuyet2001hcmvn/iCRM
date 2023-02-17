@@ -1,0 +1,70 @@
+﻿@model ISD.ViewModels.StudentDisplayViewModel
+
+<div id="student-info">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @Html.HiddenFor(p => p.StudentId)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.DisplayStudentCode)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(p => p.DisplayStudentCode, new { @class = "form-control text-box single-line student-code", disabled = "disabled" })
+                            @if (ViewBag.isEditMode != false)
+                            {
+                                <a class="btn btn-default btn-student-info">...</a>
+                            }
+                            else
+                            {
+                                <button class="btn btn-default btn-student-info" disabled>...</button>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TooltipLabelFor(p => p.DisplayFullName)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.RequiredTextboxFor(p => p.DisplayFullName, new { disabled = "disabled" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.DisplayDateOfBirth)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(p => p.DisplayDateOfBirth, "{0:dd/MM/yyyy}", new { disabled = "disabled", @class = "form-control text-box single-line" })
+                        </div>
+
+                        <div class="col-md-2">
+                            @Html.TooltipLabelFor(p => p.DisplayGender)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(p => p.DisplayGender, new { disabled = "disabled", @class = "form-control text-box single-line" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.DisplayAddress)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(p => p.DisplayAddress, new { disabled = "disabled", @class = "form-control text-box single-line" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.DisplayPhoneNumber)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(p => p.DisplayPhoneNumber, new { disabled = "disabled", @class = "form-control text-box single-line" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

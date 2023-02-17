@@ -1,0 +1,257 @@
+﻿@model IEnumerable<AccessoryViewModel>
+@{
+    ViewBag.Title = "Pagination";
+
+    string CurrentController = "StyleGuide";
+    string CurrentArea = "Pagination";
+
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<style>
+    .dataTables_wrapper {
+        overflow-x: hidden !important;
+    }
+</style>
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+</div>
+<div class="content">
+
+
+    <div class="panel-group">
+        <div class="form-horizontal">
+            <div class="panel panel-default panel-search">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper"><label class="control-label" for="SearchInput">Tìm kiếm</label></div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input class="form-control text-box single-line"
+                                               id="SearchInput"
+                                               name="SearchInput"
+                                               placeholder="Mã phụ tùng, tên phụ tùng (có dấu),..."
+                                               type="text"
+                                               value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-5">
+                                @HtmlExtensions.SearchButton()
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @*<table class="table table-bordered table-striped table-hover dataTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th>@Html.DisplayNameFor(p => p.AccessoryCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.AccessoryName)</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ int i = 0; }
+                                @foreach (var item in Model)
+                                {
+                                    i++;
+                                    <tr>
+                                        <td class="text-center">@i</td>
+                                        <td>@Html.DisplayFor(p => item.AccessoryCode)</td>
+                                        <td>@Html.DisplayFor(p => item.AccessoryName)</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>*@
+
+                    @*<table id="myPaginedTable" data-url="@Url.Content("/StyleGuide/PaginationProcess")" class="table table-bordered table-striped table-hover dataTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th>@Html.DisplayNameFor(p => p.AccessoryCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.AccessoryName)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>*@
+
+                    <table id="myPaginedTable2" style="" data-url="@Url.Content("/StyleGuide/PaginationProcess")" class="table table-bordered table-striped table-hover dataTable no-footer">
+                        <thead class="isd-table-header">
+                            <tr>
+                                <th class="text-center">@LanguageResource.NumberIndex</th>
+                                <th>@Html.DisplayNameFor(p => p.AccessoryCode)</th>
+                                <th>@Html.DisplayNameFor(p => p.AccessoryName)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+
+        //var dataTable = {
+        //    table: null,
+        //    initializeDataTable: function () {
+        //        var $table = $("#myPaginedTable");
+        //        console.log($table.prop("data-url"));
+        //        dataTable.table = $table.DataTable({
+        //            processing: true,
+        //            serverSide: true,
+        //            "aLengthMenu": [[10, 25, 50, 100], [10, 25, 50, 100]],
+        //            ajax: {
+        //                url: $table.data("url"),
+        //                dataSrc: "",
+        //                type: "POST"
+        //            },
+        //            "columns": [
+        //                { "data": "AccessoryCode" },
+        //                { "data": "AccessoryName" },
+        //                { "data": "AccessoryId" }
+        //            ],
+        //            "columnDefs": [
+        //                {
+        //                    "render": function (data, type, row) {
+        //                        var inner = '<div class="btn-group"' +
+        //                            '<button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">' +
+        //                            'Actions' +
+        //                            '</button>' +
+        //                            '<div class="dropdown-menu">' +
+        //                            '<a class="dropdown-item btn btn-default edit" data-id="' + row.Id + '" href="#">Edit</a>' +
+        //                            '<a class="dropdown-item btn btn-danger delete" data-id="' + row.Id + '" href="#">Delete</a>' +
+        //                            '</div>' +
+        //                            '</div>';
+        //                        return inner;
+        //                    },
+        //                    "targets": -1
+        //                }
+        //            ],
+        //            "pagingType": "full_numbers"
+        //        });
+
+        //        dataTable.table.on('draw', function () {
+        //            $('button[data-type="delete"]').click(function () {
+        //                var $button = $(this);
+        //            });
+
+        //            $('button[data-type="edit"]').click(function () {
+        //                var $button = $(this);
+        //            });
+        //        });
+        //    }
+        //    , getData: function () {
+        //        if (dataTable.table == null) {
+        //            dataTable.initializeDataTable();
+        //        } else {
+        //            dataTable.table.ajax.reload();
+        //        }
+        //    }
+        //};
+
+        $(document).ready(function () {
+            //dataTable.getData();
+            ////ISD.Pagging();
+            //$('.dataTable').DataTable({
+            //    destroy: true,
+            //    "processing": true,
+            //    "serverSide": true,
+            //    "ajax": "/server_side/scripts/server_processing.php",
+            //    language: {
+            //        sProcessing: "Đang xử lý...",
+            //        sLengthMenu: "Xem _MENU_ mục",
+            //        sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+            //        sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+            //        sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+            //        sInfoFiltered: "(được lọc từ _MAX_ mục)",
+            //        sInfoPostFix: "",
+            //        sSearch: "Tìm nội dung:",
+            //        sUrl: "",
+            //        oPaginate: {
+            //            sFirst: "Đầu",
+            //            sPrevious: "&laquo;",
+            //            sNext: "&raquo;",
+            //            sLast: "Cuối"
+            //        },
+            //        columnDefs: [
+            //            { targets: [0, 1], visible: true },
+            //            { targets: 'no-sort', visible: false }
+            //        ],
+            //        "decimal": ".",
+            //        "thousands": ","
+            //    },
+            //    "decimal": ".",
+            //    "thousands": ",",
+            //    "bLengthChange": false,
+            //    "bInfo": true,
+            //    //"bPaginate" : false,
+            //    "sDom": '<"top"flp>rt<"bottom"i><"clear">',
+            //});
+
+            // CASE 2
+            // Datatable
+            var oTable = $('#myPaginedTable2').DataTable({
+                "bServerSide": true,
+                "sAjaxSource": "/StyleGuide/PaginationProcess2",
+                "sServerMethod": "POST",
+                "aoColumns": [
+                    {
+                        "mData": function (o) {
+                            return "<span></span>";
+                        }
+                    },
+                    { "mData": "AccessoryCode" },
+                    { "mData": "AccessoryName" },
+                    {
+                        "mData": function (o) {
+                            return "<a href='/StyleGuide/EditForPagination?Id=" + o.AccessoryCode + "' class='btn btn-info'><i class='fa fa-pencil'></i></a>";
+                        }
+                    }
+                ]
+            });
+
+            // Add STT vào hàng đầu tiên
+            oTable.on('order.dt search.dt draw.dt', function () {
+                oTable.column(0, { search: 'applied', order: 'applied', draw: 'applied' }).nodes().each(function (cell, i) {
+                    var info = oTable.page.info();
+                    //console.log(info);
+                    cell.innerHTML = info.start + 1 + i;
+                });
+            }).draw();
+
+
+            //$('#SearchInput').keyup(function () {
+            //    oTable.search($(this).val()).draw();
+            //})
+
+            $("#btn-search").on("click", function () {
+                oTable.search($("#SearchInput").val()).draw();
+            });
+
+        });
+    </script>
+}

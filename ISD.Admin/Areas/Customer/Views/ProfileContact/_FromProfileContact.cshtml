@@ -1,0 +1,34 @@
+﻿@model ProfileViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.ProfileId == Guid.Empty)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @LanguageResource.Profile_Contact.ToLower()</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@LanguageResource.Update @LanguageResource.Profile_Contact.ToLower()</h4>
+    }
+</div>
+<div class="modal-body">
+    <div id="divAlertWarningProfileContact" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+        <div class="alert-message">
+        </div>
+    </div>
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmProfileContact" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        <div class="content">
+            @*@Html.Partial("_Create")*@
+            @Html.HiddenFor(p => p.ProfileId, new { @id = "ProfileContact_Create_ProfileId" })
+            @Html.Partial("~/Areas/Customer/Views/Profile/_CreateFormByConfig.cshtml")
+        </div>
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-profile-contact" data-add-success-call-back="ReloadProfileContactList">@LanguageResource.Btn_Save</button>
+</div>
+

@@ -1,0 +1,532 @@
+﻿@model ShowroomReportSearchViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_ShowroomReport;
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.ShowroomReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <div class="btn-group">
+            <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+            <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>
+                <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+            </ul>
+            <a class="btn btn-info" id="btn-export-pdf"><i class="fa fa-print"></i> In báo cáo</a>
+        </div>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("ViewDetail", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                                        {
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.WorkFlowId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownListFor(p => p.WorkFlowId, null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.TaskStatusCode)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownListFor(p => p.TaskStatusCode, null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.CompanyId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownListFor(p => p.CompanyId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.Area)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownListFor(p => p.Area, null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.CategoryId)
+                                                        </div>
+                                                        <div class="col-md-8 multi">
+                                                            @Html.DropDownListFor(p => p.CategoryId, null, null, new { @class = "form-control with-search", @multiple = "multiple" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            <div class="label-wrapper">
+                                                                <label class="control-label">@LanguageResource.GTB_StartDate</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "Start", @id = "start-date", Name = "StartCommonDate" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row Start">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.StartFromDate)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.RequiredTextboxFor(p => p.StartFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.StartToDate)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.RequiredTextboxFor(p => p.StartToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <div class="col-md-5 col-md-offset-4 input-group">
+                                                        <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                                            <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                        </select>
+                                                        <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                            <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                            <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                        </span>
+                                                        <a id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+              
+                <div class="panel-body" style="overflow-x:scroll;">
+
+                    @Html.Action("ShowroomPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+@section components {
+
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+}
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    console.log(recentSearch);
+                    FillToInput(recentSearch);
+                   // FillToInputSpecial(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl","@CurrentController");
+        })
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+
+            //Khu vực
+            var AreaList = $('#Area').val();
+            if (AreaList != null && AreaList.length > 0) {
+                var area = {};
+                area['Area'] = AreaList;
+                $.extend(true, arr, area);
+            }
+
+
+            //Loại ĐTB
+            var WorkFlowIdList = $('#WorkFlowId').val();
+            if (WorkFlowIdList != null && WorkFlowIdList.length > 0) {
+                var workFlowId = {};
+                workFlowId['WorkFlowId'] = WorkFlowIdList;
+                $.extend(true, arr, workFlowId);
+            }
+
+            //Nhóm vật tư
+            var CategoryIdList = $('#CategoryId').val();
+            if (CategoryIdList != null && CategoryIdList.length > 0) {
+                var categoryId = {};
+                categoryId['CategoryId'] = CategoryIdList;
+                $.extend(true, arr, categoryId);
+            }
+
+            //Trạng thái
+            var taskStatusList = $('#TaskStatusCode').val();
+            if (taskStatusList != null && taskStatusList.length > 0) {
+                var taskStatus = {};
+                taskStatus['TaskStatusCode'] = taskStatusList;
+                $.extend(true, arr, taskStatus);
+            }
+             //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+
+            //Khu vực
+            var AreaList = $('#Area').val();
+            if (AreaList != null && AreaList.length > 0) {
+                var area = {};
+                area['Area'] = AreaList
+                $.extend(true, arr, area);
+            }
+
+
+            //Loại ĐTB
+            var WorkFlowIdList = $('#WorkFlowId').val();
+            if (WorkFlowIdList != null && WorkFlowIdList.length > 0) {
+                var workFlowId = {};
+                workFlowId['WorkFlowId'] = WorkFlowIdList;
+                $.extend(true, arr, workFlowId);
+            }
+
+            //Nhóm vật tư
+            var CategoryIdList = $('#CategoryId').val();
+            if (CategoryIdList != null && CategoryIdList.length > 0) {
+                var categoryId = {};
+                categoryId['CategoryId'] = CategoryIdList;
+                $.extend(true, arr, categoryId);
+            }
+
+            //Trạng thái
+            var taskStatusList = $('#TaskStatusCode').val();
+            if (taskStatusList != null && taskStatusList.length > 0) {
+                var taskStatus = {};
+                taskStatus['TaskStatusCode'] = taskStatusList;
+                $.extend(true, arr, taskStatus);
+            }
+              //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-view", function () {
+            var $btn = $(this);
+            $btn.button("loading")
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["IsView"] = true;
+            $.extend(true, arr, obj);
+            obj["pivotTemplate"] = $('#TemplateId').val();
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+
+
+            //Khu vực
+            var AreaList = $('#Area').val();
+            if (AreaList != null && AreaList.length > 0) {
+                var area = {};
+                area['Area'] = AreaList
+                $.extend(true, arr, area);
+            }
+
+
+            //Loại ĐTB
+            var WorkFlowIdList = $('#WorkFlowId').val();
+            if (WorkFlowIdList != null && WorkFlowIdList.length > 0) {
+                var workFlowId = {};
+                workFlowId['WorkFlowId'] = WorkFlowIdList;
+                $.extend(true, arr, workFlowId);
+            }
+
+            //Nhóm vật tư
+            var CategoryIdList = $('#CategoryId').val();
+            if (CategoryIdList != null && CategoryIdList.length > 0) {
+                var categoryId = {};
+                categoryId['CategoryId'] = CategoryIdList;
+                $.extend(true, arr, categoryId);
+            }
+
+            //Trạng thái
+            var taskStatusList = $('#TaskStatusCode').val();
+            if (taskStatusList != null && taskStatusList.length > 0) {
+                var taskStatus = {};
+                taskStatus['TaskStatusCode'] = taskStatusList;
+                $.extend(true, arr, taskStatus);
+            }
+
+               //Save localStorage
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);
+        });
+        $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["IsView"] = true;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            var templateId = $(this).data('id');
+            obj["pivotTemplate"] = templateId;
+            $.extend(true, arr, obj);
+
+            //Khu vực
+            var AreaList = $('#Area').val();
+            if (AreaList != null && AreaList.length > 0) {
+                var area = {};
+                area['Area'] = AreaList
+                $.extend(true, arr, area);
+            }
+
+
+            //Loại ĐTB
+            var WorkFlowIdList = $('#WorkFlowId').val();
+            if (WorkFlowIdList != null && WorkFlowIdList.length > 0) {
+                var workFlowId = {};
+                workFlowId['WorkFlowId'] = WorkFlowIdList;
+                $.extend(true, arr, workFlowId);
+            }
+
+            //Nhóm vật tư
+            var CategoryIdList = $('#CategoryId').val();
+            if (CategoryIdList != null && CategoryIdList.length > 0) {
+                var categoryId = {};
+                categoryId['CategoryId'] = CategoryIdList;
+                $.extend(true, arr, categoryId);
+            }
+
+            //Trạng thái
+            var taskStatusList = $('#TaskStatusCode').val();
+            if (taskStatusList != null && taskStatusList.length > 0) {
+                var taskStatus = {};
+                taskStatus['TaskStatusCode'] = taskStatusList;
+                $.extend(true, arr, taskStatus);
+            }
+
+            
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+        $(document).on("change", ".ddl-common-date", function () {
+            var cssClass = $(this).data('id');
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("." + cssClass + " input[name='" + cssClass + "FromDate']").val(jsonData.FromDate);
+                    $("." + cssClass + " input[name='" + cssClass + "ToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("readonly", true);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("readonly", true);
+                    } else {
+                        $("." + cssClass + " input[name='" + cssClass + "FromDate']").prop("readonly", false);
+                        $("." + cssClass + " input[name='" + cssClass + "ToDate']").prop("readonly", false);
+                    }
+
+                }
+            });
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            //Khu vực
+            var AreaList = $('#Area').val();
+            if (AreaList != null && AreaList.length > 0) {
+                var area = {};
+                area['Area'] = AreaList
+                $.extend(true, data, area);
+            }
+
+
+            //Loại ĐTB
+            var WorkFlowIdList = $('#WorkFlowId').val();
+            if (WorkFlowIdList != null && WorkFlowIdList.length > 0) {
+                var workFlowId = {};
+                workFlowId['WorkFlowId'] = WorkFlowIdList;
+                $.extend(true, data, workFlowId);
+            }
+
+            //Nhóm vật tư
+            var CategoryIdList = $('#CategoryId').val();
+            if (CategoryIdList != null && CategoryIdList.length > 0) {
+                var categoryId = {};
+                categoryId['CategoryId'] = CategoryIdList;
+                $.extend(true, data, categoryId);
+            }
+
+            //Trạng thái
+            var taskStatusList = $('#TaskStatusCode').val();
+            if (taskStatusList != null && taskStatusList.length > 0) {
+                var taskStatus = {};
+                taskStatus['TaskStatusCode'] = taskStatusList;
+                $.extend(true, data, taskStatus);
+            }
+            return JSON.stringify(data);
+        }
+
+    </script>
+
+    <!-- Script in báo cáo -->
+    <script>
+        $(document).on("click", "#btn-export-pdf", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+
+            ExportPDF();
+
+            setTimeout(function () {
+                $btn.button("reset");
+            }, 3000);
+        });
+
+        function ExportPDF() {
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj);
+            });
+
+            obj["templateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+
+            ISD.Download("/Reports/ShowroomReport/Print", arr, true);
+        }
+    </script>
+}

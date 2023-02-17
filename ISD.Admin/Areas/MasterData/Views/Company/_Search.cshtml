@@ -1,0 +1,51 @@
+﻿@model IEnumerable<CompanyModel>
+@{
+    string CurrentController = ConstController.Company;
+
+    string CurrentArea = ConstArea.MasterData;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CompanyCode)</th>
+            <th>@Html.DisplayNameFor(p => p.Plant)</th>
+            <th>@Html.DisplayNameFor(p => p.CompanyName)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Logo)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.CompanyCode)</td>
+                <td>@Html.DisplayFor(p => item.Plant)</td>
+                <td>@Html.DisplayFor(p => item.CompanyName)</td>
+                <td class="text-center">
+                    @if (item.Logo != null)
+                    {
+                        <img src="/Upload/Company/@item.Logo"  class="image-search-view">
+                    }
+                    else
+                    {
+                        <img src="@ConstDomain.NoImage"  class="image-search-view">
+                    }
+                </td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.CompanyId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.CompanyName, item.CompanyId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

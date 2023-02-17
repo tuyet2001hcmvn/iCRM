@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Detail_PeriodicallyCheckingViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="chosenList[@k].STT" value="@i">
+        <input type="hidden" class="productId" name="chosenList[@k].ProductId" value="@item.ProductId" />
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td>
+                @item.ProductCode
+            </td>
+            <td>
+                @item.ProductName
+            </td>
+            <td>
+                @item.CategoryName
+            </td>
+            <td>
+                @item.ConfigurationName
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del" data-id="@i" data-product="@item.ProductId">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}

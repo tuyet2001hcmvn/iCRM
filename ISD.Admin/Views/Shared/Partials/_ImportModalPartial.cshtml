@@ -1,0 +1,87 @@
+﻿<div id="importexcel-window" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="importexcel-window-title">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="importexcel-window-title">Import from Excel</h4>
+            </div>
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <div class="col-md-2">
+                                <div class="label-wrapper">
+                                    <label class="control-label">
+                                        Excel file
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-10">
+                                <input type="file" id="importexcelfile" name="importexcelfile" class="form-control" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"/>
+                                <input type="hidden" name="currentUrl" class="form-control" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="progress progressUpload" style="display:none;">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar">
+                            <span class="bar"></span>
+                        </div>
+                    </div>
+
+                    <div id="divModalAlertSuccess" class="alert alert-success alert-dismissable modalAlert" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                        <div class="modal-alert-message">
+                        </div>
+                    </div>
+
+                    <div id="divModalAlertWarning" class="alert alert-warning alert-dismissable modalAlert" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                        <div class="modal-alert-message">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btn-importExcel">
+                            Import from Excel
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    function setModalMessage(div, message) {
+        if (Array.isArray(message)) {
+            var arr = [];
+            $.each(message, function (i, item) {
+                arr[i] = { err: item }
+                $(div + " .modal-alert-message").append("<li>" + arr[i].err + "</li>");
+            });
+        }
+        else {
+            $(div + " .modal-alert-message").html(message);
+        }
+    }
+    function alertModalPopup(type, message) {
+        if (type == true) {
+            setModalMessage("#divModalAlertSuccess", message);
+            setTimeout(function () {
+                $('#divModalAlertSuccess').show();
+            }, 500)
+            setTimeout(function () {
+                $('#divModalAlertSuccess').hide();
+            }, 3000)
+        }
+        else if (type == false) {
+            setModalMessage("#divModalAlertWarning", message);
+            setTimeout(function () {
+                $('#divModalAlertWarning').show();
+            }, 500)
+        }
+    }
+</script>

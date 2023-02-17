@@ -1,0 +1,26 @@
+﻿<!-- Modal -->
+<div id="storeModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">CHỌN CHI NHÁNH</h4>
+            </div>
+            <div class="modal-body">
+                <div class="wrap-input100 ">
+                    @Html.DropDownList("CurrentSaleOrg", null, new { @class = "form-control with-search input100", @style = "height: 50px" })
+                </div>
+                <div id="store-error-message" class="bg-orange">
+                   
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="save-current-store">Lưu</button>
+            </div>
+        </div>
+
+    </div>
+</div>

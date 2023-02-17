@@ -1,0 +1,50 @@
+﻿@model TaskViewModel
+
+<div class="box box-info">
+    <div class="box-body">
+        <ol class="ProgressBar">
+            @foreach (var item in Model.taskProcessingList)
+            {
+                if (item.TaskStatusId == Model.TaskStatusId)
+                {
+                    <li class="ProgressBar-step is-current">
+                        <i class="ProgressBar-icon fa fa-check"></i>
+                        <span class="ProgressBar-stepLabel">
+                            @item.TaskStatusName
+                            @if (item.LastEditTime != null)
+                            {
+                                <br />
+                                <small>@item.LastEditTime.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                <br />
+                                <small>@item.LastEditByName</small>
+                            }
+                        </span>
+                    </li>
+                }
+                else if (item.LastEditTime != null || item.OrderIndex < ViewBag.MaxOrderIndex)
+                {
+                    <li class="ProgressBar-step is-complete">
+                        <i class="ProgressBar-icon fa fa-check"></i>
+                        <span class="ProgressBar-stepLabel">
+                            @item.TaskStatusName
+                            @if (item.LastEditTime != null)
+                            {
+                                <br />
+                                <small>@item.LastEditTime.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                                <br />
+                                <small>@item.LastEditByName</small>
+                            }
+                        </span>
+                    </li>
+                }
+                else
+                {
+                    <li class="ProgressBar-step">
+                        <svg class="ProgressBar-icon"><use xlink:href="#checkmark-bold" /></svg>
+                        <span class="ProgressBar-stepLabel">@item.TaskStatusName</span>
+                    </li>
+                }
+            }
+        </ol>
+    </div>
+</div>

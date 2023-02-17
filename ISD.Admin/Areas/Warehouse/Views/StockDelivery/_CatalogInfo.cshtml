@@ -1,0 +1,195 @@
+﻿@model DeliveryViewModel
+
+<div class="col-md-6">
+    <div class="panel panel-default isd-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse-sender">@LanguageResource.Warehouse_SenderInfor</a>
+            </h4>
+        </div>
+        <div id="collapse-sender" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.SenderName)
+                        </div>
+                        <div class="col-md-8">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.SenderName)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.SenderName)
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.SenderAddress)
+                        </div>
+                        <div class="col-md-8">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.SenderAddress)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.SenderAddress)
+                                </div>
+                            }
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.SenderPhone)
+                        </div>
+                        <div class="col-md-8">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.SenderPhone)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.SenderPhone)
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @if (ViewBag.ViewType == "Transfer")
+                            {
+
+                            }
+                            else
+                            {
+                                @Html.TooltipLabelFor(p => p.ShippingTypeCode)
+                            }
+
+                        </div>
+                        <div class="col-md-8">
+                            @if (ViewBag.ViewType == "Transfer")
+                            {
+
+                            }
+                            else
+                            {
+                                if (Model.IsEdit == true)
+                                {
+                                    @Html.RequiredDropDownListFor(p => p.ShippingTypeCode, null, null)
+                                }
+                                else
+                                {
+                                    @Html.RequiredDropDownListFor(p => p.ShippingTypeCode, null,LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                }
+                            }                        
+
+                            @*  @Html.RequiredDropDownListFor(p => p.ShippingTypeCode, null, null)*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6">
+    <div class="panel panel-default isd-panel">
+        <div class="panel-heading">
+            <h4 class="panel-title">
+                <a data-toggle="collapse" href="#collapse-recipient">@LanguageResource.Warehouse_ReceiverInfor</a>
+            </h4>
+        </div>
+        <div id="collapse-recipient" class="panel-collapse collapse in">
+            <div class="panel-body">
+                <div class="form-horizontal">
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.RecipientCompany)
+                        </div>
+                        <div class="col-md-8 width-fixed">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.RecipientCompany)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.RecipientCompany)
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.RecipientName)
+                        </div>
+                        <div class="col-md-8 width-fixed">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.RecipientName)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.RecipientName)
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.RecipientAddress)
+                        </div>
+                        <div class="col-md-8 width-fixed">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.RecipientAddress)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.RecipientAddress)
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-4">
+                            @Html.TooltipLabelFor(p => p.RecipientPhone)
+                        </div>
+                        <div class="col-md-8 width-fixed">
+                            @if (Model.DeliveryId == null || Model.DeliveryId == Guid.Empty || Model.IsEdit == true)
+                            {
+                                @Html.RequiredTextboxFor(p => p.RecipientPhone)
+                            }
+                            else
+                            {
+                                <div class="display-for">
+                                    @Html.DisplayFor(p => p.RecipientPhone)
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

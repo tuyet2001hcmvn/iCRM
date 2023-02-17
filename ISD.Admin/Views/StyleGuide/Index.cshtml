@@ -1,0 +1,38 @@
+﻿
+@{
+    ViewBag.Title = "Style Guide";
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+</div>
+<div class="content">
+
+    <h3>Check trạng thái Debug @@HttpContext.Current.IsDebuggingEnabled</h3>
+    @if (HttpContext.Current.IsDebuggingEnabled)
+    {
+        <h4 class="text-danger">This is DEBUG</h4>
+    }
+    else
+    {
+        <h4 class="text-success">This is RELEASE</h4>
+    }
+
+    <h3>Loading Button sử dụng ISD.BtnLoading($selector, isLoading)</h3>
+    <h3>GetConfigByKey("MobilePrefix"): @ViewBag.MobilePrefix</h3>
+    <h3>
+        <a onclick="(function() { ISD.alertPopup(true, 'This is a success message'); }());">ISD.alertPopup(true, ret.Data);</a>
+    </h3>
+    <h3>
+        <a onclick="(function() { ISD.alertPopup(false, 'This is a warning message'); }());">ISD.alertPopup(false, xhr.responseText);</a>
+    </h3>
+    @*<h3>@Html.RequiredTextboxFor(z)</h3>*@
+
+    <div>
+        @@Html.Label("Trạng thái", new { @@class = "control-label" })
+        @Html.Label("Trạng thái", new { @class = "control-label" })
+    </div>
+
+</div>

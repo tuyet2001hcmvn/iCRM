@@ -1,0 +1,210 @@
+﻿@using Newtonsoft.Json;
+@model IEnumerable<StockOnHandReportViewModel>
+@{
+    var pivotSetting = (List<FieldSettingModel>)ViewBag.PivotSetting;
+    var search = (StockOnHandReportSearchModel)ViewBag.Search;
+    var layoutConfigs = (string)ViewBag.LayoutConfigs;
+}
+
+@Html.DevExpress().PivotGrid(settings =>
+{
+    settings.Name = "StockOnHandPivotGridPartial";
+    settings.CallbackRouteValues = new { Controller = "StockOnHandReport", Action = "StockOnHandPivotGridPartial", jsonReq = JsonConvert.SerializeObject(search) };
+    settings.Width = Unit.Percentage(100);
+    settings.OptionsPager.RowsPerPage = 20;
+    settings.OptionsPager.PageSizeItemSettings.Visible = true;
+    settings.OptionsCustomization.AllowDrag = true;
+    settings.OptionsCustomization.AllowDragInCustomizationForm = true;
+    settings.OptionsCustomization.AllowSort = true;
+    settings.CustomizationFieldsLeft = 600;
+    settings.CustomizationFieldsTop = 400;
+
+    if (string.IsNullOrEmpty(layoutConfigs))
+    {
+        settings.AfterPerformCallback = (sender, e) =>
+        {
+            List<FieldSettingModel> fieldSettingList = new List<FieldSettingModel>();
+            ASPxPivotGrid PivotGrid = sender as ASPxPivotGrid;
+            var listField = PivotGrid.Fields;
+            foreach (PivotGridField field in listField)
+            {
+                FieldSettingModel fieldSetting = new FieldSettingModel();
+                fieldSetting.Caption = field.Caption;
+                fieldSetting.AreaIndex = field.AreaIndex;
+                fieldSetting.FieldName = field.FieldName;
+                if (field.Area == PivotArea.RowArea)
+                {
+                    fieldSetting.PivotArea = 0;
+
+                }
+                else
+                {
+                    if (field.Area == PivotArea.ColumnArea)
+                    {
+                        fieldSetting.PivotArea = 1;
+                    }
+                    else
+                    {
+                        if (field.Area == PivotArea.FilterArea)
+                        {
+                            fieldSetting.PivotArea = 2;
+                        }
+                        else
+                        {
+                            fieldSetting.PivotArea = 3;
+                        }
+                    }
+                }
+                if (field.ValueFormat.FormatType == FormatType.Numeric || field.ValueFormat.FormatType == FormatType.DateTime)
+                {
+                    fieldSetting.CellFormat_FormatString = field.ValueFormat.FormatString;
+                    fieldSetting.CellFormat_FormatType = field.ValueFormat.FormatType.ToString();
+                }
+                fieldSetting.Visible = field.Visible;
+                fieldSettingList.Add(fieldSetting);
+            }
+            Session[CurrentUser.AccountId + "Layout"] = fieldSettingList;
+            Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+        };
+    }
+    else
+    {
+        settings.PreRender = (sender, e) =>
+        {
+            MVCxPivotGrid PivotGrid = sender as MVCxPivotGrid;
+            //PivotGrid.LoadLayoutFromString(layoutConfigs);
+            Session[CurrentUser.AccountId + "LayoutConfigs"] = PivotGrid.SaveLayoutToString();
+        };
+    }
+
+    if (pivotSetting != null && pivotSetting.Count > 0) //nếu có setting thì  render theo setting
+    {
+        foreach (var fieldSetting in pivotSetting)
+        {
+            settings.Fields.Add(field =>
+            {
+                if (fieldSetting.PivotArea == 0)
+                {
+                    field.Area = PivotArea.RowArea;
+                }
+                if (fieldSetting.PivotArea == 1)
+                {
+                    field.Area = PivotArea.ColumnArea;
+                }
+                if (fieldSetting.PivotArea == 2)
+                {
+                    if (fieldSetting.AreaIndex > 10)
+                    {
+                        field.Visible = false;
+                    }
+                    field.Area = PivotArea.FilterArea;
+
+                }
+                if (fieldSetting.PivotArea == 3)
+                {
+                    field.Area = PivotArea.DataArea;
+                }
+                field.FieldName = fieldSetting.FieldName;
+                field.Caption = fieldSetting.Caption;
+                field.AreaIndex = fieldSetting.AreaIndex.Value;
+                if (fieldSetting.CellFormat_FormatType == "DateTime")
+                {
+                    field.ValueFormat.FormatType = FormatType.DateTime;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.DateTime;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                }
+                if (fieldSetting.CellFormat_FormatType == "Numeric")
+                {
+                    field.ValueFormat.FormatType = FormatType.Numeric;
+                    field.ValueFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.CellFormat.FormatType = FormatType.Numeric;
+                    field.CellFormat.FormatString = fieldSetting.CellFormat_FormatString;
+                    field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+                    field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+                }
+                field.Visible = fieldSetting.Visible.Value;
+            });
+        }
+    }
+    else // nếu không có template thì render mặc định
+    {
+        //Row Area
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ERPProductCode";
+            field.Caption = "Mã CTL";
+            field.AreaIndex = 0;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "ProductName";
+            field.Caption = "Tên Catalogue";
+            field.AreaIndex = 1;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "CategoryName";
+            field.Caption = "Nhóm vật tư";
+            field.AreaIndex = 2;
+        });
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "StockCode";
+            field.Caption = "Mã kho xuất";
+            field.AreaIndex = 3;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "StockName";
+            field.Caption = "Tên kho xuất";
+            field.AreaIndex = 4;
+        });
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "Qty";
+            field.Caption = "Số lượng tồn";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:#,##0}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:#,##0}";
+            field.AreaIndex = 6;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+        });
+
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "Unit";
+            field.Caption = "Đơn vị tính";
+            field.AreaIndex = 7;
+        });
+        settings.Fields.Add(field =>
+        {
+            field.Area = PivotArea.RowArea;
+            field.FieldName = "UnitPrice";
+            field.Caption = "Đơn giá (VNĐ)";
+            field.ValueFormat.FormatType = FormatType.Numeric;
+            field.ValueFormat.FormatString = "{0:##,###}";
+            field.CellFormat.FormatType = FormatType.Numeric;
+            field.CellFormat.FormatString = "{0:##,###}";
+            field.AreaIndex = 8;
+            field.ValueStyle.HorizontalAlign = HorizontalAlign.Right;
+            field.CellStyle.HorizontalAlign = HorizontalAlign.Right;
+        });
+
+    }
+
+
+}).Bind(Model).GetHtml()
+

@@ -1,0 +1,47 @@
+﻿@model StockReceivingMasterViewModel
+
+<div class="panel panel-default isd-panel">
+    <div class="panel-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        @Html.TooltipLabelFor(p => p.CompanyId)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredDropDownListFor(p => p.CompanyId, null, null)
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+                    </div>
+                    <div class="col-md-8 width-fixed">
+                        @Html.RequiredDropDownListFor(p => p.SalesEmployeeCode, null, null)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        @Html.TooltipLabelFor(p => p.DocumentDate)
+                    </div>
+                    <div class="col-md-8">
+                        @*@Html.RequiredTextboxFor(p => p.DocumentDate, "{0:yyyy-MM-dd}", new { type = "date" })*@
+                        <input class="form-control text-box single-line valid" id="DocumentDate" name="DocumentDate" type="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" readonly>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        @Html.TooltipLabelFor(p => p.Note)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.Note, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

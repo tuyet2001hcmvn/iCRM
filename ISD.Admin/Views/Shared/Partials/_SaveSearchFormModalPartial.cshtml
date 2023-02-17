@@ -1,0 +1,47 @@
+﻿<!--Modal lưu form tìm kiếm-->
+<div class="divSaveSearchForm">
+    <div id="divSaveSearchForm" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title text-center">Lưu mẫu tìm kiếm</h4>
+                </div>
+                <form class="frmSaveSearchForm" id="frmSaveSearchForm">
+                    <div class="form-horizontal">
+                        <div class="modal-body">
+                            <div id="divAlertPopupWarning" class="alert alert-warning alert-dismissable" style="display: none">
+                                <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertPopupWarning">×</button>
+                                <div class="alert-message">
+                                </div>
+                            </div>
+                            <input type="hidden" id="AccountId" name="AccountId" />
+                            <input type="hidden" id="PageId" name="PageId" />
+                            <input type="hidden" id="SearchContent" name="SearchContent" />
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">Tên mẫu tìm kiếm</label></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group input-group-required">
+                                        <input class="form-control text-box single-line" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;Tên&quot;" id="TemplateName" name="TemplateName" type="text" value="">
+                                        <div class="required-icon" data-original-title="" title="">
+                                            <div class="text">*</div>
+                                        </div>
+                                        <span class="field-validation-valid validation-text" data-valmsg-for="TemplateName" data-valmsg-replace="true"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <span class="btn btn-default" data-dismiss="modal" id="btn-cancel">@LanguageResource.Btn_Cancel</span>
+                            <a class="btn btn-primary pull-right" id="btn-save-template">
+                                @LanguageResource.Btn_Save
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

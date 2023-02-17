@@ -1,0 +1,328 @@
+﻿@model ISD.ViewModels.AccountViewModel
+@using MvcCheckBoxList.Model
+
+@{
+    /**/
+
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.Permission_AccountModel.ToLower();
+    string CurrentController = ConstController.Account;
+    string CurrentArea = ConstArea.Permission;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.UserName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.UserName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Password)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Password, new { @type = "password" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.retypePassword)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.retypePassword, new { @type = "password" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EmployeeCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EmployeeCode)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.RolesModel)
+                            </div>
+                            <div class="col-md-9 div-checkbox div-checkbox-account">
+                                @* 1.checkbox name, 2.list all, 3.value, 4.display name, 5.selected list *@
+                                @Html.CheckBoxListFor(p => p.RolesId, p => p.RolesList, p1 => p1.RolesId, p1 => p1.RolesName, p => null, Position.Vertical)
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: none">
+                            <div class="col-md-3">
+                                <div class="label-wrapper">
+                                    @Html.Label("Xem dữ liệu", new { @clas = "control-label" })
+                                </div>
+                            </div>
+                            <div class="col-md-9 div-checkbox">
+                                <div>
+                                    @Html.CheckBox("isViewTotal")
+                                    @Html.LabelFor(p => p.isViewTotal)
+                                </div>
+                                <div>
+                                    @Html.CheckBox("isViewByWarehouse")
+                                    @Html.LabelFor(p => p.isViewByWarehouse)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isShowChoseModule)
+                            </div>
+                            <div class="col-md-9 div-radio">
+                                <label class="label-radio">
+                                    @Html.CheckBox("isShowChoseModule") Chọn mô-đun
+                                </label>
+                                <label class="label-radio">
+                                    @Html.CheckBox("isShowDashboard") Xem thống kê
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="display: none">
+                            <div class="col-md-3">
+                                <div class="label-wrapper">
+                                    @Html.Label("Nhận thông báo", new { @clas = "control-label" })
+                                </div>
+                            </div>
+                            <div class="col-md-9 div-checkbox">
+                                <div>
+                                    @Html.CheckBox("isReceiveNotification")
+                                    @Html.LabelFor(p => p.isReceiveNotification)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CompanyId)
+                            </div>
+                            <div class="col-md-9">
+                                @{ int i = 0; }
+                                @foreach (var item in (List<CompanyModel>)ViewBag.CompanyId)
+                                {
+                                    <label class="text-normal">
+                                        <input type="checkbox" name="CompanyId" class="CompanyId" value="@item.CompanyId"
+                                               data-row="@i">
+                                        @item.CompanyName
+                                    </label>
+                                    <span>
+                                        <a style="cursor: pointer" class="btn-choose-all-store" data-row="@i" data-comp="@item.CompanyId">
+
+                                        </a>
+                                    </span>
+                                    <br />
+                                    <div class="store-by-company storeList_@i"></div>
+                                    i++;
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isViewByStore)
+                            </div>
+                            <div class="col-md-9 div-radio">
+                                <label class="label-radio">
+                                    @Html.RadioButton("isViewByStore", false, true) Xem toàn bộ dữ liệu
+                                </label>
+                                <label class="label-radio">
+                                    @Html.RadioButton("isViewByStore", true) Xem theo chi nhánh được phân quyền
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isViewOpportunity)
+                            </div>
+                            <div class="col-md-9 div-radio">
+                                <label class="label-radio">
+                                    @Html.RadioButton("isViewOpportunity", true) Xem tất cả
+                                </label>
+                                <label class="label-radio">
+                                    @Html.RadioButton("isViewOpportunity", false, true) Xem theo phân quyền
+                                </label>
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ViewPermission)
+                            </div>
+                            <div class="col-md-9 div-radio">
+                                @foreach (var item in (SelectList)ViewBag.ViewPermission)
+                                {
+                                    <label class="label-radio">
+                                        @Html.RadioButton("ViewPermission", item.Value, item.Selected, new { @id = string.Format("Account_ViewPermission_{0}", item.Value) })
+                                        @item.Text
+                                    </label>
+                                }
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.TaskFilterCode)
+                            </div>
+                            <div class="col-md-9 div-radio">
+                                @foreach (var item in (SelectList)ViewBag.TaskFilterCode)
+                                {
+                                    <label class="label-radio">
+                                        @Html.RadioButton("TaskFilterCode", item.Value, item.Selected, new { @id = string.Format("Account_TaskFilterCode_{0}", item.Value) })
+                                        @item.Text
+                                    </label>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isCreatePrivateTask)
+                            </div>
+
+                            <div class="col-md-6 div-radio">
+                                <label class="label-radio">
+                                    <input id="isCreatePrivateTask_true" name="isCreatePrivateTask" type="radio" value="True"> Có
+                                </label>
+                                <label class="label-radio">
+                                    <input id="isCreatePrivateTask_false" name="isCreatePrivateTask" type="radio" value="False" checked="checked"> Không
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isViewRevenue)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButtonIs(p => p.isViewRevenue)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+            SearchText();
+        });
+
+        function SearchText() {
+            $("#EmployeeCode").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/Account/GetSalesEmployeeCode",
+                        data: JSON.stringify({ "EmployeeCode": $("#EmployeeCode").val() }),
+                        dataType: "json",
+                        success: function (data) {
+                            response(data);
+                        },
+                        error: function (xhr, status, error) {
+                            alertPopup(false, xhr.responseText);
+                        }
+                    });
+                },
+                //prevent another value except dropdown value
+                change: function(event, ui) {
+                    if (ui.item == null) {
+                        $("#EmployeeCode").val("");
+                        $("#EmployeeCode").focus();
+                    }
+                }
+            });
+        }
+
+        //show store by company
+        $(document).on("change", "input[name=CompanyId]", function () {
+            var CompanyId = $(this).val();
+            var Index = $(this).data("row");
+
+            if ($(this).prop("checked")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Account/GetStoreByCompany",
+                    data: {
+                        CompanyId: CompanyId
+                    },
+                    success: function (jsonData) {
+                        $("div.storeList_" + Index).html("");
+                        $.each(jsonData, function (index, value) {
+                            $("div.storeList_" + Index).append('<label class="text-normal"><input type="checkbox" name="StoreId" class="StoreId" value="' + value.StoreId + '"> ' + value.StoreName + "</label><br>");
+                        });
+                        $("div.storeList_" + Index).show();
+                        $(".btn-choose-all-store[data-row='" + Index + "']").html(" (chọn tất cả)");
+                    }
+                });
+            }
+            else {
+                $("div.storeList_" + Index).hide();
+                $(".btn-choose-all-store[data-row='" + Index + "']").html("");
+            }
+        });
+
+        //Choose all store in a company
+        $(document).on("click", ".btn-choose-all-store", function () {
+            var CompanyId = $(this).data('comp');
+            var Index = $(this).data("row");
+
+            $.each($("div.storeList_" + Index + " input[name='StoreId']"), function (index, value) {
+                $(this).prop("checked", true);
+            })
+        });
+    </script>
+}
+
+

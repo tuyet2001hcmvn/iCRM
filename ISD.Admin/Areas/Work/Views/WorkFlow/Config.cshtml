@@ -1,0 +1,201 @@
+﻿@model IEnumerable<TaskStatusViewModel>
+
+@{
+    ViewBag.Title = LanguageResource.Configuration + " " + LanguageResource.WorkFlow.ToLower();
+    string CurrentController = ConstController.WorkFlow;
+    string CurrentArea = ConstArea.Work;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content">
+    <div class="box box-primary">
+        <div class="box-header with-border">
+            <h3 class="box-title">@ViewBag.Title</h3>
+        </div>
+        <div class="box-body" id="contentStatusTransition">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="isd-table-header">
+                    <tr>
+                        <th class="text-center">@LanguageResource.NumberIndex</th>
+                        <th>@Html.DisplayNameFor(p => p.TaskStatusName)</th>
+                        <th>@Html.DisplayNameFor(p => p.ProcessCode)</th>
+                        <th>@LanguageResource.TransitionTo</th>
+                        <th class="text-center">@LanguageResource.Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 0;}
+                    @foreach (var item in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td class="text-center">
+                                @i
+                                @Html.HiddenFor(p => item.WorkFlowId)
+                            </td>
+                            <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+                            <td>@Html.DisplayFor(p => item.ProcessName)</td>
+                            <td>@Html.DisplayFor(p => item.StatusTransition)</td>
+                            <td class="text-center">
+                                <a class="btn bg-blue btn-create-transition" data-id="@item.TaskStatusId" onclick="$(this).button('loading')"><i class="fa fa-plus-square"></i> Thêm</a>
+                                @if (item.StatusTransition != null)
+                                {
+                                    <a class="btn btn-default btn-edit-transition" data-id="@item.StatusTransitionId" onclick="$(this).button('loading')"><i class="fa fa-pencil"></i> Sửa</a>
+                                    <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.StatusTransitionId" data-item-name="@item.StatusTransition" data-delete-success-call-back="ReloadTaskStatusList">
+                                        <i class="fa fa-trash-o"></i> Xóa
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section components{
+    <div class="modal fade" id="taskStatusPopup" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script>
+        $(document).on("click", ".btn-delete", function () {
+            var $btn = $(this);
+
+            var controller = $btn.data("current-url");
+            var itemName = $btn.data("item-name");
+            var id = $btn.data("id");
+            var callBackFunction = $btn.data("delete-success-call-back");
+
+            $("#divDeletePopup").modal("show");
+            //set title
+            $("#divDeletePopup .modal-title .item-name").html(itemName);
+            //set text
+            var text = $("#divDeletePopup .alert-message").html();
+            //Replace new text
+            text = text.replace(/"([^"]*)"/g, '"' + itemName + '"');
+            text = String.format(text, itemName);
+            //Show new text
+            $("#divDeletePopup .alert-message").html(text);
+
+            //get id, controller
+            $("#divDeletePopup #id").val(id);
+            $("#divDeletePopup #controller").val(controller);
+
+            if (callBackFunction) {
+                $("#divDeletePopup #btn-confirm-delete").data("delete-success-call-back", callBackFunction);
+            }
+        });
+
+        //click button confirm
+        $(document).on("click", "#btn-confirm-delete", function () {
+            var $btn = $(".btn-delete");
+
+            var controller = $('form[id="frmConfirm"] #controller').val();
+            //Attribute delete-success-call-back:
+            var successfunction = $(this).data("delete-success-call-back");
+
+            $.ajax({
+                type: "POST",
+                url: "/Work/WorkFlow/DeleteTransition",
+                data: $('form[id="frmConfirm"]').serialize(),
+                success: function (jsonData) {
+                    $btn.button('reset');
+                    $("#divDeletePopup").modal("hide");
+                    if (jsonData.Success == true) {
+                        console.log(successfunction);
+                        //Gọi function này khi xóa thành công
+                        if (successfunction) {
+                            window[successfunction]();
+                        } else {
+                            //mặc định trigger button search, thông báo thành công
+                            $("#btn-search").trigger("click");
+                            alertPopup(true, jsonData.Data);
+                        }
+                    }
+                    else {
+                        if (jsonData.Data != null && jsonData.Data != "") {
+                            alertPopup(false, jsonData.Data);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $btn.button('reset');
+                    $("#divDeletePopup").modal("hide");
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        //click button cancel
+        $(document).on("click", "#btn-cancel-delete", function () {
+            var $btn = $(".btn-delete");
+
+            $btn.button('reset');
+            $("#divDeletePopup").modal("hide");
+        });
+        //click outside popup
+        $('#divDeletePopup').on('hidden.bs.modal', function () {
+            var $btn = $(".btn-delete");
+
+            $btn.button('reset');
+            $("#divDeletePopup").modal("hide");
+        });
+
+        /*Popup Create From*/
+        $(document).on("click", ".btn-create-transition", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+            var taskStatusId = $(this).data("id");
+
+            $.ajax({
+                type: "GET",
+                url: '/Work/WorkFlow/_CreateTransition',
+                data: { TaskStatusId: taskStatusId }
+            }).done(function (html) {
+                $btn.button("reset");
+                $("#taskStatusPopup").find(".modal-content").html(html).end().modal("show");
+                //ISD.ValidationOnModalPopup("#frmAddressBook");
+            });
+            $btn.button("reset");
+        });
+
+        /*Edit button*/
+        $(document).on("click", ".btn-edit-transition", function () {
+            var $btn = $(this);
+            $btn.button("loading");
+
+            var statusTransactionId = $(this).data("id");
+            $.ajax({
+                type: "GET",
+                url: '/Work/WorkFlow/_EditTransition',
+                data: { StatusTransactionId: statusTransactionId }
+            }).done(function (html) {
+                $btn.button("reset");
+                $("#taskStatusPopup").find(".modal-content").html(html).end().modal("show");
+                // ISD.ValidationOnModalPopup("#frmAddressBook");
+            });
+            $btn.button("reset");
+        });
+        /*Save Data*/
+        $(document).on("click", "#taskStatusPopup #btn-save-statusTransition", function () {
+            ISD.SaveDataWithPopup("/Work/WorkFlow/Save", "#frmStatusTransition", this, "#taskStatusPopup");
+        });
+
+        ReloadTaskStatusList = function () {
+            //var WorkFlowId = $("input[name='item.WorkFlowId']").val();
+            //var requestUrl = "/Work/WorkFlow/Config/" + WorkFlowId;
+            //$("#contentStatusTransition table tbody").load(requestUrl);
+            location.reload(true);
+        }
+    </script>
+}

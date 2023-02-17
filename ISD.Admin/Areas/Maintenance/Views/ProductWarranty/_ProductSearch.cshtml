@@ -1,0 +1,263 @@
+﻿@model ProductSearchViewModel
+
+    <div id="divProductSearch" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-md">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">TÌM KIẾM THÔNG TIN SẢN PHẨM</h4>
+                </div>
+                <form id="frmProductSearchPopup">
+                    @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+                        <div class="modal-body">
+
+                            <div class="content">
+                                <div class="form-horizontal">
+                                    <div class="panel-group">
+                                        <div class="panel panel-default panel-search">
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.SearchProductCode)
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(p => p.SearchProductCode, new { @class = "form-control text-box single-line" })
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.SearchProductName)
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(p => p.SearchProductName, new { @class = "form-control text-box single-line" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.SearchCategoryId)
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                @Html.DropDownListFor(p => p.SearchCategoryId, null, LanguageResource.Dropdownlist_All,new { @class = "form-control with-search" })
+                                                            </div>
+
+                                                            <div class="col-md-2">
+                                                                @Html.TooltipLabelFor(p => p.Actived)
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                @Html.DropDownList("Actived", new List<SelectListItem>()
+                                                                   {
+                                                                       new SelectListItem(){Text = LanguageResource.Dropdownlist_All, Value = ""},
+                                                                       new SelectListItem(){Text = LanguageResource.Actived_True, Value = "true"},
+                                                                       new SelectListItem(){Text = LanguageResource.Actived_False, Value = "false"}
+                                                                   }, new { @class = "font-control" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-8 col-md-offset-5">
+                                                            <a class="btn btn-primary btn-search" id="btn-product-search">
+                                                                <i class="fa fa-search"></i> @LanguageResource.Btn_Search
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="panel panel-default">
+                                            <div class="panel-body">
+                                                <div id="">
+                                                    <table class="table table-bordered table-striped table-hover searchProductWarrantyTable no-footer">
+                                                        <thead class="isd-table-header">
+                                                            <tr>
+                                                                <th class="text-center">@LanguageResource.NumberIndex</th>
+                                                                <th>@Html.DisplayNameFor(p => p.ERPProductCode)</th>
+                                                                <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+                                                                <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+                                                                <th>@Html.DisplayNameFor(p => p.CategoryId)</th>
+                                                                <th>@Html.DisplayNameFor(p => p.Unit)</th>
+                                                                <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+                                                            </tr>
+                                                        </thead>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            //$("#btn-product-search").trigger("click");
+        });
+
+        $(document).on("click", "#btn-product-search", function () {
+            PaggingServerSide_Product("/Sale/Product/_ProductSearchResult");
+        });
+
+        //trigger enter click when fill in search form
+        $(document).on("keyup", "#frmProductSearchPopup", function (evt) {
+            if (evt.keyCode == 13) {
+                $("#btn-product-search").trigger("click");
+            }
+        });
+
+        function PaggingServerSide_Product(url) {
+            $(".searchProductWarrantyTable").DataTable().clear().destroy();
+            $(".searchProductWarrantyTable")
+                .on('processing.dt', function (e, settings, processing) {
+                    ISD.LoadingDataTable(processing, '.searchProductWarrantyTable');
+                })
+                .DataTable({
+                proccessing: true,
+                serverSide: true,
+                paging: true,
+                scrollX: true,
+                ajax: {
+                    type: 'POST',
+                    url: url,
+                    contentType: 'application/json',
+                    data: function (d) {
+                        var arr = {};
+                        //data search
+                        var data = $("#frmProductSearchPopup").serializeArray();
+                        $.each(data, function (index, val) {
+                            var obj = {};
+                            obj[val.name] = val.value;
+                            $.extend(true, arr, obj);
+                        });
+                        //data datatable (draw, start, length,...)
+                        $.extend(true, arr, d);
+
+                        return JSON.stringify(arr);
+                    }
+                },
+                columns: [
+                    {
+                        "data": "STT",
+                        "className": "text-center"
+                    },
+                    {
+                        "data": "ERPProductCode",
+                        "className": "text-center",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                return "<a class=\"btn-product-choose\" data-id='" + row["ProductId"] + "' data-name='" + row["ProductName"] + "'>" + data + "</a>";
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        "data": "ProductCode",
+                        "className": "text-center",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                return "<a class=\"btn-product-choose\" data-id='" + row["ProductId"] + "' data-name='" + row["ProductName"] + "'>" + data + "</a>";
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        "data": "ProductName",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                return "<a href='/Sale/Product/Edit/" + row['ProductId'] + "' title='" + data + "'>" + data + "</a>"
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "CategoryName",
+                        "orderable": false,
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                return "<a href='/Sale/Category/Edit/" + row['CategoryId'] + "' title='" + data + "'>" + data + "</a>"
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "Unit"
+                    },
+                    {
+                        "data": "Actived",
+                        "orderable": false,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data == true) {
+                                    return "<i class='fa fa-check true-icon'></i>";
+                                }
+                                else {
+                                    return "<i class='fa fa-close false-icon'></i>";
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    @*{
+                        "data": "ProductId",
+                        "orderable": false,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                return "<a class=\"btn btn-success btn-product-choose\" data-id='" + data + "' data-name='" + row["ProductName"] + "'>@LanguageResource.Btn_Choose</a>";
+                            }
+                            return "";
+                        }
+                    }*@
+                ],
+                destroy: true,
+                language: {
+                    sProcessing: "Đang xử lý...",
+                    sLengthMenu: "Xem _MENU_ mục",
+                    sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                    sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                    sInfoPostFix: "",
+                    sSearch: "Tìm nội dung:",
+                    sUrl: "",
+                    oPaginate: {
+                        sFirst: "Đầu",
+                        sPrevious: "&laquo;",
+                        sNext: "&raquo;",
+                        sLast: "Cuối"
+                    }
+                },
+                columnDefs: [
+                    { targets: [0, 1], visible: true },
+                    { targets: 'no-sort', visible: false }
+                ],
+                "sDom": '<"top"flp>rt<"bottom"i><"clear">',
+            });
+        }
+
+        $(document).on("click", ".btn-product-choose", function () {
+            //get and fill data to student info
+            var id = $(this).data("id");
+            var name = $(this).data("name");
+
+            $("#ProductId").val(id);
+            $("#ProductName").val(name);
+
+            //close popup
+            $("#divProductSearch").modal("hide");
+        });
+    </script>

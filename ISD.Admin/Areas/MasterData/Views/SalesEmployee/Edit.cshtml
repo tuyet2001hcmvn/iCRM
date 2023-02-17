@@ -1,0 +1,175 @@
+﻿@model SalesEmployeeModel
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.MasterData_SalesEmployee.ToLower();
+    string CurrentController = ConstController.SalesEmployee;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.SalesEmployeeCode)
+
+    @Html.Hidden("SalesEmployeeCodeValid", Model.SalesEmployeeCode)
+
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.CompanyId)
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(p => p.CompanyId, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.StoreId)
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(p => p.StoreId, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.DepartmentId)
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownListFor(p => p.DepartmentId, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+            </div>
+        </div>*@
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.SalesEmployeeCode, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.SalesEmployeeName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.SalesEmployeeName)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.SalesEmployeeShortName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.SalesEmployeeShortName)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Phone)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Phone)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Email)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Email)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DepartmentId)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("DepartmentId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+            //$("#CompanyId").trigger("change");
+        });
+        //$(document).on("change", "#CompanyId", function () {
+        //    var CompanyId = $("#CompanyId").val();
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/MasterData/Department/GetStoreByCompany",
+        //        data: {
+        //            CompanyId: CompanyId
+        //        },
+        //        success: function (jsonData) {
+        //            $("#StoreId").html("");
+        //            if (jsonData.length > 0) {
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //            }
+        //            else {
+        //                $("#StoreId").append("<option>-- Vui lòng chọn --</option>");
+        //            }
+        //            $("#StoreId").trigger("change");
+        //        }
+        //    });
+        //});
+        //$(document).on("change", "#StoreId", function () {
+        //    var StoreId = $("#StoreId").val();
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/MasterData/SalesEmployee/CreateDepartmentByStore",
+        //        data: {
+        //            StoreId: StoreId
+        //        },
+        //        success: function (jsonData) {
+        //            $("#DepartmentId").html("");
+        //            if (jsonData.length > 0) {
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#DepartmentId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //            }
+        //            else {
+        //                $("#DepartmentId").append("<option>-- Vui lòng chọn --</option>");
+        //            }
+        //        }
+        //    });
+        //});
+    </script>
+}
+

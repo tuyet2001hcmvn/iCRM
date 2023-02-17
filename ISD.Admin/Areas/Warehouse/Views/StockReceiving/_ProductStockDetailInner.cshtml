@@ -1,0 +1,60 @@
+﻿@model IEnumerable<StockReceivingDetailViewModel>
+@using ISD.Core;
+@{
+    int i = 0;
+    int k = -1;
+}
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+
+        string background_color = "";
+
+        <tr class="@background_color">
+            <td class="text-center">
+                @i
+                <input type="hidden" name="stockReceivingDetailList[@k].STT" value="@i">
+                <input type="hidden" name="stockReceivingDetailList[@k].ProductId" value="@item.ProductId">
+                <input type="hidden" name="stockReceivingDetailList[@k].ProductCode" value="@item.ProductCode">
+                <input type="hidden" name="stockReceivingDetailList[@k].ProductName" value="@item.ProductName">
+                <input type="hidden" name="stockReceivingDetailList[@k].StockId" value="@item.StockId">
+                <input type="hidden" name="stockReceivingDetailList[@k].StockCode" value="@item.StockCode">
+                <input type="hidden" name="stockReceivingDetailList[@k].StockName" value="@item.StockName">
+                <input type="hidden" name="stockReceivingDetailList[@k].Quantity" value="@item.Quantity">
+                <input type="hidden" name="stockReceivingDetailList[@k].Price" value="@item.Price">
+                <input type="hidden" name="stockReceivingDetailList[@k].DetailNote" value="@item.DetailNote">
+                <input type="hidden" name="stockReceivingDetailList[@k].UnitPrice" class="stockReceivingDetailList-UnitPrice" value="@item.UnitPrice" disabled data-row="@k">
+
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(p => item.StockCode)
+            </td>
+            <td class="wordwrap">
+                @Html.DisplayFor(p => item.StockName)
+            </td>
+            <td>
+                @Html.DisplayFor(p => item.ProductCode)
+            </td>
+            <td>
+                @Html.DisplayFor(p => item.ProductName)
+            </td>
+            <td class="text-right">
+                @Html.DisplayFor(p => item.Quantity)
+            </td>
+            <td class="text-right">
+                @item.Price.FormatCurrency()
+            </td>
+            <td class="text-right">
+                @item.UnitPrice.FormatCurrency()
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-proDetail" data-row="@i" data-id="@item.ProductId">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}

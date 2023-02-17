@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - @LanguageResource.ProjectName</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/custom")
+    @Scripts.Render("~/bundles/modernizr")
+    @RenderSection("head", required: false)
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+    <div class="container-fluid">
+        <div class="container">
+            @Html.Partial("Notifications")
+            <div class="row body-login" style="clear: both;">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/AdminLTE-2.4.3/dist/js/adminlte.min.js"></script>
+    <script src="~/Scripts/Common/ISD.Common.js"></script>
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

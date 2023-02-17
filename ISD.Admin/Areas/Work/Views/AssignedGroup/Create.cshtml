@@ -1,0 +1,76 @@
+﻿@model AssignedGroupCreateModel
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.AssignedGroup.ToLower();
+    string CurrentController = ConstController.AssignedGroup;
+    string CurrentArea = ConstArea.Work;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController, "?Type="+(string)ViewBag.Type);
+    List<SalesEmployeeViewModel> listEmployee = new List<SalesEmployeeViewModel>();
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?Type=" + (string)ViewBag.Type)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.GroupName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.GroupName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.AccountIdList)
+                        </div>
+                        <div class="col-md-8">
+                            @*@Html.RequiredDropDownListFor(p => p.AccountIdList, null, null, new { @class = "form-control with-search", @multiple = "@multiple" })*@
+                            <a id="btn-add-member" title="Thêm thành viên" class="btn btn-default"><i class="fa fa-plus"></i></a>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="panel-body">
+                @Html.Partial("_MemberInGroup")
+            </div>
+        </div>
+    </div>
+    @*<div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="panel-body">
+                @Html.Partial("_SearchEmployee", listEmployee);
+            </div>
+        </div>
+    </div>*@
+</div>
+@section components{
+
+    <div id="divTaskGroupPopup" class="modal" role="dialog"></div>
+    <div id="divTaskPersonGroupPopup" class="modal" role="dialog">
+        @Html.Partial("_ChooseEmployeePopup", new TaskGroupViewModel())
+    </div>
+
+}
+@section scripts {
+    @Scripts.Render("~/Areas/Work/Scripts/CreateAssignedGroup.js")
+
+    <script>
+
+    </script>
+}

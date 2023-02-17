@@ -1,0 +1,51 @@
+﻿@model IEnumerable<AccessoryViewModel>
+@{
+    string CurrentController = ConstController.Accessory;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.AccessoryCode)</th>
+            <th>@Html.DisplayNameFor(p => p.AccessoryName)</th>
+            <th>@Html.DisplayNameFor(p => p.AccessoryCategoryId)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.ImageUrl)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.AccessoryCode)</td>
+                <td>@Html.DisplayFor(p => item.AccessoryName)</td>
+                <td>@Html.DisplayFor(p => item.AccessoryCategoryName)</td>
+                <td class="text-center">
+                    @if (item.ImageUrl != null)
+                    {
+                        <img class="image-search-view" src="/Upload/Accessory/@item.ImageUrl" />
+                    }
+                    else
+                    {
+                        <img class="image-search-view" src="/Upload/Accessory/noimage.jpg" />
+                    }
+                </td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.AccessoryId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.AccessoryName, item.AccessoryId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

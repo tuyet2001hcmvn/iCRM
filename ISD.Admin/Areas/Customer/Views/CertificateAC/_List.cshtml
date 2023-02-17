@@ -1,0 +1,26 @@
+﻿@model IEnumerable<CertificateACViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.Customer_Certificate
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" id="btn-create-certificateac"><i class="fa fa-plus-square"></i> Thêm mới</a>
+    </div>
+</div>
+<div class="content overflow-x-scroll" id="contentCertificateAC">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.Content)</th>
+                <th>@Html.DisplayNameFor(p => p.StartDate)</th>
+                <th>@Html.DisplayNameFor(p => p.EndDate)</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

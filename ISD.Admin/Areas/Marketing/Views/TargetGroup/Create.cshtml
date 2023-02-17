@@ -1,0 +1,61 @@
+﻿@model ISD.ViewModels.Marketing.TargetGroupCreateViewModel
+@{
+
+    ViewBag.Title = LanguageResource.Create + " " + ViewBag.Title;
+
+    string CurrentArea = ConstArea.Marketing;
+
+    string CurrentController = ConstController.TargetGroup;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    string BackCurrentController = string.Format("{0}?Type={1}", CurrentController, ViewBag.Type);
+    string BackCurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, BackCurrentController);
+
+    string BaseAddress = Net5ApiDomain;
+    string ApiUrl = BaseAddress + "api/" + CurrentUrl + "s";
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, BackCurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    //@Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.TargetGroupName)
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        $(document).ready(function () {
+            ISDNET5.CreateInitial("@CurrentUrl");
+        });
+    </script>
+}
+

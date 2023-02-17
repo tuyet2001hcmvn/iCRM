@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ProfileViewModel>
+
+<div class="form-horizontal">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <table class="table table-bordered table-striped table-hover no-footer dataTable" id="tbl-nearby">
+                    <thead class="isd-table-header">
+                        <tr>
+                            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                            <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+                            <th>@Html.DisplayNameFor(p => p.ProfileForeignCode)</th>
+                            <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+                            <th>@Html.DisplayNameFor(p => p.Address)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 0; }
+                        @if (Model != null && Model.Count() > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                i++;
+                                <tr>
+                                    <td class="text-center">@i</td>
+                                    <td>@Html.DisplayFor(p => item.ProfileCode)</td>
+                                    <td>@Html.DisplayFor(p => item.ProfileForeignCode)</td>
+                                    <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                                    <td>@Html.DisplayFor(p => item.Address)</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr class="odd">
+                                <td valign="top" colspan="5" class="dataTables_empty">Thông tin địa chỉ chưa ghi nhận lần thăm hỏi nào hoặc không tìm thấy các khách hàng khác cùng khu vực</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot></tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

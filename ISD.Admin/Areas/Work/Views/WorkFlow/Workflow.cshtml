@@ -1,0 +1,788 @@
+﻿@model IEnumerable<TaskStatusViewModel>
+
+@{
+    ViewBag.Title = LanguageResource.Configuration + " " + ConstController.WorkFlow;
+    string CurrentController = ConstController.WorkFlow;
+    string CurrentArea = ConstArea.Work;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController + "/Edit/" + @Model.First().WorkFlowId)
+    </h1>
+    <div class="pull-right">
+        <a href="~/@CurrentUrl/Config/@Model.First().WorkFlowId" class="btn btn-info"><i class="fa fa-cog"></i> Cấu hình</a>
+        <button type="button" class="btn btn-info bg-blue" id="btnAddTaskStatus"><i class="fa fa-plus-square"></i> Thêm</button>
+    </div>
+</div>
+
+<div class="content">
+    <div class="box box-primary">
+
+        <div class="box-header with-border">
+            <h3 class="box-title">@ViewBag.Title</h3>
+        </div>
+
+        <div class="box-body" style="min-height:750px">
+            <div>
+
+                <div style="float:right">
+                    <i><li>Click double vào line để chỉnh sửa bước nhảy của trạng thái</li></i>
+                    <i><li>Click double vào ô trạng thái để chỉnh sửa</li></i>
+                </div>
+
+            </div>
+            @Html.HiddenFor(p => p.First().WorkFlowId)
+            <div class="drag-drop">
+                @{
+                    int l = 23;
+                    int t = 100;
+                }
+                @foreach (var item in Model)
+                {
+                    var a = item.color.Split(',');
+                    var ls = string.Format("{0}px", item.PositionLef ?? l);
+                    var ts = string.Format("{0}px", item.PositionRight ?? t);
+                    var c = item.typeShape == "rectangle" ? "rectangle window" : "rhombus window";
+                    <div style="left:@ls;top:@ts;background:@a[0] ; color:@a[1]" class="@c" id=@item.taskId><p>@item.TaskStatusName</p></div>
+                    l = l + 200;
+
+                }
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+@section components{
+    <div class="modal fade" id="taskStatusPopup" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+
+    .test {
+        cursor: pointer
+    }
+
+    .window {
+    }
+
+    .rectangle {
+        font-family: serif;
+        font-style: italic;
+        background-color: white;
+        border: 1px solid #346789;
+        text-align: center;
+        z-index: 24;
+        cursor: pointer;
+        box-shadow: 2px 2px 19px #aaa;
+        position: absolute;
+        color: black;
+        padding-top: 5px;
+        width: 140px;
+        height: 60px;
+        line-height: 12px;
+        transition: box-shadow 0.15s ease-in;
+    }
+
+    .rhombus {
+        z-index: 1;
+        position: absolute;
+        position: absolute;
+        background: orange !important;
+        clip-path: polygon(0 50%, 50% 100%,100% 50%,50% 0);
+        width: 170px;
+        display: inline-block;
+        margin: 5px;
+        color: white !important;
+        line-height: 70px;
+        text-align: center;
+    }
+</style>
+
+
+@section head{
+
+    @*<link href="~/Areas/Work/CSS/demo.css" rel="stylesheet" />*@
+    @*<link href="~/Areas/Work/CSS/jsplumbtoolkit-demo.css" rel="stylesheet" />*@
+    <link href="~/Areas/Work/CSS/jsplumbtoolkit-defaults.css" rel="stylesheet" />
+
+
+
+}
+@section scripts{
+    <script src="~/Areas/Work/Scripts/jsplumb.js"></script>
+    @*<script src="~/Areas/Work/Scripts/demo.js"></script>*@
+    <script>
+
+        jsPlumb.ready(function () {
+
+            ///--- BEGIN LOAD DATA (TASK STATUS AND STATUS TRANDISITION-----
+
+            jsPlumb.importDefaults({
+                Connector: ["Straight"],
+                ConnectionOverlays: [
+                    ["Arrow", {
+                        location: 1,
+                        visible: true,
+
+                        padding: 2
+
+                    }]]
+            });
+            // setting point
+            var endpointOptions = {
+                isSource: true,
+                isTarget: true,
+
+            };
+
+            // add point
+            $.each($('.window'), function (i, item) {
+                jsPlumb.addEndpoint(item.id, { anchor: "Left" }, endpointOptions)
+                jsPlumb.addEndpoint(item.id, { anchor: "Top" }, endpointOptions)
+                jsPlumb.addEndpoint(item.id, { anchor: "Right" }, endpointOptions)
+                jsPlumb.addEndpoint(item.id, { anchor: "Bottom" }, endpointOptions)
+            })
+            // load Task Status and StatusTransidition
+            $.ajax({
+                type: "GET",
+                url: '/Work/WorkFlow/GetStatusTransition',
+                data: { id: $('#WorkFlowId').val() },
+                // load data success
+                success: function (jsonData) {
+                    //console.log(jsonData.Data);
+                    //  create conection
+                    var count = 0;
+                    var key;
+                    jsPlumb.cleanupListeners()
+                    //console.log(jsonData.Data);
+                    $.each(jsonData.Data, function (i, item) {
+                        //var sr = $('#id') item.
+                        var numOccurences = $.grep(jsonData.Data, function (elem) {
+                            return elem.FromStatusId === item.FromStatusId && elem.unsignedBranchName == item.unsignedBranchName;
+                        }).length;
+                        // console.log(numOccurences);
+                        if (numOccurences == 1 || item.unsignedBranchName == null) {
+                            var connection = jsPlumb.connect({
+                                source: item.FromStatusId,
+                                target: item.ToStatusId,
+                                connector: ["Straight"],
+
+                                anchor: [item.StatusTransitionOut, item.StatusTransitionIn],
+                                overlays: [
+                                    ["Label", { label: item.TransitionName, cssClass: 'test' }]
+                                ],
+                            });
+                            $(connection.canvas).attr('id', item.StatusTransitionId);
+                        }
+                        else {
+
+                            var id = '';
+                            //var list = $.grep(jsonData.Data, function (n, x) {
+                            //    return n.FromStatusId === item.FromStatusId && n.BranchName == item.BranchName;
+                            //});
+                            //$.each(list, function (x, statustransition) {
+                            //    id = id + statustransition.StatusTransitionId + '+';
+                            //})
+                            //id = id.substring(0, id.length - 1);
+                            id = item.FromStatusId + '+' + item.unsignedBranchName;
+
+                            if ((key != id)) {
+                                 key = id;
+                                count = count + 1;
+                                var connection = jsPlumb.connect({
+                                    source: item.FromStatusId,
+                                    target: id,
+                                    //connector: ["Straight"],
+                                    anchor: ["Top", "Bottom"],
+                                    //anchor: [item.StatusTransitionOut, item.StatusTransitionIn],
+                                    //overlays: [
+                                    //    ["Label", { label: item.TransitionName, cssClass: 'test' }]
+                                    //],
+                                });
+                                $(connection.canvas).attr('id', item.StatusTransitionId);
+                            }
+
+
+                            var connection1 = jsPlumb.connect({
+                                source: id,
+                                target: item.ToStatusId,
+                                connector: ["Straight"],
+
+                                anchor: [item.StatusTransitionIn, item.StatusTransitionOut],
+                                overlays: [
+                                    ["Label", { label: item.TransitionName, cssClass: 'test' }]
+                                ],
+                            });
+                            $(connection1.canvas).attr('id', item.StatusTransitionId);
+                        }
+
+                    })
+                    // event connection
+                    jsPlumb.bind("connection", function (info, originalEvent) {
+
+                        var id = info.connection.canvas.id;
+                        var fromPosition, toPosition;
+                        if (id.length > 0) // Có id là edit
+                        {
+
+                            id = id;
+                            fromPosition = info.connection.endpoints[0].anchor.type;
+                            if (fromPosition != null) {
+                                fromPosition = info.connection.endpoints[0].anchor.type;
+                                //console.log(info.connection.endpoints[1]);
+                                toPosition = info.connection.endpoints[1].anchor.anchors[0].type;
+                            }
+                            else {
+                                fromPosition = info.connection.endpoints[0].anchor.anchors[1].type;
+                                toPosition = info.connection.endpoints[1].anchor.type;
+                            }
+
+
+                        }
+                        else { // ngược lại là create
+                            id = '00000000-0000-0000-0000000000';
+                            fromPosition = info.connection.endpoints[0].anchor.type;
+                            toPosition = info.connection.endpoints[1].anchor.type;
+                        }
+                        if (info.targetId.length > 36) {
+                            fromPosition = "";
+                            toPosition = "";
+                        }
+                        $.ajax({
+                            type: "GET",
+                            url: '/Work/WorkFlow/_WFCreateTransition',
+                            data: {
+
+                                fromStatusId: info.sourceId,
+                                toStatusId: info.targetId,
+                                fromPosition: fromPosition,
+                                toPosition: toPosition,
+                                statusTransitionId: id
+                            }
+                        }).done(function (html) {
+                            //console.log(info.connection.endpoints[0].anchor.anchors[0].type)
+                            // show modal
+                            $("#taskStatusPopup").find(".modal-content").html(html).end().modal("show");
+                            // load auto condition
+                            var autoCondition = $('#isAutomaticTransition input[name = isAutomaticTransitions]:checked').val();
+                            if (autoCondition == "True") {
+                                CreateAutoCondition($('#WorkFlowId').val(), $('#StatusTransitionId').val());
+                            }
+                        });
+
+
+                    });
+
+                    // event delete
+                    jsPlumb.bind("dblclick", function (connection) {
+                        var id = connection.canvas.id;
+                        if (id.length > 0) // co id
+                        {
+                            id = id
+                        }
+                        else {
+                            id = null
+                        }
+                        //console.log(connection.canvas.id) id
+                        $.ajax({
+                            type: "GET",
+                            url: '/Work/WorkFlow/_WFCreateTransition',
+                            data: {
+
+                                statusTransitionId: connection.canvas.id,
+                                TaskStatusId: connection.sourceId,
+                                toStatusId: connection.targetId,
+                                fromPosition: null,
+                                toPosition: null
+                            }
+                        }).done(function (html) {
+                            // show modal
+                            $("#taskStatusPopup").find(".modal-content").html(html).end().modal("show");
+                            // load auto condition
+                            var autoCondition = $('#isAutomaticTransition input[name = isAutomaticTransitions]:checked').val();
+                            if (autoCondition == "True") {
+                                CreateAutoCondition($('#WorkFlowId').val(), $('#StatusTransitionId').val());
+                            }
+
+                        });
+                        // event delete transition
+                        $(document).on("click", "#taskStatusPopup #btn-delete", function () {
+
+                            $.ajax({
+                                type: "GET",
+                                data: {
+                                    transitionId: connection.canvas.id
+                                },
+                                url: '/Work/WorkFlow/FindStatusTransition',
+                                success: function (jsonData) {
+                                    // show dialog confirm  delete
+                                    $("#divDeletePopup").modal("show");
+                                    //set title
+                                    $("#divDeletePopup .modal-title .item-name").html(jsonData.Data);
+                                    //set text
+                                    var text = $("#divDeletePopup .alert-message").html();
+                                    //Replace new text
+                                    text = text.replace(/"([^"]*)"/g, '"' + jsonData.Data + '"');
+                                    text = String.format(text, jsonData.Data);
+                                    //Show new text
+                                    $("#divDeletePopup .alert-message").html(text);
+                                    // button delete confirm
+                                    $(document).on("click", "#btn-confirm-delete", function () {
+                                        $.ajax({
+                                            type: "POST",
+                                            data: {
+                                                transitionId: connection.canvas.id,
+                                            },
+                                            url: '/Work/WorkFlow/DeleteStatusTransition',
+                                            success: function (json) {
+                                                if (json.Success == true) {
+                                                    $("#divDeletePopup").modal("hide");
+                                                    jsPlumb.deleteConnection(connection);
+                                                    location.reload();
+                                                }
+
+                                            },
+                                            erorr: function (json) {
+                                                console.log(json.data)
+                                            }
+
+                                        })
+                                    })
+                                }
+                            })
+                        })
+
+                    });
+                },
+                erorr: function (jsonData) {
+                    alertPopup(false, jsonData.Data);
+                }
+
+            });
+
+            ///--- END LOAD DATA (TASK STATUS AND STATUS TRANDISITION-----
+
+
+
+            //----- BEGIN ADD STATUS TRANSITION -----
+
+            // add statustransition (nút lưu trên modal transition status)
+            $(document).on("click", "#taskStatusPopup .btn-save-statusTransition", function () {
+                //alert(sss)
+                var arrCondition = [];
+
+                $.each($('.AutoCondition_View'), function (i, item) {
+                    var field = '';
+                    if ($(item).find('#ConditionType').val() == 'FIELD') {
+                        field = $(item).find('#Field').val();
+                    }
+                    else {
+                        field = $(item).find('#TIME').val();
+                    }
+                    conditionDetail = {
+                        AutoConditionId: $(item).find('#AutoConditionId').val(),
+                        AdditionalSQLText: $(item).find('#AdditionalSQLText').val(),
+                        ConditionType: $(item).find('#ConditionType').val(),
+                        Field: field,
+                        ComparisonType: $(item).find('#ComparisonType').val(),
+                        ValueType: $(item).find('#ValueType').val(),
+                        Value: $(item).find('#Value').val(),
+                        SQLText: $(item).find('#SQLText').val()
+                    }
+                    arrCondition.push(conditionDetail);
+                })
+
+                var statusTransitionVM;
+                $.each($('#frmStatusTransition'), function (i, item) {
+
+                    statusTransitionVM = {
+                        WorkFlowId: $(item).find('#WorkFlowId').val(),
+                        StatusTransitionId: $(item).find('#StatusTransitionId').val(),
+                        StatusTransitionOut: $(item).find('#ToPosition').val(),
+                        StatusTransitionIn: $(item).find('#FromPosition').val(),
+                        ToStatusId: $(item).find('#ToStatusId').val(),
+                        BranchName: $(item).find('#BranchName').val(),
+                        TransitionName: $(item).find('#TransitionName').val(),
+                        Description: $(item).find('#Description').val(),
+                        FromStatusId: $(item).find('#FromStatus').val(),
+                        ToStatusId: $(item).find('#ToStatus').val(),
+                        isCreateUserPermission: $(item).find('input[name="isCreateUserPermission"]:checked').val(),
+                        isAssigneePermission: $(item).find('input[name="isAssigneePermission"]:checked').val(),
+                        isReporterPermission: $(item).find('input[name="isReporterPermission"]:checked').val(),
+                        isRequiredComment: $(item).find('input[name="isRequiredComment"]:checked').val(),
+                        Color: $(item).find('#Color').val(),
+                        isAutomaticTransitions: $(item).find('input[name="isAutomaticTransitions"]:checked').val()
+
+                    }
+                    console.log($('#frmStatusTransition input[name="isAutomaticTransitions"]:checked'));
+                })
+                //console.log(statusTransitionVM);
+                $.ajax({
+                    type: "POST",
+
+                    data: {
+                        statusTransitionVM: statusTransitionVM,
+                        listCondition: arrCondition
+                    },
+
+                    url: '/Work/WorkFlow/SaveTest',
+                    success: function (jsondata) {
+                        if (jsondata.Success == false) {
+                            $('#divAlertWarning_StatusTransition .alert-message').html(jsondata.Data)
+                            $("#divAlertWarning_StatusTransition").removeAttr('style')
+                        }
+                        else {
+                            location.reload();
+                        }
+
+                    },
+                    error: function (jsondata) {
+                        console.log(jsondata)
+                    }
+
+
+                })
+                //console.log(arrCondition);
+                //console.log(info.getC)
+                //ISD.SaveDataWithPopup("/Work/WorkFlow/Save", "#frmStatusTransition", this, "#taskStatusPopup");
+                //info.connection.setLabel($('#TransitionName').val());
+
+                //location.reload();
+
+            });
+
+            // event close transition (nút close trên modal transition status)
+            $(document).on("click", "#taskStatusPopup .btnFormStatusTransition", function () {
+                location.reload();
+            });
+
+            //----- END ADD STATUS TRANSITION -----
+
+
+            //----BEGIN TASK STATUS------
+
+            // event drag drop Task status (Kéo vị trí các task status)
+            jsPlumb.draggable(jsPlumb.getSelector(".window"), {
+                // save posion
+
+                stop: function (event, ui) {
+
+                    $.ajax({
+                        type: "POST",
+                        url: '/Work/WorkFlow/UpdatePositionTaskTransition',
+                        data: {
+                            id: event.el.id,
+                            positionLeft: event.pos[0],
+                            positionRight: event.pos[1],
+                            shape: event.el.classList[0]
+                        },
+                        success: function (json) {
+                            if (json.success == true) {
+                                console.log(json.code)
+                            }
+
+                        },
+                        erorr: function (json) {
+                            console.log(json.code)
+                        }
+
+                    })
+
+                }
+            });
+
+            //show model update satatus (sự kiện khi click vào label )
+            $('body').on('dblclick', '.window.rectangle', function () {
+                //var ID = $(this)frmUpdateTaskStatus
+                //alert($(this).prop('id'));
+                //$("#frmUpdateTaskStatus").modal("show");
+                $.ajax({
+                    type: "GET",
+                    data: {
+                        taskstatusId: $(this).prop('id'),
+                        workflowId: '00000000-0000-0000-0000000000'
+                    },
+                    url: '/Work/WorkFlow/FindTaskStatus',
+
+                }).done(function (html) {
+                    // show modal
+                    $("#taskStatusPopup").find(".modal-content").html(html).end().modal("show");
+
+                });
+            })
+
+            // event update taskstatus
+            $(document).on('click', '#btn-save-UpdateTaskStatus', function () {
+                ISD.SaveDataWithPopup("/Work/WorkFlow/UpdateTaskStatus", "#frmUpdateTaskStatus", this, "#taskStatusPopup");
+                location.reload();
+            })
+
+
+            // Add task status
+            $('body').on('click', '#btnAddTaskStatus', function () {
+                //var div = ' <div class="rhombus " id="123">Test</div>'
+
+                //$('.box-body .drag-drop').append(div);
+                //jsPlumb.addEndpoint($('#123'), { anchor: "Left" }, endpointOptions)
+                //jsPlumb.addEndpoint($('#123'), { anchor: "Top" }, endpointOptions)
+                //jsPlumb.addEndpoint($('#123'), { anchor: "Right" }, endpointOptions)
+                //jsPlumb.addEndpoint($('#123'), { anchor: "Bottom" }, endpointOptions)
+                $.ajax({
+                    type: "GET",
+                    data: {
+                        taskstatusId: '00000000-0000-0000-0000000000',
+                        workflowId: $('#WorkFlowId').val()
+                    },
+                    url: '/Work/WorkFlow/FindTaskStatus',
+
+                }).done(function (html) {
+                    // show modal
+                    $("#taskStatusPopup").find(".modal-content").html(html).end().modal("show");
+
+                });
+            })
+            /// test
+            //$('.rhombus').draggable({
+
+            //    drag: function (e) {
+            //        // Your code comes here
+            //        jsPlumb.repaint($(this)); // Note that it will only repaint the dragged element
+            //    },
+            //    stop: function (e) {
+            //        // Your code for capturing dragged element position.
+            //    }
+            //})
+
+            // Delete Taskstatus
+            $('body').on('click', '#btn-delete-TaskStatus', function () {
+                var taskStatusId = $('#TaskStatusId').val();
+                var str = 'nhiệm vụ này'
+                // show dialog confirm  delete
+                $("#divDeletePopup").modal("show");
+                //set title
+                $("#divDeletePopup .modal-title .item-name").html('NHIỆM VỤ');
+                //set text
+                var text = $("#divDeletePopup .alert-message").html();
+                //Replace new text
+                text = text.replace(/"([^"]*)"/g, str);
+                text = String.format(text, str);
+                //Show new text
+                $("#divDeletePopup .alert-message").html(text);
+                // button delete confirm
+                $(document).on("click", "#btn-confirm-delete", function () {
+
+                    $.ajax({
+                        type: "GET",
+                        data: {
+                            taskStatusId: taskStatusId,
+                        },
+                        url: '/Work/WorkFlow/DeleteTaskStatus',
+                        success: function (dataJson) {
+                            if (dataJson.Success == false) {
+                                //alert(dataJson.Data)
+                                alertPopup(false, dataJson.Data);
+
+                            }
+                            else {
+                                alertPopup(true, dataJson.Data);
+                                location.reload();
+                            }
+                        },
+                        error: function (dataJson) {
+                            console.log(dataJson)
+                        }
+                    })
+                })
+            })
+
+            //----END TASK STATUS------
+
+        })
+
+        //---BEGIN AUTO CONDITION-------
+
+        // add  auto condition
+        $('body').on("change", '#isAutomaticTransition input[type = radio]', function () {
+            var autoCondition = $('#isAutomaticTransition input[type = radio]:checked').val();
+            var html = '<div class="form-group">' +
+                '<button style = "float:right" type = "button" class="btn btn-info bg-blue" id = "btn-Create-AutoCondition" > <i class="fa fa-plus-square"></i> Thêm </button>'
+                + '</div >'
+            if (autoCondition == 'True') {
+                //$('#AutoCondition').append(html)
+
+                CreateAutoCondition($('#WorkFlowId').val(), '')
+
+
+            }
+            else {
+                $('#AutoCondition').html('')
+            }
+        })
+
+        //event chọn field Điều kiện
+        $('body').on("change", 'select#ConditionType', function () {
+
+            var index = $(this).attr('name');
+            var val = $(this).val();
+            if (val == 'FIELD') {
+                $('#TIME[name="' + index + '"]').prop('type', 'hidden');
+                $('#TIME[name="' + index + '"]').removeClass('form-control');
+                $('select#Field[name="' + index + '"]').removeClass("hidden");
+
+            }
+            else {
+                $('select#Field[name="' + index + '"]').addClass('hidden');
+                $('#TIME[name="' + index + '"]').prop('type', 'text');
+                $('#TIME[name="' + index + '"]').addClass('form-control');
+            }
+
+
+        })
+
+        // event click button add auto condition
+        $('body').on('click', '#btn-Create-AutoCondition', function () {
+            CreateAutoCondition($('#WorkFlowId').val(), '');
+            // console.log($('.AutoCondition_View'))
+        })
+
+        // event click button delete auto condition
+        $('body').on('click', '#btn-Delete-AutoCondition', function () {
+
+            var index = $(this).prop('name');
+            var autoconditionId = $('#AutoConditionId[name="' + index + '"]').val();
+
+
+            $.ajax({
+                type: "GET",
+                data: {
+                    autoConditionId: autoconditionId
+                },
+                url: '/Work/WorkFlow/DeleteCondition'
+
+            }).done(
+                function () {
+
+                    $('#AutoConditionId[name = "' + index + '"]').parents('.AutoCondition_View:last').remove();
+                    console.log($('#AutoConditionId[name = "' + index + '"]').parents('.AutoCondition_View:last'))
+                    $.each($('.AutoCondition_View'), function (i, item) {
+                        $(item).find('#AdditionalSQLText').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#ConditionType').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#TIME').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#Field').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#ComparisonType').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#ValueType').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#Value').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#btn-Create-AutoCondition').attr('name', 'AutoCondition_View[' + i + ']')
+                        $(item).find('#btn-Delete-AutoCondition').attr('name', 'AutoCondition_View[' + i + ']')
+                    })
+                }
+            )
+
+            //console.log(autuconditionId);
+            //console.log(autuconditionId1);
+
+            // console.log($('.AutoCondition_View'))
+        })
+
+        // function create autocondition
+        function CreateAutoCondition(workflowId, statusTransiditionId) {
+            $.ajax({
+                type: "GET",
+                url: '/Work/WorkFlow/CreateAutoCondtion',
+                data: {
+                    workFlowId: workflowId,
+                    statusTransitionId: statusTransiditionId
+                }
+            }).done(function (html) {
+                //var arr = [];
+                //console.log(html);
+                $('#AutoCondition').append(html)
+                $.each($('.AutoCondition_View'), function (i, item) {
+                    $(item).find('#AutoConditionId').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#AdditionalSQLText').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#ConditionType').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#TIME').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#Field').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#ComparisonType').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#ValueType').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#Value').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#SQLText').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#btn-Create-AutoCondition').attr('name', 'AutoCondition_View[' + i + ']')
+                    $(item).find('#btn-Delete-AutoCondition').attr('name', 'AutoCondition_View[' + i + ']')
+
+
+                })
+            });
+        }
+
+        // event when field additionalSQLText change
+        $('body').on("change", 'select#AdditionalSQLText', function () {
+
+            var index = $(this).attr('name');
+            FieldChange(index);
+
+        })
+
+        // event when field Field change
+        $('body').on("change", 'select#Field', function () {
+
+            var index = $(this).attr('name');
+            FieldChange(index);
+
+        })
+
+        // event when field ComparisonType change
+        $('body').on("change", 'select#ComparisonType', function () {
+
+            var index = $(this).attr('name');
+            FieldChange(index);
+
+        })
+
+        // event when field Value change
+        $('body').on("change", 'input#Value', function () {
+
+            var index = $(this).attr('name');
+            FieldChange(index);
+
+        })
+
+        // event when field Time change
+        $('body').on("change", 'input#TIME', function () {
+
+            var index = $(this).attr('name');
+            FieldChange(index);
+
+        })
+
+        //function gia tri cac filed thay doi
+        function FieldChange(index) {
+            var AdditionalSQLText = $('#AdditionalSQLText[name="' + index + '"]').val();
+            var Field = $('#Field[name="' + index + '"]').val();
+            var ComparisonType = $('#ComparisonType[name="' + index + '"]').val();
+            var Value = $('#Value[name="' + index + '"]').val();
+            var Time = $('#TIME[name="' + index + '"]').val();
+            var ConditionType = $('#ConditionType[name="' + index + '"]').val();
+            if (ConditionType == "FIELD") {
+                $('#SQLText[name="' + index + '"]').val(AdditionalSQLText + Field + ComparisonType + Value)
+            }
+            else {
+                $('#SQLText[name="' + index + '"]').val(AdditionalSQLText + Time + ComparisonType + Value)
+            }
+
+        }
+
+         //---END AUTO CONDITION-------
+    </script>
+}

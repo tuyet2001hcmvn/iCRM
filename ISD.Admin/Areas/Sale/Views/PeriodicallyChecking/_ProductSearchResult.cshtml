@@ -1,0 +1,36 @@
+﻿@model IEnumerable<Detail_PeriodicallyCheckingViewModel>
+
+<table id="productSearchTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th>@Html.DisplayNameFor(p => p.CategoryName)</th>
+            <th>@Html.DisplayNameFor(p => p.ConfigurationName)</th>
+            <th class="text-center">
+                <input id="choose-all" type="checkbox" />
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ProductCode)</td>
+                <td>@Html.DisplayFor(p => item.ProductName)</td>
+                <td>@Html.DisplayFor(p => item.CategoryName)</td>
+                <td>@Html.DisplayFor(p => item.ConfigurationName)</td>
+                <td class="text-center">
+                    <input class="choose-product" type="checkbox" value="@item.ProductId" />
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

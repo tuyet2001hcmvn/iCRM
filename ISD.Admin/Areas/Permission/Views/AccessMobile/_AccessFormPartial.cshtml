@@ -1,0 +1,68 @@
+﻿@model List<MenuViewModel>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "updateform" }))
+{
+    <div class="panel-group" id="accordion">
+        <div class="panel panel-default">
+            <div class="panel-body access">
+                <!-- Start .content -->
+                @{ int k = 0; }
+                @foreach (var menu in Model.Where(p => p.MobileScreenViewModels != null && p.MobileScreenViewModels.Count > 0).OrderBy(p => p.OrderIndex))
+                {
+                    k++;
+                    <div class="panel panel-primary">
+
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a href='#collapse-@menu.MenuId' class="accordion-toggle" data-parent="#accordion" data-toggle="collapse">
+                                    @menu.MenuName
+                                </a>
+                            </h4>
+                        </div>
+                        <div class="panel-body accessBody">
+                            <div id='collapse-@menu.MenuId' class='panel-collapse collapse in'>
+                                <div class="accordion-inner">
+                                    <table class="table table-bordered table-striped table-hover dataTable no-footer">
+                                        <thead class="isd-table-header">
+                                            <tr>
+                                                <th class="text-center">@LanguageResource.NumberIndex</th>
+                                                <th>@LanguageResource.Permission_MobileScreen</th>
+                                                <th>@LanguageResource.Permission_FunctionModel 
+                                                @*<br /><input name="FunctionId" type="checkbox">Tất cả*@
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @{int i = 0;}
+                                            @foreach (var page in menu.MobileScreenViewModels)
+                                            {
+                                                i++;
+                                                <tr>
+                                                    <td class="text-center" style="width:10%">@i</td>
+                                                    <td style="width:50%">
+                                                        @page.ScreenName
+                                                    </td>
+                                                    <td style="width:40%">
+                                                        @foreach (var funcItem in page.FunctionViewModels)
+                                                        {
+                                                            string Checked = funcItem.Selected ? "Checked" : "";
+                                                            <span class="permissionCheckBox">
+                                                                <input name="FunctionId" type="checkbox" value="@funcItem.FunctionId" class="funcChkBox accessFunctionChkBox_@k@i" @Checked data-mobilescreenid="@page.MobileScreenId" data-row="@k" data-subrow="@i">
+                                                                <span>@funcItem.FunctionName</span>
+                                                            </span>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                        <tfoot></tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

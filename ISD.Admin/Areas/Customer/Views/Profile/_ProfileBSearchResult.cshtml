@@ -1,0 +1,38 @@
+﻿@model IEnumerable<ProfileViewModel>
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+            <th>@Html.DisplayNameFor(p => p.TaxNo)</th>
+            <th>@Html.DisplayNameFor(p => p.Address)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                <td>@Html.DisplayFor(p => item.TaxNo)</td>
+                <td>@Html.DisplayFor(p => item.Address)</td>
+                <td class="text-center">
+                    <a class="btn btn-success btn-profileB-choose"
+                       data-id="@item.ProfileId"
+                       data-name="@item.ProfileName">
+                        @LanguageResource.Btn_Choose
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+
+
+

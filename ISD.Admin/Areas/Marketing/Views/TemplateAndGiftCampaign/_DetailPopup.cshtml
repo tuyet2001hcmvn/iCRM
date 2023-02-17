@@ -1,0 +1,102 @@
+﻿@model TemplateAndGiftMemberAddressViewModel
+
+@{
+    var update = LanguageResource.Update;
+}
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h4 class="modal-title" id="modal-title">Modal title</h4>
+
+</div>
+<input id="ProfileId" name="ProfileId" type="hidden" value="">
+<input id="CampaignId" name="CampaignId" type="hidden" value="">
+<input id="MemberId" name="MemberId" type="hidden" value="">
+<div class="content">
+    <div class="form-horizontal">
+        <div class="modal-body">
+            <div class="panel panel-default">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+                {
+                    <div class="panel-body">
+                        <input hidden id="Id" />
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProfileName)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.RequiredTextboxFor(p => p.ProfileName, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Address)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.RequiredTextboxFor(p => p.Address, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body add-product">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Address)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Address)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ProductName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.ProductName)
+                        </div>
+                        <input id="ProductId" name="ProductId" type="hidden" value="">
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Quantity)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Quantity, new { @type = "number", @min = "1" })
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="col-md-8 col-md-offset-5">
+                               <a class="btn btn-primary " id="btn-add-product">Thêm</a>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-striped table-hover dataTable no-footer">
+                        <thead class="isd-table-header">
+                            <tr>
+                                <th class="text-center">@LanguageResource.NumberIndex</th>
+                                <th>@Html.DisplayNameFor(p => p.Address)</th>
+                                <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+                                <th>@Html.DisplayNameFor(p => p.Quantity)</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="tblProduct">
+                        </tbody>
+                        <tfoot></tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+            <button type="button" id="btn-popup-edit" class="btn btn-primary">@LanguageResource.Btn_Save</button>
+        </div>
+    </div>
+</div>
+
+
+
+
+

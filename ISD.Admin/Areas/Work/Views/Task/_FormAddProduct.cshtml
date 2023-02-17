@@ -1,0 +1,498 @@
+﻿@model TaskProductViewModel
+@using ISD.Core
+@{
+    var ProductAccessoryTypeList = (List<CatalogViewModel>)ViewBag.ProductAccessoryTypeCode;
+    var AccErrorTypeCodeList = (List<CatalogViewModel>)ViewBag.AccErrorTypeCode;
+    //Cấu hình thuộc tính
+    var configList = (List<WorkFlowConfigModel>)ViewBag.WorkFlowConfig;
+    var fieldCodeList = (List<string>)ViewBag.WorkFlowConfigCode;
+    var hiddenFieldList = (List<string>)ViewBag.WorkFlowHiddenField;
+}
+<style>
+    .accessory {
+        margin-bottom: 10px;
+        display: flex;
+    }
+</style>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header bg-primary">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+            @if (Model.TaskProductId != null)
+            {
+                <h4 class="modal-title">@LanguageResource.Btn_Edit @LanguageResource.Sale_Product</h4>
+            }
+            else
+            {
+                <h4 class="modal-title">@LanguageResource.Btn_Create @LanguageResource.Sale_Product</h4>
+            }
+        </div>
+
+        <div class="modal-body">
+            <div id="divModalAlertWarning" class="alert alert-warning alert-dismissable modalAlert" style="display: none">
+                <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                <div class="modal-alert-message">
+                </div>
+            </div>
+
+            <form id="frmTaskProduct">
+
+                <div class="form-horizontal">
+                    @Html.HiddenFor(p => p.TaskProductId)
+                    <div class="">
+                        <!--Sản phẩm-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, Guid?>(p => p.ProductId)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ProductName, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductName)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        @Html.RequiredTextboxFor(p => p.ProductName, new { @class = "form-control text-box single-line productName", @readonly = "readonly" })
+                                        @Html.HiddenFor(p => p.ProductId)
+                                        <a class="input-group-addon btn btn-default" data-toggle="modal" data-target="#divProductSearch">
+                                            <i class="fa fa-ellipsis-h"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                            {
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        <div class="label-wrapper"><label class="control-label" for="ProductName">Serial number</label></div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.SerialNumber, new { @class = "form-control text-box single-line serial-number" })
+                                    </div>
+                                </div>
+                            }
+                        }
+                        <div class="form-group">
+                            <!--Số lượng-->
+                            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, int?>(p => p.Qty)))
+                            {
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.Qty, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, int?>(p1 => p1.Qty)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.RequiredTextboxFor(p => p.Qty, new { @type = "number" })
+                                </div>
+                            }
+                            <!--Đơn vị tính-->
+                            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Unit)))
+                            {
+                                <div class="col-md-2">
+                                    @Html.LabelByPropertyNameFor(p => p.Unit, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.Unit)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-4">
+                                    @if (ViewBag.Type == ConstWorkFlowCategory.TICKET)
+                                    {
+                                        if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, Guid?>
+                                       (p => p.ProductId)))
+                                        {
+                                            @Html.DropDownList("Unit", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search", @disabled = "disabled" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownList("Unit", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, Guid?>(p => p.ProductId)))
+                                        {
+                                            @Html.RequiredTextboxFor(p => p.Unit, new { @readonly = "readonly" })
+                                        }
+                                        else
+                                        {
+                                            @Html.RequiredTextboxFor(p => p.Unit)
+                                        }
+                                    }
+                                </div>
+                            }
+                            @*@if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Unit)))
+            {
+                <div class="col-md-2">
+                    @Html.LabelByPropertyNameFor(p => p.Unit, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.Unit)).Select(p => p.Note).FirstOrDefault())
+                </div>
+                <div class="col-md-2">
+                    @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, Guid?>(p => p.ProductId)))
+                    {
+                        @Html.RequiredTextboxFor(p => p.Unit, new { @readonly = "readonly" })
+                    }
+                    else
+                    {
+                        @Html.RequiredTextboxFor(p => p.Unit)
+                    }
+                </div>
+            }*@
+                        </div>
+                        <!--Phân cấp SP-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductLevelCode)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ProductLevelCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductLevelCode)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.RequiredDropDownList("ProductLevelCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        }
+                        <!--Nhóm vật tư-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductCategoryCode)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ProductCategoryCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductCategoryCode)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.RequiredDropDownList("ProductCategoryCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        }
+                        <!--Mã màu-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductColorCode)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ProductColorCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ProductColorCode)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.RequiredDropDownList("ProductColorCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        }
+                        <!--Các lỗi BH thường gặp-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.UsualErrorCode)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.UsualErrorCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.UsualErrorCode)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group input-group-required input-group-select-required">
+                                        @if (ViewBag.IsEditProduct == true)
+                                        {
+                                            @*@Html.DropDownList("UsualErrorCode", null, null, new { @class = "form-control with-search", @multiple = "multiple" })*@
+                                            <select class="form-control with-search" multiple="multiple" name="UsualErrorCode" id="UsualErrorCode">
+                                                @if (ViewBag.UsualErrorCode != null)
+                                                {
+                                                    var usualErrorlist = (List<SelectListItem>)ViewBag.UsualErrorCode;
+                                                    foreach (var item in usualErrorlist)
+                                                    {
+                                                        string selected = "";
+                                                        if (item.Selected)
+                                                        {
+                                                            selected = "selected";
+                                                        }
+                                                        <option @selected value="@item.Value">
+                                                            @item.Text
+                                                        </option>
+                                                    }
+
+                                                }
+                                            </select>
+                                        }
+                                        else
+                                        {
+                                            <select class="form-control with-search" name="UsualErrorCode" id="UsualErrorCode" multiple required>
+                                                @*<option value="">@LanguageResource.Dropdownlist_Choose</option>*@
+                                            </select>
+                                            <div class="required-icon"><span class="text">*</span></div>
+                                        }
+                                    </div>
+                                    </div>
+                                </div>
+                        }
+                        <!--Hình thức bảo hành-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ErrorTypeCode)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ErrorTypeCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ErrorTypeCode)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("ErrorTypeCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        }
+                        <!--Phương thức xử lý-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ErrorCode)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ErrorCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.ErrorCode)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.DropDownList("ErrorCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                </div>
+                            </div>
+                        }
+                        <!--Số chứng từ-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.SAPSOProduct)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.SAPSOProduct, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.SAPSOProduct)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        @Html.RequiredTextboxFor(p => p.SAPSOProduct)
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-get-product-value" type="button" title="Lấy giá trị đơn hàng">
+                                                <span class="fa fa-arrow-circle-right"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span>Nếu nhiều số SO, phân tách nhau bằng dấu '<b>;</b>'</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!--Giá trị đơn hàng-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.ProductValue)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.ProductValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.ProductValue)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.ProductValue != null)
+                                    {
+                                        @Html.RequiredTextboxFor(p => p.ProductValue, new { @type = "number", @style = "text-align: right", @Value = Convert.ToInt32(Model.ProductValue) })
+                                        <div class="text-right">
+                                            <span class="product-value">@Model.ProductValue.FormatCurrency()</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @Html.RequiredTextboxFor(p => p.ProductValue, new { @type = "number", @style = "text-align: right" })
+                                        <div class="text-right">
+                                            <span class="product-value"></span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        <!--SO Giá trị bảo hành-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.SAPSOWarranty)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.SAPSOWarranty, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.SAPSOWarranty)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="input-group">
+                                        @Html.RequiredTextboxFor(p => p.SAPSOWarranty)
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-get-warranty-value" type="button"  title="Lấy giá trị bảo hành">
+                                                <span class="fa fa-arrow-circle-right"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div class="text-right">
+                                        <span>Nếu nhiều số SO, phân tách nhau bằng dấu '<b>;</b>'</span>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <!--Giá trị bảo hành-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.WarrantyValue)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.WarrantyValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.WarrantyValue)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.WarrantyValue != null)
+                                    {
+                                        @Html.RequiredTextboxFor(p => p.WarrantyValue, new { @type = "number", @style = "text-align: right", @Value = Convert.ToInt32(Model.WarrantyValue) })
+                                        <div class="text-right">
+                                            <span class="warranty-value">@Model.WarrantyValue.FormatCurrency()</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @Html.RequiredTextboxFor(p => p.WarrantyValue, new { @type = "number", @style = "text-align: right" })
+                                        <div class="text-right">
+                                            <span class="warranty-value"></span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+
+                        <!--Giá trị giảm giá-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.DiscountValue)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.DiscountValue, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p1 => p1.DiscountValue)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-8">
+                                    @if (Model.WarrantyValue != null)
+                                    {
+                                        @Html.RequiredTextboxFor(p => p.DiscountValue, new { @type = "number", @style = "text-align: right", @Value = Convert.ToInt32(Model.DiscountValue) })
+                                        <div class="text-right">
+                                            <span class="discount-value">@Model.DiscountValue.FormatCurrency()</span>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @Html.RequiredTextboxFor(p => p.DiscountValue, new { @type = "number", @style = "text-align: right"})
+                                        <div class="text-right">
+                                            <span class="discount-value"></span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        <!--Phụ kiện thay thế-->
+                        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Accessory)))
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    @Html.LabelByPropertyNameFor(p => p.Accessory, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p1 => p1.Accessory)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="control-label">Phụ kiện</label>
+                                </div>
+                                <div class="col-md-1">
+                                    <label class="control-label">SL</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">Hình thức BH PK</label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label class="control-label">Loại PK</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="accessoryControls">
+                                    @if (Model.accessoryList != null && Model.accessoryList.Count > 0)
+                                    {
+                                        int i = 0;
+
+                                        foreach (var item in Model.accessoryList)
+                                        {
+                                            <div class="accessory">
+                                                <div class="col-md-3">
+
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="input-group">
+                                                        <input class="form-control text-box single-line accessoryName" name="accessoryList[@i].ProductName" readonly="readonly" type="text" value="@item.ProductName">
+                                                        <input class="accessoryId" name="accessoryList[@i].ProductId" type="hidden" value="@item.ProductId">
+                                                        <a class="input-group-addon btn btn-default open-accessory-modal" data-row="@i" data-toggle="modal" data-target="#divAccessorySearch">
+                                                            <i class="fa fa-ellipsis-h"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1 no-padding">
+                                                    <input class="accessoryQty form-control" data-val="true" data-val-number="The field Số lượng must be a number." name="accessoryList[@i].Qty" type="number" value="@item.Qty">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    @Html.RequiredExDropDownListFor(p => p.accessoryList[i].AccErrorTypeCode, new SelectList(AccErrorTypeCodeList, "CatalogCode", "CatalogText_vi", item.AccErrorTypeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search accErrorTypeCode" })
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="input-group">
+                                                        @Html.RequiredExDropDownListFor(p => p.accessoryList[i].ProductAccessoryTypeCode, new SelectList(ProductAccessoryTypeList, "CatalogCode", "CatalogText_vi", item.ProductAccessoryTypeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search productAccessoryTypeCode" })
+
+                                                        <span class="input-group-btn">
+                                                            @if (i == 0)
+                                                            {
+                                                                <button class="btn btn-default btn-add-accessory" type="button">
+                                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                                </button>
+                                                            }
+                                                            else
+                                                            {
+                                                                <button class="btn btn-default btn-remove-accessory btn-danger" type="button">
+                                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                                </button>
+                                                            }
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            i++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="accessory">
+                                            <div class="col-md-3">
+
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="input-group">
+                                                    <input class="form-control text-box single-line accessoryName" name="accessoryList[0].ProductName" readonly="readonly" type="text">
+                                                    <input class="accessoryId" name="accessoryList[0].ProductId" type="hidden">
+                                                    <a class="input-group-addon btn btn-default open-accessory-modal" data-row="0" data-toggle="modal" data-target="#divAccessorySearch">
+                                                        <i class="fa fa-ellipsis-h"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1 no-padding">
+                                                <input class="accessoryQty form-control" data-val="true" data-val-number="The field Số lượng must be a number." name="accessoryList[0].Qty" type="number">
+                                            </div>
+                                            <div class="col-md-2">
+                                                @Html.RequiredExDropDownListFor(p => p.accessoryList[0].AccErrorTypeCode, new SelectList(AccErrorTypeCodeList, "CatalogCode", "CatalogText_vi", null), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search accErrorTypeCode" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="input-group">
+                                                    @Html.RequiredExDropDownListFor(p => p.accessoryList[0].ProductAccessoryTypeCode, new SelectList(ProductAccessoryTypeList, "CatalogCode", "CatalogText_vi", null), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search productAccessoryTypeCode" })
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-add-accessory" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+        @if (Model.TaskProductId != Guid.Empty && Model.TaskProductId != null)
+        {
+            <div class="row">
+                @Html.Action("_LogChange", "Shared", new { Model.CreateBy, Model.CreateTime, Model.LastEditBy, Model.LastEditTime, area = "" })
+            </div>
+        }
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+            <button type="button" class="btn btn-primary btn-save-product" data-add-success-call-back="ReloadTaskProduct">@LanguageResource.Btn_Save</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setModalMessage(div, message) {
+        if (Array.isArray(message)) {
+            var arr = [];
+            $.each(message, function (i, item) {
+                arr[i] = { err: item }
+                $(div + " .modal-alert-message").append("<li>" + arr[i].err + "</li>");
+            });
+        }
+        else {
+            $(div + " .modal-alert-message").html(message);
+        }
+    }
+    function alertModalPopup(message) {
+        setModalMessage("#divModalAlertWarning", message);
+        setTimeout(function () {
+            $('#divModalAlertWarning').show();
+        }, 500)
+    }
+</script>

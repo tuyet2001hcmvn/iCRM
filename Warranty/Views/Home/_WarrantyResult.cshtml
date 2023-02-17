@@ -1,0 +1,59 @@
+﻿@model List<Warranty.Models.WarrantyResultViewModel>
+@{
+    bool isSerial = bool.Parse(System.Configuration.ConfigurationManager.AppSettings["isSerial"]);
+}
+<header class="collapse-box__header clearfix fixedHeader box_shadow">
+    <ul class="head_tracking">
+        @*<li>Mã đăng ký: <span class="tracking_name">@Model.ProductWarrantyCode</span></li>*@
+        <li>Khách hàng: <span>@Model[0].ProfileName</span></li>
+        <li>Số điện thoại: <span class="tracking_phone">@Model[0].ProfilePhoneNumber</span></li>
+        @*<li class="tracking_number"><span>Số serial: </span>@Model.SerriNo</li>*@
+    </ul>
+
+</header>
+<div class="collapse-box__body clearfix">
+    <div class="tracking-items">
+        <div class="tracking__history">
+            <table class="light-table" width="100%">
+                <thead>
+                    <tr>
+                        <th class="text-center">@LanguageResource.NumberIndex</th>
+                        @if (isSerial)
+                        {
+                            <th class="text-center">Số serrial</th>
+                        }
+                        <th class="text-center">Mã đăng ký</th>
+                        <th class="text-center">Phiếu bảo hành</th>
+                        <th align="left">Sản phẩm</th>
+                        <th class="text-center">Loại bảo hành</th>
+                        <th class="text-center">Ngày bắt đầu</th>
+                        <th class="text-center">Ngày kết thúc</th>
+                        <th class="text-center">Lịch sử YCBH</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var i = 0;}
+                    @foreach (var item in Model)
+                    {
+                        i++;
+                        <tr>
+                            <td class="text-center">@i</td>
+                            @if (isSerial)
+                            {
+                                <td class="text-center">@item.SerriNo</td>
+                            }
+                            <td class="text-center">@item.ProductWarrantyCode</td>
+                            <td class="text-center">@item.ProductWarrantyNo</td>
+                            <td>@item.ProductName</td>
+                            <td class="text-center">@item.WarrantyName</td>
+                            <td class="text-center">@item.FromDate.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">@item.ToDate.ToString("dd/MM/yyyy")</td>
+                            <td class=text-center><a class="btn btn-primary text-white" onclick="ViewDetail('@item.ProductId','@item.ProfileId')"><i class="fa fa-eye"></i> Xem</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>

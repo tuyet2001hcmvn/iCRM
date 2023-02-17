@@ -1,0 +1,109 @@
+﻿@model IEnumerable<ProjectActivitiesViewModel>
+@{
+    var TransitionList = (List<StatusTransitionModel>)ViewBag.TransitionList;
+}
+@if (ViewBag.IsView != true)
+{
+    <div class="content-header clearfix">
+
+        <h1 class="pull-left">
+            @*@LanguageResource.ProjectStatus*@
+            @LanguageResource.Opportunities_Activities
+        </h1>
+        <div class="pull-right">
+            @if (TransitionList != null && TransitionList.Count > 0)
+            {
+                <div class="btn-group">
+                    <a class="btn bg-blue"><i class="fa fa-pencil"></i> @LanguageResource.Update @LanguageResource.TabActivities.ToLower()</a>
+                    <a class="btn bg-blue dropdown-toggle" data-toggle="dropdown">
+                        <span class="caret"></span><span class="sr-only">&nbsp;</span>
+                    </a>
+                    <ul class="dropdown-menu" id="transition-list" role="menu">
+                        @foreach (var transition in TransitionList)
+                        {
+                            <li>
+                                <a class="btn btn-update-status"
+                                   style="color:@transition.Color; margin-bottom: 5px; margin-top: 5px;"
+                                   data-id="@transition.ToStatusId"
+                                   data-comment-required="@transition.isRequiredComment">
+                                    <i class="fa fa-pencil"></i> @transition.TransitionName
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <a class="btn bg-blue" id="btn-create-status"><i class="fa fa-pencil"></i> @LanguageResource.Update @LanguageResource.TabActivities.ToLower()</a>
+            }
+        </div>
+    </div>
+    <div class="content overflow-x-scroll" id="contentActivities">
+        <table class="table table-bordered table-striped table-hover no-footer">
+            <colgroup>
+                <col style="width:1%" />
+                <col style="width:10%" />
+                <col style="width:55%" />
+                <col style="width:10%" />
+                <col style="width:10%" />
+                <col style="width:15%" />
+            </colgroup>
+            <thead class="isd-table-header">
+                <tr>
+                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                    @*<th>@Html.DisplayNameFor(p => p.FromStatusName)</th>*@
+                    <th>@Html.DisplayNameFor(p => p.ToStatusName)</th>
+                    <th>@Html.DisplayNameFor(p => p.Note)</th>
+                    <th>@Html.DisplayNameFor(p => p.ApproveName)</th>
+                    <th class="text-center">@Html.DisplayNameFor(p => p.ApproveTime)</th>
+                    @*<th>@Html.DisplayNameFor(p => p.CreateName)</th>*@
+                    @*<th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>*@
+                    @if (ViewBag.IsView != true)
+                    {
+                        <th class="text-center">@LanguageResource.Actions</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @Html.Partial("~/Areas/Customer/Views/Activities/_ListContent.cshtml")
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+    </div>
+}
+else
+{
+    <div class="overflow-x-scroll" id="contentActivities">
+        <table class="table table-bordered table-striped table-hover no-footer" style="table-layout: fixed">
+            <colgroup>
+                <col style="width:5%" />
+                <col style="width:10%" />
+                <col style="width:65%" />
+                <col style="width:10%" />
+                <col style="width:10%" />
+            </colgroup>
+            <thead class="isd-table-header">
+                <tr>
+                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                    @*<th>@Html.DisplayNameFor(p => p.FromStatusName)</th>*@
+                    <th>@Html.DisplayNameFor(p => p.ToStatusName)</th>
+                    <th>@Html.DisplayNameFor(p => p.Note)</th>
+                    <th>@Html.DisplayNameFor(p => p.ApproveName)</th>
+                    <th class="text-center">@Html.DisplayNameFor(p => p.ApproveTime)</th>
+                    @*<th>@Html.DisplayNameFor(p => p.CreateName)</th>*@
+                    @*<th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>*@
+                    @if (ViewBag.IsView != true)
+                    {
+                        <th class="text-center">@LanguageResource.Actions</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @Html.Partial("~/Areas/Customer/Views/Activities/_ListContent.cshtml")
+            </tbody>
+            <tfoot></tfoot>
+        </table>
+    </div>
+}
+

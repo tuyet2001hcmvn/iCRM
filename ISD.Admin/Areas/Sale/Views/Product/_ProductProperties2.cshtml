@@ -1,0 +1,211 @@
+﻿@*@model IEnumerable<ProductViewModel>*@
+@model dynamic
+
+@{
+	var propertiesImageUrl = ViewBag.PropertiesImageUrl;
+}
+
+<script>
+	var ProductId = '@ViewBag.ProductId';
+
+	//
+	//var pinListServer = [
+	//	{
+	//		PinId: 1,
+	//		PosX: 86,
+	//		PosY: 176,
+	//		Title: 'Bộ đế tích hợp ACG',
+	//		Message: 'Vừa có chức năng khởi động, vừa có chức năng như máy phát điện giúp xe khởi động và tái khởi động êm ái',
+	//		Thumb: '/Images/bo-xe.png'
+	//	},
+	//	{
+	//		PinId: 2,
+	//		PosX: 203,
+	//		PosY: 78,
+	//		Title: 'Hệ thống ngắt động cơ tạm thời',
+	//		Message: 'Có khả năng tự động ngắt động cơ tạm thời khi xe dừng quá 3 giây. Động cơ sẽ được tái khởi động êm ái ngay khi người lái tăng ga mà không cần bấm nút khởi động',
+	//		Thumb: '/Images/den-xe.png'
+	//	}
+	//];
+
+	//var pinListServer = [];
+	var pinListServer = JSON.parse('@Html.Raw(Json.Encode(Model))');
+	//var pinListServer = JSON.parse('@Html.Raw(Model)');
+	//console.log(pinListServer);
+
+</script>
+
+<style>
+	#pointer_div {
+		background-repeat: no-repeat;
+		width: 338px;
+		height: 338px;
+		margin: 20px auto;
+		background-color: #fafafa;
+		position: relative;
+        background-size:cover;
+	}
+
+	.pin-holder {
+		position: absolute;
+		visibility: hidden;
+		z-index: 2;
+	}
+
+	.pin {
+		width: 20px;
+		height: 20px;
+		margin-left: -10px;
+		margin-top: -10px;
+	}
+
+	.show {
+		visibility: visible;
+	}
+
+	#myPinImageHolder textarea {
+		resize: vertical;
+	}
+</style>
+<div id="myPinImageHolder" ng-app="myPinImageApp" ng-controller="myPinImageAppController">
+	<form name="pointform" method="post">
+		<div id="pointer_div"
+			 ng-click="choosePinOnImage()"
+			 style="background-image: url(/Upload/Color/@propertiesImageUrl);">
+			<!-- The new pin -->
+			<span class="pin-holder" id="cross">
+				<img src="/Images/pin.png" class="pin" />
+			</span>
+			<!-- List pin display on image -->
+			<span ng-repeat="pin in pinList"
+				  class="pin-holder"
+				  id="pin-{{pin.PropertiesId}}"
+				  style="left: {{pin.X}}px; top: {{pin.Y}}px">
+				<img src="/Images/pin.png" class="pin show" />
+			</span>
+		</div>
+		<p class="text-center">
+			<span>(Vui lòng chọn vị trí <span ng-if="isNewPin">mới</span> trên hình)</span>
+		</p>
+
+	</form>
+
+	<div class="form-horizontal">
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label" for="example-text-input-horizontal">
+				Tiêu đề
+			</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" name="title" ng-model="selectedPin.Subject" placeholder="Vui lòng nhập tiêu đề" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label" for="example-text-input-horizontal">
+				Nội dung
+			</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" name="message" ng-model="selectedPin.Description" placeholder="Vui lòng nhập nội dung" />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label" for="example-text-input-horizontal">
+				Pos X
+			</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="form_x" name="form_x" size="4" ng-model="selectedPin.X" readonly />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label" for="example-text-input-horizontal">
+				Pos Y
+			</label>
+			<div class="col-sm-6">
+				<input type="text" class="form-control" id="form_y" name="form_y" size="4" ng-model="selectedPin.Y" readonly />
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-sm-3 control-label" for="example-text-input-horizontal">
+				Hình ảnh
+			</label>
+			<div class="col-sm-6">
+				<input type="file" class="form-control text-box single-line" id="propertiesFileUpload" name="propertiesFileUpload">
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="col-sm-offset-3 col-sm-9" ng-if="selectedPin.Image">
+				<div ng-if="selectedPin.Image">
+					<img ng-src="/Upload/Properties/{{selectedPin.Image}}" style="width: 100px; height: 100px;">
+				</div>
+				@*<div ng-if="!selectedPin.Thumb">
+						<img src="~/Upload/Color/noimage.jpg" style="width: 100px; height: 100px;" />
+					</div>*@
+			</div>
+		</div>
+
+
+
+		<div class="form-group">
+            <div class="col-sm-9 text-right">
+                <input class="btn btn-default" type="button" ng-click="newPin()" value="Nhập lại thông tin"
+                       ng-attr-value="{{ isNewPin ? 'Nhập lại thông tin' : 'Hủy' }}" />
+
+                <input class="btn btn-success" type="button"
+                       ng-click="saveNewPin()"
+                       ng-attr-disabled="{{isNewPin ? true : undefined}}"
+                       ng-attr-value="{{ isNewPin ? 'Lưu vị trí mới' : 'Lưu' }}" />
+            </div>
+		</div>
+
+		<div ng-if="isNewPin">
+			<div class="form-group">
+				<div class="col-sm-offset-3 col-sm-9">
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	@*<input type="button" ng-click="loadPointArrayToImage()" value="Load data" />*@
+	@*<input type="button" ng-click="addPin()" value="Add Randon Pin" />*@
+	<hr />
+	<h4>Danh sách đặc tính kỹ thuật</h4>
+	<table class="table table-bordered table-striped table-hover dataTable no-footer">
+		<thead class="isd-table-header">
+			<tr>
+				<th class="text-center isd-table-th-stt">STT</th>
+				<th>Mô tả</th>
+				<th class="text-center">Nội dung</th>
+				<th>X</th>
+				<th>Y</th>
+				<th>Hình ảnh</th>
+				<th class="text-center">Chức năng</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="pin in pinList">
+				<td>{{ $index + 1 }}</td>
+				@*<td>{{ pin.PinId }}</td>*@
+				@*<td><input type="text" ng-model="pin.Title" class="form-control text-box single-line" /></td>
+					<td><textarea placeholder="Comments" ng-model="pin.Message" class="form-control text-box single-line" rows="4"></textarea></td>*@
+				<td>{{ pin.Subject }}</td>
+				<td>{{ pin.Description }}</td>
+				<td>{{ pin.X }}</td>
+				<td>{{ pin.Y }}</td>
+				<td>
+					<img ng-src="/Upload/Properties/{{pin.Image}}" style="width: 100px; height: 100px;">
+				</td>
+				<td class="text-center" style="white-space: nowrap;">
+					@*<input class="btn btn-info" type="button" ng-click="selectPin()" data-id="id-{{pin.PropertiesId}}" value="Chọn" />*@
+					<input class="btn btn-danger" type="button" ng-click="removePin()" data-id="id-{{pin.PropertiesId}}" value="Xóa" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

@@ -1,0 +1,194 @@
+﻿@model PeriodicallyCheckingViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Sale_PeriodicallyChecking.ToLower();
+    string CurrentController = ConstController.PeriodicallyChecking;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.PeriodicallyCheckingId)
+    @Html.HiddenFor(p => p.PeriodicallyCheckingCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PeriodicallyCheckingCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PeriodicallyCheckingCode, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PeriodicallyCheckingName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PeriodicallyCheckingName)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @class = "form-control" })
+                                @*<script type="text/javascript">
+                                    CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        width: 800
+                                    });
+                                    CKEDITOR.instances['Description'].on('change',
+                                        function () { CKEDITOR.instances['Description'].updateElement() });
+                                </script>*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.FileUrl)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.FileUrl, new { type = "file" })
+                                @if (Model.FileUrl != null)
+                                {
+                                    <img id="image-edit-view" src="/Upload/PeriodicallyChecking/@Model.FileUrl" />
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ApplyFor)
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="pull-right">
+                                <a class="btn bg-blue btn-inside">
+                                    <i class="fa fa-plus-square"></i> Thêm sản phẩm
+                                </a>
+                            </div>
+                            @Html.Action("_DetailChecking", new { chosenList = (List<Detail_PeriodicallyCheckingViewModel>)ViewBag.chosenList })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section components {
+    @Html.Action("_ProductSearch")
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+
+        //check all
+        $(document).on("change", "#choose-all", function () {
+            if ($(this).prop("checked")) {
+                $('#productSearchTable tr td input.choose-product').each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $('#productSearchTable input.choose-product').each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+
+        //get product chosen
+        $(document).on("click", "#btn-choose", function () {
+            var productList = [];
+            $('#productSearchTable input.choose-product:checked').each(function () {
+                productList.push($(this).attr('value'));
+            });
+
+            var existList = [];
+            $('#productTable input.productId').each(function () {
+                existList.push($(this).attr("value"));
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Sale/PeriodicallyChecking/InsertProduct",
+                data: {
+                    productList: productList,
+                    existList: existList
+                },
+                success: function (jsonData) {
+                    $("#divProductSearch").modal("hide");
+                    $("#chosenList").html(jsonData);
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        //delete product
+        $(document).on("click", ".btn-del", function () {
+            var DeleteProductId = $(this).data("product");
+
+            var productList = [];
+            $('#productTable input.productId').each(function () {
+                productList.push($(this).attr('value'));
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Sale/PeriodicallyChecking/DeleteProduct",
+                data: {
+                    productList: productList,
+                    DeleteProductId: DeleteProductId
+                },
+                success: function (jsonData) {
+                    $("#chosenList").html(jsonData);
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+    </script>
+}
+
+
+

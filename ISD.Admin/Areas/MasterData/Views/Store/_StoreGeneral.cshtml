@@ -1,0 +1,103 @@
+﻿@model StoreViewModel
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.CompanyName)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.CompanyName, new { disabled = "disabled" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.SaleOrgCode)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.SaleOrgCode, new { disabled = "disabled" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.StoreName)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.StoreName)
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.InvoiceStoreName)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.InvoiceStoreName)
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.ProvinceId)
+    </div>
+    <div class="col-md-3">
+        @Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+    </div>
+    <div class="col-md-2">
+        @Html.TooltipLabelFor(p => p.DistrictId)
+    </div>
+    <div class="col-md-3">
+        @Html.DropDownList("DistrictId", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.StoreAddress)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.StoreAddress)
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.TelProduct)
+    </div>
+    <div class="col-md-3">
+        @Html.RequiredTextboxFor(p => p.TelProduct)
+    </div>
+    <div class="col-md-2">
+        @Html.TooltipLabelFor(p => p.TelService)
+    </div>
+    <div class="col-md-3">
+        @Html.RequiredTextboxFor(p => p.TelService)
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.Fax)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.Fax)
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.OrderIndex)
+    </div>
+    <div class="col-md-9">
+        @Html.RequiredTextboxFor(p => p.OrderIndex)
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.Actived)
+    </div>
+    <div class="col-md-9">
+        @Html.ActivedRadioButton(p => p.Actived)
+    </div>
+</div>

@@ -1,0 +1,221 @@
+﻿@model CustomerTastesSearchViewModel
+@using ISD.Core
+@{
+    ViewBag.Title = LanguageResource.Customer_CustomerTaste;
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Tastes;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    bool isExportPermisstion = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Export);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+
+    <div class="pull-right">
+        @if (isExportPermisstion)
+        {
+            <a class="btn btn-export btn-success" href="Tastes/Export"><i class="fa fa-download"></i> Export Excel</a>
+            <button class="btn btn-info" onclick="ExportPivotGrid();"><i class="fa fa-download"></i> Export Pivot</button>
+        }
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            @*<div class="panel panel-default panel-search">
+                    @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                    {
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.SaleOrgCode)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("ChooseStoreId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.SaleEmployeeCode)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("SaleEmployeeCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.FromDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.FromDate, new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.ToDate)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.RequiredTextboxFor(p => p.ToDate, new { type = "date" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CustomerGroupCode)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CustomerGroupCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <div class="col-md-4">
+                                            @Html.TooltipLabelFor(p => p.CustomerSourceCode)
+                                        </div>
+                                        <div class="col-md-8">
+                                            @Html.DropDownList("CustomerSourceCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <div class="col-md-8 col-md-offset-5">
+                                        @HtmlExtensions.SearchButton()
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>*@
+            <div class="panel panel-default">
+                <div class="panel-body" style="overflow-x:scroll;">
+                    @using (Html.BeginForm("ExportPivot", null, FormMethod.Post, new { id = "PivotGridExportForm" }))
+                    {
+                        @Html.Action("PivotGridPartial")
+
+                        @Html.Hidden("ExportType", "Excel")
+                        @Html.Hidden("ExportTo", "Export")
+
+                        @Html.Hidden("WYSIWYG.PrintColumnAreaOnEveryPage", "False")
+                        @Html.Hidden("WYSIWYG.PrintRowAreaOnEveryPage", "False")
+                        @Html.Hidden("WYSIWYG.PrintFilterHeaders", "False")
+                        @Html.Hidden("WYSIWYG.PrintColumnHeaders", "False")
+                        @Html.Hidden("WYSIWYG.PrintRowHeaders", "True")
+                        @Html.Hidden("WYSIWYG.PrintDataHeaders", "False")
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section head{
+    @Html.DevExpress().GetStyleSheets(
+    new StyleSheet { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.PivotGrid },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.Editors },
+    new StyleSheet { ExtensionSuite = ExtensionSuite.GridView }
+)
+    @Html.DevExpress().GetScripts(
+      new Script { ExtensionSuite = ExtensionSuite.NavigationAndLayout },
+      new Script { ExtensionSuite = ExtensionSuite.PivotGrid },
+      new Script { ExtensionSuite = ExtensionSuite.Editors },
+      new Script { ExtensionSuite = ExtensionSuite.GridView }
+  )
+}
+
+@section scripts {
+    <script>
+        function ExportPivotGrid() {
+            var form = $('#PivotGridExportForm');
+              //  defaultAction = form.attr('action'),
+              //  newAction = defaultAction.replace('ActionPlaceHolder', actionName);
+         //   form.attr('action', newAction);
+            form.submit();
+          //  form.attr('action', defaultAction);
+        }
+
+        $(document).ready(function () {
+           // SearchTastesInitial("@CurrentUrl",true);
+            ISD.ShowMessage(window.location.href);
+        });
+
+        //function SearchTastesInitial(controller, isScrollX) {
+        //    //set btn-search event
+        //    $("#btn-search").click(function () {
+        //        SearchTastesDefault(controller, isScrollX);
+        //    });
+        //    //click btn-search button at first time
+        //    $("#btn-search").trigger("click");
+        //    //set default form submit => click btn-search button
+        //    $("#frmSearch").submit(function (e) {
+        //        e.preventDefault();
+        //        $("#btn-search").trigger("click");
+        //    });
+
+        //    //delete button
+        //    ISD.Delete();
+
+        //    //import button
+        //   // ISD.UploadFile(controller);
+        //   // ISD.ImportModalHideHandler();
+        //}
+
+        //search button event
+        //function SearchTastesDefault(controller, isScrollX) {
+        //    var $btn = $("#btn-search");
+        //    $btn.button('loading');
+
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/" + controller + "/PivotGridPartial",
+        //        data: $("#frmSearch").serializeArray(),
+        //        success: function (xhr, status, error) {
+        //            $btn.button('reset');
+        //            if (xhr.Code == 500) {
+        //                //error
+        //                alertPopup(false, xhr.Data);
+        //            } else {
+        //                //success
+        //                $("#divSearchResult").html(xhr);
+        //                //ISD.Pagging(isScrollX);
+        //            }
+
+        //            $(document).on("click", ".btn-edit", function (e) {
+        //                if ($(this).is('[disabled=disabled]')) {
+        //                    e.preventDefault();
+        //                    return false;
+        //                }
+        //            });
+        //        },
+        //        error: function (xhr, status, error) {
+        //            $btn.button('reset');
+        //            alertPopup(false, xhr.responseText);
+        //        }
+        //    });
+        //}
+    </script>
+}

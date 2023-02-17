@@ -1,0 +1,185 @@
+﻿@model TaskViewModel
+@{
+    string taskClass = "";
+    string imgSource = string.Format("https://i0.wp.com/avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/{0}-0.png?ssl=1", ViewBag.LogoName);
+}
+
+<div>
+    @if (Model.taskCommentList != null && Model.taskCommentList.Count > 0)
+    {
+        taskClass = "task-comment";
+        foreach (var item in Model.taskCommentList)
+        {
+            <div class="task-comment">
+                @{ string imgSrc = string.Format("https://i0.wp.com/avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/{0}-0.png?ssl=1", item.LogoName); }
+                <div class="position-absolute">
+                    <img style="width: 35px" src="@imgSrc" />
+                </div>
+                <div class="ml-45 renderComment-@item.TaskCommentId">
+                    <div class="display-inline">
+                        <label>@item.CreateByName</label>
+                        <span class="ml-10">@item.CreateTime.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                    <div id="RenderComment_@item.TaskCommentId">
+                        @Html.Raw(item.Comment)
+                    </div>
+                    <div class="custom-comment display-inline">
+                        <a class="btn-edit-cmt" data-id="@item.TaskCommentId">@LanguageResource.Btn_Edit</a>
+                        <a class="btn-del-cmt" data-id="@item.TaskCommentId">@LanguageResource.Btn_Delete</a>
+                    </div>
+                </div>
+                <div class="ml-45 editComment-@item.TaskCommentId hidden">
+                    <textarea class="form-control ckeditor" cols="20" id="EditComment_@item.TaskCommentId" name="EditComment_ @item.TaskCommentId" rows="2" data-id="@item.TaskCommentId">@item.Comment</textarea>
+                    <script type="text/javascript">
+                        CKEDITOR.replace("EditComment_@item.TaskCommentId", {
+                            height: 80,
+                            plugins: 'about, basicstyles, clipboard, floatingspace, list, indentlist, enterkey, entities, link, toolbar, undo, wysiwygarea',
+                            toolbarGroups: [
+                                { name: 'document', groups: ['mode', 'document', 'doctools'] },
+                                { name: 'clipboard', groups: ['clipboard', 'undo'] },
+                                { name: 'editing', groups: ['find', 'selection', 'spellchecker'] },
+                                { name: 'forms' },
+                                { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                                { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi'] },
+                                { name: 'links' },
+                                { name: 'insert' },
+                                { name: 'styles' },
+                                { name: 'colors' },
+                                { name: 'tools' },
+                                { name: 'others' }
+                            ],
+                            removeButtons: 'Anchor,Underline,Strike,Subscript,Superscript',
+                            removeDialogTabs: 'link:advanced'
+                        });
+                        CKEDITOR.instances['EditComment_@item.TaskCommentId'].on('change',
+                            function () { CKEDITOR.instances['EditComment_@item.TaskCommentId'].updateElement() });
+                    </script>
+                </div>
+                <div class="ml-45 mt-5 editComment-@item.TaskCommentId hidden">
+                    <button type="button" class="btn btn-default btn-cancel-editComment" data-id="@item.TaskCommentId">@LanguageResource.Cancel</button>
+                    <button type="button" class="btn btn-primary btn-save-task-comment" data-id="@item.TaskCommentId" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save</button>
+                </div>
+                @{
+                    var fileList = Model.taskFileList.Where(p => p.ObjectId == item.TaskCommentId).ToList();
+                }
+                @if (fileList != null && fileList.Count > 0)
+                {
+                    <div class="mt-5 ml-45">
+                        @foreach (var file in fileList)
+                        {
+                            <div class="file-row">
+                                <a href="/Upload/Document/@file.FileUrl" download="@file.FileAttachmentName" target="_blank">
+                                    @if (file.FileAttachmentCode == ConstFileAttachmentCode.Image)
+                                    {
+                                        <img class="img-modal-task" src="/Upload/FileType/file_image.png" />
+                                    }
+                                    else if (file.FileAttachmentCode == ConstFileAttachmentCode.Excel)
+                                    {
+                                        if (file.FileExtention == ".xls")
+                                        {
+                                            <img class="img-modal-task" src="/Upload/FileType/file_xls.png" />
+                                        }
+                                        else
+                                        {
+                                            <img class="img-modal-task" src="/Upload/FileType/file_xlsx.png" />
+                                        }
+                                    }
+                                    else if (file.FileAttachmentCode == ConstFileAttachmentCode.Word)
+                                    {
+                                        if (file.FileExtention == ".doc")
+                                        {
+                                            <img class="img-modal-task" src="/Upload/FileType/file_doc.png" />
+                                        }
+                                        else
+                                        {
+                                            <img class="img-modal-task" src="/Upload/FileType/file_docx.png" />
+                                        }
+                                    }
+                                    else if (file.FileAttachmentCode == ConstFileAttachmentCode.Pdf)
+                                    {
+                                        <img class="img-modal-task" src="/Upload/FileType/file_pdf.png" />
+                                    }
+                                    else if (file.FileAttachmentCode == ConstFileAttachmentCode.PowerPoint)
+                                    {
+                                        if (file.FileExtention == ".ppt")
+                                        {
+                                            <img class="img-modal-task" src="/Upload/FileType/file_ppt.png" />
+                                        }
+                                        else
+                                        {
+                                            <img class="img-modal-task" src="/Upload/FileType/file_pptx.png" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <img class="img-modal-task" src="/Upload/FileType/file_sound.png" />
+                                    }
+                                </a>
+                                <span class="ml-10 mt-5 file-name-position">
+                                    <a href="/Upload/Document/@file.FileUrl" download="@file.FileAttachmentName" target="_blank">
+                                        @file.FileAttachmentName
+                                    </a>
+                                </span>
+                                <span class="float-right">
+                                    <a class="btn-del-file" data-id="@file.FileAttachmentId">
+                                        <i class="fa fa-trash-o"></i>
+                                    </a>
+                                </span>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    }
+</div>
+<div class="@taskClass">
+    <div class="position-absolute">
+        <img style="width: 35px" src="@imgSource" />
+    </div>
+    <div class="ml-45">
+        @Html.TextAreaFor(p => p.Comment, new { @class = "form-control ckeditor", @id = "Comment" })
+        <input type="file" style="display: none" class="btn-save-hidden div-comment mt-5" name="CommentFileUrl" id="CommentFileUrl" multiple />
+        <p class="help-block btn-save-hidden div-comment">Chọn file đính kèm.</p>
+        <script type="text/javascript">
+            CKEDITOR.replace("Comment", {
+                height: 80,
+                plugins: 'about, basicstyles, clipboard, floatingspace, list, indentlist, enterkey, entities, link, toolbar, undo, wysiwygarea',
+                toolbarGroups: [
+                    { name: 'document', groups: ['mode', 'document', 'doctools'] },
+                    { name: 'clipboard', groups: ['clipboard', 'undo'] },
+                    { name: 'editing', groups: ['find', 'selection', 'spellchecker'] },
+                    { name: 'forms' },
+                    { name: 'basicstyles', groups: ['basicstyles', 'cleanup'] },
+                    { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi'] },
+                    { name: 'links' },
+                    { name: 'insert' },
+                    { name: 'styles' },
+                    { name: 'colors' },
+                    { name: 'tools' },
+                    { name: 'others' }
+                ],
+                removeButtons: 'Anchor,Underline,Strike,Subscript,Superscript',
+                removeDialogTabs: 'link:advanced'
+            });
+            CKEDITOR.instances['Comment'].on('change',
+                function () { CKEDITOR.instances['Comment'].updateElement() });
+            CKEDITOR.instances['Comment'].on('instanceReady', function (e) {
+                //$("#cke_Comment [id$='_top']").hide();
+                this.on("focus", function () {
+                    //$("#cke_Comment [id$='_top']").show();
+                    $(".div-comment").show();
+                });
+                this.on("blur", function () {
+                    //$("#cke_Comment [id$='_top']").hide();
+                    //$(".div-comment").hide();
+                });
+            });
+        </script>
+    </div>
+    <div class="btn-save-hidden div-comment ml-45">
+        <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+        <button type="button" class="btn btn-primary btn-save-task" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save @LanguageResource.Comment.ToLower()</button>
+    </div>
+</div>
+

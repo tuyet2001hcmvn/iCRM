@@ -1,0 +1,40 @@
+﻿@model IEnumerable<ProductViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.AccessoryCategoryId)</th>
+            <th>@Html.DisplayNameFor(p => p.AccessoryId)</th>
+            <th>@Html.DisplayNameFor(p => p.Price)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="accessoryList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @Html.Partial("_ProductAccessoryInner", Model)
+        }
+    </tbody>
+    <tfoot id="accessory">
+        <tr>
+            <td></td>
+            <td>
+                @Html.DropDownList("AccessoryCategoryId", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+            </td>
+            <td>
+                <select name="AccessoryId" id="AccessoryId" class="form-control with-search">
+                    <option>@LanguageResource.Dropdownlist_All</option>
+                </select>
+            </td>
+            <td>
+                <input type="text" class="form-control text-box single-line" id="Price" name="Price" />
+            </td>
+            <td class="text-center">
+                <a class="btn btn-warning btn-add-row" data-row="3">
+                    @LanguageResource.Btn_AddRow
+                </a>
+            </td>
+        </tr>
+    </tfoot>
+</table>

@@ -1,0 +1,20 @@
+@Html.DevExpress().DocumentViewer(settings => {
+    settings.Name = "DocumentViewer";
+    settings.CallbackRouteValues = new {
+        Controller = "CustomerProfile",
+        Action = "DocumentViewerPartial",
+        ProfileCode = ViewBag.ProfileCode,
+        CompanyCode = ViewBag.CompanyCode,
+        Year = ViewBag.Year,
+    };
+    settings.ExportRouteValues = new {
+        Controller = "CustomerProfile",
+        Action = "DocumentViewerPartialExport",
+        ProfileCode = ViewBag.ProfileCode,
+        CompanyCode = ViewBag.CompanyCode,
+        Year = ViewBag.Year,
+    };
+    settings.Report = (CustomerProfileXtraReport)ViewData["CustomerProfile_Report"];
+    settings.ToolbarMode = DocumentViewerToolbarMode.Ribbon;
+    settings.ClientSideEvents.Init = "function init(s) { var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor); var createFrameElement = s.viewer.printHelper.createFrameElement; s.viewer.printHelper.createFrameElement = function(name) { var frameElement = createFrameElement.call(this, name); if (isChrome) { frameElement.addEventListener('load', function(e) { if (frameElement.contentDocument.contentType !== 'text/html') frameElement.contentWindow.print(); }); } return frameElement;}}";
+}).GetHtml()

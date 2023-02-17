@@ -1,0 +1,16 @@
+@Html.DevExpress().DocumentViewer(settings => {
+    settings.Name = "DocumentViewer";
+    settings.CallbackRouteValues = new {
+        Controller = "TransferCatalogue",
+        Action = "DocumentViewerPartial",
+        TransferCode = ViewBag.TransferCode
+    };
+    settings.ExportRouteValues = new {
+        Controller = "TransferCatalogue",
+        Action = "DocumentViewerPartialExport",
+        TransferCode = ViewBag.TransferCode
+    };
+    settings.Report = (TransferCatalogueXtraReport)ViewData["TransferCatalogue_Report"];
+    settings.ToolbarMode = DocumentViewerToolbarMode.Ribbon;
+    settings.ClientSideEvents.Init = "function init(s) { var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor); var createFrameElement = s.viewer.printHelper.createFrameElement; s.viewer.printHelper.createFrameElement = function(name) { var frameElement = createFrameElement.call(this, name); if (isChrome) { frameElement.addEventListener('load', function(e) { if (frameElement.contentDocument.contentType !== 'text/html') frameElement.contentWindow.print(); }); } return frameElement;}}";
+}).GetHtml()

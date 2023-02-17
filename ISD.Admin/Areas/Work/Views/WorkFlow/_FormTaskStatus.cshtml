@@ -1,0 +1,126 @@
+﻿@{
+    var taskStatusList = (List<TaskStatusViewModel>)ViewBag.TaskStatus;
+    var ProcessList = (List<CatalogViewModel>)ViewBag.processList;
+}
+<div class="row">
+    <div class="col-sm-2">@Html.TooltipLabelFor(p => taskStatusList[0].TaskStatusCode)</div>
+    <div class="col-sm-3">@Html.TooltipLabelFor(p => taskStatusList[0].TaskStatusName)</div>
+    <div class="col-sm-2">@Html.TooltipLabelFor(p => taskStatusList[0].OrderIndex)</div>
+    <div class="col-sm-2">@Html.TooltipLabelFor(p => taskStatusList[0].Category)</div>
+    <div class="col-sm-3">@Html.TooltipLabelFor(p => taskStatusList[0].ProcessCode)</div>
+</div>
+<div class="taskControls">
+    @if (taskStatusList != null && taskStatusList.Count > 0)
+    {
+        int i = 0;
+        foreach (var item in taskStatusList.OrderBy(p => p.OrderIndex))
+        {
+            <div class="taskstatus_fields row">
+                @Html.HiddenFor(p => taskStatusList[i].TaskStatusId, new { @class = "taskStatusId" })
+                <div class="col-sm-2 nopadding">
+                    <div class="form-group">
+                        <div class="input-group input-group-required">
+                            <input class="form-control text-box single-line taskStatusCode" name="taskStatusList[@i].TaskStatusCode" type="text" value="@item.TaskStatusCode">
+                            <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 nopadding">
+                    <div class="form-group">
+                        <div class="input-group input-group-required">
+                            <input type="text" class="form-control taskName" name="taskStatusList[@i].TaskStatusName" value="@item.TaskStatusName">
+                            <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-2 nopadding">
+                    <div class="form-group">
+                        <div class="input-group input-group-required">
+                            <input type="text" class="form-control taskOrderIndex" name="taskStatusList[@i].OrderIndex" value="@item.OrderIndex">
+                            <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-2 nopadding">
+                    <div class="form-group">
+                        <div class="input-group input-group-required">
+                            <input type="text" class="form-control taskCategory" name="taskStatusList[@i].Category" value="@item.Category">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3 nopadding">
+                    <div class="form-group">
+                        <div class="input-group">
+                            @Html.DropDownListFor(p => taskStatusList[i].ProcessCode, new SelectList(ProcessList, "CatalogCode", "CatalogText_vi", item.ProcessCode), LanguageResource.Dropdownlist_Choose, new { @class = "form_control taskProcessCode" })
+                            @if (i == 0)
+                            {
+                                <div class="input-group-btn">
+                                    <button class="btn btn-success btn-addTaskStatus" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="input-group-btn">
+                                    <button class="btn btn-danger btn-removeTaskStatus" type="button"> <span class="glyphicon glyphicon-minus" aria-hidden="true"></span> </button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            i++;
+        }
+    }
+    else
+    {
+        <div class="taskstatus_fields row">
+            <div class="col-sm-2 nopadding">
+                <div class="form-group">
+                    <div class="input-group input-group-required">
+                        <input class="form-control text-box single-line taskStatusCode" name="taskStatusList[0].TaskStatusCode" type="text" value="">
+                        <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-3 nopadding">
+                <div class="form-group">
+                    <div class="input-group input-group-required">
+                        <input type="text" class="form-control taskName" name="taskStatusList[0].TaskStatusName" value="">
+                        <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-2 nopadding">
+                <div class="form-group">
+                    <div class="input-group input-group-required">
+                        <input type="text" class="form-control taskOrderIndex" name="taskStatusList[0].OrderIndex" value="">
+                        <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-2 nopadding">
+                <div class="form-group">
+                    <div class="input-group input-group-required">
+                        <input type="text" class="form-control taskCategory" name="taskStatusList[0].Category" value="">
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-sm-3 nopadding">
+                <div class="form-group">
+                    <div class="input-group">
+                        @Html.DropDownListFor(p => taskStatusList[0].ProcessCode, new SelectList(ProcessList, "CatalogCode", "CatalogText_vi"), LanguageResource.Dropdownlist_Choose, new { @class = "form_control taskProcessCode" })
+                        <div class="input-group-btn">
+                            <button class="btn btn-success btn-addTaskStatus" type="button"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

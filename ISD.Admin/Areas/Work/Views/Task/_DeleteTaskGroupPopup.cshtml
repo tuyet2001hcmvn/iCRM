@@ -1,0 +1,29 @@
+﻿@* Delete Confirm *@
+<div id="divDeleteTaskGroupPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.Btn_Delete "<span class="item-name"></span>"</h4>
+            </div>
+            <form id="frmDeleteTaskGroupConfirm">
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id")
+                @Html.Hidden("controller")
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="row text-center alert-message">
+                            @LanguageResource.Confirm_ConfirmDelete
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal">@LanguageResource.Confirm_No</span>
+                        <a class="btn btn-primary pull-right" id="btn-confirm-delete-task-group">
+                            @LanguageResource.Confirm_Yes
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ISD.API2</name>
+    </assembly>
+    <members>
+        <member name="M:ISD.API2.Controllers.CampaignsController.Create(ISD.API.ViewModels.MarketingViewModels.CampaignViewModels.CampaignCreateViewModel)">
+            <summary>
+            create new campaign
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.CampaignsController.GetById(System.Guid)">
+            <summary>
+            get campaign by id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.CampaignsController.Update(System.Guid,ISD.API.ViewModels.MarketingViewModels.CampaignViewModels.CampaignEditViewModel)">
+            <summary>
+            update campaign by id
+            </summary>
+            <param name="id"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.CampaignsController.Search(System.Nullable{System.Int32},System.String,System.String,System.Int32,System.Int32,System.String)">
+            <summary>
+            search campaign
+            </summary>
+            <param name="campaignCode"></param>
+            <param name="campaignName"></param>
+            <param name="status"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="Type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.Create(ISD.API.ViewModels.MarketingViewModels.ContentViewModels.ContentCreateViewModel)">
+            <summary>
+            create new content
+            </summary>
+            <param name="contentCreate"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.Update(System.Guid,ISD.API.ViewModels.MarketingViewModels.ContentViewModels.ContentEditViewModel)">
+            <summary>
+            update content by id
+            </summary>
+            <param name="id"></param>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.GetStore">
+            <summary>
+            get all available stores
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.GetContentById(System.Guid)">
+            <summary>
+            get content by id
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.GetFromEmailAccount">
+            <summary>
+            get all email account
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.Search(System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Int32,System.Int32,System.String)">
+            <summary>
+            search content
+            </summary>
+            <param name="contentCode"></param>
+            <param name="contentName"></param>
+            <param name="actived"></param>
+            <param name="pageIndex"></param>
+            <param name="pageSize"></param>
+            <param name="Type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.ContentsController.Gets(System.String)">
+            <summary>
+            get all available content
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.Create(ISD.API.ViewModels.TargetGroupCreateViewModel)">
+            <summary>
+            create new target group
+            </summary>
+            <param name="obj">user input value</param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.Update(ISD.API.ViewModels.TargetGroupEditViewModel,System.Guid)">
+            <summary>
+            update target group by id
+            </summary>
+            <param name="obj">user input value</param>
+            <param name="id">target group id want to update</param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.GetById(System.Guid)">
+            <summary>
+            get target group by id 
+            </summary>
+            <param name="id">target group id want to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.Search(System.Nullable{System.Int32},System.String,System.Nullable{System.Boolean},System.Int32,System.Int32,System.String)">
+            <summary>
+            search target group 
+            </summary>
+            <param name="targetGroupCode">get equal or get all</param>
+            <param name="targetGroupName">get contain or get all</param>
+            <param name="actived">get equal or get all</param>
+            <param name="pageIndex">index of page want to get</param>
+            <param name="pageSize">number of row want to get</param>
+            <param name="Type"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.ImportMember(Microsoft.AspNetCore.Http.IFormCollection,System.Guid)">
+            <summary>
+            import member of target group from excel file
+            </summary>
+            <param name="file">excel file member</param>
+            <param name="id">target group id want to import</param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.GetMember(System.Guid,System.Boolean,System.Boolean,System.Int32,System.Int32)">
+            <summary>
+            get members of target group by target group id
+            </summary>
+            <param name="id">target group id want to get member</param>
+            <param name="hasEmail">get member has email or get all</param>
+            <param name="distinctEmail"></param>
+            <param name="pageIndex">index of page want to get</param>
+            <param name="pageSize">number of row want to get</param>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.Download">
+            <summary>
+            download excel template for import members
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ISD.API2.Controllers.TargetGroupsController.Gets(System.String)">
+            <summary>
+            get all available target group 
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

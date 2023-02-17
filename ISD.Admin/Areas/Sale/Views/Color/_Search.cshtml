@@ -1,0 +1,44 @@
+﻿@model IEnumerable<ColorModel>
+@{
+    string CurrentController = ConstController.Color;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ColorShortName)</th>
+            <th>@Html.DisplayNameFor(p => p.ColorName)</th>
+            <th class="text-center">@LanguageResource.Sale_Color</th>
+            <th>@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ColorShortName)</td>
+                <td>@Html.DisplayFor(p => item.ColorName)</td>
+                <td class="text-center">
+                    <input type="text" class="DisplayColor" style="background-color: @item.ColorCode" disabled />
+                </td>
+                <td class="text-center">@Html.DisplayFor(p => item.OrderIndex)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.ColorId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.ColorName, item.ColorId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

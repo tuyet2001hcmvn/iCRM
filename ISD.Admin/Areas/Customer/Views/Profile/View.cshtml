@@ -1,0 +1,43 @@
+﻿@model ProfileDetailViewModel
+@{
+    ViewBag.Title = LanguageResource.Details + " " + LanguageResource.Customer_Profiles.ToLower();
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Profile;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+    @*<div class="pull-right">
+        @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+        @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+    </div>*@
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+
+                <div id="exTab1" class="nav-tabs-custom">
+                    <ul class="nav nav-pills nav nav-tabs">
+                        <li class="active">
+                            <a href="#tab1" data-toggle="tab">@LanguageResource.GeneralInformation</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content clearfix">
+                        <div class="tab-pane active" id="tab1">
+                            @Html.Partial("_ProgfileInfo", Model)
+                        </div>
+                      
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

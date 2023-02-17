@@ -1,0 +1,26 @@
+﻿@model IEnumerable<ProductPromotionViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.ProductPromotion
+    </h1>
+</div>
+<div class="content" id="contentCatalogue">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.ProductPromotionTitle)</th>
+                <th>@Html.DisplayNameFor(p => p.SendTypeName)</th>
+                <th>@Html.DisplayNameFor(p => p.IsSendCatalogue)</th>
+                <th>@LanguageResource.Status</th>
+                <th>@Html.DisplayNameFor(p => p.StartTime)</th>
+                <th class="text-right">@Html.DisplayNameFor(p => p.EndTime)</th>
+                <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

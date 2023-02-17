@@ -1,0 +1,134 @@
+﻿@model CustomerGiftViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Details + " " + LanguageResource.MasterData_CustomerGift.ToLower();
+    string CurrentController = ConstController.CustomerGift;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("View", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.GiftId)
+    @Html.HiddenFor(p => p.GiftCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.GiftCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.GiftCode, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.GiftName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.GiftName, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EffectFromDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EffectFromDate, "{0:dd/MM/yyyy}", new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EffectToDate)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.EffectToDate, "{0:dd/MM/yyyy}", new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ImageUrl)
+                            </div>
+                            <div class="col-md-9">
+                                @if (Model.ImageUrl != null)
+                                {
+                                    <img id="image-view" src="/Upload/Gift/@Model.ImageUrl" />
+                                }
+                                else
+                                {
+                                    <img id="image-view" src="/Upload/Gift/noimage.jpg" />
+                                }
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @class = "ckeditor", @id = "Description" })
+                                <script type="text/javascript">
+                                    CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        width: 800
+                                    });
+                                    CKEDITOR.config.readOnly = true;
+                                </script>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Notes)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Notes, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ApplyFor)
+                            </div>
+                        </div>
+
+                        <div>
+                            @Html.Action("_CustomerGift", new { chosenList = (List<Detail_CustomerGiftViewModel>)ViewBag.chosenList })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#CustomerLevelId").prop("disabled", true);
+            $("#CustomerId").prop("disabled", true);
+        });
+    </script>
+}
+
+

@@ -1,0 +1,230 @@
+﻿@model StockTransferRequestCreateViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.StockTransferRequest.ToLower();
+    string CurrentController = ConstController.StockTransferRequest;
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var CopyFrom = ViewBag.CopyFrom;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    @Html.ValidationSummary(true)
+                    <div class="panel-group" style="margin-top: 15px">
+                        <div class="panel panel-body">
+                            <div class="form-horizontal">
+                                @{ var stockReciveVM = new StockTransferByRequestViewModel
+                                    {
+                                        DocumentDate = DateTime.Now
+                                    }; 
+                                    }
+                                @Html.Partial("_StockTransferByRequestMaster", stockReciveVM)
+                                <div class="form-group panel">
+                                    @Html.Partial("~/Areas/Warehouse/Views/StockDelivery/_CatalogInfo.cshtml", new DeliveryViewModel())
+                                </div>
+                                @Html.Partial("_StockTransferRequestDetail")
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            @*ISD.CreateInitial("@CurrentUrl");*@
+            var copyFrom = "@CopyFrom";
+            if (copyFrom != null && copyFrom != undefined && copyFrom != "") {
+                CopyFrom(copyFrom);
+            }
+            $("select[name='CompanyId']").trigger("change");
+            SearchText_ProductCode();
+            SearchText_FromStockCode();
+            SearchText_ToStockCode();
+        });
+
+        $(document).on("change", "select[name='CompanyId']", function () {
+            var CompanyId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetStoreByCompany",
+                data: {
+                   CompanyId: CompanyId
+                },
+                success: function (jsonData) {
+                    $("#StoreId").html("");
+                    $.each(jsonData, function (index, value) {
+                        $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+
+                    $("select[name='StoreId']").trigger("change");
+                }
+            });
+        });
+
+        $(document).on("change", "select[name='StoreId']", function () {
+            var StoreId = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Warehouse/Stock/GetMainStockByStore",
+                data: {
+                    StoreId: StoreId
+                },
+                success: function (jsonData) {
+                    $("input[name='FromStockId']").val(jsonData.StockId);
+                    $("input[name='FromStockCode']").val(jsonData.StockCode);
+                    $("input[name='FromStockName']").val(jsonData.StockName);
+                }
+            });
+            //Đổi chi nhánh => clear DATA đang nhập
+            $("#transferDetailList").html("<tr><td class=\"text-center\" colspan=\"7\">Vui lòng thêm sản phẩm!</td></tr>");
+        });
+
+        //chỉ cho phép nhập số
+        function isNumberKey(evt) {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31
+                && (charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+        var viewType = "Create";
+    </script>
+
+
+    <script src="~/Areas/Warehouse/Scripts/StockTransferRequestCreate.js"></script>
+}
+
+@*@section scripts {
+        <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+        <script>
+            var currentUser = "@CurrentUser.AccountId";
+            $(document).ready(function () {
+                var productList = [];
+                $("#ProductCode").autocomplete({
+                    source: function (request, response) {
+                        var url = '/Warehouse/StockReceiving/GetProductCode';
+                        var data = JSON.stringify({ "ProductCode": $("#ProductCode").val() });
+                        $.ajax({
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            url: url,
+                            data: data,
+                            dataType: "json",
+                            success: function (data) {
+                                response($.map(data, function (item) {
+                                    return { label: item.ProductCodeText, id: item.ProductId, value: item.ProductCode, name: item.ProductName };
+                                }));
+                                //response(data);
+                            },
+                            error: function (xhr, status, error) {
+                                alertPopup(false, xhr.responseText);
+                            }
+                        });
+                    },
+                    //prevent another value except dropdown value
+                    change: function (event, ui) {
+                        if (ui.item === null) {
+                            $("#ProductCode").val("");
+                            $("#ProductName").val("");
+                            $("#SearchProductId").val("");
+                            $("#ProductCode").focus();
+                        }
+                    },
+                    select: function (event, ui) {
+                        $("#ProductCode").val(ui.item.value);
+                        $("#ProductCode").prop("disabled", true);
+                        $("#ProductId").val(ui.item.id);
+                        $("#ProductName").val(ui.item.name);
+                        $("#ProductQuantity").focus();
+                    }
+                });
+                $(document).on("click", "#btn-add-stockReceivingDetail", function () {
+                    var $btn = $(this);
+                    $btn.button('loading');
+
+                    var ProductId = $("#ProductId").val();
+                    var ProductCode = $("#ProductCode").val();
+                    var ProductName = $("#ProductName").val();
+                    var ProductQuantity = $("#ProductQuantity").val();
+                    if (ProductCode === "") {
+                        $btn.button('reset');
+                        alertPopup(false, "Vui lòng chọn sản phẩm trước khi thêm!");
+                    }
+                    else {
+                        if (ProductQuantity == "" || parseInt(ProductQuantity) < 0) {
+                            $btn.button('reset');
+                            alertPopup(false, "Vui lòng nhập số lượng lớn hơn 0!");
+                        }
+                        else {
+
+                            var product = {
+                                ProductId : ProductId,
+                                ProductCode : ProductCode,
+                                ProductName : ProductName,
+                                ProductQuantity : ProductQuantity
+                            }
+                            productList.push(product);
+
+                        }
+                    }
+                });
+                function RefreshTable() {
+                    var len = productList.length;
+                    tbody = '';
+                    if (len > 0) {
+                        for (var i = 0; i < len; i++) {
+                            var tr = '<tr>' +
+                                '<td class="text-center">' + parseInt(i + 1) + '</td >' +
+                                '<td class="text-center">' + productList[i].ProductCode + '</td >' +
+                                '<td class="text-center">' + productList[i].ProductName + '</td >' +
+                                '<td class="text-center">' + productList[i].ProductQuantity + '</td >' +
+                                '<td class="text-center">' +
+                                '<a class="btn btn-danger btn-del-proDetail" data-row="1" data-id="' + productList[i].ProductId + '">Xóa</a>' +
+                                '</td>' +
+                                '</tr>';
+                            tbody = tbody + tr;
+                        }
+                        $('#transferDetailList').html(tbody);
+                        $btn.button('reset');
+                        $("#ProductCode").val("");
+                        $("#ProductCode").prop("disabled", false);
+                        $("#ProductName").val("");
+                        $("#ProductId").val("");
+                        $("#ProductQuantity").val("");
+                        $("#ProductCode").focus();
+                    }
+                    else {
+
+                    }
+                }
+            });
+        </script>
+    }*@
+

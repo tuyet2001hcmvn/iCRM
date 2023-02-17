@@ -1,0 +1,46 @@
+﻿@model FileAttachmentViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <h4 class="modal-title">@LanguageResource.Create @LanguageResource.Customer_FileAttachment.ToLower()</h4>
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmFileAttachment" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ObjectId)
+        @Html.HiddenFor(model => model.ProfileId)
+
+        <div id="divAlertWarningUploadFile" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.FileType)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.RequiredDropDownListFor(p => p.FileType, null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                    </div>
+                    <div class="col-md-9">
+                        <input type="file" name="FileUpload" />
+                        <p class="help-block">Vui lòng chọn tài liệu cần upload <span class="color-red">(*)</span>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-fileAttachment" data-add-success-call-back="ReloadFileAttachmentList">@LanguageResource.Btn_Upload</button>
+</div>

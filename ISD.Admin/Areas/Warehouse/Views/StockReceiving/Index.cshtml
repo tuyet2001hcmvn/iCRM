@@ -1,0 +1,309 @@
+﻿@model StockReceivingSearchViewModel
+@{
+    ViewBag.Title = LanguageResource.StockReceiving;
+    string CurrentController = ConstController.StockReceiving;
+    string CurrentArea = ConstArea.Warehouse;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchCompanyId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchCompanyId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchStoreId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchStoreId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchStockId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchStockId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchSalesEmployeeCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(p => p.SearchSalesEmployeeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProfileCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.ProfileCode)
+                                        @Html.HiddenFor(p => p.SearchProfileId)
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProfileName)
+                                    </div>
+                                    <div class="col-md-8" style="display: inline-table">
+                                        @Html.RequiredTextboxFor(p => p.ProfileName, new { disabled = "disabled" })
+                                        <div class="input-group-btn">
+                                            <a class="btn btn-danger" id="btn-clearProfile">
+                                                <i class="fa fa-remove"></i>
+                                            </a>
+                                        </div>
+                                        <input id="SearchProfileCode" name="SearchProfileCode" type="hidden">
+                                        <input id="SearchProfileName" name="SearchProfileName" type="hidden">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProductCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.ProductCode)
+                                        @Html.HiddenFor(p => p.SearchProductId)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProductName)
+                                    </div>
+                                    <div class="col-md-8" style="display: inline-table">
+                                        @Html.RequiredTextboxFor(p => p.ProductName, new { disabled = "disalbed" })
+                                        <div class="input-group-btn">
+                                            <a class="btn btn-danger" id="btn-clearProduct">
+                                                <i class="fa fa-remove"></i>
+                                            </a>
+                                        </div>
+                                        <input id="SearchProductCode" name="SearchProductCode" type="hidden">
+                                        <input id="SearchProductName" name="SearchProductName" type="hidden">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchFromDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.SearchFromDate, new { type = "date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchToDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.SearchToDate, new { type = "date" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SearchStockReceivingCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.SearchStockReceivingCode, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.isDelete)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("isDelete", new List<SelectListItem>(){
+                                        new SelectListItem(){ Text = "Tất cả", Value = "" },
+                                        new SelectListItem(){ Text = "Vừa tạo", Value = "false" },
+                                        new SelectListItem(){ Text = "Đã huỷ", Value = "true" }
+                                    }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-4 input-group">
+                                    <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                        <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                    </select>
+                                    <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                        <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                        <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                    </span>
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section components {
+    <div id="divDeleteStockReceivingPopup" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">@LanguageResource.Btn_Delete @LanguageResource.StockReceive_Bill</h4>
+                </div>
+                <form id="frmConfirmDeleteStockReceiving">
+                    <input type="hidden" name="StockReceivingId" />
+                    <div id="divAlertWarningPopup" class="alert alert-warning alert-dismissable" style="display: none">
+                        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarningPopup">×</button>
+                        <div class="alert-message">
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="modal-body">
+                            <div class="row text-center alert-message"></div>
+                            <div class="row mt-10">
+                                <div class="col-md-2">
+                                    <div class="label-wrapper">
+                                        <label class="control-label" for="DeletedReason">Lý do hủy</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="input-group input-group-required">
+                                        <input name="DeletedReason" type="text" class="form-control" />
+                                        <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Confirm_No</span>
+                            <a class="btn btn-primary pull-right" id="btn-confirm-del-receive" data-tab="">
+                                @LanguageResource.Confirm_Yes
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script>
+        //Define it
+        var currentUserId = "@CurrentUser.AccountId";
+        var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+            //Set lại thông tin search gần đây khi là back lại
+            var modeTemplateSearch = ISD.GetQueryString("ModeSearch", window.location.href);
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            } else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISD.SearchInitial("@CurrentUrl", true);
+            ISD.ShowMessage(window.location.href);
+        });
+        $("#btn-search").click(function () {
+            
+            //console.log(data);
+            var searchData = GetDataFormSearch();
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, searchData);
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInput(recentSearch) {
+            
+            if (recentSearch.SearchProductId != "") {
+                $("#ProductCode").prop("disabled", true);
+                $("#ProductCode").val(recentSearch.SearchProductCode);
+                $("#ProductName").val(recentSearch.SearchProductName);
+            }
+            if (recentSearch.SearchProfileId != "") {
+                $("#ProfileCode").prop("disabled", true);
+                $("#ProfileCode").val(recentSearch.SearchProfileCode);
+                $("#ProfileName").val(recentSearch.SearchProfileName);
+            }
+        }
+    </script>
+    <script src="~/Areas/Warehouse/Scripts/StockReceivingSearch.js"></script>
+}

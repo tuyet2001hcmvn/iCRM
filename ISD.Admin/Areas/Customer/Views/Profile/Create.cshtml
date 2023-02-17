@@ -1,0 +1,278 @@
+﻿@model ProfileViewModel
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Profile;
+    string BackCurrentController = string.Format("{0}?Type={1}", ConstController.Profile, ViewBag.Type);
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.Hidden("TypeCode")
+    @Html.Hidden("Type", (string)ViewBag.Type)
+    @Html.HiddenFor(p => p.ProfileTypeCode)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            <span>@LanguageResource.CreateTitle @LanguageResource.Profile_CustomerId</span>
+            @HtmlExtensions.BackButton(CurrentArea, BackCurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndContinueEdit)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="box">
+            <div class="box-body">
+                @Html.Partial("_CreateFormByConfig")
+            </div>
+            <div class="text-center" style="margin-bottom:20px;">
+                <a class="btn bg-blue" id="btn-save-fake" onclick="$(this).button('loading')"><i class="fa fa-floppy-o"></i> @LanguageResource.Btn_Save</a>
+                <a class="btn bg-blue" id="btn-save-edit-fake" onclick="$(this).button('loading')">
+                    <i class="fa fa-floppy-o"></i> @LanguageResource.Btn_SaveAndContinueEdit
+                </a>
+            </div>
+        </div>
+    </div>
+
+}
+<div class="loading-modal"></div>
+
+@section components {
+    @if (ViewBag.Type != ConstProfileType.Account)
+    {
+        @Html.Action("_ProfileSearch", new ProfileSearchViewModel() { hasNoContact = true })
+    }
+    <!-- Đối thủ -->
+    <div id="divOppCompetitorPopup"></div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+
+            //Reset dropdownlist after reset form
+            $('#frmCreate').on('reset', function (e) {
+                setTimeout(function () {
+                    $("#select2-CompanyId-container").text($("#CompanyId").find(':selected').text());
+                })
+            });
+            $("input[name='IsAnCuongAccessory']").trigger("change");
+            $("input[name='IsThiCong']").trigger("change");
+            $("select[name='Dropdownlist8']").trigger("change");
+            ///add More Phone
+            $(document).on('click', '.btn-addPhone', function (e) {
+                //console.log("Dzoo");
+                e.preventDefault();
+
+                var controlForm = $('.phoneControls:first'),
+                    currentEntry = $(this).parents('.phonenumber:last'),
+                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+                newEntry.find('input').val('');
+                controlForm.find('.phonenumber:not(:first) .btn-addPhone')
+                    .removeClass('btn-addPhone').addClass('btn-removePhone')
+                    .removeClass('btn-success').addClass('btn-danger')
+                    .html('<span class="glyphicon glyphicon-minus"></span>');
+            }).on('click', '.btn-removePhone', function (e) {
+                $(this).parents('.phonenumber:last').remove();
+
+                e.preventDefault();
+                return false;
+            });
+            
+            //add More Email
+            $(document).on('click', '.btn-addEmail', function (e) {
+                e.preventDefault();
+
+                var controlForm = $('.emailControls:first'),
+                    currentEntry = $(this).parents('.email:last'),
+                    newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+                newEntry.find('input').val('');
+                controlForm.find('.email:not(:first) .btn-addEmail')
+                    .removeClass('btn-addEmail').addClass('btn-removeEmail')
+                    .removeClass('btn-success').addClass('btn-danger')
+                    .html('<span class="glyphicon glyphicon-minus"></span>');
+            }).on('click', '.btn-removeEmail', function (e) {
+                $(this).parents('.email:last').remove();
+
+                e.preventDefault();
+                return false;
+            });
+            //end add more email
+
+            CustomerTypeCodeChangeInitial();
+            $("input[name='CustomerTypeCode']").trigger("change");
+
+            //$(".personemployeecode").trigger("change");
+            //$(".personemployeecode2").trigger("change");
+            //$(".personemployeecode3").trigger("change");
+
+            $("input[name='isForeignCustomer']").trigger("change");
+
+            //title profile
+            //displayTitle();
+
+            renderRequiredTextBox();
+            $(document).on("click", "#btn-save-fake", function () {
+                $("#btn-save").click();
+                $(this).button("reset");
+            });
+            $(document).on("click", "#btn-save-edit-fake", function () {
+                $("#btn-save-edit").click();
+                $(this).button("reset");
+            });
+            IsCreateRequestChange();
+
+            Select2_CustomForList("/Sale/Product/SearchProductBy", ".specInternalMaterial");
+            Select2_CustomForList("/Customer/Profile/SearchCompetitorBy", ".specCompetitor");
+            Select2_CustomForList("/Customer/Profile/SearchCompetitorBy", ".constructionCompetitor");
+        });
+        $(document).on("change", "#isCreateRequest", function () {
+            IsCreateRequestChange();
+        });
+        function IsCreateRequestChange() {
+            var isCreateRequest = $('#isCreateRequest').val();
+            if (isCreateRequest != 'True') {
+                $('.ecc-field').hide();
+            }
+            else {
+                if ($('#PartnerFunctionCode').val() == null || $('#PartnerFunctionCode').val() == undefined || $('#PartnerFunctionCode').val() == "")
+                {
+                    $('#PartnerFunctionCode').val("PartnerFunction_0").change();
+                }
+                if ($('#PaymentTermCode').val() == null || $('#PaymentTermCode').val() == undefined || $('#PaymentTermCode').val() == "") {
+                    $('#PaymentTermCode').val("1001").change();
+                }
+                if ($('#PaymentMethodCode').val() == null || $('#PaymentMethodCode').val() == undefined || $('#PaymentMethodCode').val() == "") {
+                    $('#PaymentMethodCode').val("PaymentMethod_A").change();
+                }
+                if ($('#CustomerAccountAssignmentGroupCode').val() == null || $('#CustomerAccountAssignmentGroupCode').val() == undefined || $('#CustomerAccountAssignmentGroupCode').val() == "") {
+                    $('#CustomerAccountAssignmentGroupCode').val("Z1").change();
+                }
+                if ($('#ReconcileAccountCode').val() == null || $('#ReconcileAccountCode').val() == undefined || $('#ReconcileAccountCode').val() == "") {
+                    $('#ReconcileAccountCode').val("1311000100").change();
+                }
+                if ($('#TaxClassificationCode').val() == null || $('#TaxClassificationCode').val() == undefined || $('#TaxClassificationCode').val() == "") {
+                    $('#TaxClassificationCode').val("TaxClassification_1").change();
+                }
+                if ($('#CurrencyCode').val() == null || $('#CurrencyCode').val() == undefined || $('#CurrencyCode').val() == "") {
+                    $('#CurrencyCode').val("VND").change();
+                }
+                $('.ecc-field').show();
+            }
+        }
+        function renderRequiredTextBox() {
+            var $div = $("#profile-contact-phone");
+            $div.addClass("input-group-required");
+            $div.append('<div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>');
+        }
+
+        function CustomerTypeCodeChangeInitial() {
+            $(document).on("change", "input[name='CustomerTypeCode']", function () {
+                var customerType = $("input[name='CustomerTypeCode']:checked").val();
+                $("#TypeCode").val(customerType);
+
+                var profileType = $("input[name='ProfileTypeCode']").val();
+                if (profileType == "Account") {
+                    //Doanh nghiep
+                    if (customerType == "B") {
+                        $(".profileB").show();
+                        $(".profileC").hide();
+
+                        $("#divProfileName label").html("@LanguageResource.Profile_NameBussiness");
+                        //Add placeholder: cảnh báo nhập sđt + email
+                        $("#Email").attr("placeholder", "@Html.Raw(LanguageResource.EmailBusiness_Hint)");
+                        $("input[name=CompanyNumber]").attr("placeholder", "@Html.Raw(LanguageResource.PhoneBusiness_Hint)");
+                        //set width profileName
+                        setProfileNameWidth("col-md-8");
+                    } else {
+                        //Ca nhan
+                        $(".profileB").hide();
+                        $(".profileC").show();
+                        $("#divProfileName label").html("@Html.Raw(LanguageResource.Profile_NameCustomer)");
+                        //Remove placeholder: cảnh báo nhập sđt + email
+                        $("#Email").attr("placeholder", "");
+                        $("input[name=Phone]").attr("placeholder", "");
+                        //set width profileName
+                        setProfileNameWidth("col-md-7");
+                    }
+                }
+            });
+        }
+
+        $(document).on('shown.bs.modal', '#divProfileSearch', function (e) {
+            var btn = e.relatedTarget;
+            var field = $(btn).data('field');
+            if (!field) {
+                field = "";
+            }
+            $("#divProfileSearch #ProfileField").val(field);
+
+            var fieldRow = $(btn).data('row');
+            $("#divProfileSearch #ProfileFieldRow").val(fieldRow);
+        })
+
+        $("input[type=radio]").on("click",function (e){
+            var countRadio = $("input[name='" + $(this).attr("name")+"']");
+            if ($(this).hasClass("checked") == true) {
+                $(this).removeClass("checked");
+                $(this).removeAttr("checked");
+            } else {
+                for (var i = 0; i < countRadio.length; i++) {
+                    $(countRadio[i]).removeClass("checked");
+                }
+                $(this).addClass("checked");
+            }
+        })
+        $("#Profile_General_Phone").on("change", function () {
+            $this = $(this);
+            $.ajax({
+                type: 'post',
+                url: '/Customer/Profile/CheckExistingPhone',
+                data: {
+                    Phone: $this.val(),
+                    PhoneValid: $("#PhoneValid").val(),
+                    TypeCode: $("#Type").val()
+                },
+                success: function (jsonData) {
+                    if (!jsonData) {
+                        $("span[data-valmsg-for='Phone']").text("SĐT liên hệ đã tồn tại!");
+                    } else {
+                        $("span[data-valmsg-for='Phone']").text("");
+                    }
+                }
+            });
+        })
+        $("#Address").on("change", function () {
+            $this = $(this);
+            $.ajax({
+                type: 'post',
+                url: '/Customer/Profile/CheckExistingAddress',
+                data: {
+                    Address: $this.val(),
+                    AddressValid: $("#AddressValid").val(),
+                    Type: $("#Type").val()
+                },
+                success: function (jsonData) {
+                    if (!jsonData) {
+                        $("span[data-valmsg-for='Address']").text("Địa chỉ đã tồn tại!");
+                    } else {
+                        $("span[data-valmsg-for='Address']").text("");
+                    }
+                }
+            });
+        })
+    </script>
+    @Scripts.Render("~/Areas/Customer/Scripts/Profile_Create")
+}

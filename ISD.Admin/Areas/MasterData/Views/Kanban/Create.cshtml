@@ -1,0 +1,115 @@
+﻿@model KanbanViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.Kanban.ToLower();
+    string CurrentController = ConstController.Kanban;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group">
+                        @Html.TooltipLabelFor(p => p.KanbanCode)
+                        @Html.RequiredTextboxFor(p => p.KanbanCode)
+                    </div>
+                    <div class="form-group">
+                        @Html.TooltipLabelFor(p => p.KanbanName)
+                        @Html.RequiredTextboxFor(p => p.KanbanName)
+                    </div>
+                    <div class="form-group">
+                        @Html.TooltipLabelFor(p => p.OrderIndex)
+                        @Html.RequiredTextboxFor(p => p.OrderIndex)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.Actived)
+                        @Html.ActivedRadioButton(p => p.Actived)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">@LanguageResource.KanbanDetail</h3>
+            </div>
+            <div class="box-body">
+                @Html.Partial("_KanbanDetail")
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+
+        var indexRow = 0;
+        $(document).on('click', '.btn-addDetail', function (e) {
+            e.preventDefault();
+
+            $(".detail_fields").each(function (index, value) {
+                indexRow = index;
+            });
+            indexRow++;
+
+            var controlForm = $('.detailControls:first'),
+                currentEntry = $(this).parents('.detail_fields:last'),
+                newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+
+            newEntry.find('.columnName').attr('name', 'detailList[' + indexRow + '].ColumnName').val('');
+            newEntry.find('.orderIndex').attr('name', 'detailList[' + indexRow + '].OrderIndex').val('');
+            newEntry.find('.note').attr('name', 'detailList[' + indexRow + '].Note').val('');
+            newEntry.find('.kanbanDetailId').attr('name', 'detailList[' + indexRow + '].KanbanDetailId').val('');
+            newEntry.find('.select2').remove();
+            $("select").select2();
+
+            controlForm.find('.detail_fields:not(:first) .btn-addDetail')
+                .removeClass('btn-addDetail').addClass('btn-removeDetail')
+                .removeClass('btn-success').addClass('btn-danger')
+                .html('<span class="glyphicon glyphicon-minus"></span>');
+        });
+
+        $(document).on('click', '.btn-removeDetail', function (e) {
+            $(this).parents('.detail_fields:last').remove();
+
+            $(".detail_fields").each(function (index, value) {
+                $(this).find('.kanbanDetailId').attr("name", "detailList[" + index + "].KanbanDetailId");
+                $(this).find('.columnName').attr("name", "detailList[" + index + "].ColumnName");
+                $(this).find('.orderIndex').attr("name", "detailList[" + index + "].OrderIndex");
+                $(this).find('.note').attr("name", "detailList[" + index + "].Note");
+            });
+            e.preventDefault();
+            return false;
+        });
+    </script>
+}

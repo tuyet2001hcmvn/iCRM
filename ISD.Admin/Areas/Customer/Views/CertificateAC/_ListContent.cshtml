@@ -1,0 +1,30 @@
+﻿@model IEnumerable<CertificateACViewModel>
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.CertificateAC;
+
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.Raw(!string.IsNullOrEmpty(item.Content) ? item.Content.Replace("\r\n", "<br/>") : null)</td>
+            <td>@Html.DisplayFor(p => item.StartDate)</td>
+            <td>@Html.DisplayFor(p => item.EndDate)</td>
+            <td class="text-center">
+                <a class="btn btn-default btn-edit" data-id="@item.CertificateId"><i class="fa fa-pencil"></i> Sửa</a>
+                <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.CertificateId" data-item-name="@item.Content" data-delete-success-call-back="ReloadCertificateACList"><i class="fa fa-trash-o"></i> Xóa</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="9" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

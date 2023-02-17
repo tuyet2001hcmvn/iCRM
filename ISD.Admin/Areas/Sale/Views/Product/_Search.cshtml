@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ProductViewModel>
+@using ISD.Core
+@{
+    string CurrentController = ConstController.Product;
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ERPProductCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th>@Html.DisplayNameFor(p => p.ParentCategoryName)</th>
+            <th>@Html.DisplayNameFor(p => p.CategoryName)</th>
+            @*<th>@Html.DisplayNameFor(p => p.Price)</th>*@
+            <th>@Html.DisplayNameFor(p => p.SampleValue)</th>
+            <th>@Html.DisplayNameFor(p => p.ProcessingValue)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ERPProductCode)</td>
+                <td>@Html.DisplayFor(p => item.ProductCode)</td>
+                <td>@Html.DisplayFor(p => item.ProductName)</td>
+                <td>@Html.DisplayFor(p => item.ParentCategoryName)</td>
+                <td>@Html.DisplayFor(p => item.CategoryName)</td>
+                @*<td class="text-right">
+                        @item.Price.Value.FormatCurrency()
+                    </td>*@
+                <td class="text-right">
+                    @item.SampleValue.Value.FormatCurrency()
+                </td>
+                <td class="text-right">
+                    @item.ProcessingValue.Value.FormatCurrency()
+                </td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.ProductId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.ProductName, item.ProductId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

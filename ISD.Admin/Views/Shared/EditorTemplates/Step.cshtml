@@ -1,0 +1,23 @@
+﻿@model dynamic
+
+@{
+    var step = (int)ViewData.TemplateInfo.FormattedModelValue;
+}
+
+@switch (step)
+{
+    case 0:
+        <span>Đã tiếp nhận</span>
+        break;
+    case 1:
+        <span>Đang sửa chữa</span>
+        break;
+    case 2:
+        <span>Đã kiểm tra cuối</span>
+        break;
+    case 3:
+        <span>Hoàn thành</span>
+        break;
+}
+
+

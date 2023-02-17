@@ -1,0 +1,235 @@
+﻿@model ProductSearchViewModel
+
+<div id="divProductSearch" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.SearchProduct</h4>
+            </div>
+            <form id="frmSearchPopup">
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    <div class="modal-body">
+
+                        <div class="content">
+                            <div class="form-horizontal">
+                                <div class="panel-group">
+                                    <div class="panel panel-default panel-search">
+
+                                        <div class="panel-body">
+                                            <div class="row">
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SearchERPProductCode)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(p => p.SearchERPProductCode, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SearchProductCode)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.TextBoxFor(p => p.SearchProductCode, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SearchBrandId)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownList("SearchBrandId", null, LanguageResource.Dropdownlist_All, new { @class = " form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SearchCategoryId)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            <select name="SearchCategoryId" id="SearchCategoryId" class="form-control">
+                                                                <option>@LanguageResource.Dropdownlist_All</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.SearchConfigurationId)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownList("SearchConfigurationId", null, LanguageResource.Dropdownlist_All, new { @class = " form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <div class="col-md-4">
+                                                            @Html.TooltipLabelFor(p => p.isHot)
+                                                        </div>
+                                                        <div class="col-md-8">
+                                                            @Html.DropDownList("isHot", new List<SelectListItem>(){
+                                                            new SelectListItem(){Text = LanguageResource.Dropdownlist_All, Value = ""},
+                                                            new SelectListItem(){Text = LanguageResource.Product_isHotProduct, Value = "true"},
+                                                            new SelectListItem(){Text = LanguageResource.Product_isNotHotProduct, Value = "false"}
+                                                        }, new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <div class="col-md-8 col-md-offset-5">
+                                                        @HtmlExtensions.SearchButton()
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div id="divSearchPopupResult"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-choose">@LanguageResource.Btn_Cancel</span>
+                        <a class="btn btn-info" id="btn-choose"><i class="fa fa-floppy-o"></i>@LanguageResource.Btn_Accept</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#btn-search").trigger("click");
+    });
+
+    $(document).on("click", "#btn-search", function () {
+        var $btn = $("#btn-search");
+        $btn.button('loading');
+
+        var data = $("#frmSearchPopup").serializeAnything();
+        var chosenList = [];
+        $('#productTable input.productId').each(function () {
+            chosenList.push($(this).attr("value"));
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/Sale/PeriodicallyChecking/_ProductSearchResult",
+            data: {
+                model: data,
+                chosenList: chosenList
+            },
+            success: function (xhr, status, error) {
+                $btn.button('reset');
+                if (xhr.Code == 500) {
+                    //error
+                    $("#divProductSearch").modal("hide");
+                    alertPopup(false, xhr.Data);
+                } else {
+                    //success
+                    $("#divSearchPopupResult").html(xhr);
+                    //ISD.Pagging();
+                    Pagging();
+                }
+            },
+            error: function (xhr, status, error) {
+                $btn.button('reset');
+                $("#divProductSearch").modal("hide");
+                alertPopup(false, xhr.responseText);
+            }
+        });
+    });
+
+    $(document).on("change", "#SearchBrandId", function () {
+        var SearchBrandId = $(this).val();
+        if (SearchBrandId == "") {
+            $("#SearchCategoryId").html("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                    $("#select2-SearchCategoryId-container").html("@LanguageResource.Dropdownlist_All");
+        }
+        else {
+            $.ajax({
+                type: "POST",
+                url: "/Sale/PeriodicallyChecking/GetCategoryByBrand",
+                data: {
+                    SearchBrandId: SearchBrandId
+                },
+                success: function (jsonData) {
+                    if (jsonData.length > 0) {
+                        $("#SearchCategoryId").html("");
+                        $("#SearchCategoryId").append("<option value=''>@LanguageResource.Dropdownlist_All</option>");
+                        $.each(jsonData, function (index, value) {
+                            $("#SearchCategoryId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                        });
+                    }
+                }
+            });
+        }
+    });
+
+    //click btn btn-inside to show popup
+    $(document).on("click", ".btn-inside", function () {
+        $("#divProductSearch").modal("show");
+        $("#btn-search").trigger("click");
+    });
+
+    function Pagging() {
+        $('#productSearchTable').DataTable({
+            language: {
+                sProcessing: "Đang xử lý...",
+                sLengthMenu: "Xem _MENU_ mục",
+                sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                sInfoPostFix: "",
+                sSearch: "Tìm nội dung:",
+                sUrl: "",
+                oPaginate: {
+                    sFirst: "Đầu",
+                    sPrevious: "&laquo;",
+                    sNext: "&raquo;",
+                    sLast: "Cuối"
+                },
+                columnDefs: [
+                    { targets: [0, 1], visible: true },
+                    { targets: 'no-sort', visible: false }
+                ],
+                "decimal": ".",
+                "thousands": ","
+            },
+            "decimal": ".",
+            "thousands": ",",
+            "bLengthChange": false,
+            "bInfo": true,
+            //"bPaginate" : false,
+            "sDom": '<"top"flp>rt<"bottom"i><"clear">',
+        });
+    }
+</script>

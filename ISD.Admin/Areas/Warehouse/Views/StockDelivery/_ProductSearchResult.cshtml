@@ -1,0 +1,51 @@
+﻿@model IEnumerable<ProductViewModel>
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer" id="table-search-product">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@LanguageResource.Product_ERPProductCode</th>
+            <th>@LanguageResource.ProductName</th>
+            <th>@LanguageResource.StockDelivery_ProductCategoryName</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @if (Model != null && Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td class="text-center">@i</td>
+                    <td>
+                        @*<a class="btn-choose-product"
+                           style="cursor:pointer;"
+                           data-id="@item.ProductId"
+                           data-sap-code="@item.ERPProductCode"
+                           data-product-code="@item.ProductCode"
+                           data-product-name="@item.ProductName"
+                           data-product-price="@item.Price">
+                            @Html.DisplayFor(p => item.ERPProductCode)
+                        </a>*@
+                        @Html.DisplayFor(p => item.ERPProductCode)
+                    </td>
+                    <td>
+                        <a class="btn-choose-product"
+                           style="cursor:pointer;"
+                           data-id="@item.ProductId"
+                           data-sap-code="@item.ERPProductCode"
+                           data-product-code="@item.ProductCode"
+                           data-product-name="@item.ProductName"
+                           data-product-price="@item.Price">
+                            @Html.DisplayFor(p => item.ProductName)
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(p => item.CategoryName)
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

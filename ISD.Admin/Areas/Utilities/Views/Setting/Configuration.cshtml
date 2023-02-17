@@ -1,0 +1,514 @@
+﻿@model ConfigurationViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Configuration;
+}
+
+@using (Html.BeginForm("Configuration", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmConfig" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(null, ConstController.Home)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-config", LanguageResource.Btn_Save)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+
+                    <div id="exTab1" class="nav-tabs-custom">
+                        <ul class="nav nav-pills nav nav-tabs">
+                            <li class="active">
+                                <a href="#tab1" data-toggle="tab">@LanguageResource.Logo_Icon</a>
+                            </li>
+                            <li>
+                                <a href="#tab7" data-toggle="tab">@LanguageResource.ConfigMobile</a>
+                            </li>
+                            <li>
+                                <a href="#tab2" data-toggle="tab">@LanguageResource.Configuration_API</a>
+                            </li>
+                            <li>
+                                <a href="#tab3" data-toggle="tab">@LanguageResource.About</a>
+                            </li>
+                            <li>
+                                <a href="#tab4" data-toggle="tab">@LanguageResource.Contact</a>
+                            </li>
+                            <li>
+                                <a href="#tab5" data-toggle="tab">@LanguageResource.ConfigProspect_Tab5</a>
+                            </li>
+                            <li>
+                                <a href="#tab6" data-toggle="tab">@LanguageResource.ConfigEmail</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Logo)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.Logo, new { type = "file" })
+                                        <img id="image-config-view" src="/Upload/img-01.png" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Icon)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.Icon, new { type = "file" })
+                                        <img id="image-config-view" src="/Upload/favicon.ico" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab7">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.isAllowedToBooking)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButtonIs(p => p.isAllowedToBooking)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.isRequiredLogin)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButtonIs(p => p.isRequiredLogin)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.isReceiveInCurrentDay)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButtonIs(p => p.isReceiveInCurrentDay,"Nhận thông báo trong ngày", "Nhận toàn bộ thông báo")
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab2">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Token)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @if (Model.Token != null)
+                                        {
+                                            @Html.RequiredTextboxFor(p => p.Token, new { disabled = "disabled" })
+                                            @Html.HiddenFor(p => p.Token)
+                                        }
+                                        else
+                                        {
+                                            @Html.RequiredTextboxFor(p => p.Token)
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Key)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.Key)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab3">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.AboutTitle)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.AboutTitle)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.AboutDescription)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.TextAreaFor(p => p.AboutDescription, new { @class = "ckeditor", @id = "AboutDescription" })
+                                        <script type="text/javascript">
+                                                    $(document).on("click",         ", function () {
+                                                         btn = $(this);
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab4">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ContactDescription)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ContactDescription)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ReviewDescription)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ReviewDescription)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ContactDetail)
+                                    </div>
+                                </div>
+
+                                <div>
+                                    @Html.Action("_ContactDetail")
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab5">
+                                @Html.Action("_Banner")
+                            </div>
+
+                            <div class="tab-pane" id="tab6">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Email)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.Email)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.SmtpServer)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.SmtpServer)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.SmtpPort)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.SmtpPort)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.EnableSsl)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.DropDownList("EnableSsl", new List<SelectListItem>() {
+                                        new SelectListItem() { Text = "True", Value = "true"},
+                                        new SelectListItem() { Text = "False", Value = "false", Selected = true}
+                                    }, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.SmtpMailFrom)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.SmtpMailFrom)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.SmtpUser)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.SmtpUser)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.SmtpPassword)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.SmtpPassword, new { @type = "password" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.ToEmail)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.ToEmail)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.CCMail)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.CCMail)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.BCCMail)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.BCCMail)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.EmailTitle)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.EmailTitle)
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.EmailContent)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.TextAreaFor(p => p.EmailContent, new { @class = "ckeditor", @id = "EmailContent" })
+                                        <script type="text/javascript">
+                                            if ($('input[name=Logo]').val() != "" || $('input            l() != "") {
+                                                if ($('input[name=Logo]').val() != "                .png") {
+                                                             reset');
+                                                    alertPopup(false, "Lo                 tên!");
+                                                    $(                val("");
+                                                 etu                       }
+                                                if ($('input[name=Icon]').val() != ""                .ico") {
+                                                             reset');
+                                                    alertPopup(false, "Ic                 tên!");
+                                                    $(                val("");
+                                                 etu                   }
+                                            }
+                                                      frmConfig"),
+                                                           FormData(),
+                                                formPara        ializeArray();
+                                        </script>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(document).on("click", "#btn-config", function () {
+            var $btn = $(this);
+
+            var logo = $('input[name=Logo]').val().replace(/C:\\fakepath\\/i, '');
+            var icon = $('input[name=Icon]').val().replace(/C:\\fakepath\\/i, '');
+
+            if ($('input[name=Logo]').val() != "" || $('input[name=Icon]').val() != "") {
+                if ($('input[name=Logo]').val() != "" && logo != "img-01.png") {
+                    $btn.button('reset');
+                    alertPopup(false, "Logo đã chọn chưa đúng tên!");
+                    $('input[name=Logo]').val("");
+                    return false;
+                }
+                if ($('input[name=Icon]').val() != "" && icon != "favicon.ico") {
+                    $btn.button('reset');
+                    alertPopup(false, "Icon đã chọn chưa đúng tên!");
+                    $('input[name=Icon]').val("");
+                    return false;
+                }
+            }
+            var frm = $("#frmConfig"),
+                formData = new FormData(),
+                formParams = frm.serializeArray();
+
+            if (frm.valid()) {
+                $.each(frm.find('input[type="file"]'), function (i, tag) {
+                    $.each($(tag)[0].files, function (i, file) {
+                        formData.append(tag.name, file);
+                    });
+                });
+
+                $.each(formParams, function (i, val) {
+                    formData.append(val.name, val.value);
+                });
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Utilities/Setting/Configuration",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (jsonData) {
+                        $btn.button('reset');
+                        if (jsonData.Success == true) {
+                            if (jsonData.Data != null) {
+                                alertPopup(true, jsonData.Data);
+                            }
+                        }
+                        else {
+                            if (jsonData.Data != null && jsonData.Data != "") {
+                                alertPopup(false, jsonData.Data);
+                            }
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        $btn.button('reset');
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            }
+            else {
+                //show error invalid
+                var validator = frm.validate();
+                $.each(validator.errorMap, function (index, value) {
+                    console.log('Id: ' + index + ' Message: ' + value);
+                });
+                $btn.button('reset');
+            }
+        });
+
+        //insert new image banner
+        $(document).on("click", ".btn-add-row", function () {
+            var $btn = $(this);
+
+            var ImageUrl = $("#ImageUrl").val();
+            if (Image == "") {
+                alertPopup(false, "Vui lòng chọn hình ảnh trước khi thêm!");
+            }
+            else {
+                var frm = $("#frmConfig"),
+                    formData = new FormData(),
+                    formParams = frm.serializeArray();
+
+                if (frm.valid()) {
+                    $.each(frm.find('input[type="file"]'), function (i, tag) {
+                        $.each($(tag)[0].files, function (i, file) {
+                            formData.append(tag.name, file);
+                        });
+                    });
+
+                    $.each(formParams, function (i, val) {
+                        formData.append(val.name, val.value);
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/Utilities/Setting/InsertBanner",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (jsonData) {
+                            $btn.button('reset');
+                            $('input[type=file]').val('');
+                            $("#bannerList").html(jsonData);
+                        },
+                        error: function (xhr, status, error) {
+                            $btn.button('reset');
+                            alertPopup(false, xhr.responseText);
+                        }
+                    });
+                }
+                else {
+                    //show error invalid
+                    var validator = frm.validate();
+                    $.each(validator.errorMap, function (index, value) {
+                        console.log('Id: ' + index + ' Message: ' + value);
+                    });
+                    $btn.button('reset');
+                }
+            }
+        });
+
+        //delete image banner
+        $(document).on("click", ".btn-del-row", function () {
+            var id = $(this).data("id");
+
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/Setting/DeleteBanner?id=" + id,
+                data: $("#frmConfig").serialize(),
+                success: function (data) {
+                    $("#bannerList").html("");
+                    $("#bannerList").html(data);
+                }
+            });
+        });
+
+        //add new contact detail
+        $(document).on("click", ".btn-add-detail", function () {
+            var $btn = $(this);
+            var Title = $("#Title").val();
+            var DisplayPhone = $("#DisplayPhone").val();
+            var Phone = $("#Phone").val();
+
+            if (Title == "" || DisplayPhone == "" || Phone == "") {
+                alertPopup(false, "@LanguageResource.Error_NullValueCreate");
+            }
+            else {
+                $.ajax({
+                    type: "POST",
+                    url: "/Utilities/Setting/InsertContactDetail?id=" + id,
+                    data: $("#frmConfig").serialize(),
+                    success: function (jsonData) {
+                        $btn.button('reset');
+                        $('tfoot#detail input').val('');
+                        $("#detailList").html(jsonData);
+                    },
+                    error: function (xhr, status, error) {
+                        $btn.button('reset');
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            }
+        });
+
+        //delete contact detail
+        $(document).on("click", ".btn-del-detail", function () {
+            var id = $(this).data("id");
+
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/Setting/DeleteContactDetail?id=" + id,
+                data: $("#frmConfig").serialize(),
+                success: function (data) {
+                    $("#detailList").html("");
+                    $("#detailList").html(data);
+                }
+            });
+        });
+    </script>
+}
+
+
+

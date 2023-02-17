@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5B7E2F34-1834-4DD1-88F7-ABEEDE5BF821}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ISD.Repositories</RootNamespace>
+    <AssemblyName>ISD.Repositories</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper, Version=6.2.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.6.2.2\lib\net45\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Data.v17.1, Version=17.1.6.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dll\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
+    <Reference Include="RestSharp, Version=106.11.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.11.4\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="sapnco">
+      <HintPath>..\dll\sapnco.dll</HintPath>
+    </Reference>
+    <Reference Include="sapnco_utils">
+      <HintPath>..\dll\sapnco_utils.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Customer\ProfileCareerRepository.cs" />
+    <Compile Include="Customer\ProfileGroupRepository.cs" />
+    <Compile Include="Library\CommonDateRepository.cs" />
+    <Compile Include="Library\ConfigUtilities.cs" />
+    <Compile Include="Customer\AddressBookRepository.cs" />
+    <Compile Include="Customer\AppointmentRepository.cs" />
+    <Compile Include="Customer\CustomerTasteRepository.cs" />
+    <Compile Include="Customer\CatalogueRepository.cs" />
+    <Compile Include="Customer\PersonInChargeRepository.cs" />
+    <Compile Include="Customer\ProfileContactRepository.cs" />
+    <Compile Include="Customer\RevenueRepository.cs" />
+    <Compile Include="Customer\ProfilePhoneRepository.cs" />
+    <Compile Include="Customer\ProfileRepository.cs" />
+    <Compile Include="Customer\RoleInChargeRepository.cs" />
+    <Compile Include="Customer\ProfileLevelRepository.cs" />
+    <Compile Include="Customer\SendSMSRepository.cs" />
+    <Compile Include="Library\CustomSearchRepository.cs" />
+    <Compile Include="Library\DynamicReportRepository.cs" />
+    <Compile Include="Excel\ClassExportExcel.cs" />
+    <Compile Include="Excel\ClassExportExcelProduct.cs" />
+    <Compile Include="Excel\ClassImportExcel.cs" />
+    <Compile Include="Library\HistoryRepository.cs" />
+    <Compile Include="Infrastructure\Extensions\AddressBookExtension.cs" />
+    <Compile Include="Infrastructure\Extensions\ProfileExtensions.cs" />
+    <Compile Include="Infrastructure\Extensions\WareHouseExtension.cs" />
+    <Compile Include="Library\IRfcTableExtentions.cs" />
+    <Compile Include="Infrastructure\Extensions\TaskExtensions.cs" />
+    <Compile Include="MasterData\ConfigRepository.cs" />
+    <Compile Include="MasterData\NewsRepository.cs" />
+    <Compile Include="Maintenance\ProductWarrantyRepository.cs" />
+    <Compile Include="Maintenance\WarrantyRepository.cs" />
+    <Compile Include="MasterData\CatalogRepository.cs" />
+    <Compile Include="MasterData\CompanyRepository.cs" />
+    <Compile Include="Library\ReflectionHelper.cs" />
+    <Compile Include="Library\RepositoryLibrary.cs" />
+    <Compile Include="Sale\ProductRepository.cs" />
+    <Compile Include="MasterData\SalesEmployeeRepository.cs" />
+    <Compile Include="MasterData\StoreRepository.cs" />
+    <Compile Include="MasterData\WardRepository.cs" />
+    <Compile Include="MasterData\DistrictRepository.cs" />
+    <Compile Include="MasterData\ProvinceRepository.cs" />
+    <Compile Include="MasterData\KanbanRepository.cs" />
+    <Compile Include="Permission\AccountRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\ReportRepository.cs" />
+    <Compile Include="Library\SAPRepository.cs" />
+    <Compile Include="UnitOfWork.cs" />
+    <Compile Include="Library\UtilitiesRepository.cs" />
+    <Compile Include="Warehouse\DeliveryRepository.cs" />
+    <Compile Include="Warehouse\InventoryRepository.cs" />
+    <Compile Include="Warehouse\StockReceivingMasterRepository.cs" />
+    <Compile Include="Warehouse\StockRecevingDetailRepository.cs" />
+    <Compile Include="Warehouse\StockRepository.cs" />
+    <Compile Include="Warehouse\TransferDetailRepository.cs" />
+    <Compile Include="Warehouse\TransferRepository.cs" />
+    <Compile Include="Work\KanbanTaskRepository.cs" />
+    <Compile Include="Work\MobileKanbanRepository.cs" />
+    <Compile Include="Work\TaskRepository.cs" />
+    <Compile Include="Work\TaskStatusRepository.cs" />
+    <Compile Include="Work\WorkFlowRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ISD.Constant\ISD.Constant.csproj">
+      <Project>{5101294b-3f78-48cb-aa08-f9f8e5d64583}</Project>
+      <Name>ISD.Constant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISD.EntityModels\ISD.EntityModels.csproj">
+      <Project>{1ed555ed-4142-4359-ba1f-83f81fb65b5a}</Project>
+      <Name>ISD.EntityModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISD.Extensions\ISD.Extensions.csproj">
+      <Project>{3FEBFFB2-7575-4C2C-9141-7A2EA86C48D3}</Project>
+      <Name>ISD.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISD.Resources\ISD.Resources.csproj">
+      <Project>{86CB4271-113B-440E-970B-CA14C3131D08}</Project>
+      <Name>ISD.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ISD.ViewModels\ISD.ViewModels.csproj">
+      <Project>{9e6d4c80-c34c-462a-82b9-5837d81d996b}</Project>
+      <Name>ISD.ViewModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Warranty\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,126 @@
+﻿@model TaskSearchViewModel
+@if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+{
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover dataTableServerSide taskTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.ID</th>
+                                    <th>@LanguageResource.MasterData_Customer</th>
+                                    <th>@LanguageResource.Profile_Address</th>
+                                    <th>@LanguageResource.Profile_Phone</th>
+                                    @*<th>@Html.DisplayNameFor(p => p.Summary)</th>*@
+                                    <th>@Html.DisplayNameFor(p => p.Description)</th>
+                                    <th>@Html.DisplayNameFor(p => p.WorkFlowId)</th>
+                                    <th>@Html.DisplayNameFor(p => p.TaskStatusCode)</th>
+                                    <th>@LanguageResource.TaskResult</th>
+                                    @*<th>@Html.DisplayNameFor(p => p.PriorityCode)</th>
+                                        <th>@Html.DisplayNameFor(p => p.VisitAddress)</th>
+                                        <th>@LanguageResource.Customer_CustomerCode</th>
+                                        <th>@LanguageResource.Profile_ProfileForeignCode</th>
+                                        <th>@LanguageResource.Reporter</th>*@
+                                    <th>@LanguageResource.Assignee</th>
+                                    <th>@LanguageResource.Task_StartDate</th>
+                                    @*<th>@LanguageResource.Task_EstimateEndDate</th>*@
+                                    <th>@LanguageResource.Task_EndDate</th>
+                                    <th>@LanguageResource.CreateBy</th>
+                                    <th>@LanguageResource.CreatedDate</th>
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                    <th class="hidden"></th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if(ViewBag.Type == ConstWorkFlowCategory.BOOKING_VISIT)
+{
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover dataTableServerSide taskTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.ID</th>
+                                    <th>@Html.DisplayNameFor(p => p.Summary)</th>
+                                    <th>@Html.DisplayNameFor(p => p.Description)</th>
+                                    <th>@Html.DisplayNameFor(p => p.WorkFlowId)</th>
+                                    <th>@Html.DisplayNameFor(p => p.TaskStatusCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.PriorityCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.VisitAddress)</th>
+                                    <th>@LanguageResource.Customer_CustomerCode</th>
+                                    <th>@LanguageResource.Profile_ProfileForeignCode</th>
+                                    <th>@LanguageResource.MasterData_Customer</th>
+                                    <th>@LanguageResource.Profile_Address</th>
+                                    <th>@LanguageResource.BOOKING_VISIT_Reporter</th>
+                                    <th>@LanguageResource.BOOKING_VISIT_Assignee</th>
+                                    <th>@LanguageResource.BOOKING_VISIT_StartDate</th>
+                                    <th>@LanguageResource.Task_EstimateEndDate</th>
+                                    <th>@LanguageResource.Task_EndDate</th>
+                                    <th>@LanguageResource.CheckInTime</th>
+                                    <th>@LanguageResource.CheckOutTime</th>
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                    <th class="hidden"></th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover dataTableServerSide taskTable no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                                    <th>@LanguageResource.ID</th>
+                                    <th>@Html.DisplayNameFor(p => p.Summary)</th>
+                                    <th>@Html.DisplayNameFor(p => p.Description)</th>
+                                    <th>@Html.DisplayNameFor(p => p.WorkFlowId)</th>
+                                    <th>@Html.DisplayNameFor(p => p.TaskStatusCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.PriorityCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.VisitAddress)</th>
+                                    <th>@LanguageResource.Customer_CustomerCode</th>
+                                    <th>@LanguageResource.Profile_ProfileForeignCode</th>
+                                    <th>@LanguageResource.MasterData_Customer</th>
+                                    <th>@LanguageResource.Profile_Address</th>
+                                    <th>@LanguageResource.Reporter</th>
+                                    <th>@LanguageResource.Assignee</th>
+                                    <th>@LanguageResource.Task_StartDate</th>
+                                    <th>@LanguageResource.Task_EstimateEndDate</th>
+                                    <th>@LanguageResource.Task_EndDate</th>
+                                    <th>@LanguageResource.CheckInTime</th>
+                                    <th>@LanguageResource.CheckOutTime</th>
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                    <th class="hidden"></th>
+                                </tr>
+                            </thead>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

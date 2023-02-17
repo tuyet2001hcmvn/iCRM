@@ -1,0 +1,29 @@
+﻿@model IEnumerable<CatalogueViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.Customer_Catalogue
+    </h1>
+    <div class="pull-right">
+        <a class="btn bg-blue" href="/Warehouse/StockDelivery/Create?ProfileId=@ViewBag.ProfileId" target="_blank"><i class="fa fa-plus-square"></i> Xuất Catalogue</a>
+    </div>
+</div>
+<div class="content" id="contentCatalogue">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.ERPProductCode)</th>
+                <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+                <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+                @*<th>@Html.DisplayNameFor(p => p.CustomerSourceName)</th>*@
+                <th class="text-right">@Html.DisplayNameFor(p => p.Quantity)</th>
+                <th class="text-right">@Html.DisplayNameFor(p => p.CreatedDate)</th>
+                @*<th class="text-center isd-table-th-action">@LanguageResource.Actions</th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent")
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

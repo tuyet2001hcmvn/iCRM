@@ -1,0 +1,48 @@
+﻿<div class="modal fade" id="popup-print-profile" role="dialog">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title" id="modal-title">CHỌN THÔNG TIN PROFILE</h4>
+            </div>
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmPrintProfile" }))
+                        {
+                            <input hidden name="Id" />
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper">
+                                        <label class="control-label">Doanh số năm</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    @Html.TextBox("Year", DateTime.Now.Year.ToString(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper">
+                                        <label class="control-label">Công ty</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <select name="CompanyCode" class="form-control">
+                                        <option value="1000" >CP Gỗ An Cường</option>
+                                        <option value="4000" >SX Gỗ An Cường</option>
+                                        <option value="2000" @(CurrentUser.CompanyCode == "2000" ? "selected" : null)>Malloca</option>
+                                        <option value="3000" @(CurrentUser.CompanyCode == "3000" ? "selected" : null)>AConcept</option>
+                                        <option value="%" @(CurrentUser.CompanyCode == "1000" ? "selected" : null)>CP & SX Gỗ An Cường</option>
+                                    </select>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+                        <button type="button" id="btn-popup-print-profile" class="btn btn-primary">In Profile</button>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>

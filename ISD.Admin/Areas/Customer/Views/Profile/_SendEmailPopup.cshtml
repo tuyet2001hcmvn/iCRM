@@ -1,0 +1,81 @@
+﻿@model EmailViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h4 class="modal-title" id="modal-title">Gửi mail yêu cầu tạo mã tới phòng IT</h4>
+
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="modal-body">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+            {
+                @*<input hidden id="Id" />*@
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.ToEmail)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.ToEmail, new { @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.Cc)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.Cc)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.Subject)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.RequiredTextboxFor(p => p.Subject, new { @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.EmailContent)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(p => p.EmailContent)
+                    </div>
+                </div>
+                @*<div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Attachment)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Attachment, new {@type = "file" })
+                        </div>
+                    </div>*@
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+            <button type="button" id="btn-popup-send" class="btn btn-primary">@LanguageResource.Email_Send</button>
+        </div>
+    </div>
+</div>
+<script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+<script>
+
+    CKEDITOR.replace('EmailContent', {
+        // extraPlugins: 'autogrow',
+        //autoGrow_minHeight: 150,
+        //autoGrow_maxHeight: 400,
+        //removePlugins: 'elementspath,resize',
+        filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+        filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+        filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+        filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+        filebrowserWindowWidth: '1000',
+        filebrowserWindowHeight: '700',
+        //toolbar: []
+    });
+    CKEDITOR.instances.EmailContent.config.readOnly = 'true';
+
+
+
+</script>

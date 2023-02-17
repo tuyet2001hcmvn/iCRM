@@ -1,0 +1,65 @@
+﻿@model IEnumerable<NewsViewModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.News;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.Title)</th>
+            @if ((int)ViewBag.Type == ConstNewsCategoryCode.BangTin)
+            {
+                <th>@Html.DisplayNameFor(p => p.Summary)</th>
+                <th>@Html.DisplayNameFor(p => p.Detail)</th>
+                <th>@Html.DisplayNameFor(p => p.TypeNews)</th>
+            }
+            @*<th>@Html.DisplayNameFor(p => p.NewsCategoryName)</th>*@
+            <th>@Html.DisplayNameFor(p => p.ScheduleTime)</th>
+            @if ((int)ViewBag.Type == ConstNewsCategoryCode.BangTin)
+            {
+                <th>@Html.DisplayNameFor(p => p.EndTime)</th>
+            }
+            <th>@Html.DisplayNameFor(p => p.ImageUrl)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateBy)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.Title)</td>
+            @if (item.NewsCategoryCode == ConstNewsCategoryCode.BangTin)
+            {
+                <td>@Html.DisplayFor(p => item.SummaryName)</td>
+                <td>@Html.DisplayFor(p => item.DetailName)</td>
+                <td>@Html.DisplayFor(p => item.TypeNews)</td>
+            }
+            @*<td>@Html.Raw(item.NewsCategoryName)</td>*@
+            <td>@Html.DisplayFor(p => item.ScheduleTime)</td>
+            @if (item.NewsCategoryCode == ConstNewsCategoryCode.BangTin)
+            {
+                <td>@Html.DisplayFor(p => item.EndTime)</td>
+            }
+            <td class="text-center"><img src="/Upload/News/Thum/@item.ImageUrl" height="42" /></td>
+            <td>@Html.DisplayFor(p => item.CreateTime)</td>
+            <td>@Html.DisplayFor(p => item.CreateByName)</td>
+            <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            <td class="text-center">
+                <a class="btn btn-info btn-view" href="/MasterData/News/Detail/@item.NewsId" onclick="$(this).button('loading')"><i class="fa fa-eye"></i> Xem</a>
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.NewsId)
+                @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, null, item.NewsId)
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

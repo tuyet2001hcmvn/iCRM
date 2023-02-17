@@ -1,0 +1,170 @@
+﻿@model ISD.ViewModels.ScreenFunctionViewModel
+@using MvcCheckBoxList.Model
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Permission_MobileScreen.ToLower();
+    string CurrentController = ConstController.MobileScreen;
+    string CurrentArea = ConstArea.Permission;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.MobileScreenId)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ScreenName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ScreenName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ScreenCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ScreenCode)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.MenuId)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("MenuId", null, "-Vui lòng chọn danh mục-", new { @class = "form-control" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.IconType)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.IconType)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.IconName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.IconName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Visible)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RadioButtonTextFor(p => p.Visible, LanguageResource.Yes, LanguageResource.No)
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isCreated)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RadioButtonTextFor(p => p.isCreated, LanguageResource.Yes, LanguageResource.No)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isReporter)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RadioButtonTextFor(p => p.isReporter, LanguageResource.Yes, LanguageResource.No)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isAssignee)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RadioButtonTextFor(p => p.isAssignee, LanguageResource.Yes, LanguageResource.No)
+                            </div>
+                        </div>
+
+                        <hr class="custom">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.FunctionId)
+                            </div>
+                            <div class="col-md-9 div-checkbox">
+                                @*@Html.Partial("_FunctionList")*@
+                                @* 1.checkbox name, 2.list all, 3.value, 4.display name, 5.selected list *@
+                                @Html.CheckBoxListFor(p => p.FunctionId,
+                                                       p => p.FunctionList,
+                                                       p1 => p1.FunctionId,
+                                                       p1 => p1.FunctionName,
+                                                       p => p.ActivedFunctionList,
+                                                       Position.Vertical,
+                                                       p => new { @class = "chkBox" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+    </script>
+}
+
+
+

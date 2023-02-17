@@ -1,0 +1,104 @@
+﻿@model WorkFlowViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.WorkFlow.ToLower();
+    string CurrentController = ConstController.WorkFlow;
+    string CurrentArea = ConstArea.Work;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.WorkFlowCode)
+                        @Html.RequiredTextboxFor(p => p.WorkFlowCode)
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.WorkFlowName)
+                        @Html.RequiredTextboxFor(p => p.WorkFlowName)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.WorkflowCategoryCode)
+                        @Html.RequiredTextboxFor(p => p.WorkflowCategoryCode)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.CompanyCode)
+                        @Html.RequiredTextboxFor(p => p.CompanyCode)
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.IsDisabledSummary)
+                        @Html.ActivedRadioButtonIs(p => p.IsDisabledSummary)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.OrderIndex)
+                        @Html.RequiredTextboxFor(p => p.OrderIndex)
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.ImageUrl)
+                        <input type="file" name="FileUpload" />
+                        <p class="help-block">Vui lòng chọn hình ảnh.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Cấu hình trạng thái-->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">@LanguageResource.TaskStatus</h3>
+            </div>
+            <div class="box-body">
+                @Html.Partial("_FormTaskStatus")
+                <div class="clear"></div>
+            </div>
+        </div>
+        <!--Cấu hình thuộc tính-->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">@LanguageResource.WorkFlowField</h3>
+            </div>
+            <div class="box-body">
+                @Html.Partial("_FormWorkFlowField")
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+    </script>
+    <script src="~/Areas/Work/Scripts/TaskStatus.js"></script>
+}

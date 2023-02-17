@@ -1,0 +1,39 @@
+﻿@model IEnumerable<SaleOrderView_ViewModel.SaleOrderDetailViewModel>
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th>@Html.DisplayNameFor(p => p.SerialNumber)</th>
+            <th>@Html.DisplayNameFor(p => p.EngineNumber)</th>
+            <th>@Html.DisplayNameFor(p => p.Quantity)</th>
+            <th>@Html.DisplayNameFor(p => p.Price)</th>
+            <th>@Html.DisplayNameFor(p => p.Discount)</th>
+            <th>@Html.DisplayNameFor(p => p.UnitPrice)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @if (Model != null && Model.Count() > 0)
+        {
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td class="text-center">@i</td>
+                    <td>@Html.DisplayFor(p => item.ProductName)</td>
+                    <td>@Html.DisplayFor(p => item.SerialNumber)</td>
+                    <td>@Html.DisplayFor(p => item.EngineNumber)</td>
+                    <td class="text-right">@string.Format("{0:n0}", item.Quantity)</td>
+                    <td class="text-right">@string.Format("{0:n0}", item.Price)</td>
+                    <td class="text-right">@string.Format("{0:n0}", item.Discount)</td>
+                    <td class="text-right">@string.Format("{0:n0}", item.UnitPrice)</td>
+                </tr>
+            }
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

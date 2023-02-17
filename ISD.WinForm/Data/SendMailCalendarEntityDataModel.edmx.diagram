@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ef6802311bfc4a3c81faeef030976beb" Name="Diagram1" ZoomLevel="64">
+        <EntityTypeShape EntityType="ISD.WinForm.ProfileModel" Width="1.5" PointX="5.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ISD.WinForm.CampaignModel" Width="1.5" PointX="8" PointY="1" />
+        <EntityTypeShape EntityType="ISD.WinForm.MailServerProviderModel" Width="1.5" PointX="7.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ISD.WinForm.MemberOfExternalProfileTargetGroupModel" Width="1.5" PointX="3" PointY="3.375" />
+        <EntityTypeShape EntityType="ISD.WinForm.MemberOfTargetGroupModel" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="ISD.WinForm.TargetGroupModel" Width="1.5" PointX="0.75" PointY="1.75" />
+        <EntityTypeShape EntityType="ISD.WinForm.Unfollow" Width="1.5" PointX="7.75" PointY="9.75" />
+        <EntityTypeShape EntityType="ISD.WinForm.CatalogModel" Width="1.5" PointX="5.75" PointY="1.75" />
+        <AssociationConnector Association="ISD.WinForm.FK_CampaignModel_CatalogModel" />
+        <AssociationConnector Association="ISD.WinForm.FK_MemberOfExternalProfileTargetGroupModel_TargetGroupModel" />
+        <AssociationConnector Association="ISD.WinForm.FK_MemberOfTagetGroupModel_TargetGroupModel" />
+        <EntityTypeShape EntityType="ISD.WinForm.SendMailCalendarModel" Width="1.5" PointX="10.375" PointY="0.75" />
+        <EntityTypeShape EntityType="ISD.WinForm.ContentModel" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="ISD.WinForm.EmailAccountModel" Width="1.5" PointX="2.75" PointY="6.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

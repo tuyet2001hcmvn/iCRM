@@ -1,0 +1,34 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - @LanguageResource.ProjectName</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
+
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/custom")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/AdminLTE-2.4.3/dist/js/adminlte.min.js"></script>
+    <script src="~/Scripts/Common/ISD.Common.js"></script>
+    @RenderSection("scripts", required: false)
+    <script src="~/Scripts/kendo.core.min.js"></script>
+    <script src="~/Scripts/Common/ISD.Print.js"></script>
+</body>
+</html>
+

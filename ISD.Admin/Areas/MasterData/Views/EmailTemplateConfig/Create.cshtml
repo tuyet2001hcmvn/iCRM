@@ -1,0 +1,127 @@
+﻿@model EmailTemplateConfigViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.EmailTemplateConfig.ToLower();
+    string CurrentController = ConstController.EmailTemplateConfig;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Cấu hình nội dung</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailTypeName)
+                        @Html.RequiredDropDownListFor(p => p.EmailTemplateType, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.Subject)
+                        @Html.RequiredTextboxFor(p => p.Subject)
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-12">
+                        @Html.TooltipLabelFor(p => p.Content)
+                        @Html.TextAreaFor(p => p.Content)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Cấu hình tài khoản Email</h3>
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.FromEmail)
+                        @Html.RequiredTextboxFor(p => p.FromEmail, new { @type = "email" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.ToEmail)
+                        @Html.RequiredTextboxFor(p => p.ToEmail, new { @type = "email" })
+                    </div>
+            
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailSender)
+                        @Html.RequiredTextboxFor(p => p.EmailSender)
+                    </div>
+              
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailHost)
+                        @Html.RequiredTextboxFor(p => p.EmailHost)
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailPort)
+                        @Html.RequiredTextboxFor(p => p.EmailPort, new { @type = "number" })
+                    </div>
+              
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailEnableSsl)
+                        @Html.RadioButtonTextFor(p => p.EmailEnableSsl, LanguageResource.Yes, LanguageResource.No)
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailAccount)
+                        @Html.RequiredTextboxFor(p => p.EmailAccount)
+                    </div>
+               
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.EmailPassword)
+                        @Html.RequiredTextboxFor(p => p.EmailPassword, new { @type = "password" })
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.TooltipLabelFor(p => p.Actived)
+                        @Html.ActivedRadioButton(p => p.Actived)
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script src="~/ckfinder/ckfinder.js"></script>
+    <script type="text/javascript">
+        var editor = CKEDITOR.replace("Content", {
+            height: 250,
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            //filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            //filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKFinder.setupCKEditor(editor, '/ckfinder/');
+        CKEDITOR.instances['Content'].on('change',
+            function () { CKEDITOR.instances['Content'].updateElement() });
+    </script>
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+    </script>
+}

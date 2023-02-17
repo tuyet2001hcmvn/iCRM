@@ -1,0 +1,53 @@
+﻿@model CertificateACViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.CertificateId == Guid.Empty)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @LanguageResource.AddressBook.ToLower()</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@LanguageResource.Update @LanguageResource.AddressBook.ToLower()</h4>
+    }
+</div>
+<div class="modal-body">
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCertificateAC" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ProfileId)
+        @Html.HiddenFor(p => p.CertificateId)
+
+        <div id="divAlertWarningCertificateAC" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="box-body">
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        @Html.TooltipLabelFor(p => p.StartDate)
+                        @Html.RequiredTextboxFor(p => p.StartDate, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = "form-control", type = "datetime-local" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TooltipLabelFor(p => p.EndDate)
+                        @Html.RequiredTextboxFor(p => p.EndDate, "{0:yyyy-MM-ddThh:mm:ss}", new { @class = "form-control", type = "datetime-local" })
+                    </div>
+                    <div class="col-md-12">
+                        @Html.TooltipLabelFor(p => p.Content)
+                        @Html.TextAreaFor(p => p.Content, new { @class = "form-control" })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-certificateac" data-add-success-call-back="ReloadCertificateACList">@LanguageResource.Btn_Save</button>
+</div>

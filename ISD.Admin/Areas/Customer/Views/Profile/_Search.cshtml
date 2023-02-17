@@ -1,0 +1,57 @@
+﻿@model IEnumerable<ProfileViewModel>
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Profile;
+
+    //Ẩn nếu là Account: Ẩn cột khách hàng
+    var cssClass = string.Empty;
+    if (ViewBag.Type == ConstProfileType.Account)
+    {
+        cssClass = "display-none";
+    }
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerTypeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+            <th class="@cssClass">@LanguageResource.Profile_CustomerId</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.Email)</th>
+            <th>@Html.DisplayNameFor(p => p.Address)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateUser)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.CustomerTypeName)</td>
+                <td>@Html.DisplayFor(p => item.ProfileName)</td>
+                <td class="@cssClass">
+                    <a href="/Customer/Profile/Edit/@item.CompanyId" title="@item.CompanyName">
+                        @Html.DisplayFor(p => item.CompanyName)
+                    </a>
+                </td>
+                <td>@Html.DisplayFor(p => item.Phone)</td>
+                <td>@Html.DisplayFor(p => item.Email)</td>
+                <td>@string.Format("{0}{1}{2}", item.Address,  item.DistrictName, item.ProvinceName)</td>
+                <td>@Html.DisplayFor(p => item.CreateUser)</td>
+                <td class="text-center">@Html.DisplayFor(p => item.CreateTime)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.ProfileId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

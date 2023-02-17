@@ -1,0 +1,582 @@
+﻿@model ProfileViewModel
+@{
+    //var personInCharge = new List<PersonInChargeViewModel>();
+    //var roleInCharge = new List<RoleInChargeViewModel>();
+    var personInChargeList = (List<PersonInChargeViewModel>)ViewBag.PersonInChargeList;
+    //var roleInChargeList = (List<RoleInChargeViewModel>)ViewBag.RoleInChargeList;
+    var profileGroupList = Model.profileGroupList;
+
+    var profileGroupCodeList = (List<CatalogViewModel>)ViewBag.CustomerGroupCode;
+    var PersonRoleCodeList = (List<CatalogViewModel>)ViewBag.PersonRoleCodeList;
+    var SalesEmployeeList = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList;
+    var RolesList = (List<RolesViewModel>)ViewBag.RoleList;
+}
+
+<div class="row">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.isForeignCustomer)
+                        </div>
+                        <div class="col-md-2">
+                            @foreach (var item in (SelectList)ViewBag.isForeignCustomer)
+                            {
+                                <label class="label-radio">
+                                    @Html.RadioButton("isForeignCustomer", item.Value, item.Selected, new { @id = string.Format("Profile_General_isForeignCustomer_{0}", item.Value) })
+                                    @item.Text
+                                </label>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TooltipLabelFor(p => p.CustomerTypeCode)
+                        </div>
+                        <div class="col-md-2">
+                            @if ((bool?)ViewBag.isEditMode == true)
+                            {
+                                foreach (var item in (SelectList)ViewBag.CustomerTypeCode)
+                                {
+                                    <label class="label-radio">
+                                        @Html.RadioButton("CustomerTypeCode", item.Value, item.Selected, new { @id = string.Format("Profile_General_CustomerTypeCode_{0}", item.Value), @disabled = "disabled" })
+                                        @item.Text
+                                    </label>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var item in (SelectList)ViewBag.CustomerTypeCode)
+                                {
+                                    <label class="label-radio">
+                                        @Html.RadioButton("CustomerTypeCode", item.Value, item.Selected, new { @id = string.Format("Profile_General_CustomerTypeCode_{0}", item.Value) })
+                                        @item.Text
+                                    </label>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.CustomerSourceCode)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DropDownList("CustomerSourceCode", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.CreateAtSaleOrg)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(p => p.CreateAtSaleOrg, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+                    @if ((bool?)ViewBag.isEditMode == true)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProfileCode)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.RequiredTextboxFor(p => p.ProfileCode, new { @id = "Profile_General_ProfileCode", @disabled = "disabled" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ProfileForeignCode)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.RequiredTextboxFor(p => p.ProfileForeignCode, new { @id = "Profile_General_ProfileForeignCode", @disabled = "disabled" })
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div id="divProfileName" class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ProfileName)
+                        </div>
+                        <div class="profileC">
+                            @*<div class="col-md-1">
+                                @Html.DropDownList("CustomerTitle", null, new { @class = "form-control with-search" })
+                            </div>*@
+                        </div>
+                        <div id="Profile_General_ProfileName_BC" class="col-md-8">
+                            @*profileB*@
+                            @Html.RequiredTextboxFor(p => p.ProfileName, new { @id = "Profile_General_ProfileName" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ProfileShortName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.ProfileShortName, new { @id = "Profile_General_ProfileShortName" })
+                        </div>
+                    </div>
+                    <!--Begin - For Customer-->
+                    <div class="form-group profileC">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Age)
+                        </div>
+                        <div class="col-md-2">
+                            @Html.DropDownList("Age", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+                    </div>
+                    <!--End - For Customer-->
+                    <!--Begin - For Bussiness-->
+                    <div class="form-group profileB">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TaxNo)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.TaxNo)
+                        </div>
+                    </div>
+                    <!--End - For Bussiness-->
+                    <div class="form-group">
+                        <div class="col-md-3 profileC">
+                            @Html.TooltipLabelFor(p => p.Phone)
+                        </div>
+                        <div class="col-md-3 profileB">
+                            @Html.TooltipLabelFor(p => p.CompanyNumber, "PhoneBusiness")
+                        </div>
+                        <div class="col-md-8 profileC">
+                            @Html.ValidationMessageFor(p => p.Phone, null, new { @class = "validation-text" })
+                            <div class="phoneControls">
+                                <div class="input-group phonenumber">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-phone"></i>
+                                    </div>
+                                    @Html.TextBoxFor(p => p.Phone, new { @class = " form-control", @id = "Profile_General_Phone" })
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-addPhone" type="button">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                                @if (ViewBag.Phones.Count != null)
+                                {
+                                    foreach (var Phone in ViewBag.Phones)
+                                    {
+                                        <div class="input-group phonenumber">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-phone"></i>
+                                            </div>
+                                            @Html.TextBoxFor(p => Phone, new { @class = " form-control text-box single-line", @id = "Profile_General_Phone" })
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-danger btn-removePhone" type="button">
+                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-8 profileB">
+                            @Html.ValidationMessageFor(p => p.CompanyNumber, null, new { @class = "validation-text" })
+                            <div class="phoneControls">
+                                <div class="input-group phonenumber">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-phone"></i>
+                                    </div>
+                                    @Html.TextBoxFor(p => p.CompanyNumber, new { @class = " form-control", @id = "Profile_General_Phone" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3 profileC">
+                            @Html.TooltipLabelFor(p => p.Email)
+                        </div>
+                        <div class="col-md-3 profileB">
+                            @Html.TooltipLabelFor(p => p.Email, "EmailBusiness")
+                        </div>
+                        <div class="col-md-8">
+                            @Html.ValidationMessageFor(p => p.Email, null, new { @class = "validation-text" })
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                @Html.TextBoxFor(p => p.Email, new { @class = " form-control text-box single-line" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group profileB">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Website)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Website)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.RequiredSaleOfficeCode)
+                        </div>
+                        <div class="col-md-2">
+                            @*@Html.DropDownList("SaleOfficeCode", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })*@
+                            @Html.RequiredIfDropDownListFor(p => p.RequiredSaleOfficeCode, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                        <div class="col-md-1">
+                            @Html.TooltipLabelFor(p => p.AddressTypeCode)
+                        </div>
+                        <div class="col-md-2">
+                            @*@Html.DropDownList("AddressTypeCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })*@
+                            @Html.RequiredIfDropDownListFor(p => p.RequiredAddressTypeCode, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.RequiredProvinceId)
+                        </div>
+                        <div class="col-md-2">
+                            @*@Html.DropDownList("ProvinceId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })*@
+                            @Html.RequiredIfDropDownListFor(p => p.RequiredProvinceId, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                        <div class="col-md-1">
+                            @Html.TooltipLabelFor(p => p.DistrictId)
+                        </div>
+                        <div class="col-md-2">
+                            @Html.DropDownList("DistrictId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+
+                        <div class="col-md-1">
+                            @Html.TooltipLabelFor(p => p.WardId)
+                        </div>
+                        <div class="col-md-2">
+                            @Html.DropDownList("WardId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Address)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Address)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Note)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Note)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.VisitDate)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.VisitDate, "{0:yyyy-MM-dd}", new { @type = "date" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => personInChargeList[0].SalesEmployeeName)
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row"></div>
+                            <div class="personInChargeControls" style="display: grid">
+                                @if (personInChargeList != null && personInChargeList.Count > 0)
+                                {
+                                    int i = 0;
+
+                                    foreach (var item in personInChargeList)
+                                    {
+                                        <div class="input-group personCharge">
+                                            <div class="col-md-5 no-padding">
+                                                @Html.RequiredExDropDownListFor(p => personInChargeList[@i].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search personemployeecode", @data_row = i })
+                                            </div>
+                                            <div class="col-md-5 input-group">
+                                                <div class="display-for roleName roleName_@i">
+                                                    @item.RoleName
+                                                </div>
+                                                <span class="input-group-btn">
+                                                    @if (i == 0)
+                                                    {
+                                                        <button class="btn btn-default btn-addPersonCharge" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-default btn-removePersonCharge btn-danger" type="button">
+                                                            <span class="glyphicon glyphicon-minus"></span>
+                                                        </button>
+                                                    }
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                        i++;
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="input-group personCharge">
+                                        <div class="col-md-5 no-padding">
+                                            @Html.RequiredExDropDownListFor(p => personInChargeList[0].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", ViewBag.EmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search personemployeecode", @data_row = 0 })
+                                        </div>
+                                        <div class="col-md-5 input-group">
+                                            <div class="display-for roleName roleName_0">
+
+                                            </div>
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default btn-addPersonCharge" type="button">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => roleInChargeList[0].RoleName)
+                            </div>
+                            <div class="col-md-8">
+                                <div class="roleInChargeControls">
+                                    @if (roleInChargeList != null && roleInChargeList.Count > 0)
+                                    {
+                                        int index = 0;
+                                        foreach (var item in roleInChargeList)
+                                        {
+                                            <div class="input-group roleCharge">
+                                                @Html.DropDownListFor(p => roleInChargeList[@index].RolesId, new SelectList(RolesList, "RolesId", "RolesName", item.RolesId), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search rolechargeroleId" })
+                                                <span class="input-group-btn">
+                                                    @if (index == 0)
+                                                    {
+                                                        <button class="btn btn-default btn-addRoleCharge" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    }
+                                                    else
+                                                    {
+                                                        <button class="btn btn-default btn-removeRoleCharge  btn-danger" type="button">
+                                                            <span class="glyphicon glyphicon-minus"></span>
+                                                        </button>
+                                                    }
+                                                </span>
+                                            </div>
+                                            index++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="input-group roleCharge">
+                                            @Html.DropDownListFor(p => roleInChargeList[0].RolesId, new SelectList(RolesList, "RolesId", "RolesName"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search rolechargeroleId" })
+                                            <span class="input-group-btn">
+                                                <button class="btn btn-default btn-addRoleCharge" type="button">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Actived)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.ActivedRadioButton(p => p.Actived)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ImageUrl)
+                        </div>
+                        <div class="col-md-8">
+                            <input type="file" name="FileUpload" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row profileB">
+        <div class="col-md-6 pl-md-0">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Profile_Contact</h3>
+                </div>
+                <div class="box-body">
+                    @if (Model.ProfileId == null || Model.ProfileId == Guid.Empty)
+                    {
+                        <!--Begin - Bussiness - Contact info-->
+                        <div class="form-group col-md-12 profileB">
+                            @Html.TooltipLabelFor(p => p.ContactName)
+                            @*@Html.RequiredTextboxFor(p => p.ContactName)*@
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line valid" id="ContactName" name="ContactName" type="text" value="@Model.ContactName" placeholder="" aria-describedby="ContactName-error">
+                                <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div><span class="validation-text field-validation-valid" data-valmsg-for="ContactName" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 profileB">
+                            @Html.TooltipLabelFor(p => p.Phone)
+                            @*@Html.RequiredTextboxFor(p => p.Phone)*@
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line valid" id="PhoneBusiness" name="PhoneBusiness" type="text" value="@Model.PhoneBusiness" placeholder="" aria-describedby="PhoneBusiness-error">
+                                <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div><span class="validation-text field-validation-valid" data-valmsg-for="PhoneBusiness" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 profileB">
+                            @Html.TooltipLabelFor(p => p.Email)
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line valid" id="EmailBusiness" name="EmailBusiness" type="text" value="@Model.EmailBusiness" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 profileB">
+                            @Html.TooltipLabelFor(p => p.DepartmentCode)
+                            @Html.DropDownList("DepartmentCode", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+                        <div class="form-group col-md-6 profileB">
+                            @Html.TooltipLabelFor(p => p.PositionB)
+                            @*@Html.RequiredTextboxFor(p => p.PositionB)*@
+                            @Html.DropDownList("PositionB", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })
+                        </div>
+                        <!--End - Bussiness - Contact info-->
+                    }
+                    else
+                    {
+                        @Html.Action("_List", "ProfileContact", Model.CompanyId)
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 pr-md-0">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@LanguageResource.Profile_Group</h3>
+                </div>
+                <div class="box-body">
+                    <!--Begin - Bussiness - Group-->
+                    <div class="form-group col-md-6 profileB">
+                        @Html.TooltipLabelFor(p => p.CustomerGroupCode)
+                        <div class="profileGroupControls">
+                            @if (Model.profileGroupList != null && Model.profileGroupList.Count > 0)
+                            {
+                                int index = 0;
+                                foreach (var item in Model.profileGroupList)
+                                {
+                                    <div class="input-group profileGroup">
+                                        @Html.RequiredExDropDownListFor(p => profileGroupList[index].ProfileGroupCode, new SelectList(profileGroupCodeList, "CatalogCode", "CatalogText_vi", item.ProfileGroupCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search profilegroupcode", @data_row = index })
+
+                                        <span class="input-group-btn">
+                                            @if (index == 0)
+                                            {
+                                                <button class="btn btn-default btn-addProfileGroup" type="button">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-default btn-removeProfileGroup btn-danger" type="button">
+                                                    <span class="glyphicon glyphicon-minus"></span>
+                                                </button>
+                                            }
+                                        </span>
+                                    </div>
+                                    index++;
+                                }
+                            }
+                            else
+                            {
+                                <div class="input-group profileGroup">
+                                    @Html.RequiredExDropDownListFor(p => profileGroupList[0].ProfileGroupCode, new SelectList(profileGroupCodeList, "CatalogCode", "CatalogText_vi"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search profilegroupcode", @data_row = 0 })
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-addProfileGroup" type="button">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6 profileB">
+                        @Html.TooltipLabelFor(p => p.CustomerCareerCode)
+                        @*@Html.DropDownList("CustomerCareerCode", null, LanguageResource.Dropdownlist_Choose, new { @class = " form-control with-search" })*@
+                        @Html.RequiredIfDropDownListFor(p => p.CustomerCareerCode, null, LanguageResource.Dropdownlist_Choose)
+                    </div>
+                    <!--End - Bussiness - Group-->
+                </div>
+                @if (ViewBag.ViewExtens == "Mode_2")
+                {
+                    <div class="box-body">
+                        <!--Begin - Bussiness - Group-->
+                        <div class="form-group col-md-6 profileB">
+                            <div class="label-wrapper">
+                                <label class="control-label" for="CustomerGroupCode">@string.Format("{0}_{1}", LanguageResource.Profile_ProfileGroup, "Công ty khác")</label>
+                            </div>
+
+                            <div class="profileGroupControls">
+                                @if (Model.profileGroupOtherCompanyList != null && Model.profileGroupOtherCompanyList.Count > 0)
+                                {
+                                    foreach (var item in Model.profileGroupOtherCompanyList)
+                                    {
+                                        <div class="input-group profileGroup">
+                                            @Html.DisplayFor(p => item)
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 profileB">
+                            <div class="label-wrapper">
+                                <label class="control-label" for="CustomerCareerCode">@string.Format("{0}_{1}", LanguageResource.Profile_CustomerCareerCode, "Công ty khác")</label>
+                            </div>
+                            @if (Model.profileCareerOtherCompanyList != null && Model.profileCareerOtherCompanyList.Count > 0)
+                            {
+                                foreach (var item in Model.profileCareerOtherCompanyList)
+                                {
+                                    <div>@Html.DisplayFor(p => item)</div>
+                                }
+                            }
+                        </div>
+                        <!--End - Bussiness - Group-->
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    @*<!--Không sử dụng thông tin này nữa-->
+            <div class="row profileC">
+            <div class="col-md-6 pl-md-0">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">@LanguageResource.Profile_Company</h3>
+                    </div>
+                    <div class="box-body">
+                        <!--Begin - Customer-->
+                        <div class="form-group col-md-6 profileC">
+                            @Html.TooltipLabelFor(p => p.CompanyId)
+                            @Html.HiddenFor(p => p.CompanyId)
+                            <div class="input-group">
+                                @Html.TextBoxFor(p => p.CompanyName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                                <a class="input-group-addon btn btn-default" data-toggle="modal" data-target="#divProfileBSearch">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 profileC">
+                            @Html.TooltipLabelFor(p => p.PositionC)
+                            @Html.RequiredTextboxFor(p => p.PositionC)
+                        </div>
+                        <!--End - Customer-->
+                    </div>
+                </div>
+            </div>
+        </div>*@
+</div>

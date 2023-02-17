@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "Bảo hành";
+    var warranty = (List<Warranty.Models.WarrantyResultViewModel>)ViewBag.WarrantyDetail;
+    var NoWarranty = (bool?)ViewBag.NoWarranty;
+    string tabs = ViewBag.Tabs;
+}
+
+<div class="tab-pane fade active show" id="tra-cuu-TTBH" role="tabpanel">
+    @Html.Partial("_WarrantySearchFrom")
+
+    <div class="divCheckWarrantyResult">
+        @if (warranty != null && warranty.Count > 0)
+        {
+            @Html.Partial("_WarrantyResult", warranty);
+        }
+        else
+        {
+            if (NoWarranty == true)
+            {
+                if (!string.IsNullOrEmpty(ViewBag.Serrial))
+                {
+                    <div class="alert alert-warning text-center" role="alert">
+                        Sản phẩm với số serial @ViewBag.Serrial chưa được kích hoạt bảo hành!
+                    </div>
+                }
+                else if (!string.IsNullOrEmpty(ViewBag.OrderDelivery))
+                {
+                    <div class="alert alert-warning text-center" role="alert">
+                        Số OD @ViewBag.OrderDelivery chưa kích hoạt sản phẩm nào!
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning text-center" role="alert">
+                        Số điện thoại @ViewBag.PhoneSearch chưa kích hoạt sản phẩm nào!
+                    </div>
+                }
+
+            }
+        }
+    </div>
+</div>
+<div class="modal fade" id="modal-ViewRequest">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Lịch sử yêu cầu bào hành</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="content"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var tabs ="@tabs";
+            if (tabs == "Phone") {
+                $("#tabs-phonenumber-tab").trigger("click");
+            }
+            $(".btn-checkWarranty").click(function () {
+                var $btn = $(this);
+                $btn.html('<div class="spinner-border text-light" role="status"></div>');
+            });
+            $("input[name='SearchType']").trigger("change");
+        });
+
+        $(document).on("change", "input[name='SearchType']", function () {
+            var Stype = $("input[name='SearchType']:checked").val();
+
+            if (Stype == "Serial") {
+                $(".searchBySerial").show();
+                $(".searchByPhone").hide();
+                $(".searchByOD").hide();
+            } else if (Stype == "Phone") {
+                $(".searchBySerial").hide();
+                $(".searchByPhone").show();
+                $(".searchByOD").hide();
+            } else {
+                $(".searchBySerial").hide();
+                $(".searchByPhone").hide();
+                $(".searchByOD").show();
+            }
+        })
+
+        function ViewDetail(productId, profileId) {
+            $.ajax({
+                type: "GET",
+                url: "/Home/ViewRepuest",
+                data: {
+                    productId: productId,
+                    profileId: profileId
+                },
+                success: function (response) {
+                    $("#modal-ViewRequest #content").html(response);
+                    $("#modal-ViewRequest").modal('show');
+                }
+            });
+        }
+    </script>
+}

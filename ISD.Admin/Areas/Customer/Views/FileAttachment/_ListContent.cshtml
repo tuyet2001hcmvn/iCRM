@@ -1,0 +1,32 @@
+﻿@model IEnumerable<FileAttachmentViewModel>
+@{
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.FileAttachment;
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+<tr>
+    <td class="text-center">@i</td>
+    <td>@Html.DisplayFor(p => item.FileTypeName)</td>
+    <td>@Html.DisplayFor(p => item.FileAttachmentName)</td>
+    <td>@Html.DisplayFor(p => item.CreateUser)</td>
+    <td>@Html.DisplayFor(p => item.CreateTime)</td>
+    <td class="text-center">
+        <a class="btn btn-success" href="~/Upload/Document/@item.FileUrl" download="@item.FileAttachmentName"><i class="fa fa-download"></i> Tải về</a>
+        <a class="btn btn-danger btn-delete" data-current-url="@CurrentUrl" data-id="@item.FileAttachmentId" data-item-name="@item.FileAttachmentName" data-delete-success-call-back="ReloadFileAttachmentList">
+            <i class="fa fa-trash-o"></i> Xóa
+        </a>
+    </td>
+</tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="6" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

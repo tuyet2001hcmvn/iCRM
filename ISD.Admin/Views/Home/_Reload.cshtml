@@ -1,0 +1,63 @@
+﻿<a href="/Customer/Appointment">
+    <div class="col-md-4 col-sm-8 col-xs-12">
+        <div class="info-box bg-light-blue">
+            <span class="info-box-icon"><i class="fa fa-user-circle-o"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Ghé thăm</span>
+                <span class="info-box-number">@ViewBag.AppointmentCount/ @ViewBag.AppointmentPreviousCount </span>
+
+                <div class="progress">
+                    <div class="progress-bar" style="width: 100%"></div>
+                </div>
+                <span class="progress-description">
+                    Số lượng kỳ này/ Kỳ trước
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+</a>
+<a href="/Work/Task?Type=THKH">
+    <div class="col-md-4 col-sm-8 col-xs-12">
+        <div class="info-box bg-yellow">
+            <span class="info-box-icon"><i class="fa fa-handshake-o"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Thăm hỏi khách hàng</span>
+                <span class="info-box-number">@ViewBag.THKHUnsuccessCount/ @ViewBag.THKHCount </span>
+
+                <div class="progress">
+                    <div class="progress-bar" style="width: 100%"></div>
+                </div>
+                <span class="progress-description">
+                    Số lượng chưa hoàn thành/ Hoàn thành
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    </a>
+<a href="/Work/Task?Type=ACTIVITIES">
+    <div class="col-md-4 col-sm-8 col-xs-12">
+        <div class="info-box bg-purple">
+            <span class="info-box-icon"><i class="fa fa-tasks"></i></span>
+
+            <div class="info-box-content">
+                <span class="info-box-text">Nhiệm vụ khác</span>
+                <span class="info-box-number">@ViewBag.ActivitiesUnsuccessCount/ @ViewBag.ActivitiesCount </span>
+
+                <div class="progress">
+                    <div class="progress-bar" style="width: 100%"></div>
+                </div>
+                <span class="progress-description">
+                    Số lượng chưa hoàn thành/ Hoàn thành
+                </span>
+            </div>
+            <!-- /.info-box-content -->
+        </div>
+        <!-- /.info-box -->
+    </div>
+    </a>

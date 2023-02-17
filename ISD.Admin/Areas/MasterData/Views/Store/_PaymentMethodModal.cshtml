@@ -1,0 +1,107 @@
+﻿@model ISD.ViewModels.Sale.PaymentMethodViewModel
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">@LanguageResource.Update @LanguageResource.PaymentMethodAccount</h4>
+        </div>
+        <div class="modal-body">
+            <form id="frmPaymentMethod">
+                <input type="hidden" name="PaymentMethodId" value="@Model.PaymentMethodId" />
+                <input type="hidden" name="PaymentMethodType" id="PaymentMethodType" value="@Model.PaymentMethodType" />
+                <input type="hidden" name="SaleOrg" id="SaleOrg" value="@Model.SaleOrg" />
+                <div class="form-horizontal">
+                    <!--Mã tài khoản-->
+                    <div class=" form-group">
+                        <div class="col-md-4 text-right">
+                            <div class="label-wrapper">
+                                <label class="control-label">
+                                    @LanguageResource.PaymentMethodCode
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.PaymentMethodCode)
+                        </div>
+                    </div>
+                    <!--Tài khoản-->
+                    <div class="form-group">
+                        <div class="col-md-4 text-right">
+                            <div class="label-wrapper">
+                                <label class="control-label">
+                                    @LanguageResource.PaymentMethodAccount
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.PaymentMethodAccount)
+                        </div>
+                    </div>
+                    <!--Trạng thái-->
+                    <div class="form-group">
+                        <div class="col-md-4 text-right">
+                            <div class="label-wrapper">
+                                <label class="control-label">
+                                    @LanguageResource.Actived
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            @Html.ActivedRadioButton(p => p.Actived)
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div id="divModalAlertSuccess" class="alert alert-success alert-dismissable modalAlert" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true">×</button>
+            <div class="modal-alert-message">
+            </div>
+        </div>
+
+        <div id="divModalAlertWarning" class="alert alert-warning alert-dismissable modalAlert" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true">×</button>
+            <div class="modal-alert-message">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <span class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Cancel</span>
+            <a class="btn btn-info pull-right" id="btn-save-modal">
+                @LanguageResource.Btn_Save
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setModalMessage(div, message) {
+        if (Array.isArray(message)) {
+            var arr = [];
+            $.each(message, function (i, item) {
+                arr[i] = { err: item }
+                $(div + " .modal-alert-message").append("<li>" + arr[i].err + "</li>");
+            });
+        }
+        else {
+            $(div + " .modal-alert-message").html(message);
+        }
+    }
+    function alertModalPopup(type, message) {
+        if (type == true) {
+            setModalMessage("#divModalAlertSuccess", message);
+            setTimeout(function () {
+                $('#divModalAlertSuccess').show();
+            }, 500)
+            setTimeout(function () {
+                $('#divModalAlertSuccess').hide();
+            }, 3000)
+        }
+        else if (type == false) {
+            setModalMessage("#divModalAlertWarning", message);
+            setTimeout(function () {
+                $('#divModalAlertWarning').show();
+            }, 500)
+        }
+    }
+</script>

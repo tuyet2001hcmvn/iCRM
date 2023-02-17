@@ -1,0 +1,67 @@
+﻿@model ModuleModel
+@{
+    ViewBag.Title = Model.ModuleName;
+    var PageModel = (List<PageViewModel>)ViewBag.PageModel;
+    var MenuModel = (List<MenuViewModel>)ViewBag.MenuModel;
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="row">
+
+                @foreach (var item in MenuModel)
+                {
+                    <div class="bootstrap snippets bootdey" style="margin-bottom: 20px !important;">
+                        <div class="panel">
+                            <div class="panel-heading" style="background-color: rgba(0,0,0,.4)!important; color: white!important;">
+                                <h3 class="panel-title text-bold">
+                                    <i class="@item.Icon">  @item.MenuName</i>
+
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    @foreach (var x in PageModel.Where(x => x.MenuId == item.MenuId))
+                                    {
+
+                                        <div class="col-xs-6 col-md-2 text-center" style="padding-bottom:15px!important">
+                                            @if (string.IsNullOrEmpty(x.Color))
+                                            {
+                                                <a href="@x.PageUrl@x.Parameter" class="btn btn-lg text-bold text-black" style="font-size: 16px !important; padding: 10px !important; width: 100% !important; border: 1px solid !important; height: 135px !important; white-space: inherit !important; " role="button">
+                                                    <span style="font-size: 35px !important; margin: 10px;  " class="@x.Icon p-3"></span>
+                                                    <br />@x.PageName
+                                                </a>
+
+                                            }
+                                            else
+                                            {
+                                                <a href="@x.PageUrl@x.Parameter" class="btn btn-lg" style="font-size:16px!important;background-color:@x.Color!important;color:#ffffff!important; padding: 10px!important;width: 100%!important;height:135px!important;white-space: inherit!important;" role="button">
+                                                    <span style="font-size: 35px !important; margin: 10px!important;" class="@x.Icon"></span>
+                                                    <br />@x.PageName
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $("body").addClass("white");
+    </script>
+}

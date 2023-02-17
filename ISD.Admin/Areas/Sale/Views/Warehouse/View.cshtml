@@ -1,0 +1,108 @@
+﻿@model WarehouseViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Details + " " + LanguageResource.Sale_Warehouse.ToLower();
+    string CurrentController = ConstController.Warehouse;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("View", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+
+                    <div id="exTab1" class="nav-tabs-custom">
+                        <ul class="nav nav-pills nav nav-tabs">
+                            <li class="active">
+                                <a href="#tab1" data-toggle="tab">@LanguageResource.Warehouse_Tab1</a>
+                            </li>
+                            <li>
+                                <a href="#tab2" data-toggle="tab">@LanguageResource.Warehouse_Tab2</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane active" id="tab1">
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.CompanyId)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.CompanyName, new { disabled = "disabled" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.StoreId)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.StoreName, new { disabled = "disabled" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.WarehouseCode)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.WarehouseCode, new { disabled = "disabled" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.WarehouseName)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.WarehouseName, new { disabled = "disabled" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.OrderIndex)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.RequiredTextboxFor(p => p.OrderIndex, new { disabled = "disabled" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-3">
+                                        @Html.TooltipLabelFor(p => p.Actived)
+                                    </div>
+                                    <div class="col-md-9">
+                                        @Html.ActivedRadioButton(p => p.Actived)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane" id="tab2">
+                                @Html.Action("_ProductWarehouse", new { id = Model.WarehouseId })
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+

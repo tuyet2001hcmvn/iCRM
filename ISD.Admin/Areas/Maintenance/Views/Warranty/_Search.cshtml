@@ -1,0 +1,40 @@
+﻿@model IEnumerable<WarrantyModel>
+@{
+    string CurrentArea = ConstArea.Maintenance;
+    string CurrentController = ConstController.Warranty;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.WarrantyCode)</th>
+            <th>@Html.DisplayNameFor(p => p.WarrantyName)</th>
+            <th>@Html.DisplayNameFor(p => p.Coverage)</th>
+            <th>@Html.DisplayNameFor(p => p.Duration)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.WarrantyCode)</td>
+                <td>@Html.DisplayFor(p => item.WarrantyName)</td>
+                <td>@Html.DisplayFor(p => item.Coverage)</td>
+                <td>@Html.DisplayFor(p => item.Duration)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.WarrantyId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.WarrantyName, item.WarrantyId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

@@ -1,0 +1,19 @@
+﻿@Html.DevExpress().DocumentViewer(settings =>
+{
+    settings.Name = "DocumentViewer";
+    settings.CallbackRouteValues = new
+    {
+        Controller = "ManagementReport",
+        Action = "DocumentViewerPartial",
+        ProfileCode = (int)ViewBag.ProfileCode
+    };
+    settings.ExportRouteValues = new
+    {
+        Controller = "ManagementReport",
+        Action = "DocumentViewerPartialExport",
+        ProfileCode = (int)ViewBag.ProfileCode
+    };
+    settings.Report = (ManagementReportXtra)ViewData["ManagementReport_Report"];
+    settings.ToolbarMode = DocumentViewerToolbarMode.Ribbon;
+    settings.ClientSideEvents.Init = "function init(s) { var isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor); var createFrameElement = s.viewer.printHelper.createFrameElement; s.viewer.printHelper.createFrameElement = function(name) { var frameElement = createFrameElement.call(this, name); if (isChrome) { frameElement.addEventListener('load', function(e) { if (frameElement.contentDocument.contentType !== 'text/html') frameElement.contentWindow.print(); }); } return frameElement;}}";
+}).GetHtml()

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ChangeDataLogViewModel>
+@using ISD.Core
+@{ 
+    //Cấu hình thuộc tính
+    var configList = (List<ProfileConfigModel>)ViewBag.ProfileConfig;
+    var fieldCodeList = (List<string>)ViewBag.ProfileConfigCode;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.ChangeDataLog
+    </h1>
+</div>
+<div class="content overflow-x-scroll" id="contentProfileContact">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.FieldName)</th>
+                <th>@Html.DisplayNameFor(p => p.OldData)</th>
+                <th>@Html.DisplayNameFor(p => p.NewData)</th>
+                <th>@Html.DisplayNameFor(p => p.LastEditBy)</th>
+                <th class="text-center">@Html.DisplayNameFor(p => p.LastEditTime)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 0; }
+            @if (Model != null && Model.Count() > 0)
+            {
+                foreach (var item in Model)
+                {
+                    i++;
+                    <tr>
+                        <td class="text-center">@i</td>
+                        <td>
+                            @if (ViewBag.ProfileConfig != null)
+                            {
+                                var fieldName = configList.Where(p => p.FieldCode == item.FieldName).FirstOrDefault();
+                                if (fieldName != null)
+                                {
+                                    @fieldName.Note
+                                }
+                                else
+                                {
+                                    @Html.DisplayFor(p => item.FieldName)
+                                }
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(p => item.FieldName)
+                            }
+
+                        </td>
+                        <td>@Html.Raw(item.OldData)</td>
+                        <td>@Html.Raw(item.NewData)</td>
+                        <td>@Html.DisplayFor(p => item.LastEditUser)</td>
+                        <td class="text-center">@item.LastEditTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="odd"><td valign="top" colspan="8" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+            }
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>

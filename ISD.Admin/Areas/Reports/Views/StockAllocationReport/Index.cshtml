@@ -1,0 +1,493 @@
+﻿@model StockAllocationSearchViewModel
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_StockAllocationReport;
+    string CurrentController = ConstController.StockAllocation;
+    string CurrentArea = ConstArea.Reports;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @*<a href="#" id="btn-print" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-print"></i> In báo cáo</a>*@
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <div class="btn-group">
+            <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+            <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>
+                <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+                <li><a id="btn-export-pdf" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot PDF</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+                                        @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                                        {
+                                            <div class="panel-body">
+                                                <div class="row">
+
+                                                    <div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.SearchCompanyId)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(p => p.SearchCompanyId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.SearchStoreId)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownListFor(p => p.SearchStoreId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="row  ">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    <div class="label-wrapper">
+                                                                        <label class="control-label">@LanguageResource.DocumentDate</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.DropDownList("CommonDate", null, new { @class = "form-control with-search ddl-common-date", @data_id = "End", @id = "end-date", Name = "CommonDate" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row   End">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.SearchFromDate)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.RequiredTextboxFor(p => p.SearchFromDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.SearchToDate)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.RequiredTextboxFor(p => p.SearchToDate, "{0:yyyy-MM-dd}", new { type = "date" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    @*<div class="row">
+                                                            <div class="col-md-5">
+                                                                <div class="form-group">
+                                                                    <div class="col-md-4">
+                                                                        @Html.TooltipLabelFor(p => p.SearchFromDate)
+                                                                    </div>
+                                                                    <div class="col-md-8">
+                                                                        @Html.RequiredTextboxFor(p => p.SearchFromDate, new { type = "date" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-5">
+                                                                <div class="form-group">
+                                                                    <div class="col-md-4">
+                                                                        @Html.TooltipLabelFor(p => p.SearchToDate)
+                                                                    </div>
+                                                                    <div class="col-md-8">
+                                                                        @Html.RequiredTextboxFor(p => p.SearchToDate, new { type = "date" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>*@
+
+                                                </div>
+                                                <div id="frm-button" class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-6 col-md-offset-3 input-group">
+
+                                                            <select id="SearchTemplateId" name="SearchTemplateId">
+                                                                <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                            </select>
+                                                            <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                                <a href="#" class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                                <a href="#" class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                            </span>
+                                                            <a href="#" id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+                                                            
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+                
+                <div class="panel-body" style="overflow-x:scroll;">
+
+                    @Html.Action("StockAllocationPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+@section components {
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+}
+<div id="obj-pdf" data="" width="500" height="720">
+</div>
+<div class="delete-confirm"></div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl","@CurrentController");
+        })
+         $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pdf", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ExportPivotPDF", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-print", function () {
+
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //$.ajax({
+            //    type: "POST",
+            //    url: "/StockAllocationReport/ExportPivotPDF",
+            //    data: obj,
+            //    success: function (jsonData) {
+            //        window.open("data:application/pdf," + jsonData);
+            //        //var w = window.open();
+            //        //$('#obj-pdf').load(jsonData);
+            //        //w.window.load(jsonData);
+            //        ////var printOne = $('#obj-pdf').html();
+            //        ////w.document.write('<html><head></head><body>' + printOne + '</body></html>');
+            //        //w.window.print();
+            //        //w.window.close();
+            //    }
+            //});
+            new AjaxDownloadFile({
+                url: "/StockAllocationReport/ExportPivotPDF",
+                data: JSON.stringify(obj)
+            });
+
+        });
+        $(document).on("click", "#btn-view", function () {
+             var $btn = $(this);
+             $btn.button("loading")
+             var arr = {};
+             var data = $("#frmSearch").serializeArray();
+
+             var obj = {};
+             $.each(data, function (index, val) {
+                 obj[val.name] = val.value;
+                 $.extend(true, arr, obj)
+             });
+             obj["IsView"] = true;
+             $.extend(true, arr, obj);
+             obj["pivotTemplate"] = $('#TemplateId').val();
+             obj["modeSearch"] = "Recently";
+             $.extend(true, arr, obj);
+             //Save localStorage
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);
+        });
+         $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["IsView"] = true;
+            var templateId = $(this).data('id');
+            obj["pivotTemplate"] = templateId;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+        //CommonDate
+        $(document).on("change", "select[name='CommonDate']", function () {
+            var commonDate = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/Utilities/CommonDate/Get",
+                data: {
+                    CommonDate: commonDate
+                },
+                success: function (jsonData) {
+                    $("#frmSearch input[name='SearchFromDate']").val(jsonData.FromDate);
+                    $("#frmSearch input[name='SearchToDate']").val(jsonData.ToDate);
+                    if (jsonData.FromDate != '' && jsonData.FromDate != '') {
+                        $("#frmSearch input[name='SearchFromDate']").prop("readonly", true);
+                        $("#frmSearch input[name='SearchToDate']").prop("readonly", true);
+                    } else {
+                        $("#frmSearch input[name='SearchFromDate']").prop("readonly", false);
+                        $("#frmSearch input[name='SearchToDate']").prop("readonly", false);
+                    }
+
+                }
+            });
+        });
+        // $(document).on("change", "select[name='SearchCompanyId']", function () {
+        //    var CompanyId = $(this).val();
+        //    if (CompanyId == "") {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/MasterData/Store/GetAllStoreForDropDown",
+        //            success: function (jsonData) {
+        //                $("#SearchStoreId").html("");
+
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#SearchStoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //                $("#SearchStoreId").trigger("change");
+        //            }
+        //        });
+
+        //    } else {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/MasterData/Store/GetStoreByCompany",
+        //            data: {
+        //                CompanyId: CompanyId
+        //            },
+        //            success: function (jsonData) {
+        //                $("#SearchStoreId").html("");
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#SearchStoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //                $("#SearchStoreId").trigger("change");
+        //            }
+        //        });
+
+        //    }
+        //});
+        //var AjaxDownloadFile = function (configurationSettings) {
+        //    // Standard settings.
+        //    this.settings = {
+        //        // JQuery AJAX default attributes.
+        //        url: "",
+        //        type: "POST",
+        //        headers: {
+        //            "Content-Type": "application/json; charset=UTF-8"
+        //        },
+        //        data: {},
+        //        // Custom events.
+        //        onSuccessStart: function (response, status, xhr, self) {
+        //        },
+        //        onSuccessFinish: function (response, status, xhr, self, filename) {
+        //        },
+        //        onErrorOccured: function (response, status, xhr, self) {
+        //        }
+        //    };
+        //    this.download = function () {
+        //        var self = this;
+        //        $.ajax({
+        //            type: this.settings.type,
+        //            url: this.settings.url,
+        //            headers: this.settings.headers,
+        //            data: this.settings.data,
+        //            success: function (response, status, xhr) {
+        //                // Start custom event.
+        //                self.settings.onSuccessStart(response, status, xhr, self);
+
+        //                // Check if a filename is existing on the response headers.
+        //                var filename = "";
+        //                var disposition = xhr.getResponseHeader("Content-Disposition");
+        //                if (disposition && disposition.indexOf("attachment") !== -1) {
+        //                    var filenameRegex = /filename[^;=\n]*=(([""]).*?\2|[^;\n]*)/;
+        //                    var matches = filenameRegex.exec(disposition);
+        //                    if (matches != null && matches[1])
+        //                        filename = matches[1].replace(/[""]/g, "");
+        //                }
+
+        //                var type = xhr.getResponseHeader("Content-Type");
+        //                var blob = new Blob([response], { type: type });
+
+        //                if (typeof window.navigator.msSaveBlob !== "undefined") {
+        //                    // IE workaround for "HTML7007: One or more blob URLs were revoked by closing the blob for which they were created. These URLs will no longer resolve as the data backing the URL has been freed.
+        //                    window.navigator.msSaveBlob(blob, filename);
+        //                } else {
+        //                    var URL = window.URL || window.webkitURL;
+        //                    var downloadUrl = URL.createObjectURL(blob);
+
+        //                    if (filename) {
+        //                        // Use HTML5 a[download] attribute to specify filename.
+        //                        var a = document.createElement("a");
+        //                        // Safari doesn"t support this yet.
+        //                        if (typeof a.download === "undefined") {
+        //                            window.location = downloadUrl;
+        //                        } else {
+        //                            a.href = downloadUrl;
+        //                            a.download = filename;
+        //                            document.body.appendChild(a);
+        //                            a.click();
+        //                        }
+        //                    } else {
+        //                        window.location = downloadUrl;
+        //                    }
+
+        //                    setTimeout(function () {
+        //                        URL.revokeObjectURL(downloadUrl);
+        //                    }, 100); // Cleanup
+        //                }
+
+        //                // Final custom event.
+        //                self.settings.onSuccessFinish(response, status, xhr, self, filename);
+        //            },
+        //            error: function (response, status, xhr) {
+        //                // Custom event to handle the error.
+        //                self.settings.onErrorOccured(response, status, xhr, self);
+        //            }
+        //        });
+        //    };
+        //    // Constructor.
+        //    {
+        //        // Merge settings.
+        //        $.extend(this.settings, configurationSettings);
+        //        // Make the request.
+        //        this.download();
+        //    }
+        //};
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+    </script>
+}
+

@@ -1,0 +1,71 @@
+﻿@model IEnumerable<FaceCheckInOutViewModel>
+@{
+    string CurrentController = ConstController.FaceCheckInOut;
+
+    string CurrentArea = ConstArea.MasterData;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.PersonName)</th>
+            <th>@Html.DisplayNameFor(p => p.Avatar)</th>
+            <th>@Html.DisplayNameFor(p => p.DateCheckIn)</th>
+            <th>@Html.DisplayNameFor(p => p.FirstTimeCheckIn)</th>
+            <th>@Html.DisplayNameFor(p => p.LastTimeCheckIn)</th>
+            <th>@Html.DisplayNameFor(p => p.DeviceCheckIn)</th>
+            <th>@Html.DisplayNameFor(p => p.DeviceCheckOut)</th>
+            <th>Action</th>
+            @*<th class="text-center">@LanguageResource.Actions</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.PersonName)</td>
+                <td><img src="@item.Avatar" with="60" height="60" /></td>
+                <td>@Html.DisplayFor(p => item.DateCheckIn)</td>
+                <td>@Html.DisplayFor(p => item.FirstTimeCheckIn)</td>
+                <td>@Html.DisplayFor(p => item.LastTimeCheckIn)</td>
+                <td>@Html.DisplayFor(p => item.DeviceCheckIn)</td>
+                <td>@Html.DisplayFor(p => item.DeviceCheckOut)</td>
+                <td>
+                    @{
+                        var id = "?img=" + item.Avatar;
+                        if (item.PersonName == "")
+                        {
+                            @*<button data-id="@item.Avatar" class="btn btn-info btn-Create" > Create</button>*@
+
+                            <a class="btn btn-success" href="#" download="@item.Avatar" ><i class="fa fa-download" ></i> Lưu Ảnh</a>
+                            @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, "a", id)
+                            <button type="button" class="btn btn-info" id="btn-Compare">Đối Chiếu</button>
+                            //<button class="btn btn-default btn-edit"></i Download</button>
+                            //<a class="btn btn-default btn-edit" href="/MasterData/FaceCheckInOut/Edit/https://static.hanet.ai/face/upload/C20371B423/2021/04/12/7dc7ad2e-8253-4e16-9ded-53d3d158d302.jpg" onclick="$(this).button('loading')"><i class="fa fa-pencil"></i> Sửa</a>
+                            //@HtmlExtensions.CreateButton(CurrentArea, CurrentController, id)
+                            @*var id = "/C21025B071/2021/04/12/1351ef2b-c313-4095-845a-20a0344dba0a";
+                                @HtmlExtensions.CreateButton(CurrentArea, CurrentController, id)*@
+                        }
+                        else
+                        {
+                            @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.PersonID)
+                            @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, "a", id)
+
+
+                        }
+                    }
+                </td>
+                @*<td class="text-center">
+                        @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.FaceId)
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

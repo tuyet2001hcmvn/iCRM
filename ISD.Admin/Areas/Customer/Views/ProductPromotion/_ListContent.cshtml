@@ -1,0 +1,42 @@
+﻿@model IEnumerable<ProductPromotionViewModel>
+@{
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentController = ConstController.ProductPromotion;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.ProductPromotionTitle)</td>
+            <td>@Html.DisplayFor(p => item.SendTypeName)</td>
+            <td class="text-center">@(item.IsSendCatalogue == true ? "Có" : "Không")</td>
+            <td class="text-center">@(item.Status == true ? "Đã gửi" : "Chưa gửi")</td>
+            <td class="text-center">
+                @if (item.StartTime != null)
+                {
+                   <span>@string.Format("{0:dd/MM/yyyy}", item.StartTime)</span> 
+                }
+            </td>
+            <td class="text-center">
+                @if (item.EndTime != null)
+                {
+                    <span>@string.Format("{0:dd/MM/yyyy}", item.EndTime)</span>
+                }
+            </td>
+            <td class="text-center">
+                <a href="/@CurrentUrl/Edit/@item.ProductPromotionId" class="btn btn-info" target="_blank" data-id="@item.ProductPromotionId"><i class="fa fa-eye"></i> Xem</a>
+            </td>
+        </tr>
+    }
+}
+else
+{
+    <tr class="odd"><td valign="top" colspan="9" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+}

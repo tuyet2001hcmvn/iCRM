@@ -1,0 +1,47 @@
+﻿@model IEnumerable<CatalogModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.Catalog;
+}
+<style>
+    td {
+        word-break: break-all;
+        white-space: normal;
+    }
+</style>
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CatalogCode)</th>
+            <th style="word-break: break-all; white-space: normal; width:150px;">@Html.DisplayNameFor(p => p.CatalogText_vi)</th>
+            @*<th>@Html.DisplayNameFor(p => p.CatalogText_en)</th>*@
+            <th>@Html.DisplayNameFor(p => p.CatalogTypeCode)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.CatalogCode)</td>
+            <td style="word-break: break-all;white-space: normal; width:450px;">@Html.DisplayFor(p => item.CatalogText_vi)</td>
+            @*<td>@Html.DisplayFor(p => item.CatalogText_en)</td>*@
+            <td>@Html.DisplayFor(p => item.CatalogTypeCode)</td>
+            <td class="text-center">@Html.DisplayFor(p => item.OrderIndex)</td>
+            <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            <td class="text-center">
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.CatalogId)
+                @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.CatalogText_vi, item.CatalogId)
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

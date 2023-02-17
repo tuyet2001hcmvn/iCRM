@@ -1,0 +1,214 @@
+﻿@model RatingModel
+@{
+    Layout = "~/Views/Shared/_Layout_Login.cshtml";
+    ViewBag.Title = LanguageResource.MasterData_EmployeeRatings;
+    string CurrentController = ConstController.EmployeeRatings;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+@section head{
+    <style>
+        .ratings {
+            cursor: pointer;
+        }
+
+        @@media screen and (max-width: 660px) {
+            .ratings img {
+                max-width: 50px;
+                max-height: 50px;
+            }
+
+            #tb-rating td {
+                font-size: 10px;
+            }
+        }
+    </style>
+}
+
+<div class="content text-center">
+    <div class="form-group">
+        <img src="~/Upload/rating.png" width="50" height="50" />
+        <p class="text-success text-bold">
+            Quý khách vui lòng đánh giá chất lượng phục vụ của nhân viên
+        </p>
+    </div>
+    <div class="form-group">
+        @Html.Hidden("AccountId", (Guid?)ViewBag.AccountId)
+        <table class="text-center" id="tb-rating">
+            <tr>
+                <td width="220px">
+                    <a class="ratings ratings-1" data-id="EmployeeRatings1">
+                        <img src="~/Upload/EmployeeRatings/EmployeeRatings1.png" />
+                    </a>
+                </td>
+                <td width="220px">
+                    <a class="ratings ratings-2" data-id="EmployeeRatings2">
+                        <img src="~/Upload/EmployeeRatings/EmployeeRatings2.png" />
+                    </a>
+                </td>
+                <td width="220px">
+                    <a class="ratings ratings-3" data-id="EmployeeRatings3">
+                        <img src="~/Upload/EmployeeRatings/EmployeeRatings3.png" />
+                    </a>
+                </td>
+                <td width="220px">
+                    <a class="ratings ratings-4" data-id="EmployeeRatings4">
+                        <img src="~/Upload/EmployeeRatings/EmployeeRatings4.png" />
+                    </a>
+                </td>
+                <td width="220px">
+                    <a class="ratings ratings-5" data-id="EmployeeRatings5">
+                        <img src="~/Upload/EmployeeRatings/EmployeeRatings5.png" />
+                    </a>
+                </td>
+            </tr>
+            <tr>
+                <td class="text-bold">RẤT KÉM</td>
+                <td class="text-bold">KÉM</td>
+                <td class="text-bold">BÌNH THƯỜNG</td>
+                <td class="text-bold">TỐT</td>
+                <td class="text-bold">RẤT TỐT</td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <br />
+    <div class="form-group">
+        <a class="btn btn-success" id="btn-ratings-6">GÓP Ý</a>
+    </div>
+</div>
+
+<div class="modal fade" id="popupSuccess" role="dialog">
+    <div class="modal-dialog modal-md">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="content">
+                    <div class="box-body">
+                        <div class="form-group text-center">
+                            <img src="https://crm.ancuong.com/Images/check-mark.png" width="50" height="50" />
+
+                        </div>
+                        <div class="form-group text-center">
+                            <p class="text-bold" id="Message">
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="popupRating" role="dialog">
+    <div class="modal-dialog modal-md">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal">×</button>
+                <h4 class="modal-title">THÔNG TIN GÓP ý</h4>
+            </div>
+            <div class="modal-body">
+                <div id="divAlertPopupWarning" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+                    <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+                    <div class="alert-message">
+                    </div>
+                </div>
+                <div class="content">
+                    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmRating" }))
+                    {
+                        @Html.Hidden("AccountId", (Guid?)ViewBag.AccountId)
+                        <div class="box-body">
+                            <div class="form-group">
+                                @Html.RequiredTextboxFor(p => p.FullName, new { @placeholder = "Họ và Tên ..." })
+                            </div>
+                            <div class="form-group">
+                                @Html.RequiredTextboxFor(p => p.PhoneNumber, new { @placeholder = "SĐT ..." })
+                            </div>
+                            <div class="form-group">
+                                @Html.RequiredTextboxFor(p => p.Email, new { @placeholder = "Email ..." })
+                            </div>
+                            <div class="form-group">
+                                @Html.TextAreaFor(p => p.Reviews, new { @Class = "form-control", @placeholder = "Nhập ý kiến khác" })
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="btn-save-rating">Gửi ý kiến</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).on("click", ".ratings", function () {
+            var AccountId = $("#AccountId").val();
+            var Ratings = $(this).data("id");
+            EmployeeRatings(AccountId, Ratings, "", "", "", "", false)
+        });
+        $(document).on("click", "#btn-ratings-6", function () {
+            ShowPopupReviews();
+        });
+        function ShowPopupReviews() {
+            //$('#popupSuccess').modal({ backdrop: 'static', keyboard: false, show: true });
+
+            $("#popupRating").modal("show");
+        }
+        $(document).on("click", "#btn-save-rating", function () {
+            var AccountId = $("#frmRating #AccountId").val();
+            var Ratings = "EmployeeRatings6";
+            var Reviews = $("#frmRating #Reviews").val();
+            var FullName = $("#frmRating #FullName").val();
+            var PhoneNumber = $("#frmRating #PhoneNumber").val();
+            var Email = $("#frmRating #Email").val();
+            EmployeeRatings(AccountId, Ratings, Reviews, FullName, PhoneNumber, Email, true);
+            $("#popupRating").modal("hide");
+        });
+
+
+
+        function EmployeeRatings(AccountId, Ratings, Reviews, FullName, PhoneNumber, Email, isHasOtherReviews) {
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/EmployeeRatings/Index",
+                data: {
+                    AccountId: AccountId,
+                    Ratings: Ratings,
+                    Reviews: Reviews,
+                    FullName: FullName,
+                    PhoneNumber: PhoneNumber,
+                    Email: Email,
+                    isHasOtherReviews: isHasOtherReviews,
+                },
+                success: function (jsonData) {
+                    if (jsonData.Success) {
+                        $("#popupSuccess #Message").html(jsonData.Data);
+                        $('#popupSuccess').modal({ backdrop: 'static', keyboard: false, show: true });
+                    } else {
+                        alertPopup(false, jsonData.Data)
+                    }
+                }
+            });
+        }
+
+        $('#popupSuccess').on('hidden.bs.modal', function (e) {
+            location.reload();
+        })
+    </script>
+}
+
+
+
+
+

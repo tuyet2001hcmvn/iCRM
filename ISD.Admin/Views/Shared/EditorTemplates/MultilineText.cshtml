@@ -1,0 +1,14 @@
+﻿@model string
+@Html.TextArea("", ViewData.TemplateInfo.FormattedModelValue.ToString(),
+    new {
+        @class = "form-control", rows=4,
+        @ng_model = ViewData.TemplateInfo.HtmlFieldPrefix
+    })
+<span class="validation-text field-validation-error">
+    @Html.ValidationMessageFor(v => v)
+</span>
+
+@*@foreach (var prop in ViewData.ModelMetadata.Properties)
+{
+    <div>@Html.Editor(prop.PropertyName)</div>
+}*@

@@ -1,0 +1,452 @@
+﻿@model StockOnHandReportSearchModel
+@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = LanguageResource.Reports_StockOnHandReport;
+    string CurrentArea = ConstArea.Reports;
+    string CurrentController = ConstController.StockOnHandReport;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var templateId = ViewBag.TemplateId;
+    var modeSearch = ViewBag.ModeSearch;
+    ViewBag.CurrentUrl = CurrentUrl;
+
+    var SearchProductList = (List<ProductViewModel>)ViewBag.SearchProductId;
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @Html.Partial("~/Areas/Reports/Views/_PivotTemplateHandle.cshtml")
+        <div class="btn-group">
+            <a class="btn btn-success dropdown-toggle"><i class="fa fa-download"></i> Export</a>
+            <a class="btn btn-success dropdown-toggle" data-toggle="dropdown"><span class="caret"></span><span class="sr-only">&nbsp;</span></a>
+            <ul class="dropdown-menu" role="menu">
+                <li><a id="btn-export" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Excel</a></li>
+                <li><a id="btn-export-pivot" class="btn-export" href="#"><i class="fa fa-file-excel-o"></i> Export Pivot Excel</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+@Html.Hidden("TemplateId", null, new { value = templateId })
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                <div class="row" style="padding-top:10px;">
+                    <div class="col-sm-12">
+                        <div class="box box-default box-solid">
+                            <div class="box-header with-border">
+                                <div class="box-tools pull-right">
+                                    <button class="btn btn-box-tool" type="button" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                </div>
+                            </div>
+                            <div class="box-body ">
+                                <div class="row">
+
+                                    <div class="panel-body">
+
+                                        @using (Html.BeginForm("ViewDetail", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                                        {
+                                            <div class="panel-body">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchCompanyId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchCompanyId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchStoreId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchStoreId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchStockId)
+                                                            </div>
+                                                            <div class="col-md-8">
+                                                                @Html.DropDownListFor(p => p.SearchStockId, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @*<div class="row">
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.ProductCodeSearch)
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    @Html.RequiredTextboxFor(p => p.ProductCode)
+                                                                    @Html.HiddenFor(p => p.SearchProductId)
+                                                                    <input id="SearchProductCode" name="SearchProductCode" type="hidden" value="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-5">
+                                                            <div class="form-group">
+                                                                <div class="col-md-4">
+                                                                    @Html.TooltipLabelFor(p => p.ProductName)
+                                                                </div>
+                                                                <div class="col-md-8" style="display: inline-table">
+                                                                    @Html.RequiredTextboxFor(p => p.ProductName, new { disabled = "disabled" })
+                                                                    <div class="input-group-btn">
+                                                                        <a class="btn btn-danger" id="btn-clearProduct">
+                                                                            <i class="fa fa-remove"></i>
+                                                                        </a>
+                                                                    </div>
+                                                                    <input id="SearchProductName" name="SearchProductName" type="hidden" value="">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <div class="form-group">
+                                                            <div class="col-md-4">
+                                                                @Html.TooltipLabelFor(p => p.SearchProductId)
+                                                            </div>
+                                                            <div class="col-md-8 multi product">
+                                                                <select name="SearchProductId" id="SearchProductId" class="form-control search-product-id" multiple>
+                                                                    @*<option value="">@LanguageResource.Dropdownlist_Choose</option>*@
+                                                                    @if (SearchProductList != null && SearchProductList.Count > 0)
+                                                                    {
+                                                                        foreach (var item in SearchProductList)
+                                                                        {
+                                                                            <option value="@item.ProductId">@item.ProductName</option>
+                                                                        }
+                                                                    }
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-5 col-md-offset-4 input-group">
+                                                            <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                                                <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                                            </select>
+                                                            <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                                                <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                                                <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                                            </span>
+                                                            <a id="btn-view" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-refresh"></i> Chạy báo cáo</a>&nbsp;
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default">
+
+                <div class="panel-body" style="overflow-x:scroll;">
+
+                    @Html.Action("StockOnHandPivotGridPartial", new { searchViewModel = ViewBag.Search, templateId = ViewBag.TemplateId })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section components {
+
+    <div id="popupSaveTemplate" class="modal fade" role="dialog">
+        @Html.Partial("~/Areas/Reports/Views/_SaveTemplatePopup.cshtml")
+    </div>
+}
+
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script src="~/Scripts/Common/PivotTemplate.js"></script>
+    <script>
+	//Define it
+	var currentUserId = "@CurrentUser.AccountId";
+	var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            //Set lại thông tin search gần đây khi là back lại
+            var modeTemplateSearch = "@modeSearch";
+
+            if (modeTemplateSearch == "Recently") {
+                LoadTemplateSearch(currentUserId, currentPageId, "Recently");
+                var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+                if (recentSearch) {
+                    FillToInput(recentSearch);
+                    FillToInputSpecial(recentSearch);
+                }
+            }
+            else {
+                LoadTemplateSearch(currentUserId, currentPageId);
+                localStorage.removeItem('pageId-' + currentPageId)
+            }
+            ISDPivotTemplate.Init("@CurrentUrl", "@CurrentController");
+            Select2_CustomFor_CRM("/Warehouse/StockReceiving/SearchProduct", ".search-product-id");
+        })
+        $(document).on("click", "#btn-export", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportExcel", arr);
+            $btn.button("reset");
+        });
+        $(document).on("click", "#btn-export-pivot", function () {
+            var $btn = $(this);
+            $btn.button('loading');
+            var arr = {};
+            var data = $("#frmSearch").serializeArray();
+            var obj = {};
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+
+
+            obj["TemplateId"] = $('#TemplateId').val();
+            $.extend(true, arr, obj);
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+           // ExportPivotGrid(arr);
+            ISD.Download("/@CurrentUrl/ExportPivot", arr);
+            $btn.button("reset");
+        });
+
+        $(document).on("click", "#btn-view", function () {
+             var $btn = $(this);
+            $btn.button("loading")
+
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+
+            $.each(data, function (index, val) {
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+
+             obj["IsView"] = true;
+             $.extend(true, arr, obj);
+             obj["pivotTemplate"] = $('#TemplateId').val();
+             obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+
+            var SearchProductIdList = $('#SearchProductId').val();
+            if (SearchProductIdList != null && SearchProductIdList.length > 0) {
+                var searchProductId = {};
+                searchProductId['SearchProductId'] = SearchProductIdList;
+                $.extend(true, arr, searchProductId);
+            }
+
+             //Save localStorage
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+             ISD.Download("/@CurrentUrl/ViewDetail", arr);
+        });
+
+        $(document).off("click", ".pivot-template-item").on("click", ".pivot-template-item", function () {
+            var $btn = $(this);
+            var arr = {};
+            var obj = {};
+            var data = $("#frmSearch").serializeArray();
+            $.each(data, function (index, val) {
+
+                obj[val.name] = val.value;
+                $.extend(true, arr, obj)
+            });
+            obj["IsView"] = true;
+            obj["modeSearch"] = "Recently";
+            $.extend(true, arr, obj);
+            var templateId = $(this).data('id');
+            obj["pivotTemplate"] = templateId;
+            $.extend(true, arr, obj);
+             localStorage.setItem('pageId-' + currentPageId, JSON.stringify(arr));
+            ISD.Download("/@CurrentUrl/ChangeTemplate", arr);
+        });
+        //$(document).on("change", "select[name='SearchCompanyId']", function () {
+        //    var CompanyId = $(this).val();
+        //    if (CompanyId == "") {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/MasterData/Store/GetAllStoreForDropDown",
+        //            success: function (jsonData) {
+        //                $("#SearchStoreId").html("");
+        //                $("#SearchStoreId").append("<option value=''>-- Vui lòng chọn --</option>");
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#SearchStoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //                $("#SearchStoreId").trigger("change");
+        //            }
+        //        });
+
+        //    } else {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/MasterData/Store/GetStoreByCompany",
+        //            data: {
+        //                CompanyId: CompanyId
+        //            },
+        //            success: function (jsonData) {
+        //                $("#SearchStoreId").html("");
+        //                $("#SearchStoreId").append("<option value=''>-- Vui lòng chọn --</option>");
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#SearchStoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //                $("#SearchStoreId").trigger("change");
+        //            }
+        //        });
+        //    }
+        //});
+        //$(document).on("change", "select[name='SearchStoreId']", function () {
+        //    var StoreId = $(this).val();
+        //    if (StoreId == "") {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/Warehouse/Stock/GetAllForDropdown",
+        //            success: function (jsonData) {
+        //                $("#SearchStockId").html("");
+        //                $("#SearchStockId").append("<option value=''>-- Vui lòng chọn --</option>");
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#SearchStockId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //            }
+        //        });
+
+        //    } else {
+        //        $.ajax({
+        //            type: "POST",
+        //            url: "/Warehouse/Stock/GetStockByStore",
+        //            data: {
+        //                StoreId: StoreId
+        //            },
+        //            success: function (jsonData) {
+        //                $("#SearchStockId").html("");
+        //                $("#SearchStockId").append("<option value=''>-- Vui lòng chọn --</option>");
+        //                $.each(jsonData, function (index, value) {
+        //                    $("#SearchStockId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //                });
+        //            }
+        //        });
+        //    }
+        //});
+
+        $("#ProductCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/Warehouse/StockReceiving/GetProductCodeIsInventory",
+                    data: JSON.stringify({ "ProductCode": $("#ProductCode").val() }),
+                    dataType: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.ProductCodeText, id: item.ProductId, value: item.ProductCode, name: item.ProductName };
+                        }));
+                        //response(data);
+                    },
+                    error: function (xhr, status, error) {
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            },
+            //prevent another value except dropdown value
+            change: function (event, ui) {
+                if (ui.item === null) {
+                    $("#ProductCode").val("");
+                    $("#SearchProductCode").val("");
+                    $("#ProductName").val("");
+                    $("#SearchProductName").val("");
+                    $("#SearchProductId").val("");
+                    $("#ProductCode").focus();
+                }
+            },
+            select: function (event, ui) {
+                $("#ProductCode").val(ui.item.value);
+                $("#ProductCode").prop("disabled", true);
+                $("#SearchProductCode").val(ui.item.value);
+                $("#ProductName").val(ui.item.name);
+                $("#SearchProductName").val(ui.item.name);
+                $("#SearchProductId").val(ui.item.id);
+            }
+        });
+        $(document).on("click", "#btn-clearProduct", function () {
+            $("#ProductCode").val("");
+            $("#ProductName").val("");
+            $("#SearchProductId").val("");
+            $("#ProductCode").prop("disabled", false);
+        });
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInputSpecial(recentSearch) {
+            if (recentSearch.SearchProductId != "") {
+                $("#ProductCode").val(recentSearch.SearchProductCode);
+                $("#ProductName").val(recentSearch.SearchProductName);
+                $("#ProductCode").prop("disabled", true);
+            }
+        }
+
+        $(".search-product-id").each(function () {
+            var row = $(this).data("row");
+            $('select[name="SearchProductId"] option').each(function () {
+                $(this).prop('selected', true);
+            });
+            $('select[name="SearchProductId').trigger("change");
+        });
+    </script>
+}

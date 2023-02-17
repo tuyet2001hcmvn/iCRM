@@ -1,0 +1,163 @@
+﻿@model FaceCheckInOutCreateViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.FaceCheckInOut.ToLower();
+    string CurrentController = ConstController.FaceCheckInOut;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @*<input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+        <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />*@
+    
+
+
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            <a class="btn bg-blue" id="btn-save"><i class="fa fa-floppy-o"></i> Lưu </a>
+            @*@HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)*@
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Name)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Name)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.AliasID)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.AliasID)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PlaceID)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PlaceID)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Title)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Title)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Type)
+                            </div>
+                            <div class="col-md-9">
+                                @{
+                                    var listType = new List<SelectListItem>()
+                                                                                                                                                                                                                                        {
+                                                new SelectListItem(){Text= LanguageResource.Face_All,
+                                                                      Value="0,1,2"  },
+                                                new SelectListItem(){ Text = LanguageResource.Face_Employee,
+                                                                       Value ="0"},
+                                                new SelectListItem(){ Text = LanguageResource.Face_Stranger,
+                                                                       Value ="2"}
+                                            };
+                                }
+                                @Html.DropDownList("FaceType", new SelectList(listType, "Value", "Text", ""), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.File)
+                            </div>
+                            <div class="col-md-9">
+                                <input type="file"
+                                       id="avatar" name="avatar"
+                                       accept="image/png, image/jpeg">
+                            </div>
+                        </div>
+                        
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        @*$(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+
+            //Reset dropdownlist after reset form
+            $('#frmCreate').on('reset', function (e) {
+                setTimeout(function () {
+                    $("#select2-ProvinceId-container").text($("#ProvinceId").find(':selected').text());
+                })
+            });
+        });*@
+        $("#btn-save").on('click', function () {
+
+            var file = document.getElementById('avatar').files[0];
+
+            console.log(file);
+            var formData = new FormData();
+            formData.append('token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXJ0bmVySUQiOjI2NywicGFydG5lck5hbWUiOiJpY3JtIiwiaWQiOiIxODcwNzkzMTUyNTI1MDAwNzA0IiwiZW1haWwiOiJuYW0udmhAaXNkY29ycC52biIsInRzIjoxNjE4MjAwMDQ3OTUyLCJjbGllbnRfaWQiOiI1OTdlNzZjOTMzM2IzNGFkZGVmYjZlOTZlNjYzZWI0ZSIsImNvZGUiOiIiLCJjb2RlX2NoYWxsZW5nZSI6IiIsInR5cGUiOiJhdXRob3JpemF0aW9uX2NvZGUiLCJpYXQiOjE2MTgyMDAwNDcsImV4cCI6MTY0OTczNjA0N30.5pdOMuQFUJHrb-mXmrk5CjbJlFmyadTC20JJcxUrcLI');
+            formData.append('name',$('#Name').val());
+            formData.append('file', file);
+            formData.append('aliasID', $('#AliasID').val());
+            formData.append('placeID', $('#PlaceID').val());
+            formData.append('title', $('#Title').val());
+            formData.append('type', $('#FaceType').val());
+            $.ajax({
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                url: 'https://partner.hanet.ai/person/register',
+                success: function (dataJson) {
+                    if (dataJson.returnMessage == 'SUCCESS') {
+                        alertPopup(true, dataJson.returnMessage);
+                    }
+                    else {
+                        alertPopup(false, dataJson.returnMessage);
+                    }
+                },
+                error: function (dataJson) {
+                    console.log(dataJson)
+                }
+            })
+
+        })
+    </script>
+}
+
+

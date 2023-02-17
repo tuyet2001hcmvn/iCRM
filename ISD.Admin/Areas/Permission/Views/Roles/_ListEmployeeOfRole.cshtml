@@ -1,0 +1,29 @@
+﻿@model IEnumerable<AccountResultViewModel>
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.EmployeeCode)</th>
+            <th>@Html.DisplayNameFor(p => p.UserName)</th>
+            <th>@Html.DisplayNameFor(p => p.FullName)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td class="text-center">@Html.DisplayFor(p => item.EmployeeCode)</td>
+                <td>@Html.DisplayFor(p => item.UserName)</td>
+                <td>@Html.DisplayFor(p => item.FullName)</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

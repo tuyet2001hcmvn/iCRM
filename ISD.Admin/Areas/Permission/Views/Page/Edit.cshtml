@@ -1,0 +1,155 @@
+﻿@model ISD.ViewModels.PageFunctionViewModel
+@using MvcCheckBoxList.Model
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Permission_PageModel.ToLower();
+    string CurrentController = ConstController.Page;
+    string CurrentArea = ConstArea.Permission;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+@section head{
+    <link href="~/Scripts/AdminLTE-2.4.3/plugins/bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css" rel="stylesheet" />
+}
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.PageId)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PageName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PageName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PageUrl)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PageUrl)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Parameter)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Parameter)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.MenuId)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.DropDownList("MenuId", null, "-Vui lòng chọn danh mục-", new { @class = "form-control with-search" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Icon)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.Icon)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Color)
+                            </div>
+                            <div class="col-md-9 input-color">
+                                <div class="input-group-addon input-group">
+                                    <input type="text" class="form-control" style="width:97%" name="Color" value="@Model.Color" />
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button" style="width: 97%; padding: 7px 10px!important">
+                                            <i style="color:@Model.Color"></i>
+                                        </button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                        <hr class="custom">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.FunctionId)
+                            </div>
+                            <div class="col-md-9 div-checkbox">
+                                @*@Html.Partial("_FunctionList")*@
+                                @* 1.checkbox name, 2.list all, 3.value, 4.display name, 5.selected list *@
+                                @Html.CheckBoxListFor(p => p.FunctionId,
+                                                       p => p.FunctionList,
+                                                       p1 => p1.FunctionId,
+                                                       p1 => p1.FunctionName,
+                                                       p => p.ActivedFunctionList,
+                                                       Position.Vertical,
+                                                       p => new { @class = "chkBox" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script src="~/Scripts/AdminLTE-2.4.3/plugins/bootstrap-colorpicker/dist/js/bootstrap-colorpicker.js"></script>
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+
+            $('.input-color').colorpicker();
+            $('.input-color').on('colorpickerChange', function (event) {
+                $('.input-color .fa-square').css('color', event.color.toString());
+            });
+        });
+    </script>
+}
+
+
+

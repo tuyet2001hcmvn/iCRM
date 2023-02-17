@@ -1,0 +1,73 @@
+﻿@* Cancel Confirm *@
+<div id="divCancelPopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.Btn_Cancel "<span class="item-name"></span>"</h4>
+            </div>
+            <form id="frmCancelConfirm">
+                @Html.AntiForgeryToken()
+                @Html.Hidden("id")
+                @Html.Hidden("controller")
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div id="divModalAlertWarning" class="alert alert-warning alert-dismissable modalAlert" style="display: none">
+                                <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                                <div class="modal-alert-message">
+                                </div>
+                            </div>
+                        </div>
+                         
+                        <div class="row">
+                            <div class="form-group text-center alert-message">
+                                @LanguageResource.Confirm_ConfirmCancel
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper">
+                                        <label class="control-label">Lý do hủy</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="input-group input-group-required input-group-select-required">
+                                        <select class="form-control" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;Lý do huỷ&quot;" id="CancelType" name="CancelType" tabindex="-1" aria-hidden="true">
+                                            <option selected="selected" value="@LanguageResource.ScheduleCancel">@LanguageResource.ScheduleCancel</option>
+                                            <option value="@LanguageResource.AdvisoryByPhone">@LanguageResource.AdvisoryByPhone</option>
+                                            <option value="@LanguageResource.BookLater">@LanguageResource.BookLater</option>
+                                            <option value="Other">Khác</option>
+                                        </select>
+                                        <div class="required-icon" data-original-title="" title=""><span class="text">*</span></div>
+                                        <span class="field-validation-valid validation-text" data-valmsg-for="CancelType" data-valmsg-replace="true"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="from-group">
+                                <div class="col-md-8 col-md-offset-3">
+                                    <div class="input-group input-group-required">
+                                        <input id="CancelReason" name="CancelReason" type="text" class="form-control" readonly>
+                                        <div class="required-icon" data-original-title="" title=""><div class="text">*</div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal">@LanguageResource.Confirm_No</span>
+                        <a class="btn btn-primary pull-right" id="btn-confirm-cancel" data-tab="">
+                            @LanguageResource.Confirm_Yes
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

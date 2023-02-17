@@ -1,0 +1,234 @@
+﻿@model StockTransferRequestSearchViewModel
+@{
+    ViewBag.Title = LanguageResource.StockTransferRequest;
+    string CurrentController = ConstController.StockTransferRequest;
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    DateTime now = DateTime.Now;
+    DateTime ago = DateTime.Now.AddMonths(-2);
+    var fromDateDefault = new DateTime(ago.Year, ago.Month, 1).ToString("yyyy-MM-dd");
+    var toDateDefault = new DateTime(now.Year, now.Month, now.Day).ToString("yyyy-MM-dd");
+
+    bool isHasPermissionCreate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Create);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <div class="pull-right">
+            <div class="pull-right">
+                @HtmlExtensions.CreateButton(CurrentArea, CurrentController)
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.CompanyId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.CompanyId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.StoreId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.StoreId, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.StockTransferRequestCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.StockTransferRequestCode)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.SalesEmployeeCode, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.FromStock)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.FromStock, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ToStock)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.ToStock, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.FromDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.FromDate, new { type = "date", Value = fromDateDefault })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ToDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.ToDate, new { type = "date", Value = toDateDefault })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.Actived)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.Actived, null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton(new { data_searchType = CurrentController, data_controller = CurrentUrl })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="row">
+                        <div style="display: flex;" class="col-md-1">
+                            <label style=" padding-right: 5px; padding-top: 5px;">Xem </label>
+                            <select id="changeViewRow" style="display: block; width: 100%; min-height: 30px;margin-bottom:5px;-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <label style=" padding-left: 5px; padding-top: 5px;">mục </label>
+                        </div>
+                        <div class="pull-right">
+
+                            <div id="pagination" class="pagination">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div style="overflow-x: scroll !important; margin-top: 10px;" id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th class="text-center">@Html.DisplayNameFor(p => p.StockTransferRequestCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.StoreId)</th>
+                                    <th>@Html.DisplayNameFor(p => p.CompanyId)</th>
+                                    @*<th>@Html.DisplayNameFor(p => p.FromStock)</th>*@
+                                    <th>@Html.DisplayNameFor(p => p.ToStock)</th>
+                                    <th class="text-center">@Html.DisplayNameFor(p => p.DocumentDate)</th>
+                                    @*<th>@Html.DisplayNameFor(p => p.SalesEmployeeCode)</th>*@
+                                    <th>@Html.DisplayNameFor(p => p.Note)</th>
+                                    <th>@Html.DisplayNameFor(p => p.CreateBy)</th>
+                                    <th class="text-center">@Html.DisplayNameFor(p => p.CreateTime)</th>
+                                    @*<th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>*@
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tblData">
+                            </tbody>
+                            <tfoot></tfoot>
+                        </table>
+                        <p id="tblCount"></p>
+                    </div>
+
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script id="data-template" type="x-tmpl-mustache">
+      <tr>
+         <td class="text-center">{{i}}</td>
+         <td class="text-center"><a target="blank" href="/Warehouse/StockTransferRequest/Edit/{{Id}}">{{StockTransferRequestCode}}</a></td>
+         <td>{{StoreName}}</a></td>
+         <td>{{CompanyName}}</td>
+         @*<td>{{FromStockName}}</td>*@
+         <td>{{ToStockName}}</td>
+         <td class="text-center">{{DocumentDate}}</td>
+         <td>{{Note}}</td>
+         <td>{{CreateBy}}</td>
+         <td class="text-center">{{CreateTime}}</td>
+         @*<td class="text-center">{{Actived}}</td>*@
+         <td class="text-center">
+             @*<a class="btn btn-default btn-edit" href="/Warehouse/StockTransferRequest/Edit/{{Id}}" onclick="$(this).button('loading')"><i class="fa fa-pencil"></i> Sửa</a>*@
+             <a class="btn btn-info btn-transfer " target="_blank" href="/Warehouse/StockTransferRequest/Transfer?Id={{Id}}&StockTransferRequestCode={{StockTransferRequestCode}}" data-id="{{Id}}">
+                 <i class="fa fa-dolly-flatbed"></i> Chuyển kho theo yêu cầu
+             </a>
+             @if (isHasPermissionCreate == true)
+             {
+                 <a class="btn btn-primary" target="_blank" href="/Warehouse/StockTransferRequest/Create?CopyFrom={{Id}}" style="margin-top: 5px;"><i class="fa fa-clone"></i> Copy</a>
+             }
+             @*<a class="btn btn-danger btn-delete"  data-id="{{Id}}""><i class="fa fa-trash-o"></i> Xóa</a>*@
+         </td>
+      </tr>
+</script>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/jquery.twbsPagination.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/mustache.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script>
+        $(document).ready(function () {
+            ISDNET5.init();
+                ISDNET5.initSearch("@CurrentUrl", "@CurrentController", false);
+        });
+    </script>
+}
+
+
+
+
+

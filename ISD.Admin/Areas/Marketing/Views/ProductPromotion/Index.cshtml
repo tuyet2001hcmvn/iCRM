@@ -1,0 +1,248 @@
+﻿@model ProductPromotionSearchViewModel
+@{
+    ViewBag.Title = ViewBag.Title;
+    string CurrentController = ConstController.ProductPromotion;
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    bool isHasPermissionEdit = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Edit, "?Type=" + ViewBag.Type);
+    bool isHasPermissionCreate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.Create, "?Type=" + ViewBag.Type);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        <div class="pull-right">
+            <div class="pull-right">
+                @if (isHasPermissionCreate)
+                {
+                    @HtmlExtensions.CreateButton(CurrentArea, CurrentController, "Type", ViewBag.Type)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProductPromotionTitle)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(p => p.ProductPromotionTitle, new { @class = "form-control text-box single-line" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.Actived)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <select class="form-control" name="Actived">
+                                            <option selected>@LanguageResource.Dropdownlist_All</option>
+                                            <option value="true" selected>Hoạt động</option>
+                                            <option value="fale">Ngưng hoạt động</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton(new { data_searchType = CurrentController, data_controller = CurrentUrl })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult">
+                        <table class="table table-bordered table-striped table-hover dataTableServerSide no-footer">
+                            <thead class="isd-table-header">
+                                <tr>
+                                    <th class="text-center">@LanguageResource.NumberIndex</th>
+                                    <th>@Html.DisplayNameFor(p => p.ProductPromotionTitle)</th>
+                                    <th>@Html.DisplayNameFor(p => p.Type)</th>
+                                    <th>@Html.DisplayNameFor(p => p.SendTypeCode)</th>
+                                    <th>@Html.DisplayNameFor(p => p.StartTime)</th>
+                                    <th>@Html.DisplayNameFor(p => p.EndTime)</th>
+                                    <th>@Html.DisplayNameFor(p => p.Actived)</th>
+                                    <th class="text-center">@LanguageResource.Actions</th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+<div class="loading-modal"></div>
+@section scripts {
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+            //ISD.SearchInitial("@CurrentUrl");
+            PaggingServerSide("@CurrentUrl");
+            ISD.ShowMessage(window.location.href);
+        });
+
+        $("#btn-search").click(function () {
+            PaggingServerSide("@CurrentUrl");
+        });
+
+        //trigger enter click when fill in search form
+        $(document).on("keyup", "#frmSearch", function (evt) {
+            if (evt.keyCode == 13) {
+                $("#btn-search").trigger("click");
+            }
+        });
+
+        function PaggingServerSide(controller) {
+            $(".dataTableServerSide").DataTable().clear().destroy();
+            $(".dataTableServerSide")
+                .on('processing.dt', function (e, settings, processing) {
+                    ISD.LoadingDataTable(processing, '.dataTableServerSide');
+                })
+                .DataTable({
+                proccessing: true,
+                serverSide: true,
+                paging: true,
+                scrollX: false,
+                ajax: {
+                    type: 'POST',
+                    url: "/" + controller + "/_PaggingServerSide",
+                    contentType: 'application/json',
+                    data: function (d) {
+                        var arr = {};
+                        //data search
+                        var data = $("#frmSearch").serializeArray();
+                        $.each(data, function (index, val) {
+                            var obj = {};
+                            obj[val.name] = val.value;
+                            $.extend(true, arr, obj);
+                        });
+                        //data datatable (draw, start, length,...)
+                        $.extend(true, arr, d);
+
+                        return JSON.stringify(arr);
+                    }
+                },
+                columns: [
+                    {
+                        "data": "STT",
+                        "className": "text-center"
+                    },
+                    {
+                        "data": "ProductPromotionTitle",
+                        "className": "text-center",
+                        "orderable": true,
+                    },
+                    {
+                        "data": "Type",
+                        "className": "text-center",
+                        "orderable": true,
+                    },
+                    {
+                        "data": "SendTypeName",
+                        "orderable": true,
+                    },
+                    {
+                        "data": "StartTime",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        "data": "EndTime",
+                        "orderable": true,
+                        "render": function (data, type, row) {
+                            // If display or filter data is requested, format the date
+                            if (type === "display" || type === "filter") {
+                                if (data != null) {
+                                    return moment(data).format("DD/MM/YYYY");
+                                }
+                            }
+                            return "";
+                        }
+                    },
+                    {
+                        "data": "Actived",
+                        "orderable": true,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if (data == true) {
+                                    return "<i class='fa fa-check true-icon'></i>";
+                                }
+                                else {
+                                    return "<i class='fa fa-close false-icon'></i>";
+                                }
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        "data": "ProductPromotionId",
+                        "orderable": false,
+                        "className": "text-center",
+                        "render": function (data, type, row) {
+                            if (type === "display" || type === "filter") {
+                                if ("@isHasPermissionEdit" == true || "@isHasPermissionEdit" == 'true' || "@isHasPermissionEdit" == 'True') {
+                                    return "<a class=\"btn btn-default btn-edit\" href=\"/" + controller +"/Edit/" + data + "\" onclick=\"$(this).button('loading')\"><i class='fa fa-pencil'></i> Sửa</a>";
+                                }
+                                return "";
+                            }
+                            return "";
+                        }
+                    }
+                ],
+                destroy: true,
+                language: {
+                    sProcessing: "Đang xử lý...",
+                    sLengthMenu: "Xem _MENU_ mục",
+                    sZeroRecords: "Không tìm thấy dòng nào phù hợp",
+                    sInfo: "Đang xem _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    sInfoEmpty: "Đang xem 0 đến 0 trong tổng số 0 mục",
+                    sInfoFiltered: "(được lọc từ _MAX_ mục)",
+                    sInfoPostFix: "",
+                    sSearch: "Tìm nội dung:",
+                    sUrl: "",
+                    oPaginate: {
+                        sFirst: "Đầu",
+                        sPrevious: "&laquo;",
+                        sNext: "&raquo;",
+                        sLast: "Cuối"
+                    }
+                },
+                columnDefs: [
+                    { targets: [0, 1], visible: true },
+                    { targets: 'no-sort', visible: false }
+                ],
+                "sDom": '<"top"flp>rt<"bottom"ip><"clear">',
+            });
+        }
+    </script>
+}
+

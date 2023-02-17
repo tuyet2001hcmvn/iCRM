@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ProductViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+@Html.Hidden("popupColorProductId", (Guid?)ViewBag.ColorProductId)
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="detailColorList[@k].STT" value="@i">
+        <input type="hidden" name="detailColorList[@k].ColorProductId" value="@item.ColorProductId" />
+        <input type="hidden" name="detailColorList[@k].ProductId" value="@item.ProductId" />
+        <input type="hidden" name="detailColorList[@k].ImageId" value="@item.ImageId" />
+        <input type="hidden" name="detailColorList[@k].DetailImage" value="@item.DetailImage" />
+        <input type="hidden" name="detailColorList[@k].isDefault" value="@item.isDefault" />
+
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td class="text-center">
+                <img src="~/Upload/Color/@item.DetailImage" style="height:20%" />
+            </td>
+            <td class="text-center">
+                @if (item.isDefault == true)
+                {
+                    <i class="fa fa-check true-icon"></i>
+                }
+                else
+                {
+                    <a class="btn btn-info btn-set-first" data-id="@item.ImageId" data-color="@item.ColorProductId">
+                        @LanguageResource.Btn_ChooseImageFirst
+                    </a>
+                }
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-image" data-id="@item.ImageId" data-color="@item.ColorProductId">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

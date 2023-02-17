@@ -1,0 +1,123 @@
+﻿@model CategoryViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Sale_Category.ToLower();
+    string CurrentController = ConstController.Category;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.CategoryId)
+    @Html.HiddenFor(p => p.CategoryCode)
+    @Html.HiddenFor(p => p.ParentCategoryId)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ParentCategoryId)
+            </div>
+            <div class="col-md-9">
+                @Html.RequiredTextboxFor(p => p.ParentCategoryName, new { disabled = "disabled" })
+            </div>
+        </div>*@
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CategoryCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.CategoryCode, new { disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CategoryName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.CategoryName)
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+            <div class="col-md-3">
+                @Html.TooltipLabelFor(p => p.ProductTypeId)
+            </div>
+            <div class="col-md-9">
+                @Html.DropDownList("ProductTypeId", null, "--Vui lòng chọn loại--", new { @class = " form-control" })
+            </div>
+        </div>*@
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.IsTrackTrend)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButtonIs(p => p.IsTrackTrend)
+                            </div>
+                        </div>*@
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ImageUrl)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.ImageUrl, new { type = "file" })
+                                @if (Model.ImageUrl != null)
+                                {
+                                    <img id="image-edit-view" src="/Upload/Category/@Model.ImageUrl" />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+        });
+    </script>
+}
+
+
+

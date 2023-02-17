@@ -1,0 +1,54 @@
+﻿@model IEnumerable<ProfileSearchResultViewModel>
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer" id="tableSearchResult">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProfileName)</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.Email)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0;
+            var functionName = ViewBag.PreFix + "customCustomerAction";
+            }
+        @foreach (var item in Model)
+        {
+            i++;
+            if (!string.IsNullOrEmpty(item.ProvinceName))
+            {
+                item.ProvinceName = item.ProvinceName.Substring(1);
+
+            }
+            if (!string.IsNullOrEmpty(item.DistrictName))
+            {
+
+                item.DistrictName = item.DistrictName.Substring(1);
+            }
+            var func = string.Format("{0}('{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}')", functionName, item.ProfileId, item.ProfileCode, item.ProfileName, item.Phone, item.Email, item.ProvinceName, item.DistrictName, ViewBag.PreFix);
+
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.ProfileCode)</td>
+                <td>
+                    <a class="btn-customer-choose_@ViewBag.PreFix"
+                       onclick="@func">
+                        @Html.DisplayFor(p => item.ProfileName)
+                    </a>
+                </td>
+                <td>@Html.DisplayFor(p => item.Phone)</td>
+                <td>@Html.DisplayFor(p => item.Email)</td>
+                <td class="text-center">
+                    <a class="btn btn-success btn-customer-choose_@ViewBag.PreFix"
+                       onclick="@func">
+                        @LanguageResource.Btn_Choose
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

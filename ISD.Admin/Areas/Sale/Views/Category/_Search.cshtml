@@ -1,0 +1,56 @@
+﻿@model IEnumerable<CategoryViewModel>
+@{
+    string CurrentController = ConstController.Category;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CategoryCode)</th>
+            <th>@Html.DisplayNameFor(p => p.CategoryName)</th>
+            @*<th>@Html.DisplayNameFor(p => p.ParentCategoryId)</th>*@
+            <th class="text-center">@Html.DisplayNameFor(p => p.ImageUrl)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.OrderIndex)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.CategoryCode)</td>
+            <td>@Html.DisplayFor(p => item.CategoryName)</td>
+            @*<td>@Html.DisplayFor(p => item.ParentCategoryName)</td>*@
+            <td class="text-center">
+                @if (item.ImageUrl != null)
+                {
+                    <img class="image-search-view" src="/Upload/Category/@item.ImageUrl" />
+                }
+                else
+                {
+                    <img class="image-search-view" src="/Upload/Category/noimage.jpg" />
+                }
+            </td>
+            <td class="text-center">@Html.DisplayFor(p => item.OrderIndex)</td>
+            <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            <td class="text-center">
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.CategoryId)
+                @if (item.isDelete == true)
+                {
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.CategoryName, item.CategoryId)
+                }
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

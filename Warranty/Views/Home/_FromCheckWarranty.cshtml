@@ -1,0 +1,124 @@
+﻿@model Warranty.Models.CheckWarrantySearchModel
+@using BotDetect.Web.Mvc;
+@{
+
+    MvcCaptcha checkWarCaptcha = new MvcCaptcha("checkWarCaptcha");
+    checkWarCaptcha.UserInputID = "CaptchaCode";
+}
+<div class="card card-primary card-outline card-outline-tabs">
+    <div class="card-header p-0 border-bottom-0">
+        <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="tabs-serial-tab" data-toggle="pill" href="#tabs-serial" role="tab" aria-controls="tabs-serial" aria-selected="true">Serial</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tabs-phonenumber-tab" data-toggle="pill" href="#tabs-phonenumber" role="tab" aria-controls="tabs-phonenumber" aria-selected="false">Số điện thoại</a>
+            </li>
+
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="custom-tabs-four-tabContent">
+            <div class="tab-pane fade show active" id="tabs-serial" role="tabpanel" aria-labelledby="tabs-serial-tab">
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("_CheckBySerial", "Home", FormMethod.Post, new { id = "frmCheckWarrantyBySerial" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <div class="form-group row searchBySerial">
+                            <div class="col-sm-4 col-form-label">
+                                @Html.TooltipLabelFor(p => p.SearchSeriNo)
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="text" name="SearchSeriNo" class="form-control" placeholder="Serial">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#scanQRCodeModal" onclick="startWebcam();">Quét mã QR</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-4 text-right">
+                                <label for="checkWarCapcha" class="col-form-label">Mã xác nhận</label>
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.Captcha(checkWarCaptcha)
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-form-label">
+                                @Html.TooltipLabelFor(p => p.CaptchaCode)
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(p => p.CaptchaCode, new { @class = "form-control", placeholder = "Mã xác nhận" })
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-info btn-checkWarranty" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Tra cứu">
+                                Tra cứu
+                            </button>
+                        </div>
+
+                    }
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tabs-phonenumber" role="tabpanel" aria-labelledby="tabs-phonenumber-tab">
+                <div class="form-horizontal">
+                    @using (Html.BeginForm("_CheckByPhone", "Home", FormMethod.Post, new { id = "frmCheckWarrantyByPhone" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <div class="form-group row searchByPhone">
+                            <div class="col-sm-4 col-form-label">
+                                @Html.TooltipLabelFor(p => p.SearchPhone)
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(p => p.SearchPhone, new { @class = "form-control", placeholder = "Số điện thoại" })
+                            </div>
+                        </div>
+                        @*<div class="form-group row searchByPhone">
+                                <div class="col-sm-4 col-form-label">
+                                    @Html.TooltipLabelFor(p => p.VerifyOTP)
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input type="text" name="VerifyOTP" class="form-control" placeholder="Mã OTP">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-secondary btn-sendOTP" type="button" onclick="SendOTP()" disabled>Gửi OTP</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+                        <div class="form-group row">
+                            <div class="col-sm-4 text-right">
+                                <label for="checkWarCapcha" class="col-form-label">Mã xác nhận</label>
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.Captcha(checkWarCaptcha)
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-4 col-form-label">
+                                @Html.TooltipLabelFor(p => p.CaptchaCode)
+                            </div>
+                            <div class="col-sm-8">
+                                @Html.TextBoxFor(p => p.CaptchaCode, new { @class = "form-control", placeholder = "Mã xác nhận" })
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-info btn-checkWarranty" data-loading-text="<i class='fa fa-spinner fa-spin '></i> Tra cứu">
+                                Tra cứu
+                            </button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.card -->
+</div>

@@ -1,0 +1,149 @@
+﻿@model ProfileSearchViewModel
+
+<div id="divCustomerSearch_@ViewBag.PreFix" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-md">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                @*<h4 class="modal-title">@LanguageResource.Accessory_Search</h4>*@
+                <h4 class="modal-title">Tìm kiếm thông tin khách hàng</h4>
+            </div>
+            <form id="frmSearchPopup_Customer_@ViewBag.PreFix">
+                @Html.AntiForgeryToken()
+                @*@Html.HiddenFor(p => p.SaleOrg)*@
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="content">
+                            <div class="form-horizontal">
+                                <div class="panel-group">
+                                    <div class="panel panel-default panel-search">
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="form-group">
+                                                        <div class="col-md-2">
+                                                            @Html.TooltipLabelFor(p => p.ProfileCode)
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @Html.TextBoxFor(p => p.ProfileCode, new { @class = "form-control text-box single-line" })
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            @Html.TooltipLabelFor(p => p.ProfileForeignCode)
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @Html.TextBoxFor(p => p.ProfileForeignCode, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                        <div class="col-md-2">
+                                                            @Html.TooltipLabelFor(p => p.ProfileName)
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @Html.TextBoxFor(p => p.ProfileName, new { @class = "form-control text-box single-line" })
+                                                        </div>
+
+                                                        <div class="col-md-2">
+                                                            @Html.TooltipLabelFor(p => p.Phone)
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @Html.TextBoxFor(p => p.Phone, new { @class = "form-control text-box single-line" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <div class="col-md-2">
+                                                            @Html.TooltipLabelFor(p => p.CustomerTypeCode)
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            @Html.DropDownList("CustomerTypeCode", null, LanguageResource.Dropdownlist_All, new { @class = "form-control with-search" })
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <div class="col-md-8 col-md-offset-5">
+                                                        <a class="btn btn-primary btn-search" id="btn-customer-search_@ViewBag.PreFix">
+                                                            <i class="fa fa-search"></i> @LanguageResource.Btn_Search
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="panel panel-default">
+                                        <div class="panel-body">
+                                            <div id="divSearchPopupResult_Customer_@ViewBag.PreFix"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="divModalCustomerAlertSuccess_@ViewBag.PreFix" class="alert alert-success alert-dismissable modalAlert" style="display: none">
+                            <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                            <div class="modal-alert-message">
+                            </div>
+                        </div>
+
+                        <div id="divModalCustomerAlertWarning_@ViewBag.PreFix" class="alert alert-warning alert-dismissable modalAlert" style="display: none">
+                            <button type="button" class="alert-close close" aria-hidden="true">×</button>
+                            <div class="modal-alert-message">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    // Tạo các biến từ server
+    if (!isLoaded_@ViewBag.PreFix) {
+        var isLoaded_@ViewBag.PreFix = true;
+        var ViewBagPreFix = '@ViewBag.PreFix';
+
+        // Gọi component script xử lý
+        var s = document.createElement('script');
+        //s.setAttribute('src', "/Scripts/Components/SearchCustomerComponent.js?v=" + app_version)
+
+        //button Tìm kiếm
+        $(document).on("click", "#btn-customer-search_" + ViewBagPreFix, function () {
+            var $btn = $(this);
+            $btn.button('loading');
+
+            var data = $("#frmSearchPopup_Customer_" + ViewBagPreFix).serialize();
+            data = data + "&prefix=" + ViewBagPreFix;
+
+            $.ajax({
+                type: "POST",
+                url: "/Warehouse/StockReceiving/_CustomerSearchResult",
+                data: data,
+                success: function (xhr, status, error) {
+                    $btn.button('reset');
+                    if (xhr.Code === 500) {
+                        //error
+                        $("#divCustomerSearch_" + ViewBagPreFix).modal("hide");
+                        alertPopup(false, xhr.Data);
+                    } else {
+                        //success
+                        $("#divSearchPopupResult_Customer_" + ViewBagPreFix).html(xhr);
+                        ISD.Pagging();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $btn.button('reset');
+                    $("#divCustomerSearch_" + ViewBagPreFix).modal("hide");
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        document.body.appendChild(s);
+    }
+
+
+</script>

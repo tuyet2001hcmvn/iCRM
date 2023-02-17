@@ -1,0 +1,253 @@
+﻿@model PlateFeeViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Sale_PlateFee.ToLower();
+    string CurrentController = ConstController.PlateFee;
+    string CurrentArea = ConstArea.Sale;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.PlateFeeId)
+    @Html.HiddenFor(p => p.PlateFeeCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PlateFeeCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PlateFeeCode, new { @disabled = "disabled" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.PlateFeeName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.PlateFeeName)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Description)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.TextAreaFor(p => p.Description, new { @class = "form-control"})
+                                @*<script type="text/javascript">
+                                    CKEDITOR.replace("Description", {
+                                        height: 250,
+                                        width: 800
+                                    });
+                                    CKEDITOR.instances['Description'].on('change',
+                                        function () { CKEDITOR.instances['Description'].updateElement() });
+                                </script>*@
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.DetailPlateFee)
+                            </div>
+                        </div>
+
+                        <div>
+                            @Html.Action("_DetailPlateFee", new { PlateFeeId = Model.PlateFeeId, mode = 2 })
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.ApplyFor)
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="pull-right">
+                                <a class="btn bg-blue btn-inside">
+                                    <i class="fa fa-plus-square"></i> Thêm sản phẩm
+                                </a>
+                            </div>
+                            @Html.Action("_DetailChecking", new { chosenList = (List<Detail_PeriodicallyCheckingViewModel>)ViewBag.chosenList })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section components {
+    @Html.Action("_ProductSearch")
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-edit
+        $(document).ready(function () {
+            ISD.EditInitial("@CurrentUrl");
+            SearchText();
+        });
+
+        //autocomplete 
+        function SearchText() {
+            $("#Province").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url: "/Sale/PlateFee/GetProviveAndDistrict",
+                        data: JSON.stringify({ "provinceName": $("#Province").val() }),
+                        dataType: "json",
+                        success: function (data) {
+                            response(data);
+                        },
+                        error: function (xhr, status, error) {
+                            alertPopup(false, xhr.responseText);
+                        }
+                    });
+                }
+            });
+        }
+
+        //check all
+        $(document).on("change", "#choose-all", function () {
+            if ($(this).prop("checked")) {
+                $('#productSearchTable tr td input.choose-product').each(function () {
+                    $(this).prop("checked", true);
+                });
+            }
+            else {
+                $('#productSearchTable input.choose-product').each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+
+        //get product chosen
+        $(document).on("click", "#btn-choose", function () {
+            var productList = [];
+            $('#productSearchTable input.choose-product:checked').each(function () {
+                productList.push($(this).attr('value'));
+            });
+
+            var existList = [];
+            $('#productTable input.productId').each(function () {
+                existList.push($(this).attr("value"));
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Sale/PlateFee/InsertProduct",
+                data: {
+                    productList: productList,
+                    existList: existList
+                },
+                success: function (jsonData) {
+                    $("#divProductSearch").modal("hide");
+                    $("#chosenList").html(jsonData);
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        //delete product
+        $(document).on("click", ".btn-del", function () {
+            var DeleteProductId = $(this).data("product");
+
+            var productList = [];
+            $('#productTable input.productId').each(function () {
+                productList.push($(this).attr('value'));
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "/Sale/PlateFee/DeleteProduct",
+                data: {
+                    productList: productList,
+                    DeleteProductId: DeleteProductId
+                },
+                success: function (jsonData) {
+                    $("#chosenList").html(jsonData);
+                },
+                error: function (xhr, status, error) {
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+
+        //add new detail price
+        $(document).on("click", ".btn-add-detail", function () {
+            var Province = $("#Province").val();
+            var Price = $("#Price").val();
+            if (Province == "" || Price == "") {
+                alertPopup(false, "@LanguageResource.Error_NullValueCreate");
+            }
+            else {
+                var data = $("#frmEdit").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/Sale/PlateFee/InsertDetailPlateFee",
+                    data: data,
+                    success: function (jsonData) {
+                        $("#uploadTable tfoot#detail input").val("");
+                        //reset select2 dropdownlist
+                        $('#frmEdit tfoot#detail select').val($('#frmEdit tfoot select option:first-child').val()).trigger("change");
+                        $("#detailList").html(jsonData);
+                    },
+                    error: function (xhr, status, error) {
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            }
+        });
+
+        //delete detail row
+        $(document).on("click", ".btn-del-detail", function () {
+            var STT = $(this).data("id");
+            $.ajax({
+                type: "POST",
+                url: "/Sale/PlateFee/DeleteDetailPlateFee?STT=" + STT,
+                data: $("#frmEdit").serialize(),
+                success: function (data) {
+                    $("#detailList").html(data);
+                }
+            });
+        });
+    </script>
+}
+
+
+

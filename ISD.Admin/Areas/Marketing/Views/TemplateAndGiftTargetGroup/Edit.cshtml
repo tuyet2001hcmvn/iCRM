@@ -1,0 +1,111 @@
+﻿@model TargetGroupEditViewModel
+@using MvcCheckBoxList.Model
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.TemplateAndGiftTargetGroup.ToLower();
+    string CurrentController = ConstController.TemplateAndGiftTargetGroup;
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);   
+    var id = ViewBag.Id;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+        <button class="btn btn-success" data-target="#importexcel-window" data-toggle="modal" id="btn-import"><i class="fa fa-upload"></i> Import</button>
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(p => p.Id)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupCode)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.TargetGroupCode, new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupName)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.RequiredTextboxFor(p => p.TargetGroupName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Actived)
+                        </div>
+                        <div class="col-md-7">
+                            @Html.ActivedRadioButton(p => p.Actived)
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p id="createBy" class="last-mod">
+                        </p>
+                        <p id="lastEditBy" class="last-mod">
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-member" aria-expanded="true" data-toggle="tab">@LanguageResource.MemberOfTargetGroup<span id="totalMember">(0)</span></a>
+                    </li>
+                    <li>
+                        <a href="#tab-thay-doi" data-toggle="tab">@LanguageResource.ChangeDataLog</a>
+                    </li>
+
+                </ul>
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="tab-member">
+                        @Html.Partial("_LoadMember")
+                    </div>
+                    <div class="tab-pane" id="tab-thay-doi">
+                       @Html.Action("_List", "ChangeDataLog", new { area = "Utilities", @id = id })
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="delete-confirm"></div>
+<div class="loading-modal"></div>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/jquery.twbsPagination.min.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script src="~/Areas/Marketing/Scripts/mustache.min.js"></script>
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        var currentController = "@CurrentUrl";
+        $(document).ready(function () {
+            var id = $("#Id").val();
+            ISDNET5.init();
+            ISDNET5.EditInitial("@CurrentUrl");
+            ISDNET5.UploadFile("@CurrentUrl");
+            ISDNET5.loadMember("@CurrentUrl",false);
+        });
+    </script>
+}
+
+
+

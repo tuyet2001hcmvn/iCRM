@@ -1,0 +1,131 @@
+﻿
+
+@model StockTransferRequestCreateViewModel
+
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.StockTransferRequest.ToLower();
+    string CurrentController = ConstController.StockTransferRequest;
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var id = ViewBag.Id;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndContinue)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                {
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("StockTransferRequestId", (Guid)id)
+                    <div class="panel-group" style="margin-top: 15px">
+                        <div class="panel panel-body">
+                            <div class="form-horizontal">
+                                @{ var stockReciveVM = new StockTransferByRequestViewModel
+                                    {
+                                        DocumentDate = DateTime.Now
+                                    };
+                                }
+                                @Html.Partial("_StockTransferByRequestMaster", stockReciveVM)
+                                <div class="form-group panel">
+                                    @Html.Partial("~/Areas/Warehouse/Views/StockDelivery/_CatalogInfo.cshtml", new DeliveryViewModel())
+                                </div>
+                                @Html.Partial("_StockTransferRequestDetailEdit")
+                                <div class="col-md-12">
+                                    <p id="createBy" class="last-mod">
+                                    </p>
+                                    <p id="lastEditBy" class="last-mod">
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="loading-modal"></div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+
+@section scripts {
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        $(document).ready(function () {
+            //$("select[name='CompanyId']").trigger("change");
+            //SearchText_ProductCode();
+            //SearchText_FromStockCode();
+            //SearchText_ToStockCode();
+            EditInitial("@id");
+            SearchText_ProductCode();
+        });
+
+        //$(document).on("change", "select[name='CompanyId']", function () {
+        //    var CompanyId = $(this).val();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/MasterData/Store/GetStoreByCompany",
+        //        data: {
+        //           CompanyId: CompanyId
+        //        },
+        //        success: function (jsonData) {
+        //            $("#StoreId").html("");
+        //            $.each(jsonData, function (index, value) {
+        //                $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+        //            });
+
+        //            $("select[name='StoreId']").trigger("change");
+        //        }
+        //    });
+        //});
+
+        //$(document).on("change", "select[name='StoreId']", function () {
+        //    var StoreId = $(this).val();
+        //    $.ajax({
+        //        type: "POST",
+        //        url: "/Warehouse/Stock/GetMainStockByStore",
+        //        data: {
+        //            StoreId: StoreId
+        //        },
+        //        success: function (jsonData) {
+        //            $("input[name='FromStockId']").val(jsonData.StockId);
+        //            $("input[name='FromStockCode']").val(jsonData.StockCode);
+        //            $("input[name='FromStockName']").val(jsonData.StockName);
+        //        }
+        //    });
+        //    //Đổi chi nhánh => clear DATA đang nhập
+        //    //$("#transferDetailList").html("<tr><td class=\"text-center\" colspan=\"7\">Vui lòng thêm sản phẩm!</td></tr>");
+        //});
+
+        //chỉ cho phép nhập số
+        //function isNumberKey(evt) {
+        //    var charCode = (evt.which) ? evt.which : evt.keyCode;
+        //    if (charCode != 46 && charCode > 31
+        //        && (charCode < 48 || charCode > 57))
+        //        return false;
+        //    return true;
+        //}
+        var viewType = "Edit";
+        var editId = "@id";
+    </script>
+
+    @*<script src="~/Areas/Warehouse/Scripts/StockTransferRequestCreate.js"></script>*@
+    <script src="~/Areas/Warehouse/Scripts/StockTransferRequestEdit.js"></script>
+}
+

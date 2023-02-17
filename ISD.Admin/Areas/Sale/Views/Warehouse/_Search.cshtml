@@ -1,0 +1,43 @@
+﻿@model IEnumerable<WarehouseViewModel>
+@{
+    string CurrentController = ConstController.Warehouse;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.WarehouseCode)</th>
+            <th>@Html.DisplayNameFor(p => p.WarehouseShortName)</th>
+            <th>@Html.DisplayNameFor(p => p.WarehouseName)</th>
+            <th>@Html.DisplayNameFor(p => p.StoreName)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td>@Html.DisplayFor(p => item.WarehouseCode)</td>
+            <td>@Html.DisplayFor(p => item.WarehouseShortName)</td>
+            <td>@Html.DisplayFor(p => item.WarehouseName)</td>
+            <td>@Html.DisplayFor(p => item.StoreName)</td>
+            <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+            <td class="text-center">
+                @HtmlExtensions.ViewButton(CurrentArea, CurrentController, item.WarehouseId)
+                @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.WarehouseId)
+                @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.WarehouseName, item.WarehouseId)
+            </td>
+        </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

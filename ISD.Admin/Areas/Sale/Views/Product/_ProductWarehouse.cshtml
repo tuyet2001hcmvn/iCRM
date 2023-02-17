@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ProductViewModel>
+
+<table id="uploadTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.WarehouseName)</th>
+            <th>@Html.DisplayNameFor(p => p.MainColorProductName)</th>
+            <th>@Html.DisplayNameFor(p => p.StyleWarehouseName)</th>
+            <th>@Html.DisplayNameFor(p => p.Quantity)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductPostDate)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductUserPost)</th>
+        </tr>
+    </thead>
+    <tbody id="stockList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            int i = 0;
+            foreach (var item in Model)
+            {
+                i++;
+                <tr>
+                    <td class="text-center">
+                        @i
+                    </td>
+                    <td>
+                        @item.WarehouseName
+                    </td>
+                    <td>
+                        <input type="text" class="DisplayColor" style="background-color: @item.MainColorProductCode" readonly /> @item.MainColorShortName | @item.MainColorProductName
+                    </td>
+                    <td>
+                        @item.StyleWarehouseName
+                    </td>
+                    <td class="text-right">
+                        @string.Format("{0:n0}", item.Quantity)
+                    </td>
+                    <td class="text-right">
+                        @string.Format("{0:dd/MM/yyyy HH:mm:ss}", item.ProductWarehousePostDate)
+                    </td>
+                    <td>
+                        @item.ProductWarehouseUserPost
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">
+                    @LanguageResource.Product_NotExistStock
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

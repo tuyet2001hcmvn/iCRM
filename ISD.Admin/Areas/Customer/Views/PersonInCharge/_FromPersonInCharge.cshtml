@@ -1,0 +1,53 @@
+﻿@model PersonInChargeViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.PersonInChargeId == Guid.Empty)
+    {
+    <h4 class="modal-title">@LanguageResource.Create @LanguageResource.PersonInCharge.ToLower()</h4>
+    }
+    else
+    {
+    <h4 class="modal-title">@LanguageResource.Update @LanguageResource.PersonInCharge.ToLower()</h4>
+    }
+</div>
+<div class="modal-body">
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmPersonInCharge" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ProfileId)
+        @Html.HiddenFor(p => p.PersonInChargeId)
+
+        <div id="divAlertWarningPersonInCharge" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="form-horizontal">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.SalesEmployeeName)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.RequiredDropDownListFor(p => p.SalesEmployeeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.RoleCode)
+                    </div>
+                    <div class="col-md-9">
+                        @Html.RequiredDropDownListFor(p => p.RoleCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-personInCharge" data-add-success-call-back="ReloadPersonInChargeList">@LanguageResource.Btn_Save</button>
+</div>

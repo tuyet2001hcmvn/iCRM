@@ -1,0 +1,72 @@
+﻿@model SponsViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.SponsId == Guid.Empty)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @ViewBag.Title</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@LanguageResource.Update @ViewBag.Title</h4>
+    }
+</div>
+<div class="modal-body">
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmSpons" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(p => p.ProfileId)
+        @Html.HiddenFor(p => p.Type)
+        @Html.HiddenFor(p => p.SponsId)
+
+        <div id="divAlertWarningSpons" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+            <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+            <div class="alert-message">
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="box-body">
+                <div class="form-group row">
+                    <div class="col-md-6 text-right">
+                        @Html.TooltipLabelFor(p => p.Value)
+                        <input type="text" class="form-control Value text-right" id="Value" name="Value" value="@string.Format("{0:n0}",Model.Value).Replace(",","")" />
+                        @{
+                            decimal? Value = null;
+                            string ValueDisplay = null;
+                            if (Model.Value != null)
+                            {
+                                Value = Model.Value;
+                                ValueDisplay = string.Format("{0:n0}", Value);
+                            }
+                            <div>
+                                @if (Value.HasValue)
+                                {
+                                    <span id="ValueDisplay">@ValueDisplay VNĐ</span>
+                                }
+                                else
+                                {
+                                    <span id="ValueDisplay"></span>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="col-md-6">
+                        @Html.TooltipLabelFor(p => p.Time)
+                        @Html.RequiredTextboxFor(p => p.Time, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                    </div>
+                    <div class="col-md-12">
+                        @Html.TooltipLabelFor(p => p.Descriptions)
+                        @Html.TextAreaFor(p => p.Descriptions, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-spons" data-type="@Model.Type" data-add-success-call-back="ReloadSpons">@LanguageResource.Btn_Save</button>
+</div>

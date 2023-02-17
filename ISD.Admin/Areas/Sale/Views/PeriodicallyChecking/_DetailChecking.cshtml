@@ -1,0 +1,26 @@
+﻿@model IEnumerable<Detail_PeriodicallyCheckingViewModel>
+
+<table id="productTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+            <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+            <th>@Html.DisplayNameFor(p => p.CategoryId)</th>
+            <th>@Html.DisplayNameFor(p => p.ConfigurationId)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="chosenList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @Html.Partial("_DetailCheckingInner", Model)
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" style="text-align: center">@LanguageResource.ChooseProduct</td>
+            </tr>
+        }
+    </tbody>
+</table>

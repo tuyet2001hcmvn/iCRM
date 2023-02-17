@@ -1,0 +1,104 @@
+﻿@using ISD.ViewModels.MasterData
+@model QuestionEditViewModel
+
+@{ 
+    var update = LanguageResource.Update;
+}
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h4 class="modal-title" id="modal-title">Modal title</h4>
+
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="modal-body">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+            {
+                <input hidden id="Id" />
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.Answer)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(p => p.Answer, new {@readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.AnswerC)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(p => p.AnswerC, new {  @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        @Html.TooltipLabelFor(p => p.AnswerB)
+                    </div>
+                    <div class="col-md-8">
+                        @Html.TextAreaFor(p => p.AnswerB, new { @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <p id="createBy" class="last-mod">
+                    </p>
+                    <p id="lastEditBy" class="last-mod">
+                    </p>
+                </div>
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+            <button type="button" id="btn-popup-edit"  class="btn btn-primary">@LanguageResource.Update</button>
+        </div>
+    </div>
+</div>
+<script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+<script>
+   
+    CKEDITOR.replace('Answer', {
+        extraPlugins: 'autogrow',
+        autoGrow_minHeight: 150,
+        autoGrow_maxHeight: 400,
+        removePlugins: 'elementspath,resize',
+        filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+        filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+        filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+        filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+        filebrowserWindowWidth: '1000',
+        filebrowserWindowHeight: '700',
+        toolbar: []
+    });
+    CKEDITOR.instances.Answer.config.readOnly = 'true';
+
+    CKEDITOR.replace('AnswerC', {
+        extraPlugins: 'autogrow',
+        autoGrow_minHeight: 150,
+        autoGrow_maxHeight: 400,
+        removePlugins: 'elementspath,resize',
+        filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+        filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+        filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+        filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+        filebrowserWindowWidth: '1000',
+        filebrowserWindowHeight: '700',
+        toolbar: []
+    });
+    CKEDITOR.instances.AnswerC.config.readOnly = 'true';
+
+    CKEDITOR.replace('AnswerB', {
+        extraPlugins: 'autogrow',
+        autoGrow_minHeight: 150,
+        autoGrow_maxHeight: 400,
+        removePlugins: 'elementspath,resize',
+        filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+        filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+        filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+        filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+        filebrowserWindowWidth: '1000',
+        filebrowserWindowHeight: '700',
+        toolbar: []
+    });
+    CKEDITOR.instances.AnswerB.config.readOnly = 'true';
+
+</script>

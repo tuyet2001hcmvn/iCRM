@@ -1,0 +1,231 @@
+﻿@model StockReceivingMasterViewModel
+@using ISD.Core;
+@{
+    ViewBag.Title = LanguageResource.Btn_View + " " + LanguageResource.StockReceiving.ToLower();
+    string CurrentController = ConstController.StockReceiving;
+    string CurrentArea = ConstArea.Warehouse;
+
+    //string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    var StockRecevingDetailList = (List<StockReceivingDetailViewModel>)ViewBag.ListStockRecevingDetail;
+    var Supplier = (ProfileViewModel)ViewBag.Supplier;
+    if (Supplier == null)
+    {
+        Supplier = new ProfileViewModel();
+    }
+}
+<div class="content" style="padding-top: 0px">
+    <div class="content-header clearfix pl-0">
+        @{ var title = LanguageResource.StockReceive_Bill + ": " + Model.StockReceivingCode; }
+        <h1 class="pull-left">
+            @title
+            @if (Model.isDeleted == true)
+            {
+                <span style="font-size: 16px">(Đã hủy: @Model.DeletedReason)</span>
+            }
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?ModeSearch=Recently")
+        </h1>
+    </div>
+    <div class="panel-group" style="margin-top: 20px">
+        <div class="panel panel-body">
+            <div class="form-horizontal">
+                <div class="panel panel-default isd-panel">
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.CompanyId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">@Html.DisplayFor(p => p.CompanyName)</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.SalesEmployeeName)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.StoreId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.StoreName)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.Note)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.Note)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.DocumentDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @if (Model.DocumentDate != null)
+                                        {
+                                            <div class="display-for">@Model.DocumentDate.Value.ToString("dd/MM/yyyy")</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default isd-panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse-supplier">@LanguageResource.Warehouse_SupplierInfor</a>
+                            <span>
+                                <a class="btn btn-info btn-go-profile" title="Thông tin chi tiết nhà cung cấp" data-id="@Model.ProfileId">
+                                    <i class="fa fa-arrow-circle-o-right"></i>
+                                </a>
+                            </span>
+                        </h4>
+                    </div>
+                    <div id="collapse-supplier" class="panel-collapse collapse in">
+                        <div class="content-header-in-panel">
+                            @Html.Partial("_StockReceivingInfo", Supplier)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default isd-panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse-product">@LanguageResource.Sale_Product</a>
+                        </h4>
+                    </div>
+                    <div id="collapse-product" class="panel-collapse collapse in">
+                        <div class="content-header-in-panel">
+                            <table id="stockReceivingDetailTable" class="table table-bordered table-hover no-footer detail-table">
+                                <thead class="isd-table-header">
+                                    <tr>
+                                        <th class="text-center">@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.StockCode</th>
+                                        <th>@LanguageResource.StockName</th>
+                                        <th>@LanguageResource.ProductCode</th>
+                                        <th>@LanguageResource.Promotion_ProductName</th>
+                                        <th style="width:100px">@LanguageResource.Catalogue_Quantity</th>
+                                        <th>@LanguageResource.Price</th>
+                                        <th>@LanguageResource.SaleOrder_UnitPrice</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stockReceivingDetailList">
+                                    @if (Model != null && StockRecevingDetailList.Count() > 0)
+                                    {
+                                        int i = 0;
+                                        int k = -1;
+
+                                        foreach (var item in StockRecevingDetailList)
+                                        {
+                                            i++;
+                                            k++;
+
+                                            string background_color = "";
+
+                                            <tr class="@background_color">
+                                                <td class="text-center">
+                                                    @i
+                                                </td>
+                                                <td class="text-center">
+                                                    @Html.DisplayFor(p => item.StockCode)
+                                                </td>
+                                                <td class="wordwrap">
+                                                    @Html.DisplayFor(p => item.StockName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(p => item.ProductCode)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(p => item.ProductName)
+                                                </td>
+                                                <td class="text-right">
+                                                    @Html.DisplayFor(p => item.Quantity)
+                                                </td>
+                                                <td class="text-right">
+                                                    @item.Price.FormatCurrency()
+                                                </td>
+                                                <td class="text-right">
+                                                    @item.UnitPrice.FormatCurrency()
+                                                    <input type="hidden" name="stockReceivingDetailList[@k].UnitPrice" class="stockReceivingDetailList-UnitPrice" value="@item.UnitPrice" disabled data-row="@k">
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td class="text-center" colspan="8">
+                                                @LanguageResource.Warehouse_NoProduct
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot id="accessoryDetail">
+                                    <tr>
+                                        <td colspan="7" class="text-right">
+                                            <strong>@LanguageResource.SaleOrder_SubTotal</strong>
+                                        </td>
+                                        <td id="total" class="text-right"></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            TotalPrice();
+        });
+        //Tính tổng tiền
+        function TotalPrice() {
+            var SubTotal = 0;
+            $(".stockReceivingDetailList-UnitPrice").each(function () {
+                var dataRow = $(this).data("row");
+                var TotalPrice = $("input[name='stockReceivingDetailList[" + dataRow + "].UnitPrice']").val();
+                if (TotalPrice == "") {
+                    TotalPrice = 0;
+                }
+                SubTotal += parseInt(TotalPrice);
+            });
+            $("#total").html(formatCurrency(SubTotal));
+            // $("#TotalPrice").val(SubTotal);
+        }
+
+        $(document).on("click", ".btn-go-profile", function () {
+            var id = $(this).data("id");
+            if (id != null && id != "") {
+                window.open("/Customer/Profile/Edit/" + id, "_blank");
+            }
+        });
+    </script>
+}

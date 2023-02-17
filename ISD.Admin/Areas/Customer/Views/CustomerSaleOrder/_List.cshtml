@@ -1,0 +1,28 @@
+﻿@model IEnumerable<CustomerSaleOrderViewModel>
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @LanguageResource.Customer_SaleOrder
+    </h1>
+    @*<div class="pull-right">
+            <a class="btn bg-blue" id="btn-create-addressbook"><i class="fa fa-plus-square"></i> Thêm mới</a>
+        </div>*@
+</div>
+<div class="content" id="contentCustomerSaleOrder">
+    <table class="table table-bordered table-striped table-hover no-footer">
+        <thead class="isd-table-header">
+            <tr>
+                <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                <th>@Html.DisplayNameFor(p => p.SONumber)</th>
+                <th>@Html.DisplayNameFor(p => p.OrderNumber)</th>
+                <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+                <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+                <th class="text-right">@Html.DisplayNameFor(p => p.ProductQuantity)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("_ListContent", Model)
+        </tbody>
+        <tfoot></tfoot>
+    </table>
+</div>
+

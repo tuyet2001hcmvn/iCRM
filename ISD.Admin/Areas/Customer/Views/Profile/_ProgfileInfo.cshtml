@@ -1,0 +1,145 @@
+﻿@model ProfileDetailViewModel
+
+<div class="box-body">
+
+    <div class="row">
+        <div class="form-group col-md-6">
+            @Html.LabelFor(p => p.CustomerTypeCode)
+            @Html.DisplayFor(p => p.CustomerTypeName)
+        </div>
+    </div>
+    <div id="divProfileName" class="row">
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.ProfileName):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.ProfileName)
+            </div>
+        </div>
+    </div>
+    <!--Begin - Bussiness-->
+    @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+    {
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.TaxNo):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.TaxNo)
+            </div>
+        </div>
+    }
+    <!--End - Bussiness-->
+
+    <div class="form-group col-md-6">
+        <div class="col-md-4">
+            @Html.LabelFor(p => p.Phone):
+        </div>
+        <div class="col-md-8">
+            @Html.DisplayFor(p => p.Phone)
+        </div>
+    </div>
+    <div class="form-group col-md-6">
+        <div class="col-md-4">
+            @Html.LabelFor(p => p.Email):
+        </div>
+        <div class="col-md-8">
+            @Html.DisplayFor(p => p.Email)
+        </div>
+    </div>
+    <!--Begin - Customer-->
+    @if (Model.CustomerTypeCode == ConstCustomerType.Customer)
+    {
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.CompanyId):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.CompanyName)
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.PositionC):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.PositionC)
+            </div>
+        </div>
+    }
+    <!--End - Customer-->
+
+    <div class="form-group col-md-6">
+        <div class="col-md-4">
+            @Html.LabelFor(p => p.ProvinceId):
+        </div>
+        <div class="col-md-8">
+            @Html.DisplayFor(p => p.ProvinceName)
+        </div>
+    </div>
+    <div class="form-group col-md-6">
+        <div class="col-md-4">
+            @Html.LabelFor(p => p.DistrictId):
+        </div>
+        <div class="col-md-8">
+            @Html.DisplayFor(p => p.DistrictName)
+        </div>
+    </div>
+    <div class="form-group col-md-6">
+        <div class="col-md-4">
+            @Html.LabelFor(p => p.Address):
+        </div>
+        <div class="col-md-8">
+            @Html.DisplayFor(p => p.Address)
+        </div>
+    </div>
+    <!--Begin - Bussiness-->
+    @if (Model.CustomerTypeCode == ConstCustomerType.Bussiness)
+    {
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.ContactName):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.ContactName)
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.PositionB):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.PositionB)
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.CustomerCategoryCode):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.CustomerCategoryName)
+            </div>
+        </div>
+        <div class="form-group col-md-6">
+            <div class="col-md-4">
+                @Html.LabelFor(p => p.CustomerCareerCode):
+            </div>
+            <div class="col-md-8">
+                @Html.DisplayFor(p => p.CustomerCareerName)
+            </div>
+        </div>
+    }
+    <!--End - Bussiness-->
+
+
+    <div class="form-group col-md-6">
+        @Html.LabelFor(p => p.Note): @Html.DisplayFor(p => p.Note)
+    </div>
+    <div class="form-group col-md-6">
+        @if (Model.ImageUrl != null)
+        {
+            <img id="image-edit-view" src="/Upload/Profile/@Model.ImageUrl" />
+        }
+    </div>
+</div>

@@ -1,0 +1,186 @@
+﻿@model InventorySearchModel
+@{
+    ViewBag.Title = LanguageResource.InventoryReport;
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentController = ConstController.Inventory;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+        @*@HtmlExtensions.CreateButton(CurrentArea, CurrentController)*@
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="control-label" for="FromDate">
+                                                @LanguageResource.CompanyId
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("CompanyId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper">
+                                            <label class="control-label" for="ToDate">
+                                                @LanguageResource.StoreId
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("StoreId", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProductCodeSearch)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.ProductCode)
+                                        @Html.HiddenFor(p => p.SearchProductId)
+                                        <input id="SearchProductCode" name="SearchProductCode" type="hidden" value="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ProductName)
+                                    </div>
+                                    <div class="col-md-8" style="display: inline-table">
+                                        @Html.RequiredTextboxFor(p => p.ProductName, new { disabled = "disabled" })
+                                        <div class="input-group-btn">
+                                            <a class="btn btn-danger" id="btn-clearProduct">
+                                                <i class="fa fa-remove"></i>
+                                            </a>
+                                        </div>
+                                        <input id="SearchProductName" name="SearchProductName" type="hidden" value="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-8 col-md-offset-5">
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+@section jquery {
+    <link href="~/Content/jquery-ui.css" rel="stylesheet" />
+    <script src="~/Content/jquery-ui.js"></script>
+}
+@section scripts {
+    <script>
+        //load default and set event
+        $(document).ready(function () {
+
+            $("select[name='CompanyId']").trigger("change");
+            ISD.SearchInitial("@CurrentUrl");
+            ISD.ShowMessage(window.location.href);
+        });
+        $(document).on("change", "select[name='CompanyId']", function () {
+            var CompanyId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/MasterData/Store/GetStoreByCompany",
+                data: {
+                    CompanyId: CompanyId
+                },
+                success: function (jsonData) {
+                    $("#StoreId").html("");
+                    $("#StoreId").append("<option value=''>-- Vui lòng chọn --</option>");
+                    $.each(jsonData, function (index, value) {
+                        $("#StoreId").append("<option value='" + value.Value + "'>" + value.Text + "</option>");
+                    });
+                    $("#StoreId").trigger("change");
+                }
+            });
+
+        });
+        $("#ProductCode").autocomplete({
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    url: "/Warehouse/StockReceiving/GetProductCodeIsInventory",
+                    data: JSON.stringify({ "ProductCode": $("#ProductCode").val() }),
+                    dataType: "json",
+                    success: function (data) {
+                        response($.map(data, function (item) {
+                            return { label: item.ProductCodeText, id: item.ProductId, value: item.ProductCode, name: item.ProductName };
+                        }));
+                        //response(data);
+                    },
+                    error: function (xhr, status, error) {
+                        alertPopup(false, xhr.responseText);
+                    }
+                });
+            },
+            //prevent another value except dropdown value
+            change: function (event, ui) {
+                if (ui.item === null) {
+                    $("#ProductCode").val("");
+                    $("#SearchProductCode").val("");
+                    $("#ProductName").val("");
+                    $("#SearchProductName").val("");
+                    $("#SearchProductId").val("");
+                    $("#ProductCode").focus();
+                }
+            },
+            select: function (event, ui) {
+                $("#ProductCode").val(ui.item.value);
+                $("#ProductCode").prop("disabled", true);
+                $("#SearchProductCode").val(ui.item.value);
+                $("#ProductName").val(ui.item.name);
+                $("#SearchProductName").val(ui.item.name);
+                $("#SearchProductId").val(ui.item.id);
+            }
+        });
+        $(document).on("click", "#btn-clearProduct", function () {
+            $("#ProductCode").val("");
+            $("#ProductName").val("");
+            $("#SearchProductId").val("");
+            $("#ProductCode").prop("disabled", false);
+        });
+    </script>
+}
+

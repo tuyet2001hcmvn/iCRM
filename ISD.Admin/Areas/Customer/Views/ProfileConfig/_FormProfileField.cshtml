@@ -1,0 +1,84 @@
+﻿@{
+    var fieldList = (List<ProfileFieldViewModel>)ViewBag.ProfileField;
+}
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th class="text-center">
+                <div class="label-wrapper">
+                    <label class="control-label">STT</label>
+                </div>
+            </th>
+            <th>@Html.TooltipLabelFor(p => fieldList[0].FieldCode)</th>
+            <th>@Html.TooltipLabelFor(p => fieldList[0].FieldName)</th>
+            <th class="text-center">
+                <div class="label-wrapper">
+                    <label class="control-label">Thuộc tính hiển thị</label>
+                </div>
+            </th>
+            <th>@Html.TooltipLabelFor(p => fieldList[0].OrderIndex)</th>
+            <th>@Html.TooltipLabelFor(p => fieldList[0].Parameters)</th>
+            <th>@Html.TooltipLabelFor(p => fieldList[0].Note)</th>
+            <th class="text-center">@Html.TooltipLabelFor(p => fieldList[0].IsRequired)</th>
+            <th class="text-center">
+                <div class="label-wrapper">
+                    <label class="control-label">Chỉ xem khi cập nhật</label>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody class="vertical-align-mid">
+        @if (fieldList != null && fieldList.Count > 0)
+        {
+            int i = 0;
+            foreach (var item in fieldList.OrderBy(p => p.OrderIndex))
+            {
+                var index = i + 1;
+                <tr>
+                    <td class="text-center">@index</td>
+                    <td>
+                        <span class="display-for">@item.FieldCode</span>
+                    </td>
+                    <td>
+                        <span class="display-for">@item.FieldName</span>
+                    </td>
+                    <td class="text-center">
+                        @{ var checkedChoose = ""; }
+                        @if (item.IsChoose == true)
+                        {
+                            checkedChoose = "checked";
+                        }
+                        <input type="checkbox" name="configList[@i].FieldCode" value="@item.FieldCode" @checkedChoose />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" name="configList[@i].OrderIndex_Config" value="@item.OrderIndex_Config" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="configList[@i].Parameters" value="@item.Parameters" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="configList[@i].Note" value="@item.Note" />
+                    </td>
+                    <td class="text-center">
+                        @{ var checkedIsRequired = ""; }
+                        @if (item.IsRequired == true)
+                        {
+                            checkedIsRequired = "checked";
+                        }
+                        <input type="checkbox" name="configList[@i].IsRequired" value="true" @checkedIsRequired />
+                    </td>
+                    <td class="text-center">
+                        @{ var checkedIsReadOnly = ""; }
+                        @if (item.IsReadOnly == true)
+                        {
+                            checkedIsReadOnly = "checked";
+                        }
+                        <input type="checkbox" name="configList[@i].IsReadOnly" value="true" @checkedIsReadOnly />
+                    </td>
+                </tr>
+                i++;
+            }
+        }
+    </tbody>
+</table>

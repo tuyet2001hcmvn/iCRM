@@ -1,0 +1,157 @@
+﻿
+@model TransferDetailViewModel
+
+@{
+    var DepositPrice = ViewBag.DepositPrice;
+    if (DepositPrice != null)
+    {
+        DepositPrice = Convert.ToInt32(DepositPrice);
+    }
+
+    var Discount = (decimal?)ViewBag.Discount;
+    var DiscountNote = ViewBag.DiscountNote;
+}
+
+<div class="panel panel-default isd-panel">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse" href="#collapse-product">@LanguageResource.Sale_Product</a>
+        </h4>
+    </div>
+    <div id="collapse-product" class="panel-collapse collapse in">
+        <div class="content-header-in-panel">
+            <div class="panel-input form-group">
+                <div class="col-md-6">
+                    <div class="panel-label col-md-2">
+                        <div class="label-wrapper">
+                            @Html.Label(LanguageResource.StoreId, new { @class = "control-label" })
+                        </div>
+                    </div>
+                    <div class="col-md-10 no-padding">
+                        @Html.RequiredDropDownListFor(p=>p.StoreId, null, null)
+                    </div>
+                </div>
+            </div>
+            <div class="panel-input form-group">
+                <div class="col-md-3">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Warehouse_StockExport </label>
+                        </div>
+                    </div>
+                    <div class="col-md-8" style="padding-left:5px">
+                        @*<input class="form-control" name="FromStockCode" id="FromStockCode" tabindex="1" disabled />*@
+                        <input id="FromStockId" name="FromStockId" type="hidden" value="">
+                        <div class="input-group input-group-required">
+                            <input class="form-control text-box single-line" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;Kho xuất&quot;" id="FromStockCode" name="FromStockCode" type="text" value="" tabindex="1" disabled />
+                            <div class="required-icon" data-original-title="" title="">
+                                <div class="text">*</div>
+                            </div>
+                            <span class="field-validation-valid validation-text" data-valmsg-for="FromStockCode" data-valmsg-replace="true"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <input class="form-control" name="FromStockName" id="FromStockName" disabled />
+                </div>
+                <div class="col-md-3">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Warehouse_StockReceive </label>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="input-group input-group-required">
+                            @*<input class="form-control" id="ToStockCode" name="ToStockCode" tabindex="2" />*@
+                            <div class="input-group input-group-required">
+                                <input class="form-control text-box single-line" data-val="true" data-val-required="Vui lòng nhập thông tin &quot;Kho nhập&quot;" id="ToStockCode" name="ToStockCode" type="text" value="" tabindex="2">
+                                <div class="required-icon" data-original-title="" title="">
+                                    <div class="text">*</div>
+                                </div>
+                                <span class="field-validation-valid validation-text" data-valmsg-for="ToStockCode" data-valmsg-replace="true"></span>
+                            </div>
+                        </div>
+                        <input id="ToStockId" name="ToStockId" type="hidden" value="">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control" name="ToStockName" id="ToStockName" disabled />
+                </div>
+
+            </div>
+            <div class="panel-input form-group">
+
+                <div id="divproductcode" class="col-md-3">
+                    <div class="panel-label col-md-4">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Product</label>
+                        </div>
+                    </div>
+                    <div class="col-md-8" style="padding-left:5px">
+                        <input class="form-control" name="ProductCode" id="ProductCode" tabindex="3" />
+                        <input id="ProductId" name="ProductId" type="hidden" value="">
+                    </div>
+                </div>
+                <div id="divproductname" class="col-md-3">
+                    <input class="form-control" name="ProductName" id="ProductName" disabled />
+                </div>
+                <div id="divquantity" class="col-md-3">
+                    <div class="col-md-4 panel-label">
+                        <div class="label-wrapper">
+                            <label class="control-label">@LanguageResource.Warehouse_Quantity</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <input class="form-control text-right" name="ProductQuantity" id="ProductQuantity" type="number" tabindex="4" />
+                    </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-danger" id="btn-del-product-v1" style="margin-top: 2px;position: absolute;right: 0;">
+                            <i class="fa fa-remove"></i>
+                        </a>
+                        <a class="btn btn-primary" id="btn-add-stockReceivingDetail" style="margin-top: 2px; position: absolute; right: -40px" tabindex="6">
+                            <i class="fa fa-plus"></i>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+            <table id="transferDetailTable" class="table table-bordered table-hover no-footer detail-table">
+                <thead class="isd-table-header">
+                    <tr>
+                        <th class="text-center">@LanguageResource.NumberIndex</th>
+                        <th>@Html.DisplayNameFor(p => p.ProductCode)</th>
+                        <th>@Html.DisplayNameFor(p => p.ProductName)</th>
+                        <th style="width:100px">@LanguageResource.Warehouse_QuantityOffer</th>
+                        <th style="width:100px">@LanguageResource.Warehouse_Quantity</th>
+                        <th style="width:100px">@Html.DisplayNameFor(p => p.TransferredQuantity)</th>
+                        <th style="width:100px">@Html.DisplayNameFor(p => p.RemainingQuantity)</th>
+                        <th style="width:100px">@Html.DisplayNameFor(p => p.TransferQuantity)</th>
+                        @*<th class="text-center">@LanguageResource.Actions</th>*@
+                    </tr>
+                </thead>
+                <tbody id="transferDetailList">
+                    @*@if (Model != null && Model.Count() > 0)
+                    {
+                        @Html.Partial("_StockTransferByRequestDetailInner")
+                    }
+                    else
+                    {
+                        <tr>
+                            <td class="text-center" colspan="7">
+                                @LanguageResource.Warehouse_PleaseAddProduct
+                            </td>
+                        </tr>
+                    }*@
+                </tbody>
+                <tfoot id="accessoryDetail"></tfoot>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+
+

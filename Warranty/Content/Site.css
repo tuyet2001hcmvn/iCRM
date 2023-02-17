@@ -1,0 +1,203 @@
+﻿/*.form-tracuu {
+   width: 50%;
+    margin: auto;
+}*/
+
+.form-horizontal .label-wrapper .ico-help, .label-wrapper .ico-help {
+    color: #3c8dbc;
+}
+
+.fa-question-circle {
+    padding-left: 4px !important;
+}
+
+.form-horizontal .label-wrapper {
+    display: table;
+    float: right;
+    min-height: 28px;
+}
+
+    .form-horizontal .label-wrapper i.fa {
+        width: 16px;
+    }
+/* Required field START */
+
+.input-group-required {
+    position: relative;
+}
+
+    .input-group-required .required-icon {
+        display: inline-block;
+        vertical-align: middle;
+        margin: -0.25em 0.25em 0em;
+        background-color: #E8E8E8;
+        border-color: #E8E8E8;
+        padding: 0.5em 0.8em;
+        color: rgba(0, 0, 0, 0.65);
+        text-transform: uppercase;
+        font-weight: normal;
+        border-radius: 0.325em;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        -ms-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-transition: background 0.1s linear;
+        -moz-transition: background 0.1s linear;
+        transition: background 0.1s linear;
+        font-size: 75%;
+    }
+
+    .input-group-required .required-icon {
+        background-color: transparent;
+        position: absolute;
+        top: 0em;
+        right: 0em;
+        z-index: 10;
+        margin: 0em;
+        width: 10px;
+        height: 10px;
+        padding: 0em;
+        text-align: center;
+        -webkit-transition: color 0.2s ease;
+        -moz-transition: color 0.2s ease;
+        transition: color 0.2s ease;
+    }
+
+        .input-group-required .required-icon:after {
+            position: absolute;
+            content: "";
+            right: 1px;
+            top: 1px;
+            z-index: -1;
+            width: 0em;
+            height: 0em;
+            border-top: 0em solid transparent;
+            border-right: 18px solid transparent;
+            border-bottom: 18px solid transparent;
+            border-left: 0em solid transparent;
+            border-right-color: inherit;
+            -webkit-transition: border-color 0.2s ease;
+            -moz-transition: border-color 0.2s ease;
+            transition: border-color 0.2s ease;
+        }
+
+        .input-group-required .required-icon .text {
+            color: #b80000;
+            font-size: 18px;
+            line-height: 18px;
+            padding: 3px 1px 0 0;
+        }
+
+.input-group-select-required .required-icon .text {
+    padding: 6px 1px 0 0;
+}
+/* Required field END */
+.field-validation-error {
+    color: #e80c4d;
+    font-weight: bold;
+}
+
+.field-validation-valid {
+    display: none;
+}
+
+input.input-validation-error {
+    border: 1px solid #e80c4d;
+}
+
+.validation-summary-errors {
+    color: #e80c4d;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+
+.label-radio, .div-checkbox label {
+    font-weight: normal !important;
+    margin-left: 10px;
+}
+
+.collapse-box__body, .collapse-box__header {
+    padding: 12px;
+    border: 1px solid #ddd;
+}
+
+.collapse-box__header {
+    position: relative;
+    padding-left: 30px;
+    font-size: 13px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    background: #F5F5F5;
+}
+
+    .collapse-box__header ul li {
+        display: inline-block;
+        padding: 1px 10px;
+        border-left: 2px solid #e0e0e0;
+        vertical-align: middle;
+    }
+
+        .collapse-box__header ul li:nth-child(1) {
+            padding-left: 0;
+            border-left: 0;
+        }
+
+.head_tracking {
+    margin-bottom: 0;
+}
+
+.box_shadow {
+    -webkit-box-shadow: 0px 1px 10px 0px;
+    -moz-box-shadow: 0px 1px 10px 0px;
+    box-shadow: 0px 1px 10px 0px #999;
+    position: relative;
+    z-index: 999;
+}
+
+.tracking__history {
+    margin: 15px 0;
+    padding-top: 15px;
+}
+
+.light-table > thead > tr > th {
+    padding: 10px 13px 8px;
+    background: #f5f5f5;
+    border-style: solid;
+    border-width: 0 0 0 1px;
+    border-color: #e7e7e7;
+    /*font-size: 12px;*/
+    font-weight: 400;
+    color: #646464;
+}
+
+.light-table > tbody > tr > td {
+    padding: 10px 11px;
+    font-size: 14px;
+    color: #666;
+    border-style: solid;
+    border-width: 0 0 1px 1px;
+    border-color: #efefef;
+    vertical-align: middle;
+}
+
+.validation-text {
+    color: #dc3545;
+}
+
+.col-form-label {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+}
+
+.address-footer {
+    min-height: 85px;
+}
+
+.select2-container {
+    width: 100%;
+}

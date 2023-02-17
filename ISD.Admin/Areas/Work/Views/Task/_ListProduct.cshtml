@@ -1,0 +1,171 @@
+﻿@model IEnumerable<TaskProductViewModel>
+@using ISD.Core
+@{
+    //Cấu hình thuộc tính
+    var configList = (List<WorkFlowConfigModel>)ViewBag.WorkFlowConfig;
+    var fieldCodeList = (List<string>)ViewBag.WorkFlowConfigCode;
+    var hiddenFieldList = (List<string>)ViewBag.WorkFlowHiddenField;
+    var fieldList = (List<WorkFlowFieldModel>)ViewBag.WorkFlowField;
+
+    //6 column cố định + number of config column
+    var columns = fieldList.Where(p => p.Description == "Tab_Product" && fieldCodeList.Contains(p.FieldCode)).Count() + 3;
+    if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+    {
+        columns = columns + 1;
+    }
+    decimal? TotalWarrantyValue = 0;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0, k = -1;
+    int displayColumn = 0;
+    TotalWarrantyValue = Model.Select(p => p.WarrantyValue).Sum();
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        displayColumn = 1;
+        <tr>
+            <td class="text-center">@i</td>
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, Guid?>(p => p.ProductId)))
+            {
+                displayColumn = displayColumn + 2;
+                <td class="text-center">@Html.DisplayFor(p => item.ERPProductCode)</td>
+                @*<td class="text-center">@Html.DisplayFor(p => item.ProductCode)</td>*@
+                <td>@Html.DisplayFor(p => item.ProductName)</td>
+
+                if (ViewBag.Type == ConstWorkFlowCategory.TICKET_MLC)
+                {
+                    <td>@Html.DisplayFor(p => item.SerialNumber)</td>
+                }
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, int?>(p => p.Qty)))
+            {
+                displayColumn++;
+                <td class="text-right">@Html.DisplayFor(p => item.Qty)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Unit)))
+            {
+                displayColumn++;
+                if (ViewBag.Type == ConstWorkFlowCategory.TICKET)
+                {
+                    <td>@Html.DisplayFor(p => item.UnitName)</td>
+                }
+                else
+                {
+                    <td>@Html.DisplayFor(p => item.Unit)</td>
+                }
+
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductLevelCode)))
+            {
+                displayColumn++;
+                <td>@Html.DisplayFor(p => item.ProductLevelName)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductColorCode)))
+            {
+                displayColumn++;
+                <td>@Html.DisplayFor(p => item.ProductColorCode)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ProductCategoryCode)))
+            {
+                displayColumn++;
+                <td>@Html.DisplayFor(p => item.ProductCategoryName)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.UsualErrorCode)))
+            {
+                displayColumn++;
+                <td>@Html.Raw(item.UsualErrorName)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.ErrorCode)))
+            {
+                displayColumn++;
+                <td>@Html.Raw(item.ErrorCodeName)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, string>(p => p.Accessory)))
+            {
+                displayColumn++;
+                <td>@Html.Raw(item.AccessoryName)</td>
+            }
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.ProductValue)))
+            {
+                displayColumn++;
+                <td class="text-right">
+                    @if (item.ProductValue != null)
+                    {
+                        @item.ProductValue.FormatCurrency()
+                    }
+                    else
+                    {
+                        <span>0</span>
+                    }
+                </td>
+            }
+           
+            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.WarrantyValue)))
+            {
+                //Tổng “giá trị bảo hành“ = “giá trị bảo hành“ (SAP) + “giá trị giảm giá“.
+                displayColumn++;
+                <td class="text-right">
+                    @if (item.WarrantyValue != null && item.DiscountValue != null)
+                    {
+                        @((item.WarrantyValue + item.DiscountValue).FormatCurrency())
+                    }
+                    else if (item.WarrantyValue != null && item.DiscountValue == null)
+                    {
+                        @item.WarrantyValue.FormatCurrency()
+                    }
+                    else if (item.WarrantyValue == null && item.DiscountValue != null)
+                    {
+                        @item.DiscountValue.FormatCurrency()
+                    }
+                    else
+                    {
+                        <span>0</span>
+                    }
+                </td>
+            }
+
+            @if (fieldCodeList.Contains("AccErrorTypeCode"))
+            {
+                displayColumn++;
+                <td>@Html.Raw(item.AccErrorTypeName)</td>
+            }
+            @if (fieldCodeList.Contains("AccQuantity"))
+            {
+                displayColumn++;
+                <td>@Html.Raw(item.AccessoryQuantity)</td>
+            }
+            @if (fieldCodeList.Contains("AccTypeCode"))
+            {
+                displayColumn++;
+                <td>@Html.Raw(item.ProductAccessoryTypeName)</td>
+            }
+            <td class="text-center">
+                <a class="btn btn-default btn-edit-product" data-id="@item.TaskProductId">
+                    <i class="fa fa-pencil"></i> @LanguageResource.Btn_Edit
+                </a>
+                <a class="btn btn-danger btn-delete-product" data-id="@item.TaskProductId" data-delete-success-call-back="ReloadTaskProduct">
+                    <i class="fa fa-trash-o"></i> @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+    @*if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskProductViewModel, decimal?>(p => p.WarrantyValue)))
+        {
+            <tr>
+                <td colspan="@displayColumn"></td>
+                <td class="text-right">
+                    <b>@TotalWarrantyValue.FormatCurrency()</b>
+                </td>
+                <td></td>
+            </tr>
+        }*@
+}
+else
+{
+    <tr class="odd">
+        <td valign="top" colspan="@columns" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td>
+    </tr>
+}

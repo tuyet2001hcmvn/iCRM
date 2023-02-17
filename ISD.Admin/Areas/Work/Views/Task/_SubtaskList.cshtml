@@ -1,0 +1,227 @@
+﻿@model IEnumerable<SubtaskViewModel>
+@{
+    var typeList = (List<WorkFlowCategoryViewModel>)ViewBag.SubtaskType;
+    var ParentTaskId = ViewBag.SubtaskParentTaskId;
+    var TodoSubtask = ViewBag.TodoSubtask;
+    var ProcessingSubtask = ViewBag.ProcessingSubtask;
+    var CompletedSubtask = ViewBag.CompletedSubtask;
+}
+
+@if (typeList != null && typeList.Count > 0)
+{
+    <div class="form-group">
+        <div class="mb-5 pull-right">
+            @if (typeList.Count == 1)
+            {
+                var WorkFlowCategoryCode = typeList[0].WorkFlowCategoryCode;
+                Guid? WorkFlowId = Guid.Empty;
+                if (WorkFlowCategoryCode.Contains("[") && WorkFlowCategoryCode.Contains("]"))
+                {
+                    var WorkFlowId_Str = WorkFlowCategoryCode.Substring(WorkFlowCategoryCode.IndexOf("[") + 1, 36);
+                    WorkFlowId = Guid.Parse(WorkFlowId_Str);
+                    WorkFlowCategoryCode = WorkFlowCategoryCode.Substring(0, WorkFlowCategoryCode.IndexOf("["));
+
+                    <a class="btn btn-create-subtask ml-5" href="~/Work/Task/Create?Type=@WorkFlowCategoryCode&ParentTaskId=@ParentTaskId&WorkFlowId=@WorkFlowId" data-toggle="tooltip" title="Thêm mới subtask">
+                        +
+                    </a>
+                }
+                else
+                {
+                    <a class="btn btn-create-subtask ml-5" href="~/Work/Task/Create?Type=@typeList[0].WorkFlowCategoryCode&ParentTaskId=@ParentTaskId" data-toggle="tooltip" title="Thêm mới subtask">
+                        +
+                    </a>
+                }
+            }
+            else
+            {
+                <span class="dropdown-toggle" data-toggle="dropdown">
+                    <a class="btn btn-create-subtask ml-5" data-toggle="tooltip" title="Thêm mới subtask">
+                        +
+                    </a>
+                </span>
+                <ul class="dropdown-menu dropdown-menu-filter dropdown-menu-subtask">
+                    @foreach (var item in typeList)
+                    {
+                        <li>
+                            @if (item.WorkFlowId != Guid.Empty)
+                            {
+                                <a href="~/Work/Task/Create?Type=@item.WorkFlowCategoryCode&ParentTaskId=@ParentTaskId&WorkFlowId=@item.WorkFlowId">
+                                    @item.WorkFlowCategoryName
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="~/Work/Task/Create?Type=@item.WorkFlowCategoryCode&ParentTaskId=@ParentTaskId">
+                                    @item.WorkFlowCategoryName
+                                </a>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        </div>
+        <div class="display-inline">
+            @*<div class="label-wrapper" style="margin-top: 3px">
+                    <label class="control-label">
+                        @LanguageResource.SubtaskList
+                    </label>
+                </div>
+                <div class="mb-5">
+                    @if (typeList.Count == 1)
+                    {
+                        var WorkFlowCategoryCode = typeList[0].WorkFlowCategoryCode;
+                        Guid? WorkFlowId = Guid.Empty;
+                        if (WorkFlowCategoryCode.Contains("[") && WorkFlowCategoryCode.Contains("]"))
+                        {
+                            var WorkFlowId_Str = WorkFlowCategoryCode.Substring(WorkFlowCategoryCode.IndexOf("[") + 1, 36);
+                            WorkFlowId = Guid.Parse(WorkFlowId_Str);
+                            WorkFlowCategoryCode = WorkFlowCategoryCode.Substring(0, WorkFlowCategoryCode.IndexOf("["));
+
+                            <a class="btn btn-create-subtask ml-5" href="~/Work/Task/Create?Type=@WorkFlowCategoryCode&ParentTaskId=@ParentTaskId&WorkFlowId=@WorkFlowId">
+                                +
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-create-subtask ml-5" href="~/Work/Task/Create?Type=@typeList[0].WorkFlowCategoryCode&ParentTaskId=@ParentTaskId">
+                                +
+                            </a>
+                        }
+                    }
+                    else
+                    {
+                        <a class="btn btn-create-subtask ml-5 dropdown-toggle" data-toggle="dropdown">
+                            +
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-filter dropdown-menu-subtask">
+                            @foreach (var item in typeList)
+                            {
+                                <li>
+                                    @if (item.WorkFlowId != Guid.Empty)
+                                    {
+                                        <a href="~/Work/Task/Create?Type=@item.WorkFlowCategoryCode&ParentTaskId=@ParentTaskId&WorkFlowId=@item.WorkFlowId">
+                                            @item.WorkFlowCategoryName
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="~/Work/Task/Create?Type=@item.WorkFlowCategoryCode&ParentTaskId=@ParentTaskId">
+                                            @item.WorkFlowCategoryName
+                                        </a>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>*@
+            <div class="ml-10 display-inline" style="margin-top: 3px">
+                <div>@LanguageResource.Todo2 (@TodoSubtask)</div>
+                <div class="ml-15">@LanguageResource.Processing (@ProcessingSubtask)</div>
+                <div class="ml-15">@LanguageResource.Completed (@CompletedSubtask)</div>
+            </div>
+        </div>
+        <div class="divSubtask">
+            <table class="table table-bordered table-striped table-hover dataTableServerSide taskTable no-footer">
+                <thead class="isd-table-header">
+                    <tr>
+                        <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+                        <th>@Html.DisplayNameFor(p => p.TaskCode)</th>
+                        @if (ViewBag.Type != ConstWorkFlowCategory.BOOKING_VISIT)
+                        {
+                            <th>@Html.DisplayNameFor(p => p.WorkFlowId)</th>
+                        }
+                        <th>@Html.DisplayNameFor(p => p.Summary)</th>
+                        @if (ViewBag.Type == ConstWorkFlowCategory.BOOKING_VISIT)
+                        {
+                            <th>Nơi tham quan</th>
+                            <th>Thời gian dự kiến</th>
+                            <th>Thời gian thực tế</th>
+                        }
+                        <th>@Html.DisplayNameFor(p => p.AssigneeName)</th>
+                        <th>@Html.DisplayNameFor(p => p.TaskStatusId)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ int i = 0; }
+                    @if (Model != null && Model.Count() > 0)
+                    {
+                        foreach (var item in Model)
+                        {
+                            i++;
+                            string taskCode = item.TaskCode.ToString();
+                            if (!string.IsNullOrEmpty(item.SubtaskCode))
+                            {
+                                taskCode = item.SubtaskCode;
+                            }
+                            <tr>
+                                <td class="text-center">@i</td>
+
+                                <td>
+                                    <a href="/Work/Task/Edit/@item.TaskId" target="_blank">
+                                        @*@Html.DisplayFor(p => item.TaskCode)*@
+                                        @taskCode
+                                    </a>
+                                </td>
+                                @if (ViewBag.Type != ConstWorkFlowCategory.BOOKING_VISIT)
+                                {
+                                    <td>@Html.DisplayFor(p => item.WorkFlowCode)</td>
+                                }
+                                <td>
+                                    <a href="/Work/Task/Edit/@item.TaskId" target="_blank">
+                                        @Html.DisplayFor(p => item.Summary)
+                                    </a>
+                                </td>
+                                @if (ViewBag.Type == ConstWorkFlowCategory.BOOKING_VISIT)
+                                {
+                                    <td>@Html.DisplayFor(p => item.VisitPlace)</td>
+                                    <td>
+                                        <span>@Html.DisplayFor(p => item.StartDate)</span>
+                                        <br />
+                                        <span>@Html.DisplayFor(p => item.EstimatedEndDate)</span>
+
+                                    </td>
+                                    <td>
+                                        <span>@Html.DisplayFor(p => item.ActualStartDate)</span>
+                                        <br />
+                                        <span>@Html.DisplayFor(p => item.ActualEstimatedEndDate)</span>
+
+                                    </td>
+                                }
+                                <td>@Html.DisplayFor(p => item.AssigneeName)</td>
+                                <td>@Html.DisplayFor(p => item.TaskStatusName)</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr class="odd">
+
+                            <td valign="top" colspan="6" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            @if (Model != null && Model.Count() > 0)
+            {
+                foreach (var item in Model.OrderBy(p => p.TaskCode))
+                {
+                    @*<a class="btn btn-default btn-subtask"
+                           href="~/Work/Task/Edit/@item.TaskId"
+                           title="NV được phân công: @item.AssigneeName">
+                            <div class="col-md-8 white-space-normal no-padding text-left">
+                                <b>@item.WorkFlowCode-@item.TaskCode</b>
+                            </div>
+                            <div class="col-md-4 no-padding text-right">
+                                <span class="status-name">@item.TaskStatusName</span>
+                            </div>
+                            <div class="col-md-12 text-left no-padding">
+                                @item.Summary
+                            </div>
+                        </a>*@
+
+                }
+            }
+        </div>
+    </div>
+}

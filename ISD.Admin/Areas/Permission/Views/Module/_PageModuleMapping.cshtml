@@ -1,0 +1,37 @@
+﻿@model ModuleViewModel
+@using MvcCheckBoxList.Model
+@{ 
+    var lst = (List<MenuModel>)ViewBag.ActivedMenuList;
+    var guid_lst = lst.Select(p => p.MenuId).ToList();
+}
+
+<div class="form-group">
+    <div class="col-md-3">
+        @Html.TooltipLabelFor(p => p.MenuId)
+    </div>
+    <div class="col-md-9" id="checkboxes">
+        @{ int i = 0; }
+        @foreach (var item in (List<MenuModel>)ViewBag.MenuId)
+        {
+            if (guid_lst.Contains(item.MenuId))
+            {
+                <label style="font-weight: normal;">
+                    <input type="checkbox" name="MenuId" class="MenuId" value="@item.MenuId"
+                           data-row="@i" checked>
+                    @item.MenuName
+                </label>
+            }
+            else
+            {
+                <label style="font-weight: normal;">
+                    <input type="checkbox" name="MenuId" class="MenuId" value="@item.MenuId"
+                           data-row="@i">
+                    @item.MenuName
+                </label>
+            }
+            <br />
+            <div class="store-by-company pageList_@i"></div>
+            i++;
+        }
+    </div>
+</div>

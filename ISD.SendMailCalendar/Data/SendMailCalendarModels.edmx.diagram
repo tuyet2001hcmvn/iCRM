@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="f5a5fcbe5a6945e09fa8e66b81b39ca5" Name="Diagram1">
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.ProfileModel" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.CampaignModel" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.ContentModel" Width="1.5" PointX="2.75" PointY="5.75" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.EmailAccountModel" Width="1.5" PointX="5.75" PointY="4.75" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.MailServerProviderModel" Width="1.5" PointX="7.75" PointY="4.75" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.MemberOfTargetGroupModel" Width="1.5" PointX="8" PointY="1.5" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.SendMailCalendarModel" Width="1.5" PointX="4.75" PointY="8.75" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.TargetGroupModel" Width="1.5" PointX="5.75" PointY="1" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.CatalogModel" Width="1.5" PointX="0.75" PointY="1.75" />
+        <AssociationConnector Association="SendMailCalendarEntities1.FK_CampaignModel_CatalogModel" />
+        <AssociationConnector Association="SendMailCalendarEntities1.FK_MemberOfTagetGroupModel_TargetGroupModel" />
+        <EntityTypeShape EntityType="SendMailCalendarEntities1.Unfollow" Width="1.5" PointX="7.375" PointY="8.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

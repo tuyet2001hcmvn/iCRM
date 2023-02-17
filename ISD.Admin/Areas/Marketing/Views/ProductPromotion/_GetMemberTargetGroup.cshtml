@@ -1,0 +1,474 @@
+﻿@model List<ProductPromotionDetailViewModel>
+@{
+    string CurrentArea = ConstArea.Marketing;
+    string CurrentController = ConstController.ProductPromotion;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    var datatableViewModel = (DatatableViewModel)ViewBag.datatableViewModel;
+    var draw = (int)ViewBag.draw;
+    var totalResultsCount = (int)ViewBag.recordsTotal;
+    var filteredResultsCount = (int)ViewBag.recordsFiltered;
+    int i = 0;
+}
+<div class="form-group">
+    <div class="pagination" id="pagination">
+        @{
+            //Số lượng page
+            var page = filteredResultsCount < 10 ? 1 : (filteredResultsCount / datatableViewModel.length);
+        }
+        @if (draw != 1)
+        {
+            <a href="#" data-index="@(datatableViewModel.draw-1)">&laquo;</a>
+        }
+        @if (datatableViewModel.draw <= 8 && page <= 8)
+        {
+            for (int j = 1; j <= page; j++)
+            {
+                if (j == datatableViewModel.draw)
+                {
+                    <a href="#" data-index="@j" class="active">@j</a>
+                }
+                else
+                {
+                    <a href="#" data-index="@j">@j</a>
+                }
+            }
+        }
+        else if (datatableViewModel.draw <= 3 && page > 8)
+        {
+            for (int j = 1; j <= draw + 2; j++)
+            {
+                if (j == datatableViewModel.draw)
+                {
+                    <a href="#" data-index="@j" class="active">@j</a>
+                }
+                else
+                {
+                    <a href="#" data-index="@j">@j</a>
+                }
+            }
+            <a href="#" data-index="">...</a>
+            <a href="#" data-index="@page">@page</a>
+        }
+        else if (datatableViewModel.draw > 3 && datatableViewModel.draw < page - 5)
+        {
+            <a href="#" data-index="1">1</a>
+            <a href="#" data-index="">...</a>
+            for (int j = draw - 2; j <= draw + 2; j++)
+            {
+                if (j == datatableViewModel.draw)
+                {
+                    <a href="#" data-index="@j" class="active">@j</a>
+                }
+                else
+                {
+                    <a href="#" data-index="@j">@j</a>
+                }
+            }
+            <a href="#" data-index="">...</a>
+            <a href="#" data-index="@page">@page</a>
+        }
+        else
+        {
+            <a href="#" data-index="1">1</a>
+            <a href="#" data-index="">...</a>
+            for (int j = draw - 2; j <= page; j++)
+            {
+                if (j == datatableViewModel.draw)
+                {
+                    <a href="#" data-index="@j" class="active">@j</a>
+                }
+                else
+                {
+                    <a href="#" data-index="@j">@j</a>
+                }
+            }
+        }
+        @if (draw != page)
+        {
+            <a href="#" data-index="@(datatableViewModel.draw+1)">&raquo;</a>
+        }
+    </div>
+</div>
+@if (Model != null && Model.Count() > 0)
+{
+    if (ViewBag.IsSendCatalogue == true)
+    {
+        <div class="text-bold table-border">
+            <div class="col-md-1 text-center">
+                <input type="checkbox" class="check-all-status" value="True" data-row="0" />
+            </div>
+            <div class="col-md-1 text-left">
+                Mã KH
+            </div>
+            <div class="col-md-2 text-left">
+                Tên KH
+            </div>
+            <div class="col-md-8">
+                <div class="col-md-1 text-center">
+                    Địa chỉ khác
+                </div>
+                <div class="col-md-3 text-center">
+                    Địa chỉ
+                </div>
+                <div class="col-md-1 text-center">
+                    Liên hệ khác
+                </div>
+                <div class="col-md-6 text-center">
+                    Liên hệ
+                </div>
+                <div class="col-md-1">
+
+                </div>
+            </div>
+            <div class="row"></div>
+        </div>
+        for (i = 0; i < Model.Count(); i++)
+        {
+            @Html.Hidden("TargetGroup[" + i + "].ProfileId", Model[i].ProfileId)
+            @Html.Hidden("TargetGroup[" + i + "].ProductPromotionDetailId", Model[i].ProductPromotionDetailId)
+            var listAddress = Model[i].ProfileAddress;
+            var listContact = Model[i].ProfileContact;
+            var listAddressActived = Model[i].ProfileAddressActived;
+            var listContactActived = Model[i].ProfileContactActived;
+            <div class="target-group table-border">
+                <div class="col-md-1">
+                    <div class="display-for text-center">
+                        <input type="checkbox" name="TargetGroup[@i].Status" class="check-status change-update" value="True" @(Model[i].Status == true ? "checked" : null) data-index="@i" data-row="0" />
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="display-for profileCode profileCode_@i"><a target="_blank" href="/Customer/Profile/Edit/?id=@(Model[i].ProfileId)&ProfileType=Account">@Model[i].ProfileCode</a></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="display-for profileName profileName_@i">@Model[i].ProfileName</div>
+                </div>
+
+                <div class="col-md-8 customer-target-group-controls-@i">
+                    @if (listAddressActived != null && listAddressActived.Count() > 0 || listContactActived != null && listContactActived.Count() > 0)
+                    {
+                        var countContact = listAddressActived.Count() >= listContactActived.Count() ? listAddressActived.Count() : listContactActived.Count();
+                        for (var j = 0; j < countContact; j++)
+                        {
+
+                            <div class="customer-target-group-@i" data-index="@j">
+                                @Html.Hidden("TargetGroup[" + i + "].ProfileAddress[" + j + "].ProductPromotionContactId", listAddressActived[j].ProductPromotionContactId, new { @class = "address_ProductPromotionContactId_" + i })
+                                @Html.Hidden("TargetGroup[" + i + "].ProfileContact[" + j + "].ProductPromotionContactId", listContactActived[j].ProductPromotionContactId, new { @class = "contact_ProductPromotionContactId_" + i })
+                                <div class="col-md-1 text-center">
+                                    <div class="display-for checkAddress_@i">
+                                        @if (listAddressActived[j].CheckAddress != true)
+                                        {
+                                            <input type="checkbox" name="TargetGroup[@i].ProfileAddress[@j].CheckAddress" class="check-address check-address-@i" value="True" data-index="@i" data-row="@j" />
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="TargetGroup[@i].ProfileAddress[@j].CheckAddress" class="check-address check-address-@i" value="True" data-index="@i" data-row="@j" checked />
+
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-3 address">
+                                    @{
+                                        var hiddenAddressText = "";
+                                        var disabledAddressText = "";
+                                        var hiddenAddress = "";
+                                        var disabledAddress = "";
+                                        if (listAddressActived[j].CheckAddress != true)
+                                        {
+                                            hiddenAddressText = "hidden";
+                                            disabledAddressText = "disabled";
+
+                                        }
+                                        else
+                                        {
+                                            hiddenAddress = "hidden";
+                                            disabledAddress = "disabled";
+                                        }
+                                    }
+                                    <div class="display-for">
+                                        <input type="text" class="form-control addressText_@(i) @hiddenAddressText change-update" @disabledAddressText name="TargetGroup[@i].ProfileAddress[@j].Address" data-index="@i" data-row="@j" value="@listAddressActived[j].Address" />
+                                        <select class="form-control address_@(i) @hiddenAddress change-update" @disabledAddress name="TargetGroup[@i].ProfileAddress[@j].Address" data-index="@i" data-row="@j">
+                                            @if (listAddress != null && listAddress.Count() > 0)
+                                            {
+                                                <option value="">-- Vui lòng chọn --</option>
+                                                foreach (var item in listAddress)
+                                                {
+                                                    if (item.Address == listAddressActived[j].Address)
+                                                    {
+                                                        <option value="@item.Address" selected>@item.Address</option>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.Address">@item.Address</option>
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="">-- Không có dữ liệu --</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-1 text-center">
+                                    <div class="display-for checkContact checkContact_@(i)_0">
+                                        @if (listContactActived[j].CheckContact != true)
+                                        {
+                                            <input type="checkbox" name="TargetGroup[@i].ProfileContact[@j].CheckContact" class="check-contact check-contact-@i" data-index="@i" value="True" data-row="@j" />
+
+                                        }
+                                        else
+                                        {
+                                            <input type="checkbox" name="TargetGroup[@i].ProfileContact[@j].CheckContact" class="check-contact  check-contact-@i" data-index="@i" value="True" data-row="@j" checked />
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    @{ var hiddenContactText = "";
+                                        var disabledContactText = "";
+                                        var hiddenContact = "";
+                                        var disabledContact = "";
+                                        if (listContactActived[j].CheckContact != true)
+                                        {
+                                            hiddenContactText = "hidden";
+                                            disabledContactText = "disabled";
+                                        }
+                                        else
+                                        {
+                                            hiddenContact = "hidden";
+                                            disabledContact = "disabled";
+                                        }
+                                    }
+                                    <div class="col-md-6">
+                                        <div class="display-for">
+                                            <input type="text" class="form-control contactName_@(i) @hiddenContactText change-update" @disabledContactText name="TargetGroup[@i].ProfileContact[@j].ContactName" data-index="@i" data-row="@j" placeholder="Tên liên hệ" value="@listContactActived[j].ContactName" />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="display-for">
+                                            <input type="text" class="form-control contactPhone_@(i) @hiddenContactText change-update" @disabledContactText name="TargetGroup[@i].ProfileContact[@j].ContactPhone" data-index="@i" data-row="@j" placeholder="SĐT liên hệ" value="@listContactActived[j].ContactPhone" />
+                                        </div>
+                                    </div>
+                                    <div class="display-for">
+                                        <select class="form-control width-search contact_@(i) @hiddenContact change-update" @disabledContact name="TargetGroup[@i].ProfileContact[@j].ProfileContactId" data-index="@i" data-row="@j">
+                                            @if (listContact != null && listContact.Count() > 0)
+                                            {
+                                                <option value="">-- Vui lòng chọn --</option>
+                                                foreach (var item in listContact)
+                                                {
+                                                    if (listContactActived[j].ProfileContactId == item.ProfileId)
+                                                    {
+                                                        <option value="@item.ProfileId" selected>@item.ContactName | @item.ContactPhone</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@item.ProfileId">@item.ContactName | @item.ContactPhone</option>
+                                                    }
+
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <option value="">-- Không có dữ liệu --</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <div class="display-for">
+                                        <span class="input-group-btn">
+                                            @if (j == 0)
+                                            {
+                                                <button class="btn btn-default btn-add-contact btn-default" data-index="@i" data-row="@j" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                                            }
+                                            else
+                                            {
+                                                <button class="btn btn-default btn-remove-contact btn-danger" data-index="@i" data-row="@j" type="button"><span class="glyphicon glyphicon-minus"></span></button>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row"></div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="customer-target-group-@i">
+                            @Html.Hidden("TargetGroup[" + i + "].ProfileAddress[0].ProductPromotionContactId", null, new { @class = "address_ProductPromotionContactId_" + i })
+                            @Html.Hidden("TargetGroup[" + i + "].ProfileContact[0].ProductPromotionContactId", null, new { @class = "contact_ProductPromotionContactId_" + i })
+                            <div class="col-md-1 text-center">
+                                <div class="display-for checkAddress_@i">
+                                    @if (listAddress != null && listAddress.Count() > 0 && listAddress[0].CheckAddress != true)
+                                    {
+                                        <input type="checkbox" name="TargetGroup[@i].ProfileAddress[0].CheckAddress" class="check-address check-address-@i" value="True" data-index="@i" data-row="0" />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="TargetGroup[@i].ProfileAddress[0].CheckAddress" class="check-address check-address-@i" value="True" data-index="@i" data-row="0" checked />
+
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-3 address">
+                                @{
+                                    var hiddenAddressText = "";
+                                    var disabledAddressText = "";
+                                    var hiddenAddress = "";
+                                    var disabledAddress = "";
+                                    if (listAddress != null && listAddress.Count() > 0 && listAddress[0].CheckAddress != true)
+                                    {
+                                        hiddenAddressText = "hidden";
+                                        disabledAddressText = "disabled";
+
+                                    }
+                                    else
+                                    {
+                                        hiddenAddress = "hidden";
+                                        disabledAddress = "disabled";
+                                    }
+                                }
+                                <div class="display-for">
+                                    <input type="text" class="form-control addressText_@(i) @hiddenAddressText change-update" @disabledAddressText name="TargetGroup[@i].ProfileAddress[0].Address" data-index="@i" data-row="0" value="" />
+                                    <select class="form-control address_@(i) @hiddenAddress change-update" @disabledAddress name="TargetGroup[@i].ProfileAddress[0].Address" data-index="@i" data-row="0">
+                                        @if (listAddress.Count() > 0)
+                                        {
+                                            <option value="">-- Vui lòng chọn --</option>
+                                            foreach (var item in listAddress)
+                                            {
+                                                <option value="@item.Address">@item.Address</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="">-- Không có dữ liệu --</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <div class="display-for checkContact checkContact_@(i)_0">
+                                    @if (listContact != null && listContact.Count() > 0 && listContact[0].CheckContact != true)
+                                    {
+                                        <input type="checkbox" name="TargetGroup[@i].ProfileContact[0].CheckContact" class="check-contact check-contact-@i" data-index="@i" value="True" data-row="0" />
+
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" name="TargetGroup[@i].ProfileContact[0].CheckContact" class="check-contact check-contact-@i" data-index="@i" value="True" data-row="0" checked />
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                @{ var hiddenContactText = "";
+                                    var disabledContactText = "";
+                                    var hiddenContact = "";
+                                    var disabledContact = "";
+                                    if (listContact != null && listContact.Count() > 0 && listContact[0].CheckContact != true)
+                                    {
+                                        hiddenContactText = "hidden";
+                                        disabledContactText = "disabled";
+                                    }
+                                    else
+                                    {
+                                        hiddenContact = "hidden";
+                                        disabledContact = "disabled";
+                                    }
+                                }
+                                <div class="col-md-6">
+                                    <div class="display-for">
+                                        <input type="text" class="form-control contactName_@(i) @hiddenContactText change-update" @disabledContactText name="TargetGroup[@i].ProfileContact[0].ContactName" data-index="@i" data-row="0" placeholder="Tên liên hệ" value="" />
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="display-for">
+                                        <input type="text" class="form-control contactPhone_@(i) @hiddenContactText change-update" @disabledContactText name="TargetGroup[@i].ProfileContact[0].ContactPhone" data-index="@i" data-row="0" placeholder="SĐT liên hệ" value="" />
+                                    </div>
+                                </div>
+                                <div class="display-for">
+                                    <select class="form-control width-search contact_@(i) @hiddenContact change-update" @disabledContact name="TargetGroup[@i].ProfileContact[0].ProfileContactId" data-index="@i" data-row="0">
+                                        @if (listContact != null && listContact.Count() > 0)
+                                        {
+                                            <option value="">-- Vui lòng chọn --</option>
+                                            foreach (var item in listContact)
+                                            {
+                                                <option value="@item.ProfileId">@item.ContactName | @item.ContactPhone</option>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <option value="">-- Không có dữ liệu --</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <div class="display-for">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default btn-add-contact btn-default" data-index="@i" data-row="0" type="button"><span class="glyphicon glyphicon-plus"></span></button>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row"></div>
+                        </div>
+                    }
+
+                    <div class="row"></div>
+                </div>
+                <div class="row"></div>
+            </div>
+        }
+        var numberResult = totalResultsCount * draw;
+        <div><p style="font-weight:400;padding-top:10px">Đang xem @numberResult trong tổng số @filteredResultsCount mục </p> </div>
+
+    }
+    else
+    {
+        <div class="text-bold  table-border">
+            <div class="col-md-1 text-center">
+                <input type="checkbox" class="check-all-status" value="True" data-row="0" />
+            </div>
+            <div class="col-md-1 text-center">
+                Mã KH
+            </div>
+            <div class="col-md-2 text-left">
+                Tên ngắn
+            </div>
+            <div class="col-md-3 text-left">
+                Khách hàng
+            </div>
+            <div class="row"></div>
+        </div>
+        for (i = 0; i < Model.Count(); i++)
+        {
+            @Html.Hidden("TargetGroup[" + i + "].ProfileId", Model[i].ProfileId)
+            @Html.Hidden("TargetGroup[" + i + "].ProductPromotionDetailId", Model[i].ProductPromotionDetailId)
+            @Html.Hidden("TargetGroup[" + i + "].ProfileAddress[0].ProductPromotionContactId", null, new { @class = "address_ProductPromotionContactId_" + i })
+            @Html.Hidden("TargetGroup[" + i + "].ProfileContact[0].ProductPromotionContactId", null, new { @class = "contact_ProductPromotionContactId_" + i })
+            <select name="TargetGroup[@i].ProfileContact[0].ProfileContactId" class="hidden" readonly="readonly">
+                <option value="">NULL</option>
+            </select>
+            <div class="target-group  table-border">
+                <div class="col-md-1">
+                    <div class="display-for text-center">
+                        <input type="checkbox" name="TargetGroup[@i].Status" class="check-status change-update" value="True" @(Model[i].Status == true ? "checked" : null) data-index="@i" data-row="0" />
+                    </div>
+                </div>
+                <div class="col-md-1 text-center">
+                    <div class="display-for profileCode profileCode_@i"><a target="_blank" href="/Customer/Profile/Edit/?id=@(Model[i].ProfileId)&ProfileType=Account">@Model[i].ProfileCode</a></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="display-for profileShortName profileShortName_@i">@Model[i].ProfileShortName</div>
+                </div>
+                <div class="col-md-3">
+                    <div class="display-for profileName profileName_@i">@Model[i].ProfileName</div>
+                </div>
+                <div class="row"></div>
+            </div>
+        }
+    }
+}
+
+
+
+

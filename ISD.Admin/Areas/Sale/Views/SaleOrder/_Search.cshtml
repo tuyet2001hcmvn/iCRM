@@ -1,0 +1,41 @@
+﻿@model IEnumerable<SaleOrderView_ViewModel>
+@{
+    string CurrentController = ConstController.SaleOrder;
+
+    string CurrentArea = ConstArea.Sale;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.SaleOrderCode)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerCode)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerName)</th>
+            <th>@Html.DisplayNameFor(p => p.CreatedDate)</th>
+            <th>@Html.DisplayNameFor(p => p.Total)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.SaleOrderCode)</td>
+                <td>@Html.DisplayFor(p => item.CustomerCode)</td>
+                <td>@Html.DisplayFor(p => item.CustomerName)</td>
+                <td class="text-right">@string.Format("{0:dd/MM/yyyy}", item.CreatedDate)</td>
+                <td class="text-right">@string.Format("{0:n0}", item.Total)</td>
+                <td class="text-center">
+                    @HtmlExtensions.ViewButton(CurrentArea, CurrentController, item.SaleOrderId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<KanbanViewModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.Kanban;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.KanbanCode)</th>
+            <th>@Html.DisplayNameFor(p => p.KanbanName)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateBy)</th>
+            <th>@Html.DisplayNameFor(p => p.CreateTime)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.Actived)</th>
+            <th class="text-center isd-table-th-action">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.KanbanCode)</td>
+                <td>@Html.DisplayFor(p => item.KanbanName)</td>
+                <td>@Html.DisplayFor(p => item.CreateByName)</td>
+                <td>@item.CreateTime.Value.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                <td class="text-center">@HtmlExtensions.ActivedIcon(item.Actived)</td>
+                <td class="text-center">
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.KanbanId)
+                    <a class="btn btn-info btn-config" href="/Work/Kanban/Index/@item.KanbanId">
+                        <i class="fa fa-cog"></i> Cấu hình
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

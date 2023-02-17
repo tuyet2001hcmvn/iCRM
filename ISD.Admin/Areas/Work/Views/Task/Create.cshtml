@@ -1,0 +1,269 @@
+﻿@model TaskViewModel
+
+@{
+    string CurrentController = ConstController.Task;
+    string CurrentArea = ConstArea.Work;
+    var ParentType = ViewBag.ParentType;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController, "?Type=" + ViewBag.Type);
+    var GoogleMapAPIKey = ViewBag.GoogleMapAPIKey;
+    var CopyFrom = ViewBag.CopyFrom;
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+    @Html.HiddenFor(p => p.ProductWarrantyId)
+    @Html.Hidden("Type", (string)ViewBag.Type)
+    @Html.Hidden("DefaultTaskStatusId", (Guid?)ViewBag.DefaultTaskStatusId)
+    @Html.HiddenFor(p => p.ParentTaskId)
+    @Html.Hidden("CopyFrom", (Guid?)CopyFrom)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?Type=" + ViewBag.Type)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @if (Model.Type == ConstWorkFlowCategory.BOOKING_VISIT)
+            {
+                @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndContinueEdit)
+            }
+            else
+            {
+                @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndContinueEdit)
+            }
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-horizontal frmCreateTask">
+                    @Html.Partial("_CreateTaskInfo")
+                </div>
+                <div class="text-center" style="margin-bottom:20px;">
+                    <a class="btn bg-blue" id="btn-save-fake" onclick="$(this).button('loading')"><i class="fa fa-floppy-o"></i> @LanguageResource.Btn_Save</a>
+                    <a class="btn bg-blue" id="btn-save-edit-fake" onclick="$(this).button('loading')">
+                        <i class="fa fa-floppy-o"></i> @LanguageResource.Btn_SaveAndContinueEdit
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loading-modal"></div>
+    <div class="delete-confirm"></div>
+}
+
+@section head {
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script src="~/ckfinder/ckfinder.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+}
+
+@section components{
+    <div class="divProfilePopup"></div>
+    <div class="divContactPopup"></div>
+    <div class="divConstructionPopup"></div>
+    <div id="divTaskGroupPopup" class="modal" role="dialog"></div>
+    <div id="divTaskPersonGroupPopup" class="modal" role="dialog">
+        @Html.Partial("_FormChooseTaskPersonGroup", new TaskGroupViewModel())
+    </div>
+    @Html.Partial("_DeleteTaskGroupPopup")
+
+    <!--Xem thông tin các khách hàng cùng khu vực-->
+    <div class="modal" role="dialog" id="modal-nearby">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">DANH SÁCH CÁC KHÁCH HÀNG CÙNG KHU VỰC</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="div-progress"></div>
+                    <div id="task-nearby-detail"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@section scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?language=vi&key=@GoogleMapAPIKey&libraries=places&callback=GoogleMapsInitialize" async defer></script>
+    @Scripts.Render("~/Areas/Work/Scripts/CreateTask")
+    <script>
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+            ISD.DateTimeInitial();
+            $("input[name='isRemind']").trigger("change");
+            GetAddressByContact("profile");
+
+            if (!$("input[id='dateFieldEstimateEndDate']").val()) {
+                $("input[id='dateFieldEstimateEndDate']").addClass("placeholderclass");
+                $("input[id='dateFieldEstimateEndDate']").attr("placeholder", "Không thời hạn");
+                $("input[id='dateFieldEstimateEndDate']").attr("style", "width: 177px !important");
+            }
+
+
+            numericInput();
+            $(document).on("click", "#btn-save-fake", function () {
+                $("#btn-save").click();
+                $(this).button("reset");
+            });
+            $(document).on("click", "#btn-save-edit-fake", function () {
+                $("#btn-save-edit").click();
+                $(this).button("reset");
+            });
+            if ("@CopyFrom" != null && "@CopyFrom" != "") {
+                CopyTask("@CopyFrom");
+            }
+            else {
+                setDefaultValue();
+            }
+
+        });
+
+        $(document).ajaxStop(function () {
+            $('.btn').button('reset');
+        });
+
+        function setDefaultValue() {
+            var TaskStatusId = $("#DefaultTaskStatusId").val();
+
+            //alert(TaskStatusId);
+            if (TaskStatusId) {
+                $('select[name="TaskStatusId"]').val(TaskStatusId).trigger("change");
+            }
+        }
+
+        $(document).on("change", "input[id='dateFieldEstimateEndDate']", function () {
+            var value = $(this).val();
+            if (value != "") {
+                $("input[id='dateFieldEstimateEndDate']").removeClass("placeholderclass");
+            }
+            else {
+                $("input[id='dateFieldEstimateEndDate']").addClass("placeholderclass");
+            }
+        });
+
+        function CopyTask(id) {
+            $.ajax({
+                type: "GET",
+                url: "/Work/Task/GetTaskById",
+                data: {
+                    id: "@CopyFrom"
+                },
+                success: function (jsonData) {
+                    console.log(jsonData);
+                    $("#ServiceTechnicalTeamCode").val(jsonData.ServiceTechnicalTeamCode).trigger("change");
+                    $("#WorkFlowId").val(jsonData.WorkFlowId).trigger("change");
+                    $("#TaskStatusId").val(jsonData.TaskStatusId).trigger("change");
+                    $("#Description").val(jsonData.Description);
+                    $("#VisitAddress").val(jsonData.VisitAddress);
+                    if (jsonData.ReceiveDate_StringFormat != null && jsonData.ReceiveDate_StringFormat != "") {
+                        $("#dateFieldReceiveDate").val(jsonData.ReceiveDate_StringFormat);
+                        $("#ReceiveDate").val(jsonData.ReceiveDate_StringFormat);
+                    }
+                    if (jsonData.StartDate_StringFormat != null && jsonData.StartDate_StringFormat != "") {
+                        $("#dateFieldStartDate").val(jsonData.StartDate_StringFormat);
+                        $("#StartDate").val(jsonData.StartDate_StringFormat);
+                    }
+                    if (jsonData.EndDate_StringFormat != null && jsonData.EndDate_StringFormat != "") {
+                        $("#dateFieldEndDate").val(jsonData.EndDate_StringFormat);
+                        $("#EndDate").val(jsonData.EndDate_StringFormat);
+                    }
+                    //$("#Reporter").val(jsonData.Reporter).trigger("change");
+                    $("#lat_display").val(jsonData.lat);
+                    $("#lng_display").val(jsonData.lng);
+                    //if (jsonData.IsAssignGroup) {
+                    //    $('input[name=IsAssignGroup][value="True"]').prop('checked', true);
+                    //}
+                    //else {
+                    //    $('input[name=IsAssignGroup][value="False"]').prop('checked', true);
+                    //}
+                    $("#ProfileName").val(jsonData.ProfileName);
+                    $("#ProfileId").val(jsonData.ProfileId);
+                    $("#ContactName").val(jsonData.ContactName);
+                    $("#ContactId").val(jsonData.ContactId);
+                    if (jsonData.taskAssignList.length <= 1) {
+                        $(".btn-seemore").click();
+                        $('select[name="taskAssignList[0].SalesEmployeeCode"]').val(jsonData.taskAssignList[0].SalesEmployeeCode).trigger("change");
+                        $('select[name="taskAssignList[0].TaskAssignTypeCode"]').val(jsonData.taskAssignList[0].TaskAssignTypeCode).trigger("change");
+                    }
+                    else {
+                        $(".btn-seemore").click();
+                        for (var i = 0; i < jsonData.taskAssignList.length; i++) {
+                            if (i != 0) {
+                                $(".btn-addPerson").click();
+                                $('select[name="taskAssignList[' + i + '].SalesEmployeeCode"]').val(jsonData.taskAssignList[i].SalesEmployeeCode).trigger("change");
+                                $('select[name="taskAssignList[' + i + '].TaskAssignTypeCode"]').val(jsonData.taskAssignList[i].TaskAssignTypeCode).trigger("change");
+                            }
+                            else {
+                                $('select[name="taskAssignList[' + i + '].SalesEmployeeCode"]').val(jsonData.taskAssignList[i].SalesEmployeeCode).trigger("change");
+                                $('select[name="taskAssignList[' + i + '].TaskAssignTypeCode"]').val(jsonData.taskAssignList[i].TaskAssignTypeCode).trigger("change");
+                            }
+                        }
+                    }
+                    GetAddressByContact("profile");
+                }
+            });
+        }
+        //Thêm hình ảnh trước select option
+        function formatState(state) {
+            if (!state.id) {
+                return state.text;
+            }
+            var $state = $(
+                '<span><img style="width: 25px" src="/Upload/WorkFlow/WorkFlow_' + state.element.value.toLowerCase() + '.png" class="img-flag" /></span><span class="ml-10">' + state.text + '</span>'
+            );
+            return $state;
+        };
+
+        function GoogleMapsInitialize() {
+            var input = document.getElementById('VisitAddress');
+            if (input != null) {
+                if (input.value == "") {
+                    document.getElementById('lat').value = "";
+                    document.getElementById('lng').value = "";
+                    document.getElementById('lat_display').value = "";
+                    document.getElementById('lng_display').value = "";
+                }
+                else {
+                    var autocomplete = new google.maps.places.Autocomplete(input);
+                    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                        var place = autocomplete.getPlace();
+                        document.getElementById('lat').value = place.geometry.location.lat();
+                        document.getElementById('lng').value = place.geometry.location.lng();
+
+                        document.getElementById('lat_display').value = place.geometry.location.lat();
+                        document.getElementById('lng_display').value = place.geometry.location.lng();
+                    });
+                }
+            }
+        }
+
+        $(document).on("change", "input[name='VisitAddress']", function () {
+            GoogleMapsInitialize();
+        });
+
+        $('.tooltip-icon').tooltip({
+            placement: 'left'
+        });
+
+        function numericInput() {
+            $('#Property6').inputFilter(function (value) {
+                return /^-?\d*$/.test(value);
+            });
+        }
+    </script>
+}

@@ -1,0 +1,10 @@
+﻿@model string
+@Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue,
+        new {
+            @class = "form-control",
+            placeholder = ViewData.ModelMetadata.Watermark,
+            @disabled = "true"
+        })
+@*@ViewData.TemplateInfo.FormattedModelValue
+    @ViewData.TemplateInfo.HtmlFieldPrefix
+    @ViewData.TemplateInfo.TemplateDepth*@

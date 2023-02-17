@@ -1,0 +1,41 @@
+﻿@model IEnumerable<CustomerGiftModel>
+@{
+    string CurrentController = ConstController.CustomerGift;
+
+    string CurrentArea = ConstArea.MasterData;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.GiftCode)</th>
+            <th>@Html.DisplayNameFor(p => p.GiftName)</th>
+            <th>@Html.DisplayNameFor(p => p.EffectFromDate)</th>
+            <th>@Html.DisplayNameFor(p => p.EffectToDate)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.GiftCode)</td>
+                <td>@Html.DisplayFor(p => item.GiftName)</td>
+                <td>@string.Format("{0:dd/MM/yyyy}", item.EffectFromDate)</td>
+                <td>@string.Format("{0:dd/MM/yyyy}", item.EffectToDate)</td>
+                <td class="text-center">
+                    @HtmlExtensions.ViewButton(CurrentArea, CurrentController, item.GiftId)
+                    @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.GiftId)
+                    @HtmlExtensions.DeleteButton(CurrentArea, CurrentController, item.GiftName, item.GiftId)
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+
+

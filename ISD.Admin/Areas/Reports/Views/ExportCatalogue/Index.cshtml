@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout_Report.cshtml";
+    ViewBag.Title = "Phiếu gửi mẫu kiêm xuất kho";
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left"> @ViewBag.Title</h1>
+</div>
+
+<div class="content">
+    <div id="divReport">
+        @Html.Action("DocumentViewerPartial", "ExportCatalogue", new { DeliveryCode = ViewBag.DeliveryCode })
+    </div>
+</div>

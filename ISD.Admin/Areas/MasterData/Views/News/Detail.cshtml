@@ -1,0 +1,128 @@
+﻿@model NewsViewModel
+
+@{
+    ViewBag.Title = ViewBag.Title;
+    string CurrentController = ConstController.News;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+@section head{
+    <style>
+        .limit-200px-characters-displayed {
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+}
+
+@using (Html.BeginForm("Detail", null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmView" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(p => p.NewsId)
+    @Html.HiddenFor(p => p.NewsCode)
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?Type=" + string.Format("{0}", ViewBag.Type))
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.EditButton(CurrentArea, CurrentController, Model.NewsId, new { @Class = "btn btn-success btn-edit" })
+
+            
+            @*@HtmlExtensions.CreateButton(CurrentArea, CurrentController, "Type", string.Format("{0}", ViewBag.Type))*@
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="row">
+                <div class="col-lg-9">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@ViewBag.Title</h3>
+                        </div>
+                        <div class="box-body" style="padding-left: 3%">
+
+                            @if (Model.Summary != null)
+                            {
+                                <span>Chủ đề: <b>@Model.SummaryName</b> </span>
+                            }
+                            @((Model.Summary != null && Model.Detail !=null) ? "||" : null)
+                            @if (Model.Detail != null)
+                            {
+                                <span> Chi tiết:  <b>@Model.DetailName</b></span>
+                            }
+                            @if (Model.TypeNews != null)
+                            {
+                                <span> Loại tin tức:  <b>@Model.TypeNews</b></span>
+                            }
+                            <br />
+                            <span>Người tạo: <b>@Model.CreateByName</b> || Thời gian gửi lịch thông báo: <b>@Model.ScheduleTime</b> </span>
+                            <h3>@Model.Title</h3>
+                            <div id="newsdetail" style="overflow-x: scroll">
+                                @Html.Raw(Model.Description)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Liên quan</h3>
+                        </div>
+                        <div class="box-body">
+                            @foreach (var item in Model.RelatedNews)
+                            {
+
+                                <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <a target="_blank" href="~/MasterData/News/Detail/@item.NewsId">
+                                            <h3 class="box-title">@item.Title</h3>
+                                        </a>
+                                    </div>
+                                    <div class="box-body">
+                                        @if (item.Summary != null)
+                                        {
+                                            <span><b>Chủ đề: </b>@item.SummaryName</span>
+                                            <br />
+                                        }
+                                        @if (item.Detail != null)
+                                        {
+                                            <span><b>Chi tiết: </b>@item.DetailName</span>
+                                            <br />
+                                        }
+                                        @if (item.Detail != null)
+                                        {
+                                            <span><b>Loại tin tức: </b> @item.TypeNews</span>
+                                            <br />
+                                        }
+                                        <span>Người tạo: @item.CreateByName</span>
+                                        <br />
+                                        <span>Thời gian tạo: @item.CreateTime</span>
+                                    </div>
+                                </div>
+
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#CustomerLevelId").prop("disabled", true);
+            $("#CustomerId").prop("disabled", true);
+        });
+    </script>
+}
+
+

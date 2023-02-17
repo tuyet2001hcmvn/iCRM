@@ -1,0 +1,50 @@
+﻿@model IEnumerable<AccessoryViewModel>
+
+@{
+    int i = 0;
+    int k = -1;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    foreach (var item in Model)
+    {
+        i++;
+        k++;
+        <input type="hidden" name="imageList[@k].STT" value="@i">
+        //MainColor
+        <input type="hidden" name="imageList[@k].HelmetColorId" value="@item.HelmetColorId" />
+        <input type="hidden" name="imageList[@k].HelmetColorCode" value="@item.HelmetColorCode" />
+        <input type="hidden" name="imageList[@k].HelmetColorName" value="@item.HelmetColorName" />
+        //Image
+        <input type="hidden" name="imageList[@k].ImageUrl" value="@item.ImageUrl" />
+
+        <input type="hidden" name="imageList[@k].AccessoryCode" value="@item.AccessoryCode" />
+        <input type="hidden" name="imageList[@k].AccessoryName" value="@item.AccessoryName" />
+        <tr>
+            <td class="text-center">
+                @i
+            </td>
+            <td class="color-input">
+                @if (!string.IsNullOrEmpty(item.HelmetColorCode))
+                {
+                    <input type="text" class="DisplayColor" style="background-color: @item.HelmetColorCode" readonly />
+                    <span>
+                        |
+                        @item.HelmetColorName
+                    </span>
+                }
+
+            </td>
+            <td class="text-center">
+                <img src="~/Upload/Accessory/@item.ImageUrl" style="height:20%" />
+            </td>
+            <td class="text-center">
+                <a class="btn btn-danger btn-del-product" data-id="@i">
+                    @LanguageResource.Btn_Delete
+                </a>
+            </td>
+        </tr>
+    }
+}
+

@@ -1,0 +1,44 @@
+﻿@model AppointmentViewModel
+<div class="modal-header bg-primary">
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    @if (Model.AppointmentId == Guid.Empty)
+    {
+        <h4 class="modal-title">@LanguageResource.Create @LanguageResource.Appointment.ToLower()</h4>
+    }
+    else
+    {
+        <h4 class="modal-title">@LanguageResource.Update @LanguageResource.Appointment.ToLower()</h4>
+    }
+</div>
+<div class="modal-body">
+    <div id="divAlertWarningAppointment" class="alert alert-warning alert-dismissable divPopupMessage" style="display: none">
+        <button type="button" class="alert-close close" aria-hidden="true" data-div="divAlertWarning">×</button>
+        <div class="alert-message">
+        </div>
+    </div>
+    <div class="content">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmAppointment" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            @Html.HiddenFor(p => p.AppointmentId)
+            @Html.HiddenFor(p => p.CompanyId)
+            @Html.HiddenFor(p => p.WorkFlowId)
+            @*@Html.HiddenFor(p => p.TaskStatusId)*@
+
+            @Html.Partial("_Create")
+        }
+        @if (Model.AppointmentId != Guid.Empty)
+        {
+            <div class="row">
+                @Html.Action("_LogChange", "Shared", new { Model.CreateBy, Model.CreateTime, Model.LastEditBy, Model.LastEditTime, area = "" })
+            </div>
+        }
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">@LanguageResource.Btn_Close</button>
+    <button type="button" class="btn btn-primary" id="btn-save-appointment" data-add-success-call-back="ReloadAppointmentList">@LanguageResource.Btn_Save</button>
+</div>
+<div class="loading-modal"></div>
+

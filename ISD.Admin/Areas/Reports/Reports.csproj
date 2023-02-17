@@ -1,0 +1,564 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0185BFF2-CC49-4933-87DC-B7BE22EB9E7A}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Reports</RootNamespace>
+    <AssemblyName>Reports</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>
+    </IISExpressUseClassicPipelineMode>
+    <UseGlobalApplicationHostFile />
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DevExpress.Charts.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.Desktop.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Data.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.DataAccess.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Office.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Pdf.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.PivotGrid.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Printing.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.RichEdit.v21.1.Export, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Sparkline.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Utils.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Web.ASPxPivotGrid.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Web.ASPxThemes.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Web.Mvc5.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Web.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.Xpo.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="DevExpress.XtraCharts.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraGauges.v21.1.Core, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraPrinting.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v21.1, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v21.1.Web, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL" />
+    <Reference Include="DevExpress.XtraReports.v21.1.Web.WebForms, Version=21.1.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" />
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.2.1, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EPPlus.4.5.2.1\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.IO.RecyclableMemoryStream.1.4.1\lib\net46\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\System.ComponentModel.Annotations.4.7.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.6.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.Mvc.5.2.6\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.Razor.3.2.6\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebPages.3.2.6\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WebMatrix.Data, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\Microsoft.AspNet.WebPages.Data.3.2.3\lib\net45\WebMatrix.Data.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Controllers\RDCatalogueDetailReportController.cs" />
+    <Compile Include="Controllers\CostOfUsingCatalogueComparedToApprovalReportController.cs" />
+    <Compile Include="Controllers\CustomerCertificateACReportController.cs" />
+    <Compile Include="Controllers\CustomerHierarchyDetailReportController.cs" />
+    <Compile Include="Controllers\TechnicalServicesTicketMLCReportController.cs" />
+    <Compile Include="Controllers\ManagementReportController.cs" />
+    <Content Include="Global.asax" />
+    <Content Include="Scripts\ace.js" />
+    <Content Include="Scripts\cldr.event.js" />
+    <Content Include="Scripts\cldr.js" />
+    <Content Include="Scripts\cldr.supplemental.js" />
+    <Content Include="Scripts\cldr.unresolved.js" />
+    <Content Include="Scripts\ext-language_tools.js" />
+    <Content Include="Scripts\globalize.currency.js" />
+    <Content Include="Scripts\globalize.date.js" />
+    <Content Include="Scripts\globalize.js" />
+    <Content Include="Scripts\globalize.message.js" />
+    <Content Include="Scripts\globalize.number.js" />
+    <Content Include="Scripts\knockout-3.3.0.debug.js" />
+    <Content Include="Scripts\knockout-3.3.0.js" />
+    <Compile Include="Controllers\ProductPromotionDetailReportController.cs" />
+    <Compile Include="Controllers\ProductPromotionReportController.cs" />
+    <Compile Include="Controllers\RateOfAppointmentWithShowRoomReportController.cs" />
+    <Compile Include="Controllers\MaterialExportedDetailReportController.cs" />
+    <Compile Include="Controllers\NumberOfCustomerBySaleGrowthReportController.cs" />
+    <Compile Include="Controllers\NumberOfCustomersBySalesReportController.cs" />
+    <Compile Include="Controllers\SendMailReportController.cs" />
+    <Compile Include="Controllers\StockDeliveryReportController.cs" />
+    <None Include="packages.config" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Boolean.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateTime.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Decimal.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\MultilineText.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\Password.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\String.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\EmailAddress.cshtml" />
+    <Content Include="Views\ExportCatalogue\Index.cshtml" />
+    <Content Include="Views\ExportCatalogue\_DocumentViewerPartial.cshtml" />
+    <Content Include="Views\TransferCatalogue\Index.cshtml" />
+    <Content Include="Views\TransferCatalogue\_DocumentViewerPartial.cshtml" />
+    <Content Include="Views\Tastes\Index.cshtml" />
+    <Content Include="Views\Tastes\_PivotGridPartial.cshtml" />
+    <Content Include="XDataSet\DsExportCatalogue.xsc">
+      <DependentUpon>DsExportCatalogue.xsd</DependentUpon>
+    </Content>
+    <Content Include="Views\ProfileWithPersonInChargeReport\Index.cshtml" />
+    <Content Include="Views\ProfileReport\Index.cshtml" />
+    <Content Include="Views\ProfileQuantityAppointmentWithShowRoomReport\Index.cshtml" />
+    <Content Include="Views\ProfileGroupReport\Index.cshtml" />
+    <Content Include="Views\ActivitiesBySalesEmployeeReport\Index.cshtml" />
+    <Content Include="Views\CustomerTastesReport\Index.cshtml" />
+    <Content Include="Views\TaskReport\Index.cshtml" />
+    <Content Include="Views\StockOnHandReport\Index.cshtml" />
+    <Content Include="Views\TicketUsualErrorReport\Index.cshtml" />
+    <Content Include="Views\ShowroomReport\Index.cshtml" />
+    <Content Include="Views\StockOnHandReport\_StockOnHandPivotGridPartial.cshtml" />
+    <Content Include="Views\ShowroomReport\_ShowroomPivotGridPartial.cshtml" />
+    <Content Include="Views\ProfileQuantityAppointmentWithShowRoomReport\_ProfileAppointmentShowroomPivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerAppointment\Index.cshtml" />
+    <Content Include="Views\CustomerRequirement\Index.cshtml" />
+    <Content Include="Views\StockTransferReport\Index.cshtml" />
+    <Content Include="Views\StockReceivingReport\Index.cshtml" />
+    <Content Include="Views\CustomerCareActivities\Index.cshtml" />
+    <Content Include="Views\AppointmentWithPersonInChargeReport\Index.cshtml" />
+    <Content Include="Views\MaterialExportedReport\Index.cshtml" />
+    <Content Include="Views\CustomerAmountByCRM\Index.cshtml" />
+    <Content Include="Views\StatisticLikeViewProduct\Index.cshtml" />
+    <Content Include="Views\CustomerTastesReport\_PivotGridPartial.cshtml" />
+    <Content Include="Views\StockAllocationReport\Index.cshtml" />
+    <Content Include="Views\ProductAccessoryReport\Index.cshtml" />
+    <Content Include="Views\TaskProductWarrantyReport\Index.cshtml" />
+    <Content Include="Views\TaskAccessoryWarrantyReport\Index.cshtml" />
+    <Content Include="Views\TaskTicketMLCReport\Index.cshtml" />
+    <Content Include="Views\ProfileOpportunityReport\Index.cshtml" />
+    <Content Include="Views\TaskCustomerReviewReport\Index.cshtml" />
+    <Content Include="Views\TaskWarrantyNVKTReport\Index.cshtml" />
+    <Content Include="Views\TaskAnalysisDVKTReport\Index.cshtml" />
+    <Content Include="Views\CustomerDataReport\Index.cshtml" />
+    <Content Include="Views\ProfileWithPersonInChargeReport\_ProfileWithPersonInChargePivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerAppointment\_CustomerAppointmentPivotGridPartial.cshtml" />
+    <Content Include="Views\AppointmentWithPersonInChargeReport\_AppointmentWithPersonInChargePivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerAmountByCRM\_CustomerAmountByCRMPivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerRequirement\_RequirementPivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerCareActivities\_CustomerCarePivotGridPartial.cshtml" />
+    <Content Include="Views\_SaveTemplatePopup.cshtml" />
+    <Content Include="Views\_PivotTemplateHandle.cshtml" />
+    <Content Include="Views\BaoCaoDanhGiaCuaKhachHang\Index.cshtml" />
+    <Content Include="Views\BaoCaoDanhGiaCuaKhachHang\_CustomerReviewsPivotGridPartial.cshtml" />
+    <Content Include="Views\ActivitiesBySalesEmployeeReport\_ActivitiesBySalesEmployeeGridPartial.cshtml" />
+    <Content Include="Views\MaterialExportedReport\_MaterialExportedPivotGridPartial.cshtml" />
+    <Content Include="Views\StockTransferReport\_StockTransferPivotGridPartial.cshtml" />
+    <Content Include="Views\StockReceivingReport\_StockReceivingPivotGridPartial.cshtml" />
+    <Content Include="Views\StatisticLikeViewProduct\_StatisticLikeViewProductPivotGridPartial.cshtml" />
+    <Content Include="Views\ProductAccessoryReport\_ProductAccessoryPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskProductWarrantyReport\_TaskProductWarrantyPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskAccessoryWarrantyReport\_TaskAccessoryWarrantyPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskTicketMLCReport\_TaskTicketMLCPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskCustomerReviewReport\_TaskCustomerReviewPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskWarrantyNVKTReport\_TaskWarrantyNVKTPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskAnalysisDVKTReport\_TaskAnalysisDVKTPivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerDataReport\_CustomerDataPivotGridPartial.cshtml" />
+    <Content Include="Views\TongHopThongTinDuAn\Index.cshtml" />
+    <Content Include="Views\TongHopThongTinDuAn\_OpportunityPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskGTBQuantityReport\Index.cshtml" />
+    <Content Include="Views\TaskGTBQuantityReport\_TaskGTBQuantityPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskActivePivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskTHKHPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskTICKETMLCPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskTICKETPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskGTBPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskGVLPivotGridPartial.cshtml" />
+    <Content Include="Views\TaskReport\_TaskMISSIONPivotGridPartial.cshtml" />
+    <Content Include="Views\ProfileGroupReport\_ProfileGroupPivotGridPartial.cshtml" />
+    <Content Include="Views\StockAllocationReport\_StockAllocationPivotGridPartial.cshtml" />
+    <Content Include="Views\ProfileReport\_ProfilePivotGridPartial.cshtml" />
+    <Content Include="Views\StockDeliveryReport\Index.cshtml" />
+    <Content Include="Views\StockDeliveryReport\_StockDeliveryPivotGridPartial.cshtml" />
+    <Content Include="Views\SendMailReport\_Search.cshtml" />
+    <Content Include="Views\SendMailReport\Index.cshtml" />
+    <Content Include="Views\CustomerProfile\_DocumentViewerPartial.cshtml" />
+    <Content Include="Views\CustomerProfile\Index.cshtml" />
+    <Content Include="Views\ManagementReport\Index.cshtml" />
+    <Content Include="Views\ManagementReport\_DocumentViewerPartial.cshtml" />
+    <Content Include="Views\TotalRDCatalogueReport\Index.cshtml" />
+    <Content Include="Views\TotalRDCatalogueReport\_TotalRDCataloguePivotGridPartial.cshtml" />
+    <Content Include="Views\TaskGroupReport\Index.cshtml" />
+    <Content Include="Views\TaskGroupReport\_TaskGroupReportPivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerHierarchyDetailReport\Index.cshtml" />
+    <Content Include="Views\CustomerHierarchyDetailReport\_CustomerHierarchyDetailPivotGridPartial.cshtml" />
+    <Content Include="Views\MaterialExportedDetailReport\Index.cshtml" />
+    <Content Include="Views\MaterialExportedDetailReport\_MaterialExportedDetailPivotGridPartial.cshtml" />
+    <Content Include="Views\RateOfAppointmentWithShowRoomReport\Index.cshtml" />
+    <Content Include="Views\RateOfAppointmentWithShowRoomReport\_RateOfAppointmentShowRoomPivotGridPartial.cshtml" />
+    <Content Include="Views\TicketUsualErrorReport\_TicketUsualErrorPivotGridPartial.cshtml" />
+    <Content Include="Views\NumberOfCustomersBySalesReport\_NumberOfCustomersBySalesPivotGridPartial.cshtml" />
+    <Content Include="Views\NumberOfCustomersBySalesReport\Index.cshtml" />
+    <Content Include="Views\NumberOfCustomerBySaleGrowthReport\_NumberOfCustomerBySaleGrowthPivotGridPartial.cshtml" />
+    <Content Include="Views\NumberOfCustomerBySaleGrowthReport\Index.cshtml" />
+    <Content Include="Views\CustomerCertificateACReport\_CustomerCertificateACPivotGridPartial.cshtml" />
+    <Content Include="Views\CustomerCertificateACReport\Index.cshtml" />
+    <Content Include="Views\CostOfUsingCatalogueComparedToApprovalReport\_CostOfUsingCatalogueComparedToApprovalPivotGridPartial.cshtml" />
+    <Content Include="Views\CostOfUsingCatalogueComparedToApprovalReport\Index.cshtml" />
+    <Content Include="Views\ProductPromotionReport\_ProductPromotionReportPivotGridPartial.cshtml" />
+    <Content Include="Views\ProductPromotionReport\Index.cshtml" />
+    <Content Include="Views\ProductPromotionDetailReport\_ProductPromotionDetailReportPivotGridPartial.cshtml" />
+    <Content Include="Views\ProductPromotionDetailReport\Index.cshtml" />
+    <Content Include="Views\ProductWarrantyReport\_ProductWarrantyPivotGridPartial.cshtml" />
+    <Content Include="Views\ProductWarrantyReport\Index.cshtml" />
+    <Content Include="Views\TechnicalServicesTicketMLCReport\_DocumentViewerPartial.cshtml" />
+    <Content Include="Views\TechnicalServicesTicketMLCReport\Index.cshtml" />
+    <Content Include="Views\RDCatalogueDetailReport\_RDCatalogueDetailReportPivotGridPartial.cshtml" />
+    <Content Include="Views\RDCatalogueDetailReport\Index.cshtml" />
+    <None Include="XDataSet\DsExportCatalogue.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DsExportCatalogue.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="XDataSet\DsExportCatalogue.xss">
+      <DependentUpon>DsExportCatalogue.xsd</DependentUpon>
+    </Content>
+    <Content Include="XDataSet\DsTechnicalServices.xsc">
+      <DependentUpon>DsTechnicalServices.xsd</DependentUpon>
+    </Content>
+    <Content Include="XDataSet\DsCustomerProfile.xsc">
+      <DependentUpon>DsCustomerProfile.xsd</DependentUpon>
+    </Content>
+    <None Include="XDataSet\DsCustomerProfile.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DsCustomerProfile.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="XDataSet\DsCustomerProfile.xss">
+      <DependentUpon>DsCustomerProfile.xsd</DependentUpon>
+    </Content>
+    <Content Include="XDataSet\DsManagementReport.xsc">
+      <DependentUpon>DsManagementReport.xsd</DependentUpon>
+    </Content>
+    <None Include="XDataSet\DsManagementReport.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DsManagementReport.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="XDataSet\DsManagementReport.xss">
+      <DependentUpon>DsManagementReport.xsd</DependentUpon>
+    </Content>
+    <Content Include="XDataSet\DsTransferCatalogue.xsc">
+      <DependentUpon>DsTransferCatalogue.xsd</DependentUpon>
+    </Content>
+    <None Include="XDataSet\DsTransferCatalogue.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DsTransferCatalogue.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="XDataSet\DsTransferCatalogue.xss">
+      <DependentUpon>DsTransferCatalogue.xsd</DependentUpon>
+    </Content>
+    <None Include="XDataSet\DsTechnicalServices.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DsTechnicalServices.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="XDataSet\DsTechnicalServices.xss">
+      <DependentUpon>DsTechnicalServices.xsd</DependentUpon>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\ActivitiesBySalesEmployeeReportController.cs" />
+    <Compile Include="Controllers\AppointmentWithPersonInChargeReportController.cs" />
+    <Compile Include="Controllers\BaoCaoDanhGiaCuaKhachHangController.cs" />
+    <Compile Include="Controllers\CustomerAmountByCRMController.cs" />
+    <Compile Include="Controllers\CustomerAppointmentController.cs" />
+    <Compile Include="Controllers\CustomerCareActivitiesController.cs" />
+    <Compile Include="Controllers\CustomerDataReportController.cs" />
+    <Compile Include="Controllers\CustomerRequirementController.cs" />
+    <Compile Include="Controllers\CustomerTastesReportController.cs" />
+    <Compile Include="Controllers\ExportCatalogueController.cs" />
+    <Compile Include="Controllers\MaterialExportedReportController.cs" />
+    <Compile Include="Controllers\ProductAccessoryReportController.cs" />
+    <Compile Include="Controllers\ProfileGroupReportController.cs" />
+    <Compile Include="Controllers\ProfileOpportunityReportController.cs" />
+    <Compile Include="Controllers\ProfileQuantityAppointmentWithShowRoomReportController.cs" />
+    <Compile Include="Controllers\ProfileReportController.cs" />
+    <Compile Include="Controllers\ProfileWithPersonInChargeReportController.cs" />
+    <Compile Include="Controllers\ShowroomReportController.cs" />
+    <Compile Include="Controllers\StatisticLikeViewProductController.cs" />
+    <Compile Include="Controllers\StockAllocationReportController.cs" />
+    <Compile Include="Controllers\StockOnHandReportController.cs" />
+    <Compile Include="Controllers\StockReceivingReportController.cs" />
+    <Compile Include="Controllers\StockTransferReportController.cs" />
+    <Compile Include="Controllers\TaskAccessoryWarrantyReportController.cs" />
+    <Compile Include="Controllers\TaskAnalysisDVKTReportController.cs" />
+    <Compile Include="Controllers\TaskCustomerReviewReportController.cs" />
+    <Compile Include="Controllers\TaskGroupReportController.cs" />
+    <Compile Include="Controllers\TaskGTBQuantityReportController.cs" />
+    <Compile Include="Controllers\ProductWarrantyReportController.cs" />
+    <Compile Include="Controllers\TaskProductWarrantyReportController.cs" />
+    <Compile Include="Controllers\TaskReportController.cs" />
+    <Compile Include="Controllers\TaskTicketMLCReportController.cs" />
+    <Compile Include="Controllers\TaskWarrantyNVKTReportController.cs" />
+    <Compile Include="Controllers\TastesController.cs" />
+    <Compile Include="Controllers\PivotGridTemplateController.cs" />
+    <Compile Include="Controllers\TicketUsualErrorReportController.cs" />
+    <Compile Include="Controllers\TongHopThongTinDuAnController.cs" />
+    <Compile Include="Controllers\CustomerProfileController.cs" />
+    <Compile Include="Controllers\TotalRDCatalogueReportController.cs" />
+    <Compile Include="Controllers\TransferCatalogueController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ReportsAreaRegistration.cs" />
+    <Compile Include="XDataSet\DsCustomerProfile.cs">
+      <DependentUpon>DsCustomerProfile.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="XDataSet\DsExportCatalogue.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DsExportCatalogue.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="XDataSet\DsCustomerProfile.Designer.cs">
+      <DependentUpon>DsCustomerProfile.xsd</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="XDataSet\DsManagementReport.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DsManagementReport.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="XDataSet\DsTransferCatalogue.Designer.cs">
+      <DependentUpon>DsTransferCatalogue.xsd</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="XDataSet\DsTechnicalServices.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DsTechnicalServices.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="XReports\CatalogueXtraReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XReports\CustomerProfileXtraReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XReports\ManagementReportXtra.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XReports\ManagementReportXtra.Designer.cs">
+      <DependentUpon>ManagementReportXtra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XReports\TransferCatalogueXtraReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="XReports\TechnicalServicesXtraReport.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\Template\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\ISD.Constant\ISD.Constant.csproj">
+      <Project>{5101294B-3F78-48CB-AA08-F9F8E5D64583}</Project>
+      <Name>ISD.Constant</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ISD.Core\ISD.Core.csproj">
+      <Project>{f99715f3-aa9a-4bed-926d-31c43de11c75}</Project>
+      <Name>ISD.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ISD.EntityModels\ISD.EntityModels.csproj">
+      <Project>{1ED555ED-4142-4359-BA1F-83F81FB65B5A}</Project>
+      <Name>ISD.EntityModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ISD.Extensions\ISD.Extensions.csproj">
+      <Project>{3febffb2-7575-4c2c-9141-7a2ea86c48d3}</Project>
+      <Name>ISD.Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ISD.Repositories\ISD.Repositories.csproj">
+      <Project>{5B7E2F34-1834-4DD1-88F7-ABEEDE5BF821}</Project>
+      <Name>ISD.Repositories</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ISD.Resources\ISD.Resources.csproj">
+      <Project>{86cb4271-113b-440e-970b-ca14c3131d08}</Project>
+      <Name>ISD.Resources</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\ISD.ViewModels\ISD.ViewModels.csproj">
+      <Project>{9e6d4c80-c34c-462a-82b9-5837d81d996b}</Project>
+      <Name>ISD.ViewModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\licenses.licx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XReports\CatalogueXtraReport.resx">
+      <DependentUpon>CatalogueXtraReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XReports\CustomerProfileXtraReport.resx">
+      <DependentUpon>CustomerProfileXtraReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XReports\ManagementReportXtra.resx">
+      <DependentUpon>ManagementReportXtra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XReports\TransferCatalogueXtraReport.resx">
+      <DependentUpon>TransferCatalogueXtraReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XReports\TechnicalServicesXtraReport.resx">
+      <DependentUpon>TechnicalServicesXtraReport.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>3743</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:2484/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

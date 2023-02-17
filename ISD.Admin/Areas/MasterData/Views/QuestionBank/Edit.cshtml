@@ -1,0 +1,182 @@
+﻿
+
+@using ISD.ViewModels.MasterData
+@model QuestionEditViewModel
+@{
+    ViewBag.Title = LanguageResource.Update + " " + LanguageResource.Question.ToLower();
+    string CurrentController = ConstController.QuestionBank;
+    string CurrentArea = ConstArea.MasterData;
+    string BaseAddress = Net5ApiDomain;
+    var id = ViewBag.Id;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+    string ApiUrl = BaseAddress + "api/" + CurrentUrl + "s";
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+    </h1>
+    <div class="pull-right">
+        @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+    </div>
+</div>
+
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmEdit" }))
+                {
+                    @*@Html.AntiForgeryToken()*@
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(p => p.Id)
+                    @*@Html.HiddenFor(p => p.ContentId)
+            @Html.HiddenFor(p => p.TargetGroupId)
+            @Html.HiddenFor(p => p.Status)*@
+
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.QuestionBankCode)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.QuestionBankCode, new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.DepartmentId)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(p => p.DepartmentId, Enumerable.Empty<SelectListItem>(), LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.QuestionCategoryId)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(p => p.QuestionCategoryId, Enumerable.Empty<SelectListItem>(), LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Question)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Question)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Actived)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Actived, new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Answer)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.Answer)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.AnswerC)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.AnswerC)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.AnswerB)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.AnswerB)
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <p id="createBy" class="last-mod">
+                        </p>
+                        <p id="lastEditBy" class="last-mod">
+                        </p>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div id="exTab1" class="nav-tabs-custom">
+                <ul class="nav nav-pills nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab-thay-doi" aria-expanded="true" data-toggle="tab">@LanguageResource.ChangeDataLog</a>
+                    </li>
+                </ul>
+                <div class="tab-content clearfix">
+                    <div class="tab-pane active" id="tab-thay-doi">
+                        @Html.Action("_List", "ChangeDataLog", new { area = "Utilities", @id = id })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script>
+
+        CKEDITOR.replace('Answer', {
+            height: 300,
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKEDITOR.instances.Answer.on('change', function () {
+            var data = CKEDITOR.instances.Answer.getData();
+            $('#Answer').val(data);
+        });
+        CKEDITOR.replace('AnswerC', {
+            height: 300,
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKEDITOR.instances.AnswerC.on('change', function () {
+            var data = CKEDITOR.instances.AnswerC.getData();
+            $('#AnswerC').val(data);
+        });
+        CKEDITOR.replace('AnswerB', {
+            height: 300,
+            filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+            filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+            filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+            filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+            filebrowserWindowWidth: '1000',
+            filebrowserWindowHeight: '700'
+        });
+        CKEDITOR.instances.AnswerB.on('change', function () {
+            var data = CKEDITOR.instances.AnswerB.getData();
+            $('#AnswerB').val(data);
+        });
+         var currentUser = "@CurrentUser.AccountId";
+            $(document).ready(function () {
+                ISDNET5.LoadQuestionCategory();
+                ISDNET5.LoadDepartment();
+                ISDNET5.EditInitial("@CurrentUrl")
+            });
+    </script>
+}

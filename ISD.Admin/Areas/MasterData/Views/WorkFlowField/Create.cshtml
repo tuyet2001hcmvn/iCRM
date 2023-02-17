@@ -1,0 +1,63 @@
+﻿@model WorkFlowFieldModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.WorkFlowField.ToLower();
+    string CurrentController = ConstController.WorkFlowField;
+    string CurrentArea = ConstArea.MasterData;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+            </div>
+            <div class="box-body">
+                <div class="form-group col-md-6">
+                    @Html.TooltipLabelFor(p => p.FieldCode)
+                    @Html.RequiredTextboxFor(p => p.FieldCode)
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.TooltipLabelFor(p => p.FieldName)
+                    @Html.RequiredTextboxFor(p => p.FieldName)
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.TooltipLabelFor(p => p.Description)
+                    @Html.RequiredTextboxFor(p => p.Description)
+                </div>
+                <div class="form-group col-md-6">
+                    @Html.TooltipLabelFor(p => p.OrderIndex)
+                    @Html.RequiredTextboxFor(p => p.OrderIndex)
+                </div>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+       //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+    </script>
+}

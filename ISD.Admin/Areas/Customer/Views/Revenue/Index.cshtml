@@ -1,0 +1,241 @@
+﻿@model RevenueSearchViewModel
+@using ISD.Core
+@{
+    ViewBag.Title = LanguageResource.Customer_Revenue;
+    string CurrentArea = ConstArea.Customer;
+    string CurrentController = ConstController.Revenue;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+    <div class="pull-right">
+
+    </div>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="panel-group">
+            <div class="panel panel-default panel-search">
+                @using (Html.BeginForm("_Search", null, FormMethod.Post, new { @id = "frmSearch", @class = "isd-form-search" }))
+                {
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.CompanyId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.CompanyId, (IEnumerable<SelectListItem>)ViewBag.CompanyIdList, LanguageResource.Dropdownlist_All)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.NumberOfRows)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredDropDownListFor(p => p.NumberOfRows, new List<SelectListItem>()
+                                   {
+                                       new SelectListItem(){Text = "100", Value = "100" },
+                                       new SelectListItem(){Text = "200", Value = "200" },
+                                       new SelectListItem(){Text = "300", Value = "300" },
+                                       new SelectListItem(){Text = "400", Value = "400" },
+                                       new SelectListItem(){Text = "500", Value = "500" },
+                                       new SelectListItem(){Text = "1000", Value = "1000" },
+                                       new SelectListItem(){Text = "2000", Value = "2000" }
+                                   }, LanguageResource.Dropdownlist_All)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.CustomerCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.CustomerCode)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.PhoneNumber)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.PhoneNumber)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.FromLimit)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.FromLimit)
+                                        <div class="displayNumber" id="display-FromLimit"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.ToLimit)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.RequiredTextboxFor(p => p.ToLimit)
+                                        <div class="displayNumber" id="display-ToLimit"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <div class="col-md-3 col-md-offset-4 input-group">
+                                    <select class="form-control" id="SearchTemplateId" name="SearchTemplateId">
+                                        <option value="">@LanguageResource.Dropdownlist_RecentSearch</option>
+                                    </select>
+                                    <span class="input-group-btn" style="padding-right:25px;padding-left: 10px;">
+                                        <a class="btn btn-delete-frmSearch display-none" style="color: coral;" title="Xoá mẫu tìm kiếm"><i class="fa fa-trash-o fa-lg" aria-hidden="true"></i></a>
+                                        <a class="btn btn-save-frmSearch" title="Lưu mẫu tìm kiếm"><i class="fa fa-thumb-tack fa-lg" aria-hidden="true"></i></a>
+                                    </span>
+                                    @HtmlExtensions.SearchButton()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div id="divSearchResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="delete-confirm"></div>
+
+@section scripts {
+    <script src="~/Scripts/Common/ISD.SearchTemplate.js"></script>
+    <script>
+        //Define it
+        var currentUserId = "@CurrentUser.AccountId";
+        var currentPageId = "@ViewBag.PageId";
+    </script>
+    <script>
+        $(document).ready(function () {
+            LoadTemplateSearch(currentUserId, currentPageId);
+            var recentSearch = JSON.parse(localStorage.getItem('pageId-' + currentPageId));
+            //Set lại thông tin search gần đây
+            if (recentSearch) {
+                FillToInput(recentSearch);
+            }
+        })
+
+        $("#btn-search").click(function () {
+            var CompanyId = $("select[name='CompanyId']").val();
+            var FromLimit = $("input[name='FromLimit']").val();
+            var ToLimit = $("input[name='ToLimit']").val();
+
+            if (CompanyId == "" || FromLimit == "" || ToLimit == "") {
+                alertPopup(false, "@LanguageResource.Required_Validation");
+            }
+            if (FromLimit > ToLimit) {
+                alertPopup(false, "@LanguageResource.Revenue_LimitError");
+            }
+            var searchData = GetDataFormSearch();
+            //Save localStorage
+            localStorage.setItem('pageId-' + currentPageId, searchData);
+
+            ISD.SearchDefault("@CurrentUrl", true);
+        });
+
+        //set default form submit => click btn-search button
+        $("#frmSearch").submit(function (e) {
+            e.preventDefault();
+            $("#btn-search").trigger("click");
+        });
+
+        $(document).on("keyup", "#FromLimit", function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && (e.which < 96 || e.which > 105) && e.which != 231) {
+                $(this).val("");
+                $("#display-FromLimit").html("");
+            }
+            else {
+                SetDisplayNumber($(this), "FromLimit");
+            }
+        });
+
+        $(document).on("keyup", "#ToLimit", function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) && (e.which < 96 || e.which > 105) && e.which != 231) {
+                $(this).val("");
+                $("#display-ToLimit").html("");
+            }
+            else {
+                SetDisplayNumber($(this), "ToLimit");
+            }
+        });
+
+        $(document).on("change", "#ToLimit", function () {
+            SetDisplayNumber($(this), "ToLimit");
+        });
+
+        $(document).on("change", "#ToLimit", function () {
+            SetDisplayNumber($(this), "ToLimit");
+        });
+
+        function SetDisplayNumber(element, elementName) {
+            var value = parseInt(element.val());
+            if (value > 0) {
+                $("#display-" + elementName).css("display", "block");
+                $("#display-" + elementName).html(formatCurrency(value));
+            }
+            else {
+                $("#display-" + elementName).css("display", "none");
+                $("#display-" + elementName).html("");
+            }
+        }
+    </script>
+    <script>
+        //Get data of form search name function is required
+        function GetDataFormSearch() {
+            //Get value in search form
+            var formdata = $("#frmSearch").serializeArray();
+            var data = {};
+            $(formdata).each(function (index, obj) {
+                data[obj.name] = obj.value;
+            });
+            return JSON.stringify(data);
+        }
+        //Fill data to form search name function is required
+        function FillToInput(recentSearch) {
+            
+            $("#CompanyId").val(recentSearch.CompanyId).change();
+            $("#NumberOfRows").val(recentSearch.NumberOfRows).change();
+            
+            $("#CustomerCode").val(recentSearch.CustomerCode);
+            $("#PhoneNumber").val(recentSearch.PhoneNumber);
+            $("#FromLimit").val(recentSearch.FromLimit);
+            $("#ToLimit").val(recentSearch.ToLimit);
+            
+        }
+    </script>
+}

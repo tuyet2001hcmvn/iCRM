@@ -1,0 +1,199 @@
+﻿@model TransferViewModel
+@using ISD.Core;
+@{
+    ViewBag.Title = LanguageResource.Btn_View + " " + LanguageResource.TransferMaterial.ToLower();
+    string CurrentController = ConstController.StockTransfer;
+    string CurrentArea = ConstArea.Warehouse;
+
+    var TransferDetailList = (List<TransferDetailViewModel>)ViewBag.ListTransferDetail;
+}
+<div class="content" style="padding-top: 0px">
+    <div class="content-header clearfix" style="padding-left: 0px">
+        @{
+            var title = LanguageResource.Transfer_Bill + ": " + Model.TransferCode;
+        }
+        <h1 class="pull-left">
+            @title
+            @if (Model.isDeleted == true)
+            {
+                <span style="font-size: 16px">(Đã hủy: @Model.DeletedReason)</span>
+            }
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?ModeSearch=Recently")
+        </h1>
+    </div>
+    <div class="panel-group" style="margin-top:15px">
+        <div class="panel panel-body">
+            <div class="form-horizontal">
+                <div class="panel panel-default isd-panel">
+                    <div class="panel-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.CompanyId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.CompanyName)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.SalesEmployeeCode)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.EmployeeName)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.StoreId)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.StoreName)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.Note)
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="display-for">
+                                            @Html.DisplayFor(p => p.Note)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.DocumentDate)
+                                    </div>
+                                    <div class="col-md-8">
+                                        @if (Model.DocumentDate != null)
+                                        {
+                                            <div class="display-for">@Model.DocumentDate.Value.ToString("dd/MM/yyyy")</div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group panel">
+                    @Html.Partial("~/Areas/Warehouse/Views/StockDelivery/_CatalogInfo.cshtml", new DeliveryViewModel()
+                        {
+                   DeliveryId = Model.TransferId,
+                        SenderName = Model.SenderName,
+                           SenderPhone = Model.SenderPhone,
+                           SenderAddress = Model.SenderAddress,
+                           RecipientName = Model.RecipientName,
+                           RecipientPhone = Model.RecipientPhone,
+                           RecipientAddress = Model.RecipientAddress,
+                           RecipientCompany = Model.RecipientCompany,
+                           IsEdit = false,
+                       })
+                </div>
+                <div class="panel panel-default isd-panel">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapse-product">@LanguageResource.Sale_Product</a>
+                        </h4>
+                    </div>
+                    <div id="collapse-product" class="panel-collapse collapse in">
+                        <div class="content-header-in-panel">
+                            <table id="stockReceivingDetailTable" class="table table-bordered table-hover no-footer detail-table">
+                                <thead class="isd-table-header">
+                                    <tr>
+                                        <th class="text-center">@LanguageResource.NumberIndex</th>
+                                        <th>@LanguageResource.ProductCode</th>
+                                        <th>@LanguageResource.Promotion_ProductName</th>
+                                        <th>@LanguageResource.Warehouse_StockExport</th>
+                                        <th>@LanguageResource.Warehouse_StockReceive</th>
+                                        <th style="width:100px">@LanguageResource.Catalogue_Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stockReceivingDetailList">
+                                    @if (Model != null && TransferDetailList.Count() > 0)
+                                    {
+                                        int i = 0;
+                                        int k = -1;
+
+                                        foreach (var item in TransferDetailList)
+                                        {
+                                            i++;
+                                            k++;
+
+                                            string background_color = "";
+
+                                            <tr class="@background_color">
+                                                <td class="text-center">
+                                                    @i
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(p => item.ProductCode)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(p => item.ProductName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(p => item.FromStockName)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(p => item.ToStockName)
+                                                </td>
+                                                <td class="text-right">
+                                                    @Html.DisplayFor(p => item.Quantity)
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td class="text-center" colspan="8">
+                                                @LanguageResource.Warehouse_NoProduct
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            TotalPrice();
+        });
+        //Tính tổng tiền
+        function TotalPrice() {
+            var SubTotal = 0;
+            $(".transferDetailList-UnitPrice").each(function () {
+                var dataRow = $(this).data("row");
+                var TotalPrice = $("input[name='transferDetailList[" + dataRow + "].UnitPrice']").val();
+                if (TotalPrice == "") {
+                    TotalPrice = 0;
+                }
+                SubTotal += parseInt(TotalPrice);
+            });
+            $("#total").html(formatCurrency(SubTotal));
+            // $("#TotalPrice").val(SubTotal);
+        }
+    </script>
+}

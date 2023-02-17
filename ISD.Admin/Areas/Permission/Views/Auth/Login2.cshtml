@@ -1,0 +1,128 @@
+﻿@model ISD.ViewModels.AccountLoginViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    @{
+        ViewBag.Title = LanguageResource.Permission_Login;
+        Layout = null;
+    }
+    <title>@ViewBag.Title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="/favicon.ico" />
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/vendor/animate/animate.css">
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/vendor/select2/select2.min.css">
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/css/util.css">
+    <link rel="stylesheet" type="text/css" href="/Areas/Permission/Content/LoginForm/css/main.custom.css">
+    <style>
+        .validation-summary-errors ul li {
+            display: table-row-group;
+            color: orange;
+            font-size: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .hide-saleorg {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="limiter">
+        <div class="container-login100">
+            <img src="/Images/customer-logo.svg" class="customer-logo-mobile" />
+            <img src="/Images/isdcorp-logo.png" class="isd-logo-mobile" />
+
+            <img src="/Images/customer-logo.svg" class="customer-logo" />
+            <img src="/Images/isdcorp-logo.png" class="isd-logo" />
+
+            <div class="wrap-login100">
+                <div class="login100-pic js-tilt" data-tilt>
+                    <img src="/Images/img-01.png" alt="IMG" style="width: 100%">
+                </div>
+
+                @using (Html.BeginForm(ConstAction.Login, ConstController.Auth, FormMethod.Post, new { @class = "login100-form validate-form", @id = "frmLogin" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @id = "login-validation" })
+                    @Html.HiddenFor(p => p.ReturnUrl)
+                    <span class="login100-form-title">
+                        @ViewBag.Title
+                    </span>
+
+                    <div class="wrap-input100 validate-input" data-validate="Vui lòng nhập thông tin tài khoản!">
+                        @Html.TextBoxFor(p => p.UserName, new { @placeholder = LanguageResource.UserName, @class = "input100" })
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Vui lòng nhập mật khẩu của bạn!">
+                        @Html.TextBoxFor(p => p.Password, new { @type = "password", @placeholder = LanguageResource.Password, @class = "input100" })
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 CompanyId hidden">
+                        @Html.DropDownList("CompanyId", null, "-- Công ty --", new { @class = "form-control with-search input100", @style = "height: 50px" })
+                        <span class="symbol-input100">
+                            <i class="fa fa-building-o" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 SaleOrg hide-saleorg hidden">
+                        @if (ViewBag.CompanyId_Choose != null)
+                        {
+                            @Html.DropDownList("SaleOrg", null, null, new { @class = "form-control with-search input100", @style = "height: 50px" })
+                        }
+                        else
+                        {
+                            <select name="SaleOrg" id="SaleOrg" class="form-control with-search input100" style="height: 50px"></select>
+                        }
+                        <span class="symbol-input100">
+                            <i class="fa fa-map-marker" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="text-center p-t-12 remember">
+                        <div class="checkbox">
+                            <label style="font-style: normal; color: #fff">
+                                @Html.CheckBoxFor(p => p.RememberMe, new { @class = "checkbox-login" })
+                                | @LanguageResource.RememberMe
+                            </label>
+                        </div>
+                    </div>
+                    <div class="container-login100-form-btn">
+                        <input type="submit" class="login100-form-btn" value="@LanguageResource.Btn_Login" />
+                    </div>
+
+                    <div class="text-center">
+                        <a class="txt2" href="#">
+                            Quên mật khẩu
+                            <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <script src="/Areas/Permission/Content/LoginForm/vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/Areas/Permission/Content/LoginForm/vendor/bootstrap/js/popper.js"></script>
+    <script src="/Areas/Permission/Content/LoginForm/vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/Areas/Permission/Content/LoginForm/vendor/select2/select2.min.js"></script>
+    <script src="/Areas/Permission/Content/LoginForm/vendor/tilt/tilt.jquery.min.js"></script>
+    <script>
+
+    </script>
+    <script src="/Areas/Permission/Content/LoginForm/js/main.js"></script>
+</body>
+</html>

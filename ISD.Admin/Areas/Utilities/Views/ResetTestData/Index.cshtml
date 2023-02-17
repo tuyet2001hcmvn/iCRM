@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = LanguageResource.Utilities_ResetTestData;
+    string CurrentController = ConstController.ResetTestData;
+    string CurrentArea = ConstArea.Utilities;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @ViewBag.Title
+    </h1>
+</div>
+<div class="content">
+    <a class="btn btn-primary" id="reset-data">
+        <i class="fa fa-refresh"></i> @LanguageResource.Utilities_ResetTestData
+    </a>
+</div>
+
+@section scripts {
+    <script>
+        $(document).on("click", "#reset-data", function () {
+            var $btn = $(this);
+
+            $.ajax({
+                type: "POST",
+                url: "/@CurrentUrl/ResetData",
+                success: function (jsonData) {
+                    $btn.button('reset');
+                    if (jsonData.Success == true) {
+                        if (jsonData.Data != null) {
+                            alertPopup(true, jsonData.Data);
+                        }
+                    }
+                    else {
+                        if (jsonData.Data != null && jsonData.Data != "") {
+                            alertPopup(false, jsonData.Data);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $btn.button('reset');
+                    alertPopup(false, xhr.responseText);
+                }
+            });
+        });
+    </script>
+}
+
+

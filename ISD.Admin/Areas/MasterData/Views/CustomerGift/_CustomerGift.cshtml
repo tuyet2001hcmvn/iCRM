@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Detail_CustomerGiftViewModel>
+
+<table id="customerTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerCode)</th>
+            <th>@Html.DisplayNameFor(p => p.FullName)</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLoyaltyCard)</th>
+            <th>@Html.DisplayNameFor(p => p.CustomerLevelName)</th>
+            <th>@Html.DisplayNameFor(p => p.CumulativePoint)</th>
+            <th class="text-center">@LanguageResource.Actions</th>
+        </tr>
+    </thead>
+    <tbody id="chosenList">
+        @if (Model != null && Model.Count() > 0)
+        {
+            @Html.Partial("_CustomerGiftInner", Model)
+        }
+        else
+        {
+            <tr>
+                <td colspan="8">Vui lòng chọn khách hàng!</td>
+            </tr>
+        }
+    </tbody>
+</table>

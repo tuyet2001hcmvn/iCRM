@@ -1,0 +1,122 @@
+﻿@model RequestWarrantyViewModel
+@{
+    ViewBag.Title = "Yêu cầu bảo hành";
+    var WarrantyIdList = (List<Guid>)ViewBag.warrantyIdList;
+}
+<div class="card card-lightblue">
+    <div class="card-header">
+        Yêu cầu bảo hành sản phẩm: @ViewBag.ProductName
+    </div>
+    <div class="form-horizontal">
+        @using (Html.BeginForm("SaveTicket", null, FormMethod.Post, new { id = "frmRequestInfor"}))
+        {
+            @Html.AntiForgeryToken()
+            @*@Html.HiddenFor(p => p.ProductWarrantyId)*@
+            @Html.HiddenFor(p => p.ProfileId)
+
+            if (WarrantyIdList != null && WarrantyIdList.Count > 0)
+            {
+                foreach (var ListIdWarranty in WarrantyIdList)
+                {
+                    @Html.HiddenFor(p => ListIdWarranty)
+                }
+            }
+
+            <div class="card-body">
+                @Html.ValidationSummary()
+                <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                        @Html.TooltipLabelFor(p => p.ProfileName)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(p => p.ProfileName, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                        @Html.TooltipLabelFor(p => p.PhoneNumber)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(p => p.PhoneNumber, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                        @Html.TooltipLabelFor(p => p.Address)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(p => p.Address, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-4 col-form-label">
+                        @Html.TooltipLabelFor(p => p.Summary)
+                    </div>
+                    <div class="col-sm-8">
+                        @Html.TextBoxFor(p => p.Summary, new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="text-center">
+                    @*<button type="submit" class="btn btn-info">Gửi</button>*@
+                    <a id="btn-send" class="btn bg-blue">Gửi</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $("#btn-send").click(function () {
+                var $btn = $("#btn-send");
+                $btn.html('<div class="spinner-border text-light" role="status"></div>');
+                $.ajax({
+                    type: "POST",
+                    url: "/WarrantyRequest/SaveTicket",
+                    data: $("#frmRequestInfor").serializeArray(),
+                    success: function (response) {
+                        $btn.html("Gửi");
+                        if (response.Success == true) {
+                            Swal.fire({
+                                html: response.Data,
+                                icon: "info",
+                            }).then((result) => {
+                                if (result.isConfirmed == true) {
+                                    window.location.href = "/";
+                                }
+                            });
+                        } else {
+                            setMessage(response.Data, "error");
+                        }
+                    }
+                });
+            });
+        });
+
+        function setMessage(message, type) {
+            if (Array.isArray(message)) {
+                var mes = "";
+                $.each(message, function (i, item) {
+                    //Code cũ
+                    //arr[i] = { err: item.ErrorMessage }
+                    if (item.ErrorMessage != undefined && item.ErrorMessage != "") {
+                        mes += item.ErrorMessage + "<br/>";
+                    }
+                    else {
+                        mes += item;
+                    }
+                });
+                Swal.fire({
+                    html: mes,
+                    icon: type,
+                });
+            }
+            else {
+                Swal.fire({
+                    html: message,
+                    icon: type,
+                });
+            }
+        }
+    </script>
+    }

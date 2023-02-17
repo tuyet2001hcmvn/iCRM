@@ -1,0 +1,84 @@
+﻿@model IEnumerable<DeliveryViewModel>
+@using ISD.Core
+@{
+    /**/
+
+    string CurrentArea = ConstArea.Warehouse;
+    string CurrentController = ConstController.StockDelivery;
+
+    string CurrentUrl = CurrentArea + "/" + CurrentController;
+}
+
+@if (Model != null && Model.Count() > 0)
+{
+    int i = 0;
+    foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td class="text-center">@i</td>
+            <td class="text-center">
+                <a href="~/@CurrentUrl/View/@item.DeliveryId" target="_blank">
+                    @Html.DisplayFor(p => item.DeliveryCode)
+                </a>
+                <div style="display: inline-flex; position: relative">
+                    <a class="btn-showStockDelivery dropdown-toggle"
+                       title="Xem catalog"
+                       data-toggle="dropdown"
+                       data-id="@item.DeliveryId">
+                        <i class="fa fa-eye"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-filter dropdown-menu-right mr-15 hidden"
+                        style="left: 0; min-width: 300px; width: max-content; padding-bottom: 10px"></ul>
+                </div>
+            </td>
+            <td>@Html.DisplayFor(p => item.StoreName)</td>
+            <td>
+                <a href="~/Customer/Profile/Edit/@item.ProfileId">
+                    @Html.DisplayFor(p => item.ProfileName)
+                </a>
+            </td>
+            @if (ViewBag.TaskId != null)
+            {
+                <td>@Html.DisplayFor(p => item.Summary)</td>
+            }
+            <td>@Html.DisplayFor(p => item.CreateByName)</td>
+            <td class="text-right">
+                @if (item.DocumentDate != null)
+                {
+                    <span>@item.DocumentDate.Value.ToString("dd/MM/yyyy HH:mm")</span>
+                }
+            </td>
+            @if (ViewBag.TaskId != null)
+            {
+                <td class="text-right">
+                    @if (item.Total != null)
+                    {
+                        <span>@item.Total.FormatCurrency()</span>
+                    }
+                </td>
+            }
+            <td class="text-center">
+                @if (item.isDeleted == true)
+                {
+                    <i style="color: orange">Đã hủy</i>
+                }
+            </td>
+            @if (ViewBag.TaskId != null)
+            {
+                <td class="text-center"><a class="btn btn-default btn-edit-type" data-id="@item.DeliveryId" data-type="@item.DeliveryType"><i class="fa fa-pencil"></i> Sửa</a></td>
+            }
+        </tr>
+    }
+}
+else
+{
+    if (ViewBag.TaskId != null)
+    {
+        <tr class="odd"><td valign="top" colspan="10" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+    }
+    else
+    {
+        <tr class="odd"><td valign="top" colspan="7" class="dataTables_empty">@LanguageResource.Grid_NoRecord</td></tr>
+    }
+}

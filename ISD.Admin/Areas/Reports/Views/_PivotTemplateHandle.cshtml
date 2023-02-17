@@ -1,0 +1,91 @@
+﻿@{
+    string CurrentUrl = ViewBag.CurrentUrl;
+    string Parameter = ViewBag.Parameter;
+    bool isHasPermissionCreateSystemReportTemplate = false;
+    bool isHasPermissionCreateReportTemplate = false;
+    if (string.IsNullOrEmpty(Parameter))
+    {
+        isHasPermissionCreateSystemReportTemplate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CreatePivotReportSystem);
+        isHasPermissionCreateReportTemplate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CreatePivotReport);
+    }
+    else
+    {
+        isHasPermissionCreateSystemReportTemplate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CreatePivotReportSystem, Parameter);
+        isHasPermissionCreateReportTemplate = HtmlExtensions.GetPermission(CurrentUrl, ConstFunction.CreatePivotReport, Parameter);
+    }
+
+    var listSystemTemplate = (List<PivotTemplateViewModel>)ViewBag.SystemTemplate;
+    var listUserTemplate = (List<PivotTemplateViewModel>)ViewBag.UserTemplate;
+    var selectTemplateId = ViewBag.TemplateId;
+}
+
+<a class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Mẫu báo cáo  <i class="fa fa-caret-down"></i></a>
+<ul class="dropdown-menu">
+    <li class="dropdown-header" style="font-weight:bold;">@LanguageResource.PivotTemplate_System</li>
+    @foreach (var template in listSystemTemplate)
+    {
+        <li style="padding-bottom:5px; padding-top:5px; white-space:nowrap;cursor:context-menu;">
+            @if (template.SearchResultTemplateId == selectTemplateId)
+            {
+                <a class="pivot-template-item" style="display:initial; padding-left:10px; font-weight:bold; color:black;" data-id="@template.SearchResultTemplateId">
+                    <i class="fa fa-table"></i>@template.TemplateName
+                </a>
+            }
+            else
+            {
+                <a class="pivot-template-item" style="display:initial; padding-left:10px;" data-id="@template.SearchResultTemplateId">
+                    <i class="fa fa-table"></i>@template.TemplateName
+                </a>
+            }
+
+
+            @if (isHasPermissionCreateSystemReportTemplate)
+            {
+                <a class="btn btn-default btn-update-template" data-id="@template.SearchResultTemplateId" data-name="@template.TemplateName" data-default="@template.IsDefault" style="padding:2px 5px;display:initial;margin-right:5px;">
+                    <i class="fa fa-floppy-o" style="margin-right: 0px;"></i>
+                </a>
+                <a class="btn btn-danger btn-delete-template" data-id="@template.SearchResultTemplateId" data-name="@template.TemplateName" style="padding:2px 5px;display:initial;color:black">
+                    <i class="fa fa-times" style="margin-right: 0px;"></i>
+                </a>
+            }
+        </li>
+    }
+    @if (isHasPermissionCreateSystemReportTemplate)
+    {
+        <li><a id="btn-save-sysadmin" href="#"> <span class="fa fa-save"></span>@LanguageResource.PivotTemplate_Save</a></li>
+    }
+    <li class="divider"></li>
+    <li class="dropdown-header" style="font-weight:bold;">@LanguageResource.PivotTemplate_User</li>
+    @foreach (var template in listUserTemplate)
+    {
+        <li style="padding-bottom:5px; padding-top:5px; white-space:nowrap;cursor:context-menu;">
+            @if (template.SearchResultTemplateId == selectTemplateId)
+            {
+                <a class="pivot-template-item" style="display:initial; padding-left:10px; font-weight:bold; color:black;" data-id="@template.SearchResultTemplateId">
+                    <i class="fa fa-table"></i>@template.TemplateName
+                </a>
+            }
+            else
+            {
+                <a class="pivot-template-item" style="display:initial; padding-left:10px;" data-id="@template.SearchResultTemplateId">
+                    <i class="fa fa-table"></i>@template.TemplateName
+                </a>
+            }
+
+            @if (isHasPermissionCreateReportTemplate)
+            {
+                <a class="btn btn-default btn-update-template" data-default="@template.IsDefault" data-id="@template.SearchResultTemplateId" data-name="@template.TemplateName" style="padding:2px 5px;display:initial;margin-right:5px;">
+                    <i class="fa fa-floppy-o" style="margin-right: 0px;"></i>
+                </a>
+                <a class="btn btn-danger btn-delete-template" data-id="@template.SearchResultTemplateId" data-name="@template.TemplateName" style="padding:2px 5px;display:initial;color:black">
+                    <i class="fa fa-times" style="margin-right: 0px;"></i>
+                </a>
+            }
+        </li>
+    }
+    @if (isHasPermissionCreateReportTemplate)
+    {
+        <li><a id="btn-save-user" href="#"> <span class="fa fa-save"></span>@LanguageResource.PivotTemplate_Save</a></li>
+    }
+    <li class="divider"></li>
+</ul>

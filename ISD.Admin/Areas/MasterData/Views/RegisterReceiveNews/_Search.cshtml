@@ -1,0 +1,48 @@
+﻿@model IEnumerable<RegisterReceiveNewsViewModel>
+@{
+    string CurrentArea = ConstArea.MasterData;
+    string CurrentController = ConstController.RegisterReceiveNews;
+}
+
+<table class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center isd-table-th-stt">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.Companyname)</th>
+            <th>@Html.DisplayNameFor(p => p.FullName)</th>
+            <th>@Html.DisplayNameFor(p => p.Phone)</th>
+            <th>@Html.DisplayNameFor(p => p.Email)</th>
+            <th>@Html.DisplayNameFor(p => p.Address)</th>
+            <th>@Html.DisplayNameFor(p => p.Note)</th>
+            @*<th class="text-center isd-table-th-action">@LanguageResource.Actions</th>*@
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            if (!string.IsNullOrEmpty(item.DistrictName))
+            {
+                item.Address += ", " + item.DistrictName;
+            }
+            if (!string.IsNullOrEmpty(item.ProvinceName))
+            {
+                item.Address += ", " + item.ProvinceName;
+            }
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.Companyname)</td>
+                <td>@Html.DisplayFor(p => item.FullName)</td>
+                <td>@Html.DisplayFor(p => item.Phone)</td>
+                <td>@Html.DisplayFor(p => item.Email)</td>
+                <td>@Html.DisplayFor(p => item.Address)</td>
+                <td>@Html.DisplayFor(p => item.Note)</td>
+                @*<td class="text-center">
+                        @HtmlExtensions.EditButton(CurrentArea, CurrentController, item.WorkFlowId)
+                    </td>*@
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>

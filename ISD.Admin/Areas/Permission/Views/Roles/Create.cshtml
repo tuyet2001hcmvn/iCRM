@@ -1,0 +1,171 @@
+﻿@model RolesModel
+
+@{
+    ViewBag.Title = LanguageResource.Create + " " + LanguageResource.Permission_RolesModel.ToLower();
+    string CurrentController = ConstController.Roles;
+    string CurrentArea = ConstArea.Permission;
+
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="isContinue" id="isContinue" value="@ViewBag.isContinue" />
+    <input type="hidden" name="Data" id="Data" value="@ViewBag.Data" />
+
+    <div class="content-header clearfix">
+        <h1 class="pull-left">
+            @ViewBag.Title
+            @HtmlExtensions.BackButton(CurrentArea, CurrentController)
+        </h1>
+        <div class="pull-right">
+            @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+            @HtmlExtensions.SaveButton("btn-save-continue", LanguageResource.Btn_SaveAndContinue)
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="form-horizontal">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.RolesCode)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.RolesCode, true, null)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.RolesName)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.RolesName)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isEmployeeGroup)
+                            </div>
+                            <div class="col-md-9">
+                                @foreach (var item in (SelectList)ViewBag.isEmployeeGroup)
+                                {
+                                    <label class="label-radio">
+                                        @Html.RadioButton("isEmployeeGroup", item.Value, item.Selected, new { @id = string.Format("Profile_General_isEmployeeGroup_{0}", item.Value) })
+                                        @item.Text
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.isSendSMSPermission)
+                            </div>
+                            <div class="col-md-9">
+                                <label class="label-radio">
+                                    @Html.RadioButton("isSendSMSPermission", true, Model.isSendSMSPermission == true, new { @id = "Role__isSendSMSPermission_True" })
+                                    @LanguageResource.Yes
+                                </label>
+                                <label class="label-radio">
+                                    @Html.RadioButton("isSendSMSPermission", false, Model.isSendSMSPermission != true, new { @id = "Role__isSendSMSPermission_False" })
+                                    @LanguageResource.No
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.OrderIndex)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.RequiredTextboxFor(p => p.OrderIndex)
+                            </div>
+                        </div>
+
+                        @if (ViewBag.IsShowConfigLoginByTime)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper">
+                                        @*@Html.Label("Phân quyền đăng nhập", new { @clas = "control-label" })*@
+                                        <div class="label-wrapper">
+                                            <label class="control-label">
+                                                Phân quyền đăng nhập
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="div-checkbox">
+                                        @Html.CheckBox("isCheckLoginByTime")
+                                        @Html.LabelFor(p => p.isCheckLoginByTime)
+                                    </div>
+                                    <div id="working-time" style="display:none">
+                                        <div class="form-group">
+                                            <div class="col-md-2">
+                                                @Html.TooltipLabelFor(p => p.WorkingTimeFrom)
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.DropDownList("FromHour", null, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.DropDownList("FromMinute", null, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-md-2">
+                                                @Html.TooltipLabelFor(p => p.WorkingTimeTo)
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.DropDownList("ToHour", null, new { @class = "form-control" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                @Html.DropDownList("ToMinute", null, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Actived)
+                            </div>
+                            <div class="col-md-9">
+                                @Html.ActivedRadioButton(p => p.Actived)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script>
+        //set event btn-save, btn-save-continue for btn-create
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+
+        //Hiển thị 2 text box "Từ giờ", "Đến giờ" khi check "Phân quyền đăng nhập trên Mobile App"
+        $(document).on("change", "input[name=isCheckLoginByTime]", function () {
+            var check = $("input[name=isCheckLoginByTime]:checked").val();
+            if (check == "true") {
+                $("#working-time").show();
+            }
+            else {
+                $("#working-time").hide();
+            }
+        })
+    </script>
+}
+
+

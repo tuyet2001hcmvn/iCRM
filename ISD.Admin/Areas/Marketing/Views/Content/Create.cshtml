@@ -1,0 +1,286 @@
+﻿@model ContentCreateViewModel
+@{
+    ViewBag.Title = LanguageResource.Create + " " + ViewBag.Title;
+    string CurrentArea = ConstArea.Marketing;
+
+    string CurrentController = ConstController.Content;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+    string BackCurrentController = string.Format("{0}?Type={1}", CurrentController, ViewBag.Type);
+    string BackCurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, BackCurrentController);
+
+    string BaseAddress = Net5ApiDomain;
+    var CurentSaleOrg = CurrentUser.SaleOrg + " | " + CurrentUser.SaleOrgName;
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, BackCurrentController)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    //@Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    if ((string)ViewBag.Type == ConstMarketingType.Event)
+                    {
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.CatalogCode)
+                            </div>
+                            <div class="col-md-8">
+                                @*@Html.DropDownListFor(s => s.CatalogCode, null, null, new { @class = "form-control" })*@
+                                @Html.RadioButtonTextFor(p => p.CatalogCode, ConstCatalogType.Email, ConstCatalogType.SMS, ConstCatalogType.Email, ConstCatalogType.SMS)
+                            </div>
+                        </div>
+                }
+                else
+                {
+                    @Html.Hidden("CatalogCode","Email")
+                }
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ContentName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.ContentName)
+                        </div>
+                    </div>
+                    if ((string)ViewBag.Type == ConstMarketingType.Event || (string)ViewBag.Type == ConstMarketingType.Marketing)
+                    {
+                        <div class="form-group hidden-email">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.EmailType)
+                            </div>
+                            <div class="col-md-8">
+                                @*@Html.DropDownListFor(s => s.EmailType, null, null, new { @class = "form-control" })*@
+                                @Html.RadioButtonTextFor(p => p.EmailType, LanguageResource.DefaultEmail, LanguageResource.PersonalEmail, ConstCatalogType.DefaultEmail, ConstCatalogType.PersonalEmail)
+                            </div>
+                        </div>
+
+                    }
+                    <div class="form-group hidden-email hidden-default">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.FromEmailAccountId)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(s => s.FromEmailAccountId, new SelectList(Enumerable.Empty<SelectListItem>()), null, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    if ((string)ViewBag.Type == ConstMarketingType.Event || (string)ViewBag.Type == ConstMarketingType.Marketing)
+                    {
+                        <div class="form-group hidden-email hidden-personal">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.FromEmailAccountId)
+                            </div>
+                            <div class="col-md-5">
+                                @Html.RequiredTextboxFor(p => p.SentFrom)
+                            </div>
+                            <div class="col-md-3">
+                                @Html.DropDownListFor(s => s.Domain, new SelectList(Enumerable.Empty<SelectListItem>()), null, new { @Name = "FromEmailAccountId", @class = "form-control" })
+                            </div>
+                        </div>
+                    }
+                    if ((string)ViewBag.Type == ConstMarketingType.Event)
+                    {
+                        <div class="form-group  hidden-sms hidden-brandname">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.SentFrom)
+                            </div>
+                            <div class="col-md-8">
+                                @Html.RequiredDropDownListFor(s => s.SentFrom, null, null)
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.SenderName)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.SenderName)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.CompanyCode)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(s => s.CompanyCode, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.SaleOrg)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredDropDownListFor(s => s.SaleOrg, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Subject)
+                        </div>
+                        <div class="col-md-8">
+                            @Html.RequiredTextboxFor(p => p.Subject)
+                        </div>
+                    </div>
+                    <div class="form-group hidden-email">
+                        <div class="col-md-3">
+                            <div class="label-wrapper"><label class="control-label" for="Param">Tham số cho nội dung gửi</label></div>
+                        </div>
+                        <div class="col-md-8 row">
+                            <div class="col-md-2">
+                                @Html.TextBox("Param", null, new { @Value = "##FullName##", @class = "form-control text-box single-line", @readonly = "readonly", @title = "Họ tên người nhận" })
+                            </div>
+                            @if ((string)ViewBag.Type == ConstMarketingType.Event)
+                            {
+                                <div class="col-md-2">
+                                    @Html.TextBox("Param", null, new { @Value = "##ConfirmLink##", @class = "form-control text-box single-line", @readonly = "readonly", @title = "Link xác nhận tham gia" })
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.TextBox("Param", null, new { @Value = "##RejectLink##", @class = "form-control text-box single-line", @readonly = "readonly", @title = "Link từ chối tham gia" })
+                                </div>
+                                <div class="col-md-2">
+                                    @Html.TextBox("Param", null, new { @Value = "##QRCode##", @class = "form-control text-box single-line", @readonly = "readonly", @title = "Link QR Code dùng để check-in khi tham gia" })
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group hidden-email">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.Content)
+                        </div>
+                        <div class="col-md-4">
+                            <input id="addFile" type="file" />
+                        </div>
+                    </div>
+                    <div class="form-group hidden-email">
+                        <div class="col-md-3">
+                        </div>
+                        <div class="col-md-8">
+                            @Html.TextAreaFor(p => p.Content)
+                        </div>
+                    </div>
+                    if ((string)ViewBag.Type == ConstMarketingType.Event)
+                    {
+                        <div class="form-group hidden-sms">
+                            <div class="col-md-3">
+                                @Html.TooltipLabelFor(p => p.Content)
+                            </div>
+                            <div class="col-md-4">
+                                @Html.RequiredDropDownListFor(p => p.Content, null, LanguageResource.Dropdownlist_Choose)
+                            </div>
+                        </div>
+                    }
+
+                    @*<script type="text/javascript">
+                var editor = CKEDITOR.replace("Content", {
+                    height: 250,
+                    filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
+                    filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?Type=Images',
+                    filebrowserUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Files',
+                    filebrowserImageUploadUrl: '/ckfinder/core/connector/aspx/connector.aspx?command=QuickUpload&type=Images',
+                    filebrowserWindowWidth: '1000',
+                    filebrowserWindowHeight: '700'
+                });
+                CKFinder.setupCKEditor(editor, '/ckfinder/');
+                CKEDITOR.instances['Content'].on('change',
+                    function () { CKEDITOR.instances['Content'].updateElement() });
+            </script>*@
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Content/Plugin/ckeditor/ckeditor.js"></script>
+    <script src="~/Areas/Marketing/Scripts/ISDNET5Common.js"></script>
+    <script>
+        var currentUser = "@CurrentUser.AccountId";
+        $(document).ready(function () {
+            ISDNET5.LoadEmailAccount();
+            @*ISDNET5.LoadSaleOrg(@Html.Raw(Json.Encode(CurentSaleOrg)));*@
+            ISDNET5.CreateInitial("@CurrentUrl");
+            ISDNET5.InitCkeditorForEmailContent();
+            if ("@((string)ViewBag.Type)" === '@ConstMarketingType.Event') {
+                $('input[type="radio"][name="CatalogCode"]:first').trigger("click");
+            } else {
+                $('input[type="radio"][name="EmailType"]:first').trigger("click");
+            }
+        });
+    </script>
+    @if ((string)ViewBag.Type == ConstMarketingType.Event)
+    {
+        <Script>
+            $('input[type="radio"][name="CatalogCode"]').on("click", function() {
+                $this = $(this);
+                CheckContentType($this);
+            })
+            function CheckContentType(data)
+            {
+                var ContentType = data.val();
+                if (ContentType == "@ConstCatalogType.Email")
+                {
+                    $(".hidden-email select").removeAttr("disabled");
+                    $(".hidden-email input").removeAttr("disabled");
+                    $(".hidden-email textarea").removeAttr("disabled");
+                    $(".hidden-email").removeClass("hidden");
+                    $(".hidden-sms select").attr("disabled", "disabled");
+                    $(".hidden-sms input").attr("disabled", "disabled");
+                    $(".hidden-sms textarea").attr("disabled", "disabled");
+                    $(".hidden-sms").addClass("hidden");
+                    $('input[type="radio"][name="EmailType"]:first').trigger("click");
+                }
+                else
+                {
+                    $(".hidden-sms select").removeAttr("disabled");
+                    $(".hidden-sms input").removeAttr("disabled");
+                    $(".hidden-sms textarea").removeAttr("disabled");
+                    $(".hidden-sms").removeClass("hidden");
+                    $(".hidden-email select").attr("disabled", "disabled");
+                    $(".hidden-email input").attr("disabled", "disabled");
+                    $(".hidden-email textarea").attr("disabled", "disabled");
+                    $(".hidden-email").addClass("hidden");
+                }
+            }
+        </Script>
+
+    }
+
+    <Script>
+        $('input[type="radio"][name="EmailType"]').on("click",function () {
+            $this = $(this);
+            CheckEmailType($this);
+        })
+        function CheckEmailType(data) {
+            var EmailType = data.val();
+            if (EmailType == "@ConstCatalogType.DefaultEmail") {
+                $(".hidden-default select").removeAttr("disabled");
+                $(".hidden-default input").removeAttr("disabled");
+                $(".hidden-default").removeClass("hidden");
+                $(".hidden-personal select").attr("disabled", "disabled");
+                $(".hidden-personal input").attr("disabled", "disabled");
+                $(".hidden-personal").addClass("hidden");
+            } else {
+                $(".hidden-personal select").removeAttr("disabled");
+                $(".hidden-personal input").removeAttr("disabled");
+                $(".hidden-personal").removeClass("hidden");
+                $(".hidden-default select").attr("disabled", "disabled");
+                $(".hidden-default input").attr("disabled", "disabled");
+                $(".hidden-default").addClass("hidden");
+            }
+        }
+    </Script>
+}
+

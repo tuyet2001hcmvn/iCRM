@@ -1,0 +1,33 @@
+﻿@model IEnumerable<GH_NotificationViewModel>
+
+<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+    <i class="fa fa-bell-o"></i>
+    <span class="label label-warning">@ViewBag.Total</span>
+</a>
+
+<ul class="dropdown-menu">
+    <li class="header">Bạn có @ViewBag.Total thông báo</li>
+    @if (Model != null && Model.Count() > 0)
+    {
+        <li>
+            <!-- inner menu: contains the actual data -->
+            <ul class="menu">
+                @foreach (var item in Model.Take(5))
+                {
+                    <li>
+                        <!-- start message -->
+                        <a href="@item.NotificationUrl">
+                            <h4>
+                                @item.SaleOrgName
+                                <small><i class="fa fa-clock-o"></i> @item.NotificationDateTime.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                            </h4>
+                            <p>@item.NotificationContent</p>
+                        </a>
+                        <!-- end message -->
+                    </li>
+                }
+            </ul>
+        </li>
+        <li class="footer"><a href="/Shared/NotificationDetail">Xem tất cả</a></li>
+    }
+</ul>

@@ -1,0 +1,33 @@
+﻿@model IEnumerable<CustomerTastesReportViewModel>
+@using ISD.Core
+
+<table id="tastesTable" class="table table-bordered table-striped table-hover dataTable no-footer">
+    <thead class="isd-table-header">
+        <tr>
+            <th class="text-center">@LanguageResource.NumberIndex</th>
+            <th>@Html.DisplayNameFor(p => p.MaSAP)</th>
+            <th>@Html.DisplayNameFor(p => p.MaSP)</th>
+            <th>@Html.DisplayNameFor(p => p.TenSP)</th>
+            <th>@Html.DisplayNameFor(p => p.PLoaiVT)</th>
+            <th>@Html.DisplayNameFor(p => p.NhomVT)</th>
+            <th class="text-center">@Html.DisplayNameFor(p => p.SoLuotLiked)</th>
+    </thead>
+    <tbody>
+        @{ int i = 0; }
+        @foreach (var item in Model)
+        {
+            i++;
+            <tr>
+                <td class="text-center">@i</td>
+                <td>@Html.DisplayFor(p => item.MaSAP)</td>
+                <td>@Html.DisplayFor(p => item.MaSP)</td>
+                <td>@Html.DisplayFor(p => item.TenSP)</td>
+                <td>@Html.DisplayFor(p => item.PLoaiVT)</td>
+                <td>@Html.DisplayFor(p => item.NhomVT)</td>
+                <td class="text-center">@Html.DisplayFor(p => item.SoLuotLiked)</td>
+            </tr>
+        }
+    </tbody>
+    <tfoot></tfoot>
+</table>
+

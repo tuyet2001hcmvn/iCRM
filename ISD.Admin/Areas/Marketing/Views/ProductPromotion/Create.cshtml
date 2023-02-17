@@ -1,0 +1,233 @@
+﻿@model ProductPromotionViewModel
+@{
+    ViewBag.Title = LanguageResource.Create + " " + ViewBag.Title;
+    string CurrentArea = ConstArea.Marketing;
+
+    string CurrentController = ConstController.ProductPromotion;
+    string CurrentUrl = HtmlExtensions.GetCurrentUrl(CurrentArea, CurrentController);
+
+}
+<div class="content-header clearfix">
+    <h1 class="pull-left">
+        @HtmlExtensions.BackButton(CurrentArea, CurrentController, "?Type=" + ViewBag.Type)
+    </h1>
+</div>
+<div class="content">
+    <div class="form-horizontal">
+        <div class="box panel-group">
+            <div class="box-header with-border">
+                <h3 class="box-title">@ViewBag.Title</h3>
+                <div class="pull-right">
+                    @HtmlExtensions.SaveButton("btn-save", LanguageResource.Btn_Save)
+                    @HtmlExtensions.SaveButton("btn-save-edit", LanguageResource.Btn_SaveAndEdit)
+                </div>
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { @enctype = "multipart/form-data", @id = "frmCreate" }))
+                {
+                    //@Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.Hidden("Type", (string)ViewBag.Type)
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.ProductPromotionTitle)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.RequiredTextboxFor(p => p.ProductPromotionTitle)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.IsSendCatalogue)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.CheckBox("IsSendCatalogue")
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.SendTypeCode)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.RequiredDropDownListFor(p => p.SendTypeCode, null, LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.TargetGroupId)
+                        </div>
+                        <div class="col-md-6">
+                            @Html.RequiredDropDownListFor(p => p.TargetGroupId, null, LanguageResource.Dropdownlist_Choose, new { @class = "with-search" })
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                        <div id="tbl-target-group">
+                        </div>
+                        
+                    </div>*@
+                    <div id="divStart" class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.StartTime)
+                        </div>
+                        <div class="col-md-3">  
+                            @Html.RequiredTextboxFor(p => p.StartTime, "{0:yyyy-MM-dd}", new { type = "date" })
+                        </div>
+                    </div>
+                    <div id="divEnd" class="form-group">
+                        <div class="col-md-3">
+                            @Html.TooltipLabelFor(p => p.EndTime)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.RequiredTextboxFor(p => p.EndTime, "{0:yyyy-MM-dd}", new { type = "date" })
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loading-modal"></div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            ISD.CreateInitial("@CurrentUrl");
+        });
+
+        @*$(document).on("click", "#IsSendCatalogue", function () {
+            var IsSendCatalogue = $(this).is(":checked");
+            var targetGroupId = $("#TargetGroupId").val();
+            if (IsSendCatalogue && (targetGroupId != null && targetGroupId != '')) {
+                GetMemberTargetGroup(targetGroupId)
+            } else {
+                $("#tbl-target-group").html("")
+            }
+        })
+
+        $(document).on("change", "#TargetGroupId", function () {
+            var targetGroupId = $(this).val();
+            var IsSendCatalogue = $("#IsSendCatalogue").is(":checked");
+            if (IsSendCatalogue && (targetGroupId != null && targetGroupId != '')) {
+                GetMemberTargetGroup(targetGroupId)
+            } else {
+                $("#tbl-target-group").html("")
+            }
+        })
+
+        function GetMemberTargetGroup(TargetGroupId) {
+            loading2();
+            $.ajax({
+                type: "GET",
+                url: "/@CurrentUrl/_GetMemberTargetGroup/",
+                data: {
+                    Type: "CREATE",
+                    TargetGroupId: TargetGroupId
+                }
+            }).done(function (html) {
+                $("#tbl-target-group").html(html)
+            });;
+        }*@
+
+
+        //$(document).on("click", ".check-address", function () {
+        //    var $html = $(this);
+        //    var $row = $html.data("row");
+        //    var $index = $html.data("index");
+        //    console.log($html.is(':checked'));
+        //    if ($html.is(':checked')) {
+        //        $("input[name='TargetGroup["+$index+"].ProfileAddress["+ $row +"].Address']").removeClass("hidden").removeAttr("disabled");
+        //        $("select[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").addClass("hidden").attr("disabled", "disabled");
+        //    } else {
+        //        $("input[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").addClass("hidden").attr("disabled", "disabled");
+        //        $("select[name='TargetGroup[" + $index + "].ProfileAddress[" + $row + "].Address']").removeClass("hidden").removeAttr("disabled");
+        //    }
+        //});
+        //$(document).on("click", ".check-contact", function () {
+        //    var $html = $(this);
+        //    var $row = $html.data("row");
+        //    var $index = $html.data("index");
+        //    if ($html.is(':checked')) {
+        //        $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactName']").removeClass("hidden").removeAttr("disabled");
+        //        $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactPhone']").removeClass("hidden").removeAttr("disabled");
+        //        $("select[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ProfileContactId']").addClass("hidden").attr("disabled", "disabled");
+        //    } else {
+        //        $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactName']").addClass("hidden").attr("disabled", "disabled");
+        //        $("input[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ContactPhone']").addClass("hidden").attr("disabled", "disabled");
+        //        $("select[name='TargetGroup[" + $index + "].ProfileContact[" + $row + "].ProfileContactId']").removeClass("hidden").removeAttr("disabled");
+        //    }
+        //});
+
+        //$(document).on("click", ".btn-add-contact", function (e) {
+        //    e.preventDefault();
+        //    var $dataIndex = $(this).data("index");
+        //    $(".customer-target-group-" + $dataIndex).each(function (index, value) {
+        //        indexRowPerson = index;
+        //    });
+        //    indexRowPerson++;
+
+        //    var controlForm = $('.customer-target-group-controls-' + $dataIndex + ':first'),
+        //        currentEntry = $(this).parents('.customer-target-group-' + $dataIndex +':last'),
+        //        newEntry = $(currentEntry.clone()).appendTo(controlForm);
+
+        //    //Check-address
+        //    newEntry.find('.check-address').attr('name', 'TargetGroup[' + $dataIndex +'].ProfileAddress[' + indexRowPerson +'].CheckAddress');
+        //    newEntry.find('.check-address').data('row', indexRowPerson);
+        //    newEntry.find('.check-address').data('index', $dataIndex);
+        //    //Address
+        //    newEntry.find('.addressText_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + indexRowPerson + '].Address').val('');
+        //    newEntry.find('.addressText_' + $dataIndex).data('row', indexRowPerson);
+        //    newEntry.find('.addressText_' + $dataIndex).data('index', $dataIndex);
+        //    newEntry.find('.address_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + indexRowPerson + '].Address').val('');
+        //    newEntry.find('.address_' + $dataIndex).data('row', indexRowPerson);
+        //    newEntry.find('.address_' + $dataIndex).data('index', $dataIndex);
+
+
+        //    //check-Contact
+        //    newEntry.find('.check-contact').attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].CheckContact');
+        //    newEntry.find('.check-contact').data('row', indexRowPerson);
+        //    newEntry.find('.check-contact').data('index', $dataIndex);
+        //    //Contact
+        //    newEntry.find('.contactName_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ContactName').val('');
+        //    newEntry.find('.contactName_' + $dataIndex).data('row', indexRowPerson);
+        //    newEntry.find('.contactName_' + $dataIndex).data('index', $dataIndex);
+        //    newEntry.find('.contactPhone_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ContactPhone').val('');
+        //    newEntry.find('.contactPhone_' + $dataIndex).data('row', indexRowPerson);
+        //    newEntry.find('.contactPhone_' + $dataIndex).data('index', $dataIndex);
+        //    newEntry.find('.contact_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + indexRowPerson + '].ProfileContactId').val('');
+        //    newEntry.find('.contact_' + $dataIndex).data('row', indexRowPerson);
+        //    newEntry.find('.contact_' + $dataIndex).data('index', $dataIndex);
+
+
+        //    controlForm.find('.customer-target-group-' + $dataIndex +':not(:first) .btn-add-contact')
+        //        .removeClass('btn-add-contact').addClass('btn-remove-contact')
+        //        .removeClass('btn-default').addClass('btn-danger')
+        //        .data('row', indexRowPerson)
+        //        .html('<span class="glyphicon glyphicon-minus"></span>');
+        //});
+        //$(document).on('click', '.btn-remove-contact', function (e) {
+        //    var $dataIndex = $(this).data("index");
+        //    $(this).parents('.customer-target-group-' + $dataIndex +':last').remove();
+        //    $(".customer-target-group-" + $dataIndex).each(function (index, value) {
+        //        $(this).find('.check-address').attr('name', 'TargetGroup[' + $dataIndex +'].ProfileAddress[' + index +'].CheckAddress');
+        //        $(this).find('.check-address').data('row', index);
+        //        $(this).find('.addressText_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + index +'].Address');
+        //        $(this).find('.addressText_' + $dataIndex).data('row', index);
+        //        $(this).find('.address_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileAddress[' + index +'].Address');
+        //        $(this).find('.address_' + $dataIndex).data('row', index);
+        //        $(this).find('.check-contact').attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index +'].CheckContact');
+        //        $(this).find('.check-contact').data('row', index);
+        //        $(this).find('.contactName_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index +'].ContactName');
+        //        $(this).find('.contactName_' + $dataIndex).data('row', index);
+        //        $(this).find('.contactPhone_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index +'].ContactPhone');
+        //        $(this).find('.contactPhone_' + $dataIndex).data('row', index);
+        //        $(this).find('.contact_' + $dataIndex).attr('name', 'TargetGroup[' + $dataIndex + '].ProfileContact[' + index +'].ProfileContactId');
+        //        $(this).find('.contact_' + $dataIndex).data('row', index);
+        //    });
+        //    e.preventDefault();
+        //    return false;
+        //});
+    </script>
+
+
+}

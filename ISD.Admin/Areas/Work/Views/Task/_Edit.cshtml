@@ -1,0 +1,787 @@
+﻿@model TaskViewModel
+@using ISD.Core
+@{
+    var taskAssignList = Model.taskAssignList;
+    var taskReporterList = Model.taskReporterList;
+    var SalesEmployeeList = (List<SalesEmployeeViewModel>)ViewBag.EmployeeList;
+    var TaskRolesList = (List<RolesViewModel>)ViewBag.TaskRolesList;
+    var RolesList = (List<CatalogViewModel>)ViewBag.RoleList;
+    string taskColor = ViewBag.TaskColor;
+
+    //Cấu hình thuộc tính
+    var configList = (List<WorkFlowConfigModel>)ViewBag.WorkFlowConfig;
+    var fieldCodeList = (List<string>)ViewBag.WorkFlowConfigCode;
+}
+
+<div class="loading-modal"></div>
+<div class="box-body">
+    <div>
+        @Html.HiddenFor(p => p.TaskId)
+        @Html.HiddenFor(p => p.WorkFlowCode)
+        @Html.Hidden("TaskStatusBackgroundColor", (string)ViewBag.TaskStatusBackgroundColor)
+        @Html.Hidden("TaskStatusColor", (string)ViewBag.TaskStatusColor)
+
+        <!--Thăm hỏi khách hàng-->
+        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.VisitTypeCode)))
+        {
+            @Html.HiddenFor(p => p.VisitTypeCode)
+        }
+        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.VisitAddress)))
+        {
+            @Html.HiddenFor(p => p.VisitAddress)
+        }
+        <!--Ghé thăm-->
+        @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.CustomerClassCode)))
+        {
+            @Html.HiddenFor(p => p.CustomerClassCode)
+        }
+
+        <div class="row">
+            <div class="col-md-8">
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.VisitTypeCode)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.VisitTypeCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.VisitTypeCode)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div>
+                            @Html.RequiredIfDropDownListFor(p => p.VisitTypeCode, null, LanguageResource.Dropdownlist_Choose)
+                        </div>
+                    </div>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.Summary)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.Summary, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Summary)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div class="input-group-required input-group-select-required">
+                            @Html.RequiredTextboxFor(p => p.Summary, new { @disabled = "disabled" })
+                            @Html.HiddenFor(p => p.Summary)
+                        </div>
+                        <div class="btn-save-hidden div-summary">
+                            <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+                            <button type="button" class="btn btn-primary btn-save-task" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save</button>
+                        </div>
+                    </div>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.Requirement)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.Requirement, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Requirement)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div>
+                            @Html.RequiredTextboxFor(p => p.Requirement)
+                        </div>
+                        <div class="btn-save-hidden div-requirement">
+                            <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+                            <button type="button" class="btn btn-primary btn-save-task" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save</button>
+                        </div>
+                    </div>
+                }
+                @if ((bool?)ViewBag.isCreatePrivateTask == true && fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, bool?>(p => p.isPrivate)))
+                {
+                    <div class="form-group">
+                        <div class="div-radio">
+                            @{
+                                string checkTrue = string.Empty;
+                                string checkFalse = string.Empty;
+                                if (Model.isPrivate == true)
+                                {
+                                    checkTrue = "checked";
+                                }
+                                else
+                                {
+                                    checkFalse = "checked";
+                                }
+                            }
+                            <label class="label-radio">
+                                <input id="isPrivate_false" name="isPrivate" type="radio" value="False" @checkFalse>
+                                <span class="ico-help" title="Xem theo phân quyền"><i class="fa fa-question-circle"></i></span>
+                                @LanguageResource.Task_Public
+                            </label>
+
+                            <label class="label-radio">
+                                <input id="isPrivate_true" name="isPrivate" type="radio" value="True" @checkTrue>
+                                <span class="ico-help" title="Chỉ những người giám sát và được phân công xem"><i class="fa fa-question-circle"></i></span>
+                                @LanguageResource.Task_Private
+                            </label>
+
+                        </div>
+                    </div>
+                }
+                <!--Mô tả-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.Description)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.Description, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Description)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div>
+                            @Html.TextArea("Description", new { @class = "form-control", @rows = "4" })
+                        </div>
+                        <div class="btn-save-hidden div-description">
+                            <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+                            <button type="button" class="btn btn-primary btn-save-task" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save</button>
+                        </div>
+                    </div>
+                }
+                <!--Đơn vị thi công-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, Guid?>(p => p.ConstructionUnit)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.ConstructionUnit, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, Guid?>(p1 => p1.ConstructionUnit)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div>
+                            @Html.HiddenFor(p => p.ConstructionUnit)
+                            <div class="input-group">
+                                @Html.RequiredTextboxFor(p => p.ConstructionUnitName, new { @readonly = "readonly" })
+                                <a class="input-group-addon btn btn-info btn-go-construction" data-id="@Model.ConstructionUnit">
+                                    <i class="fa fa-arrow-circle-o-right"></i>
+                                </a>
+                                <a class="input-group-addon btn btn-danger btn-del-construction">
+                                    <i class="fa fa-close"></i>
+                                </a>
+                                <a class="input-group-addon btn btn-default btn-get-construction" data-toggle="modal">
+                                    <i class="fa fa-ellipsis-h"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.Construction_SalesSupervisorName, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Construction_SalesSupervisorName)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div class="pl-0 col-md-6 mb-10">
+                            @Html.RequiredTextboxFor(p => p.Construction_SalesSupervisorName, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                        </div>
+                        <div class="col-md-6">
+                            <div class="display-for Construction_DepartmentName">@Model.Construction_DepartmentName</div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 no-padding">
+                        <div class="form-group">
+                            <div>
+                                <div class="label-wrapper">
+                                    <label class="control-label">@LanguageResource.Profile_Contact</label>
+                                </div>
+                            </div>
+                            <div>
+                                @Html.RequiredTextboxFor(p => p.Construction_ContactName, new { @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 pl-0">
+                        <div class="form-group">
+                            <div>
+                                @Html.TooltipLabelFor(p => p.Construction_Phone)
+                            </div>
+                            <div>
+                                @Html.RequiredTextboxFor(p => p.Construction_Phone, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 no-padding">
+                        <div class="form-group">
+                            <div>
+                                @Html.TooltipLabelFor(p => p.Email)
+                            </div>
+                            <div>
+                                @Html.RequiredTextboxFor(p => p.Construction_Email, new { @class = " form-control text-box single-line", @readonly = "readonly" })
+                            </div>
+                        </div>
+                    </div>
+                }
+                <!--Nguồn tiếp nhận-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.Property4)))
+                {
+                    <div class="col-md-12 no-padding">
+                        <div class="form-group">
+                            <div>
+                                @Html.LabelByPropertyNameFor(p => p.Property4, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Property4)).Select(p => p.Note).FirstOrDefault())
+                            </div>
+                            <div class="div-radio">
+                                @foreach (var item in (SelectList)ViewBag.TaskSourceCode)
+                                {
+                                    <label class="label-radio">
+                                        @Html.RadioButton("TaskSourceCode", item.Value, item.Selected, new { @id = string.Format("Task_TaskSourceCode_{0}", item.Value) })
+                                        @item.Text
+                                    </label>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row"></div>
+                }
+                <!--Ngày thi công-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p => p.Date1)))
+                {
+                    <div class="col-md-6 no-padding">
+                        <div class="form-group">
+                            <div>
+                                @Html.LabelByPropertyNameFor(p => p.Date1, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p1 => p1.Date1)).Select(p => p.Note).FirstOrDefault())
+                            </div>
+                            <div class="form-inline">
+                                @Html.DateTimeTextBoxFor(p => p.Date1, isNullValueForTime: true)
+                                @Html.Hidden("DisplayDate1", Model.EndDate)
+                            </div>
+                        </div>
+                    </div>
+                }
+                <!--NV theo dõi/giám sát-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.Reporter)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.Reporter, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Reporter)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div>
+                            <div class="reporterControls">
+                                <div class="reporter">
+                                    <div class="col-md-12 no-padding width-fixed dropdown-absolute input-group">
+                                        @Html.RequiredDropDownListFor(p => p.Reporter, (IEnumerable<SelectListItem>)ViewBag.ReporterList, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode_Reporter" })
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default btn-addReporter" type="button">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @if (Model.taskReporterList != null && Model.taskReporterList.Count > 0)
+                                {
+                                    int indexReporter = 0;
+                                    foreach (var item in Model.taskReporterList)
+                                    {
+                                        <div class="reporter">
+                                            <div class="col-md-12 no-padding width-fixed dropdown-absolute input-group">
+                                                <div class="input-group input-group-required input-group-select-required">
+                                                    @Html.DropDownList(string.Format("taskReporterList[{0}].SalesEmployeeCode", indexReporter), new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode_Reporter", @data_row = indexReporter })
+                                                </div>
+                                                <span class="input-group-btn">
+                                                    <button class="btn btn-default btn-removeReporter btn-danger" type="button">
+                                                        <span class="glyphicon glyphicon-minus"></span>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        indexReporter++;
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.Assignee)))
+                {
+                    if (Model.Type == ConstWorkFlowCategory.BOOKING_VISIT || Model.Type == ConstWorkFlowCategory.SUBTASK_BOOKINGVISIT)
+                    {
+                        <div class="form-group assign_Personal">
+                            <div>
+                                @Html.LabelByPropertyNameFor(p => p.Assignee, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Assignee)).Select(p => p.Note).FirstOrDefault())
+                            </div>
+                            <div>
+                                <div class="personControls">
+                                    @if (Model.taskAssignList != null && Model.taskAssignList.Count > 0)
+                                    {
+                                        int indexAssign = 0;
+                                        foreach (var item in Model.taskAssignList)
+                                        {
+                                            <div class="person">
+                                                <div class="col-md-6 no-padding width-fixed position-relative dropdown-absolute">
+                                                    @Html.HiddenFor(p => p.taskAssignList[indexAssign].TaskAssignId, new { @class = "taskAssignId" })
+                                                    @Html.DropDownListFor(p => taskAssignList[indexAssign].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode", @data_row = indexAssign })
+                                                </div>
+                                                <!--Phòng ban-->
+                                                <div class="col-md-6 input-group">
+                                                    <div class="display-for roleName roleName_@indexAssign">
+                                                        @item.RoleName
+                                                    </div>
+                                                    <span class="input-group-btn">
+                                                        @if (indexAssign == 0)
+                                                        {
+                                                            <button class="btn btn-default btn-addPerson" type="button">
+                                                                <span class="glyphicon glyphicon-plus"></span>
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-default btn-removePerson btn-danger" type="button">
+                                                                <span class="glyphicon glyphicon-minus"></span>
+                                                            </button>
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <!--Vai trò-->
+                                                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.RoleName)))
+                                                {
+                                                    <div class="row"></div>
+                                                    <div class="col-md-6 mt-5 no-padding">
+                                                        @Html.DropDownListFor(p => taskAssignList[indexAssign].TaskAssignTypeCode, new SelectList(RolesList, "CatalogCode", "CatalogText_vi", item.TaskAssignTypeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search typeCode", @data_row = indexAssign })
+                                                    </div>
+                                                    <div class="row"></div>
+                                                }
+                                            </div>
+                                            indexAssign++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="person">
+                                            <div class="col-md-6 no-padding width-fixed position-relative dropdown-absolute">
+                                                @Html.DropDownListFor(p => taskAssignList[0].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode", @data_row = 0 })
+                                            </div>
+                                            <!--Phòng ban-->
+                                            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.RoleName)))
+                                            {
+                                                <div class="col-md-6 input-group">
+                                                    <div class="display-for roleName roleName_0"></div>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-addPerson" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                                <div class="row"></div>
+                                                <!--Vai trò-->
+                                                <div class="col-md-6 no-padding mt-5">
+                                                    @Html.DropDownListFor(p => taskAssignList[0].TaskAssignTypeCode, new SelectList(RolesList, "CatalogCode", "CatalogText_vi"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search typeCode", @data_row = 0 })
+                                                </div>
+                                                <div class="row"></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-6 input-group">
+                                                    <div class="display-for roleName roleName_0"></div>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-addPerson" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                                <div class="row"></div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        var taskAssigneeHidden = "";
+                        var taskAssignGroupHidden = "";
+                        if (Model.IsAssignGroup == true)
+                        {
+                            taskAssigneeHidden = "hidden";
+                        }
+                        else
+                        {
+                            taskAssignGroupHidden = "hidden";
+                        }
+                        <div class="form-group">
+                            <div>
+                                <div class="label-wrapper">
+                                    <label class="control-label">@LanguageResource.IsAssingee</label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="div-radio">
+                                    @if (Model.taskAssignList != null && Model.taskAssignList.Count > 0)
+                                    {
+                                        if (Model.IsAssignGroup == true)
+                                        {
+                                            <label class="label-radio">
+                                                <input id="IsAssignGroup" name="IsAssignGroup" type="radio" value="False" disabled> @LanguageResource.Customer_Personal
+                                            </label>
+                                            <label class="label-radio">
+                                                <input checked="checked" name="IsAssignGroup" type="radio" value="True" disabled> @LanguageResource.Group
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <label class="label-radio">
+                                                <input checked="checked" name="IsAssignGroup" type="radio" value="False" disabled> @LanguageResource.Customer_Personal
+                                            </label>
+                                            <label class="label-radio">
+                                                <input id="IsAssignGroup" name="IsAssignGroup" type="radio" value="True" disabled> @LanguageResource.Group
+                                            </label>
+                                        }
+                                        @Html.HiddenFor(p => p.IsAssignGroup)
+                                    }
+                                    else
+                                    {
+                                        @Html.RadioButtonTextFor(p => p.IsAssignGroup, LanguageResource.Customer_Personal, LanguageResource.Group, false, true)
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <!--Phân công nhóm-->
+                        <!--Nếu chưa phân công cho nhóm nào, được phân công cho nhóm. Nếu đã phân công cho nhóm, không được chỉnh sửa-->
+                        @*<div class="form-group assign_Group @taskAssignGroupHidden">
+                                <div>
+                                    <div class="label-wrapper">
+                                        <label class="control-label">@LanguageResource.AssigneeGroup</label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="groupControls">
+                                        @if (Model.taskAssignList != null && Model.taskAssignList.Count > 0)
+                                        {
+                                            int indexAssign = 0;
+                                            foreach (var item in Model.taskAssignList)
+                                            {
+                                                <div class="group">
+                                                    <div class="col-md-12 input-group">
+                                                        @Html.DropDownListFor(p => taskAssignList[indexAssign].RolesCode, new SelectList(TaskRolesList, "RolesCode", "RolesName", item.RolesCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search groupCode", @data_row = indexAssign, @disabled = "disabled" })
+                                                        @Html.HiddenFor(p => taskAssignList[indexAssign].RolesCode)
+                                                    </div>
+                                                </div>
+                                                indexAssign++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="group">
+                                                <div class="col-md-12 input-group">
+                                                    @Html.DropDownListFor(p => taskAssignList[0].RolesCode, new SelectList(TaskRolesList, "RolesCode", "RolesName"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search groupCode", @data_row = 0 })
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-addGroup" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <!--Phân công cá nhân-->
+                        <div class="form-group assign_Personal @taskAssigneeHidden">
+                            <div>
+                                @Html.LabelByPropertyNameFor(p => p.Assignee, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.Assignee)).Select(p => p.Note).FirstOrDefault())
+                            </div>
+                            <div>
+                                <div class="personControls">
+                                    @if (Model.taskAssignList != null && Model.taskAssignList.Count > 0)
+                                    {
+                                        int indexAssign = 0;
+                                        foreach (var item in Model.taskAssignList)
+                                        {
+                                            <div class="person">
+                                                <div class="col-md-6 no-padding width-fixed position-relative dropdown-absolute">
+                                                    @Html.HiddenFor(p => p.taskAssignList[indexAssign].TaskAssignId, new { @class = "taskAssignId" })
+                                                    @Html.DropDownListFor(p => taskAssignList[indexAssign].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName", item.SalesEmployeeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode", @data_row = indexAssign })
+                                                </div>
+                                                <!--Phòng ban-->
+                                                <div class="col-md-6 input-group">
+                                                    <div class="display-for roleName roleName_@indexAssign">
+                                                        @item.RoleName
+                                                    </div>
+                                                    <span class="input-group-btn">
+                                                        @if (indexAssign == 0)
+                                                        {
+                                                            <button class="btn btn-default btn-addPerson" type="button">
+                                                                <span class="glyphicon glyphicon-plus"></span>
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-default btn-removePerson btn-danger" type="button">
+                                                                <span class="glyphicon glyphicon-minus"></span>
+                                                            </button>
+                                                        }
+                                                    </span>
+                                                </div>
+                                                <!--Vai trò-->
+                                                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.RoleName)))
+                                                {
+                                                    <div class="row"></div>
+                                                    <div class="col-md-6 mt-5 no-padding">
+                                                        @Html.DropDownListFor(p => taskAssignList[indexAssign].TaskAssignTypeCode, new SelectList(RolesList, "CatalogCode", "CatalogText_vi", item.TaskAssignTypeCode), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search typeCode", @data_row = indexAssign })
+                                                    </div>
+                                                    <div class="row"></div>
+                                                }
+                                            </div>
+                                            indexAssign++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="person">
+                                            <div class="col-md-6 no-padding width-fixed position-relative dropdown-absolute">
+                                                @Html.DropDownListFor(p => taskAssignList[0].SalesEmployeeCode, new SelectList(SalesEmployeeList, "SalesEmployeeCode", "SalesEmployeeName"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search employeeCode", @data_row = 0 })
+                                            </div>
+                                            <!--Phòng ban-->
+                                            @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.RoleName)))
+                                            {
+                                                <div class="col-md-6 input-group">
+                                                    <div class="display-for roleName roleName_0"></div>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-addPerson" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                                <div class="row"></div>
+                                                <!--Vai trò-->
+                                                <div class="col-md-6 no-padding mt-5">
+                                                    @Html.DropDownListFor(p => taskAssignList[0].TaskAssignTypeCode, new SelectList(RolesList, "CatalogCode", "CatalogText_vi"), LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search typeCode", @data_row = 0 })
+                                                </div>
+                                                <div class="row"></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-md-6 input-group">
+                                                    <div class="display-for roleName roleName_0"></div>
+                                                    <span class="input-group-btn">
+                                                        <button class="btn btn-default btn-addPerson" type="button">
+                                                            <span class="glyphicon glyphicon-plus"></span>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                                <div class="row"></div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                <!--Nhắc nhở-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, bool?>(p => p.isRemind)))
+                {
+                    var hidden = "hidden";
+                    var checked_Reporter = "";
+                    var checked_Assignee = "";
+                    if (Model.isRemind == true)
+                    {
+                        hidden = "";
+                    }
+                    if (Model.isRemindForReporter == true)
+                    {
+                        checked_Reporter = "checked";
+                    }
+                    if (Model.isRemindForAssignee == true)
+                    {
+                        checked_Assignee = "checked";
+                    }
+                    <div class="remindChange">
+                        <div class="row pl-0">
+                            <div class="form-group mt-5">
+                                <div class="col-md-4">
+                                    @Html.LabelByPropertyNameFor(p => p.isRemind, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, bool?>(p1 => p1.isRemind)).Select(p => p.Note).FirstOrDefault())
+                                </div>
+                                <div class="col-md-6" style="margin-top: -8px; padding-left: 0px">
+                                    @if (Model.isRemind == true)
+                                    {
+                                        <label class="label-radio">
+                                            <input id="isRemind_true" name="isRemind" type="radio" value="True" checked> Có
+                                        </label>
+                                        <label class="label-radio">
+                                            <input id="isRemind_false" name="isRemind" type="radio" value="False"> Không
+                                        </label>
+                                    }
+                                    else
+                                    {
+                                        <label class="label-radio">
+                                            <input id="isRemind_true" name="isRemind" type="radio" value="True"> Có
+                                        </label>
+                                        <label class="label-radio">
+                                            <input id="isRemind_false" name="isRemind" type="radio" value="False" checked> Không
+                                        </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pl-0">
+                            <div class="isRemind_true @hidden">
+                                <div class="form-group">
+                                    <div class="col-md-4 display-for">
+                                        @Html.TooltipLabelFor(p => p.RemindTime)
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input class="form-control" data-val="true" data-val-number="The field Thời gian must be a number." name="RemindTime" type="number" value="@Model.RemindTime">
+                                    </div>
+                                    <div class="col-md-6 display-inline select-remindCycle">
+                                        @Html.DropDownList("RemindCycle", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control with-search" })
+                                        <div style="margin-top: 7px; margin-left: 5px;">
+                                            <span>/Lần</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pl-0">
+                            <div class="isRemind_true @hidden">
+                                <div class="form-group">
+                                    <div class="col-md-4 display-for">
+                                        @Html.TooltipLabelFor(p => p.RemindStartDate)
+                                    </div>
+                                    <div class="col-md-8 form-inline">
+                                        @Html.DateTimeTextBoxFor(p => p.RemindStartDate, isNullValueForTime: true)
+                                        @Html.Hidden("DisplayRemindStartDate", Model.RemindStartDate)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pl-0">
+                            <div class="isRemind_true @hidden">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        @Html.TooltipLabelFor(p => p.isRemindForReporter)
+                                    </div>
+                                    <div class="col-md-5" style="margin-top: -7px">
+                                        <label>
+                                            <input type="checkbox" name="isRemindForReporter" id="isRemindForReporter" value="true" @checked_Reporter />
+                                            <span style="font-weight: normal; margin-left: 3px">@LanguageResource.Reporter</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row pl-0">
+                            <div class="isRemind_true @hidden">
+                                <div class="form-group">
+                                    <div class="col-md-4">
+                                        <div class="label-wrapper hidden"><label class="control-label">Nhắc nhở cho</label></div>
+                                    </div>
+                                    <div class="col-md-5" style="margin-top: -7px">
+                                        <label>
+                                            <input type="checkbox" name="isRemindForAssignee" id="isRemindForAssignee" value="true" @checked_Assignee />
+                                            <span style="font-weight: normal; margin-left: 3px">@LanguageResource.Assignee</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-save-hidden div-remind form-group">
+                        <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+                        <button type="button" class="btn btn-primary btn-save-task" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save</button>
+                    </div>
+                }
+                <!--Subtask-->
+                <div class="mt-15">
+                    @Html.Partial("_SubtaskList", Model.subtaskList)
+                </div>
+            </div>
+            <div class="col-md-4">
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, Guid>(p => p.TaskStatusId)))
+                {
+                    <div class="mt-25 form-group">
+                        <div>
+                            @Html.HiddenFor(p => p.TaskStatusId)
+                            @Html.DropDownList("ToStatus", null, null, new { @class = "form-control with-search" })
+                        </div>
+                    </div>
+                }
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, string>(p => p.PriorityCode)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.PriorityCode, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, string>(p1 => p1.PriorityCode)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div>
+                            @Html.DropDownList("PriorityCode", null, LanguageResource.Dropdownlist_Choose, new { @class = "form-control" })
+                        </div>
+                    </div>
+                }
+
+                <!--Ngày tiếp nhận-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p => p.ReceiveDate)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.ReceiveDate, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p1 => p1.ReceiveDate)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div class="form-inline">
+                            @Html.DateTimeTextBoxFor(p => p.ReceiveDate, isNullValueForTime: true)
+                            @Html.Hidden("DisplayReceiveDate", Model.ReceiveDate)
+                        </div>
+                    </div>
+                }
+                <!--Ngày bắt đầu-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p => p.StartDate)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.StartDate, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p1 => p1.StartDate)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div class="form-inline">
+                            @Html.DateTimeTextBoxFor(p => p.StartDate, isNullValueForTime: true)
+                            @Html.Hidden("DisplayStartDate", Model.StartDate)
+                        </div>
+                    </div>
+                }
+                <!--Ngày đến hạn-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p => p.EstimateEndDate)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.EstimateEndDate, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p1 => p1.EstimateEndDate)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div class="form-inline">
+                            @Html.DateTimeTextBoxFor(p => p.EstimateEndDate, isNullValueForTime: true)
+                            @Html.Hidden("DisplayEstimateEndDate", Model.EstimateEndDate)
+                        </div>
+                    </div>
+                }
+                <!--Ngày kết thúc-->
+                @if (fieldCodeList.Contains(PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p => p.EndDate)))
+                {
+                    <div class="form-group">
+                        <div>
+                            @Html.LabelByPropertyNameFor(p => p.EndDate, configList.Where(p => p.FieldCode == PropertyHelper.GetPropertyName<TaskViewModel, DateTime?>(p1 => p1.EndDate)).Select(p => p.Note).FirstOrDefault())
+                        </div>
+                        <div class="form-inline">
+                            @Html.DateTimeTextBoxFor(p => p.EndDate, isNullValueForTime: true)
+                            @Html.Hidden("DisplayEndDate", Model.EndDate)
+                        </div>
+                    </div>
+                }
+                <div class="btn-save-hidden div-datetime">
+                    <button type="button" class="btn btn-default btn-cancel-task">@LanguageResource.Cancel</button>
+                    <button type="button" class="btn btn-primary btn-save-task" data-add-success-call-back="CancelUpdateTask">@LanguageResource.Btn_Save</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="mt-30">
+                    <ul class="nav nav-pills">
+                        <li class="active">
+                            <a href="#tab-comment" data-toggle="tab">@LanguageResource.Comment (@Model.NumberOfComments)</a>
+                        </li>
+                        <li>
+                            <a href="#tab-file" data-toggle="tab">@LanguageResource.Task_FileUrl (@Model.NumberOfFiles)</a>
+                        </li>
+                        <li>
+                            <a href="#tab-history" data-toggle="tab">@LanguageResource.History</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="tab-content clearfix">
+                    <div id="tab-comment" class="active tab-pane form-group mt-10">
+                        @Html.Partial("_CommentTab", Model)
+                    </div>
+
+                    <div id="tab-file" class="tab-pane form-group mt-10">
+                        @Html.Partial("_FileTab", Model)
+                    </div>
+
+                    <div id="tab-history" class="tab-pane form-group mt-10">
+                        @Html.Partial("_HistoryTab", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+﻿
+<div id="divAddFilePopup" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btn-cancel-delete"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">@LanguageResource.Btn_AddRow @LanguageResource.Task_FileUrl</h4>
+            </div>
+            <form id="frmAddFile">
+                <div class="form-horizontal">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper">
+                                    <label class="control-label" for="FileUrl">Đính kèm</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <input name="MainCommentFileUrl" type="file" multiple />
+                                <input name="TaskId" type="hidden" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <span class="btn btn-default" data-dismiss="modal" id="btn-cancel-delete">@LanguageResource.Btn_Cancel</span>
+                        <a class="btn btn-primary pull-right" id="btn-confirm-add-file" data-tab="">
+                            @LanguageResource.Btn_Save
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
